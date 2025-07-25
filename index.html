@@ -44,11 +44,22 @@
     th {
       background: #eef4fb;
     }
+    button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      background-color: #0077cc;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🏄‍♂️🏄‍♂️PREVISIONI VENTO SURF TRIESTE</h1>
+  <h1>🏄‍♂️ PREVISIONI VENTO SURF TRIESTE</h1>
 
   <!-- 1. GRAFICO BORA -->
   <div class="section">
@@ -59,13 +70,42 @@
   <!-- 2. MODELLO ALADIN -->
   <div class="section">
     <h2>2. Modello Aladin</h2>
+    <p style="margin-top: 0.5rem;">
+      📆 Per previsioni ogni 3 ore clicca qui:  
+      <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank">
+        kuguluff.altervista.org
+      </a>
+    </p>
     <img id="aladinImg" alt="Modello Aladin" />
   </div>
 
-  <!-- 3. WINDY -->
+  <!-- 3. WINDY + WINDGURU -->
   <div class="section">
     <h2>3. Windy</h2>
     <iframe src="https://embed.windy.com/embed2.html?lat=45.659&lon=13.745&detailLat=45.659&detailLon=13.745&width=100%&height=400&zoom=12&level=surface&overlay=wind&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=kt&metricTemp=°C&radarRange=-1" height="400"></iframe>
+
+    <h3>Windguru – Trieste</h3>
+    <iframe src="https://www.windguru.cz/embed/49156" width="100%" height="400" frameborder="0"></iframe>
+
+    <div style="text-align:center; margin-top: 1rem;">
+      <button onclick="document.getElementById('modal').style.display='block'">
+        ℹ️ Differenze tra i modelli meteo
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL POPUP -->
+  <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000;">
+    <div style="background:white; max-width:600px; margin:10% auto; padding:20px; border-radius:10px; position:relative;">
+      <h3>Modelli Meteo – Spiegazione</h3>
+      <p>
+        Qui potrai inserire una breve spiegazione sulle differenze tra i modelli meteo: Windguru, Aladin, Windy, e il grafico Bora.<br><br>
+        Ad esempio: Windguru è un modello globale, Windy utilizza dati ECMWF e GFS, Aladin è più locale e ad alta risoluzione per il Nord Adriatico.
+      </p>
+      <div style="text-align:right; margin-top:1rem;">
+        <button onclick="document.getElementById('modal').style.display='none'">Chiudi</button>
+      </div>
+    </div>
   </div>
 
   <!-- 4. DATI CENTRALINE -->
@@ -99,6 +139,7 @@
     <img src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" />
   </div>
 
+  <!-- JS: FETCH + TABELLE -->
   <script>
     fetch("https://script.google.com/macros/s/AKfycbwWB69XiRyx99uFM5R14J_D_y2B1oSN80xE7D8l3onpZ7QKmFK_E93ziZoPjH8T_5lH/exec")
       .then(res => res.json())
@@ -127,13 +168,10 @@
     }
   </script>
 
-</body>
-<footer style="text-align:center; font-size: 0.9rem; color: #666; margin-top: 2rem;">
-    <p>Pagina creata senza pubblicità e con lo scopo di pubblica utilità.<br>
+  <footer style="text-align:center; font-size: 0.9rem; color: #666; margin-top: 2rem;">
+    <p>Pagina creata senza pubblicità e con lo scopo di pubblica utilità. Un grazie ad Alessio Vremec per avermi ispirato.<br>
     Per info o suggerimenti: <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a></p>
   </footer>
+
+</body>
 </html>
-
-
-
-
