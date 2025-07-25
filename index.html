@@ -26,28 +26,23 @@
       margin-bottom: 2rem;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    button {
-      margin: 2px;
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background: #e6eef6;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #d4e2f2;
-    }
-    iframe, img {
+    img, iframe {
       width: 100%;
       border-radius: 6px;
       margin-top: 1rem;
     }
-    a {
-      color: #0059b3;
-      text-decoration: none;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
     }
-    a:hover {
-      text-decoration: underline;
+    th, td {
+      border: 1px solid #ddd;
+      padding: 6px;
+      text-align: center;
+    }
+    th {
+      background: #eef4fb;
     }
   </style>
 </head>
@@ -55,74 +50,83 @@
 
   <h1>🌬️ Meteo Trieste e Dintorni</h1>
 
-  <!-- 1. Previsioni OSMER -->
+  <!-- 1. GRAFICO BORA -->
   <div class="section">
-    <h2>1. Previsioni OSMER</h2>
-    <div id="osmer-tabs">
-      <button onclick="showForecast('oggi')">Oggi</button>
-      <button onclick="showForecast('domani')">Domani</button>
-      <button onclick="showForecast('domenica')">Domenica</button>
-      <button onclick="showForecast('lunedì')">Lunedì</button>
-      <button onclick="showForecast('martedì')">Martedì</button>
-    </div>
-    <div id="forecast-text" style="margin-top: 1rem;">
-      Caricamento previsioni...
-    </div>
+    <h2>1. Grafico della Bora</h2>
+    <img id="boraImg" alt="Diagramma Bora" />
   </div>
 
-  <!-- 2. PREVISIONI VENTO -->
+  <!-- 2. MODELLO ALADIN -->
   <div class="section">
-    <h2>2. Previsioni Vento</h2>
-    <h3>Modello Aladin (Kuguluff)</h3>
-    <img src="https://www.kuguluff.altervista.org/vento/aladinSI01.png" alt="Aladin vento" />
+    <h2>2. Modello Aladin</h2>
+    <img id="aladinImg" alt="Modello Aladin" />
+  </div>
 
-    <h3>Windy (interattivo)</h3>
+  <!-- 3. WINDY -->
+  <div class="section">
+    <h2>3. Windy</h2>
     <iframe src="https://embed.windy.com/embed2.html?lat=45.659&lon=13.745&detailLat=45.659&detailLon=13.745&width=100%&height=400&zoom=12&level=surface&overlay=wind&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=kt&metricTemp=°C&radarRange=-1" height="400"></iframe>
   </div>
 
-  <!-- 3. Dati Centraline -->
+  <!-- 4. DATI CENTRALINE -->
   <div class="section">
-    <h2>3. Dati Centraline</h2>
-    <ul>
-      <li><a href="https://vetercek.com/danes/index.php?id=27&postaja=muggia" target="_blank">📍 Muggia – Dati in tempo reale</a></li>
-      <li><a href="https://vetercek.com/danes/index.php?postaja=montegrisa" target="_blank">📍 Monte Grisa – Dati in tempo reale</a></li>
-    </ul>
+    <h2>4. Dati Centraline</h2>
+    <h3>Monte Grisa</h3>
+    <table id="grisaTable">
+      <thead>
+        <tr>
+          <th>Minuti fa</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica</th><th>Temp (°C)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h3 style="margin-top:2rem;">Muggia</h3>
+    <table id="muggiaTable">
+      <thead>
+        <tr>
+          <th>Minuti fa</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica</th><th>Temp (°C)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
-  <!-- 4. Webcam SVBG -->
-  <div class="section">
-    <h2>4. Webcam SVBG</h2>
-    <p>⚠️ Il video live non può essere incorporato. Clicca per aprire:</p>
-    <a href="https://www.svbg.it/" target="_blank">🔗 Apri Webcam SVBG</a>
-  </div>
-
-  <!-- 5. Webcam Barcola -->
+  <!-- 5. WEBCAM BARCOLA -->
   <div class="section">
     <h2>5. Webcam Barcola</h2>
     <img src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" />
   </div>
 
+  <!-- JS per immagini e centraline -->
   <script>
-    let osmerData = {};
+    const ts = new Date().getTime();
+    document.getElementById("boraImg").src = `https://profiwetter.ch/wind_bora_it.png?ts=${ts}`;
+    document.getElementById("aladinImg").src = `https://meteo.arso.gov.si/uploads/probase/www/model/aladin/field/ad_vm-va10m_si-sw_01.png?ts=${ts}`;
 
-    function showForecast(day) {
-      const text = osmerData[day] || "Dati non disponibili";
-      document.getElementById("forecast-text").innerText = text;
-    }
+    function fetchData(station, tableId, labels) {
+      const url = `https://vetercek.com/danes/index.php?postaja=${station}&ts=${Date.now()}`;
+      fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const table = html.match(/<table.*?>(.*?)<\/table>/s)?.[1];
+          if (!table) return;
 
-    fetch("https://script.google.com/macros/s/AKfycbwONswNI2Kfcmf66BazbOfWIkTZ3DNV0hYOw5AC3gKKeISfAujoxs6czg1ynyIUz_OE/exec")
-      .then(res => res.json())
-      .then(data => {
-        osmerData = data;
-        showForecast('oggi');
-      })
-      .catch(err => {
-        document.getElementById("forecast-text").innerText = "Errore nel caricamento previsioni.";
-        console.error("Errore OSMER:", err);
-      });
-  </script>
+          const rows = [...table.matchAll(/<tr.*?>(.*?)<\/tr>/gs)].slice(1, 5);
+          const tbody = document.querySelector(`#${tableId} tbody`);
+          tbody.innerHTML = '';
 
-</body>
-</html>
+          rows.forEach((row, i) => {
+            const cells = [...row[1].matchAll(/<t[dh].*?>(.*?)<\/t[dh]>/gs)];
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${labels[i]}</td>
+              <td>${cells[1]?.[1]?.trim() || '-'}</td>
+              <td>${cells[2]?.[1]?.trim() || '-'}</td>
+              <td>${cells[3]?.[1]?.trim() || '-'}</td>
+              <td>${cells[4]?.[1]?.trim() || '-'}</td>
+            `;
+            tbody.appendChild(tr);
+
 
 
