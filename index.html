@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meteo Trieste Spot</title>
   <link rel="icon" href="https://emojiapi.dev/api/v1/surfing/32.png" type="image/png" />
   <style>
@@ -56,23 +56,90 @@
     button:hover {
       background-color: #005fa3;
     }
+    /* Dropdown menu */
+    .dropbtn {
+      background-color: #0077cc;
+      color: white;
+      padding: 10px 16px;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      min-width: 180px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      z-index: 1;
+      border-radius: 6px;
+    }
+    .dropdown-content a {
+      color: black;
+      padding: 10px 14px;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .dropdown-content a:hover {
+      background-color: #eef4fb;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown:hover .dropbtn {
+      background-color: #005fa3;
+    }
   </style>
 </head>
 <body>
 
   <h1>🏄‍♂️ PREVISIONI VENTO SURF TRIESTE</h1>
 
+  <!-- MENU DROPDOWN -->
+  <nav style="margin-bottom: 2rem;">
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <div class="dropdown">
+        <button class="dropbtn">📡 Dati in tempo reale</button>
+        <div class="dropdown-content">
+          <a href="#grisa">Monte Grisa</a>
+          <a href="#muggia">Muggia</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <button class="dropbtn">📷 Webcam</button>
+        <div class="dropdown-content">
+          <a href="#barcola">Barcola</a>
+          <a href="#grisaCam">Monte Grisa</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <button class="dropbtn">🌬️ Previsioni</button>
+        <div class="dropdown-content">
+          <a href="#bora">Grafico Bora</a>
+          <a href="#aladin">Modello Aladin</a>
+          <a href="#windy">Windy + Windguru</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
   <!-- 1. GRAFICO BORA -->
-  <div class="section">
-    <h2>1. Grafico della Bora</h2>
+  <div class="section" id="bora">
+    <h2>Grafico della Bora</h2>
     <img id="boraImg" alt="Diagramma Bora" />
   </div>
 
   <!-- 2. MODELLO ALADIN -->
-  <div class="section">
-    <h2>2. Modello Aladin</h2>
-    <p style="margin-top: 0.5rem;">
-      📆 Per previsioni ogni 3 ore clicca qui:  
+  <div class="section" id="aladin">
+    <h2>Modello Aladin</h2>
+    <p>
+      📆 Previsioni ogni 3 ore: 
       <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank">
         kuguluff.altervista.org
       </a>
@@ -81,16 +148,11 @@
   </div>
 
   <!-- 3. WINDY + WINDGURU -->
-  <div class="section">
-    <h2>3. Windy</h2>
+  <div class="section" id="windy">
+    <h2>Windy</h2>
     <iframe src="https://embed.windy.com/embed2.html?lat=45.659&lon=13.745&detailLat=45.659&detailLon=13.745&width=100%&height=400&zoom=12&level=surface&overlay=wind&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=kt&metricTemp=°C&radarRange=-1" height="400"></iframe>
-
     <h3>Windguru – Trieste</h3>
-    <p>
-      🌐 Visualizza le previsioni complete su 
-      <a href="https://www.windguru.cz/49156" target="_blank">Windguru Trieste</a>
-    </p>
-
+    <p>🌐 <a href="https://www.windguru.cz/49156" target="_blank">Vai alla pagina Windguru Trieste</a></p>
     <div style="text-align:center; margin-top: 1rem;">
       <button onclick="document.getElementById('modal').style.display='block'">
         ℹ️ Differenze tra i modelli meteo
@@ -103,12 +165,11 @@
     <div style="background:white; max-width:600px; margin:10% auto; padding:20px; border-radius:10px; position:relative;">
       <h3>Modelli Meteo – Spiegazione</h3>
       <p>
-        Esistono diversi modelli meteo: ognuno elabora previsioni basate su calcoli differenti e ha punti di forza diversi. Ecco i principali:<br><br>
         • <strong>GFS</strong>: modello americano, buono per tendenze globali.<br>
-        • <strong>ICON</strong>: tedesco, migliore dettaglio ma meno preciso sulla costa.<br>
+        • <strong>ICON</strong>: tedesco, buono dettaglio ma meno preciso sulla costa.<br>
         • <strong>HARMONIE</strong>: ad alta risoluzione per l’Europa, ottimo per previsioni locali.<br>
-        • <strong>ALADIN</strong>: specifico per il Nord Adriatico, molto preciso per vento e pioggia nella zona di Trieste.<br><br>
-        👉 Per Trieste e dintorni, ALADIN è spesso il più affidabile.
+        • <strong>ALADIN</strong>: molto preciso sul Nord Adriatico.<br><br>
+        👉 Per Trieste, ALADIN è spesso il più affidabile.
       </p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="document.getElementById('modal').style.display='none'">Chiudi</button>
@@ -117,47 +178,41 @@
   </div>
 
   <!-- 4. DATI CENTRALINE -->
-  <div class="section">
-    <h2>4. Dati Centraline</h2>
-
-    <h3>Monte Grisa</h3>
+  <div class="section" id="grisa">
+    <h2>Monte Grisa</h2>
     <table id="grisaTable">
       <thead>
-        <tr>
-          <th>Minuti fa</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica</th><th>Temp (°C)</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <h3 style="margin-top:2rem;">Muggia</h3>
-    <table id="muggiaTable">
-      <thead>
-        <tr>
-          <th>Minuti fa</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica</th><th>Temp (°C)</th>
-        </tr>
+        <tr><th>Minuti fa</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica</th><th>Temp (°C)</th></tr>
       </thead>
       <tbody></tbody>
     </table>
   </div>
 
+  <div class="section" id="muggia">
+    <h2>Muggia</h2>
+    <table id="muggiaTable">
+      <thead>
+        <tr><th>Minuti fa</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica</th><th>Temp (°C)</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <!-- 5. WEBCAM BARCOLA -->
-<div class="section">
-  <h2>5. Webcam Barcola</h2>
-  <a href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank">
-    <img src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" />
-  </a>
-</div>
+  <div class="section" id="barcola">
+    <h2>Webcam Barcola</h2>
+    <a href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank">
+      <img src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" />
+    </a>
+  </div>
 
-  <!-- 7. WEBCAM MONTE GRISA -->
-<div class="section">
-  <h2>7. Webcam Monte Grisa</h2>
-  <a href="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" target="_blank">
-    <img src="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" alt="Webcam Monte Grisa" style="width:100%; max-height:700px; object-fit:contain;" />
-  </a>
-</div>
-
+  <!-- 6. WEBCAM MONTE GRISA -->
+  <div class="section" id="grisaCam">
+    <h2>Webcam Monte Grisa</h2>
+    <a href="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" target="_blank">
+      <img src="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" style="width:100%;" alt="Webcam Monte Grisa" />
+    </a>
+  </div>
 
   <!-- JS -->
   <script>
@@ -168,7 +223,6 @@
         document.getElementById("aladinImg").src = data.aladin;
         renderTable(data.monteGrisa, "grisaTable", ['-5', '-10', '-15', '-20']);
         renderTable(data.muggia, "muggiaTable", ['-5', '-15', '-30', '-45']);
-        // TRST rimossa
       })
       .catch(err => console.error("Errore fetch dati:", err));
 
@@ -198,8 +252,5 @@
       Che SUFI!
     </p>
   </footer>
-
 </body>
 </html>
-
-
