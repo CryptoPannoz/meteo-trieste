@@ -151,14 +151,48 @@
   <div class="section" id="windy">
     <h2>Windy</h2>
     <iframe src="https://embed.windy.com/embed2.html?lat=45.659&lon=13.745&detailLat=45.659&detailLon=13.745&width=100%&height=400&zoom=12&level=surface&overlay=wind&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=kt&metricTemp=°C&radarRange=-1" height="400"></iframe>
-    <h3>Windguru – Trieste</h3>
-    <p>🌐 <a href="https://www.windguru.cz/49156" target="_blank">Vai alla pagina Windguru Trieste</a></p>
-    <div style="text-align:center; margin-top: 1rem;">
-      <button onclick="document.getElementById('modal').style.display='block'">
-        ℹ️ Differenze tra i modelli meteo
-      </button>
-    </div>
-  </div>
+    
+<h3>Windguru – Trieste</h3>
+<div style="margin-top: 1rem;">
+  <!-- Windguru widget -->
+  <script id="wg_fwdg_49156_107_1753785367900">
+    (function (window, document) {
+      var loader = function () {
+        var arg = [
+          "s=49156",
+          "m=107",
+          "uid=wg_fwdg_49156_107_1753785367900",
+          "wj=knots",
+          "tj=c",
+          "waj=m",
+          "tij=cm",
+          "odh=0",
+          "doh=24",
+          "fhours=240",
+          "hrsm=2",
+          "vt=forecasts",
+          "lng=it",
+          "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
+        ];
+        var script = document.createElement("script");
+        var tag = document.getElementsByTagName("script")[0];
+        script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
+        tag.parentNode.insertBefore(script, tag);
+      };
+      window.addEventListener
+        ? window.addEventListener("load", loader, false)
+        : window.attachEvent("onload", loader);
+    })(window, document);
+  </script>
+</div>
+
+<!-- Tasto modale spostato sotto -->
+<div style="text-align:center; margin-top: 1.5rem;">
+  <button onclick="document.getElementById('modal').style.display='block'">
+    ℹ️ Differenze tra i modelli meteo
+  </button>
+</div>
+
 
   <!-- MODAL POPUP -->
   <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000;">
