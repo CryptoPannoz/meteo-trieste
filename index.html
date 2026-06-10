@@ -3,294 +3,445 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meteo Trieste Spot</title>
+  <title>Meteo Trieste Spot – Previsioni vento e Bora</title>
+  <meta name="description" content="Previsioni vento per il surf a Trieste: grafico della Bora, modello ALADIN, dati live Monte Grisa e Muggia, webcam Barcola." />
   <link rel="icon" href="https://emojiapi.dev/api/v1/surfing/32.png" type="image/png" />
   <style>
+    :root {
+      --blu: #004080;
+      --azzurro: #0077cc;
+      --azzurro-scuro: #005fa3;
+      --sfondo: #f4f7f9;
+      --bordo: #e1e8ee;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
-      padding: 1rem;
-      background: #f4f7f9;
+      padding: 0 1rem 1rem;
+      background: var(--sfondo);
       color: #222;
     }
     h1 {
-      margin-bottom: 1rem;
+      font-size: 1.4rem;
+      margin: 1rem 0;
     }
     h2 {
-      color: #004080;
-      margin-top: 2rem;
+      color: var(--blu);
+      margin: 0 0 .5rem;
+      font-size: 1.15rem;
     }
     .section {
       background: white;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 1rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 1.25rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      scroll-margin-top: 70px;
     }
     img, iframe {
-      width: 100%;
+      max-width: 100%;
       border-radius: 6px;
-      margin-top: 1rem;
+      border: 0;
     }
+    a { color: var(--azzurro); }
+
+    /* ---- Barra di navigazione fissa ---- */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--sfondo);
+      margin: 0 -1rem 1rem;
+      padding: .5rem 1rem;
+      display: flex;
+      gap: .5rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-bottom: 1px solid var(--bordo);
+    }
+    nav a {
+      flex-shrink: 0;
+      background: var(--azzurro);
+      color: white;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: .9rem;
+      white-space: nowrap;
+    }
+    nav a:hover { background: var(--azzurro-scuro); }
+
+    /* ---- Tabelle centraline ---- */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 1rem;
+      margin-top: .5rem;
+      font-size: .95rem;
     }
     th, td {
-      border: 1px solid #ddd;
-      padding: 6px;
+      border: 1px solid var(--bordo);
+      padding: 7px 4px;
       text-align: center;
     }
-    th {
-      background: #eef4fb;
+    th { background: #eef4fb; font-weight: 600; }
+    td.vento-calmo  { color: #777; }
+    td.vento-leggero{ background: #e7f6e7; color: #1b6e1b; font-weight: 600; }
+    td.vento-buono  { background: #fff1de; color: #b35c00; font-weight: 700; }
+    td.vento-forte  { background: #fdeaea; color: #c20202; font-weight: 700; }
+    .stato {
+      font-size: .85rem;
+      color: #666;
+      margin: .25rem 0 0;
     }
+    .errore {
+      background: #fdf2f2;
+      border: 1px solid #f5c2c2;
+      border-radius: 6px;
+      padding: .6rem .8rem;
+      font-size: .9rem;
+      color: #8a1f1f;
+      margin-top: .5rem;
+    }
+
+    /* ---- Bottoni ---- */
     button {
       padding: 8px 14px;
       border: none;
       border-radius: 6px;
-      background-color: #0077cc;
+      background-color: var(--azzurro);
       color: white;
       cursor: pointer;
+      font-size: .9rem;
     }
-    button:hover {
-      background-color: #005fa3;
+    button:hover { background-color: var(--azzurro-scuro); }
+    button:disabled { opacity: .5; cursor: default; }
+
+    /* ---- Viewer Aladin ---- */
+    .aladin-controlli {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: .5rem 0;
     }
-    /* Dropdown menu */
-    .dropbtn {
-      background-color: #0077cc;
-      color: white;
-      padding: 10px 16px;
-      font-size: 14px;
-      border: none;
-      cursor: pointer;
-      border-radius: 6px;
+    .aladin-controlli span { font-variant-numeric: tabular-nums; color: #444; }
+
+    /* ---- Webcam ---- */
+    .webcam-intestazione {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
     }
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .dropdown-content {
+
+    /* ---- Modal ---- */
+    #modal {
       display: none;
-      position: absolute;
-      background-color: white;
-      min-width: 180px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      z-index: 1;
-      border-radius: 6px;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      padding: 1rem;
     }
-    .dropdown-content a {
-      color: black;
-      padding: 10px 14px;
-      text-decoration: none;
-      display: block;
-      border-bottom: 1px solid #f0f0f0;
+    #modal .contenuto {
+      background: white;
+      max-width: 600px;
+      margin: 10vh auto 0;
+      padding: 20px;
+      border-radius: 10px;
     }
-    .dropdown-content a:hover {
-      background-color: #eef4fb;
-    }
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-    .dropdown:hover .dropbtn {
-      background-color: #005fa3;
+    footer {
+      text-align: center;
+      font-size: .9rem;
+      color: #666;
+      margin-top: 2rem;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
 
-  <h1>🏄‍♂️ PREVISIONI VENTO SURF TRIESTE</h1>
+  <h1>🏄‍♂️ Previsioni vento &amp; surf – Trieste</h1>
 
-  <!-- MENU DROPDOWN -->
-  <nav style="margin-bottom: 2rem;">
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-      <div class="dropdown">
-        <button class="dropbtn">📡 Dati in tempo reale</button>
-        <div class="dropdown-content">
-          <a href="#grisa">Monte Grisa</a>
-          <a href="#muggia">Muggia</a>
-        </div>
-      </div>
-      <div class="dropdown">
-        <button class="dropbtn">📷 Webcam</button>
-        <div class="dropdown-content">
-          <a href="#barcola">Barcola</a>
-          <a href="#grisaCam">Monte Grisa Sud-Est</a>
-          <a href="#grisaCam">Monte Grisa Sud-Ovest</a>
-        </div>
-      </div>
-      <div class="dropdown">
-        <button class="dropbtn">🌬️ Previsioni</button>
-        <div class="dropdown-content">
-          <a href="#bora">Grafico Bora</a>
-          <a href="#aladin">Modello Aladin</a>
-          <a href="#windy">Windy + Windguru</a>
-        </div>
-      </div>
-    </div>
+  <nav aria-label="Sezioni della pagina">
+    <a href="#grisa">📡 Monte Grisa</a>
+    <a href="#muggia">📡 Muggia</a>
+    <a href="#bora">🌬️ Bora</a>
+    <a href="#aladin">🗺️ Aladin</a>
+    <a href="#windy">🌍 Windy</a>
+    <a href="#barcola">📷 Webcam</a>
   </nav>
 
   <!-- LINK BARCOLA STAZIONE -->
   <div class="section">
-    <p>📊  <a href="https://www.windguru.cz/station/5307" target="_blank">Dati Stazione LIVE Terrapieno di Barcola</a></p>
+    📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Dati stazione LIVE – Terrapieno di Barcola (Windguru)</a>
   </div>
-  <!-- 1. GRAFICO BORA -->
+
+  <!-- DATI CENTRALINE -->
+  <div class="section" id="grisa">
+    <h2>Monte Grisa – dati in tempo reale</h2>
+    <table aria-describedby="statoGrisa">
+      <thead>
+        <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+      </thead>
+      <tbody id="grisaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+    </table>
+    <p class="stato" id="statoGrisa"></p>
+  </div>
+
+  <div class="section" id="muggia">
+    <h2>Muggia – dati in tempo reale</h2>
+    <table aria-describedby="statoMuggia">
+      <thead>
+        <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+      </thead>
+      <tbody id="muggiaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+    </table>
+    <p class="stato" id="statoMuggia"></p>
+  </div>
+
+  <div class="section" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+    <button id="btnAggiorna">🔄 Aggiorna dati</button>
+    <span class="stato" id="ultimoAggiornamento"></span>
+  </div>
+
+  <!-- GRAFICO BORA -->
   <div class="section" id="bora">
     <h2>Grafico della Bora</h2>
-    <img id="boraImg" alt="Diagramma Bora" />
+    <p class="stato">Fonte: <a href="https://profiwetter.ch" target="_blank" rel="noopener">profiwetter.ch</a></p>
+    <img id="boraImg" alt="Diagramma previsione Bora" loading="lazy"
+         onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Grafico Bora momentaneamente non disponibile.</p>'); this.style.display='none';" />
   </div>
 
-  <!-- 2. MODELLO ALADIN -->
+  <!-- MODELLO ALADIN -->
   <div class="section" id="aladin">
-    <h2>Modello Aladin</h2>
-    <p>
-      📆 Previsioni ogni 3 ore: 
-      <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank">
-        kuguluff.altervista.org
-      </a>
+    <h2>Modello Aladin – vento golfo di Trieste</h2>
+    <p class="stato">
+      Previsioni a passi di 3 ore (fonte ARSO) – serie completa su
+      <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">kuguluff.altervista.org</a>
     </p>
-    <img id="aladinImg" alt="Modello Aladin" />
+    <div class="aladin-controlli">
+      <button id="aladinPrec" aria-label="Mappa precedente">◀</button>
+      <span id="aladinPasso">1 / 23</span>
+      <button id="aladinSucc" aria-label="Mappa successiva">▶</button>
+    </div>
+    <img id="aladinImg" alt="Mappa vento modello Aladin" loading="lazy"
+         onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Mappa Aladin momentaneamente non disponibile.</p>'); this.style.display='none';" />
   </div>
 
-  <!-- 3. WINDY + WINDGURU -->
+  <!-- WINDY + WINDGURU -->
   <div class="section" id="windy">
-    <h2>Windy - GFS Trieste</h2>
-    <iframe src="https://embed.windy.com/embed2.html?lat=45.659&lon=13.745&detailLat=45.659&detailLon=13.745&width=100%&height=400&zoom=10&level=surface&overlay=wind&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=kt&metricTemp=°C&radarRange=-1" height="400"></iframe>
-    
-<h2>Windguru – ALADIN Trieste</h2>
-<div style="margin-top: 1rem;">
-  <!-- Windguru widget -->
-  <script id="wg_fwdg_49156_107_1753785367900">
-    (function (window, document) {
-      var loader = function () {
-        var arg = [
-          "s=49156",
-          "m=107",
-          "uid=wg_fwdg_49156_107_1753785367900",
-          "wj=knots",
-          "tj=c",
-          "waj=m",
-          "tij=cm",
-          "odh=0",
-          "doh=24",
-          "fhours=240",
-          "hrsm=2",
-          "vt=forecasts",
-          "lng=it",
-          "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
-        ];
-        var script = document.createElement("script");
-        var tag = document.getElementsByTagName("script")[0];
-        script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
-        tag.parentNode.insertBefore(script, tag);
-      };
-      window.addEventListener
-        ? window.addEventListener("load", loader, false)
-        : window.attachEvent("onload", loader);
-    })(window, document);
-  </script>
-</div>
+    <h2>Windy – GFS Trieste</h2>
+    <iframe title="Mappa vento Windy" loading="lazy" src="https://embed.windy.com/embed2.html?lat=45.659&lon=13.745&detailLat=45.659&detailLon=13.745&width=100%&height=400&zoom=10&level=surface&overlay=wind&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=kt&metricTemp=°C&radarRange=-1" height="400" style="width:100%;"></iframe>
 
-<!-- Tasto modale spostato sotto -->
-<div style="text-align:center; margin-top: 1.5rem;">
-  <button onclick="document.getElementById('modal').style.display='block'">
-    ℹ️ Differenze tra i modelli meteo
-  </button>
-</div>
+    <h2 style="margin-top:1.5rem;">Windguru – ALADIN Trieste</h2>
+    <div style="margin-top: 1rem; overflow-x:auto;">
+      <!-- Windguru widget -->
+      <script id="wg_fwdg_49156_107_1753785367900">
+        (function (window, document) {
+          var loader = function () {
+            var arg = [
+              "s=49156",
+              "m=107",
+              "uid=wg_fwdg_49156_107_1753785367900",
+              "wj=knots",
+              "tj=c",
+              "waj=m",
+              "tij=cm",
+              "odh=0",
+              "doh=24",
+              "fhours=240",
+              "hrsm=2",
+              "vt=forecasts",
+              "lng=it",
+              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
+            ];
+            var script = document.createElement("script");
+            var tag = document.getElementsByTagName("script")[0];
+            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
+            tag.parentNode.insertBefore(script, tag);
+          };
+          window.addEventListener
+            ? window.addEventListener("load", loader, false)
+            : window.attachEvent("onload", loader);
+        })(window, document);
+      </script>
+    </div>
 
+    <div style="text-align:center; margin-top: 1.5rem;">
+      <button onclick="apriModal()">ℹ️ Differenze tra i modelli meteo</button>
+    </div>
+  </div>
 
   <!-- MODAL POPUP -->
-  <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000;">
-    <div style="background:white; max-width:600px; margin:10% auto; padding:20px; border-radius:10px; position:relative;">
-      <h3>Modelli Meteo – Spiegazione</h3>
+  <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
+    <div class="contenuto">
+      <h3 id="modalTitolo">Modelli Meteo – Spiegazione</h3>
       <p>
         • <strong>GFS</strong>: modello americano, buono per tendenze globali.<br>
-        • <strong>ICON</strong>: tedesco, buono dettaglio ma meno preciso sulla costa.<br>
+        • <strong>ICON</strong>: tedesco, buon dettaglio ma meno preciso sulla costa.<br>
         • <strong>HARMONIE</strong>: ad alta risoluzione per l’Europa, ottimo per previsioni locali.<br>
         • <strong>ALADIN</strong>: molto preciso sul Nord Adriatico.<br><br>
         👉 Per Trieste, ALADIN è spesso il più affidabile.
       </p>
       <div style="text-align:right; margin-top:1rem;">
-        <button onclick="document.getElementById('modal').style.display='none'">Chiudi</button>
+        <button onclick="chiudiModal()">Chiudi</button>
       </div>
     </div>
   </div>
 
-  <!-- 4. DATI CENTRALINE -->
-  <div class="section" id="grisa">
-    <h2>Monte Grisa</h2>
-    <table id="grisaTable">
-      <thead>
-        <tr><th>Minuti fa</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica</th><th>Temp (°C)</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <div class="section" id="muggia">
-    <h2>Muggia</h2>
-    <table id="muggiaTable">
-      <thead>
-        <tr><th>Minuti fa</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica</th><th>Temp (°C)</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <!-- 5. WEBCAM BARCOLA -->
+  <!-- WEBCAM -->
   <div class="section" id="barcola">
-    <h2>Webcam Barcola</h2>
-    <a href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank">
-      <img src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" />
+    <div class="webcam-intestazione">
+      <h2>Webcam Barcola</h2>
+      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+    </div>
+    <a id="barcolaLink" href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank" rel="noopener">
+      <img class="webcam" data-src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" loading="lazy" />
     </a>
   </div>
 
-  <!-- 6. WEBCAM MONTE GRISA -->
   <div class="section" id="grisaCam">
     <h2>Webcam Monte Grisa Sud-Est</h2>
-    <a href="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" target="_blank">
-      <img src="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" style="width:100%;" alt="Webcam Monte Grisa" />
+    <a href="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" target="_blank" rel="noopener">
+      <img class="webcam" data-src="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" alt="Webcam Monte Grisa Sud-Est" loading="lazy" />
     </a>
   </div>
 
-<!-- 6b. WEBCAM MONTE GRISA SUD-OVEST -->
   <div class="section" id="grisaSudOvest">
     <h2>Webcam Monte Grisa Sud-Ovest</h2>
-    <a href="https://www.cisartrieste.it/meteo/grisa/cam2.jpg" target="_blank">
-      <img src="https://www.cisartrieste.it/meteo/grisa/cam2.jpg" style="width:100%;" alt="Webcam Monte Grisa Sud-Ovest" />
+    <a href="https://www.cisartrieste.it/meteo/grisa/cam2.jpg" target="_blank" rel="noopener">
+      <img class="webcam" data-src="https://www.cisartrieste.it/meteo/grisa/cam2.jpg" alt="Webcam Monte Grisa Sud-Ovest" loading="lazy" />
     </a>
   </div>
 
   <!-- JS -->
   <script>
-    fetch("https://script.google.com/macros/s/AKfycbwWB69XiRyx99uFM5R14J_D_y2B1oSN80xE7D8l3onpZ7QKmFK_E93ziZoPjH8T_5lH/exec")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("boraImg").src = data.bora;
-        document.getElementById("aladinImg").src = data.aladin;
-        renderTable(data.monteGrisa, "grisaTable", ['-5', '-10', '-15', '-20']);
-        renderTable(data.muggia, "muggiaTable", ['-5', '-15', '-30', '-45']);
-      })
-      .catch(err => console.error("Errore fetch dati:", err));
+    // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
+    const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
+    const LINK_VETERCEK = {
+      grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
+      muggia: "https://vetercek.com/danes/index.php?postaja=muggia"
+    };
 
-    function renderTable(data, tableId, labels) {
-      const tbody = document.querySelector(`#${tableId} tbody`);
-      tbody.innerHTML = '';
-      data.forEach((row, i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${labels[i]}</td>
-          <td>${row.direzione}</td>
-          <td>${row.kt}</td>
-          <td>${row.sunki}</td>
-          <td>${row.temp}</td>
-        `;
+    /* ---------- Immagini Bora / Aladin (caricate direttamente dalle fonti) ---------- */
+    function urlBora() {
+      return "https://profiwetter.ch/wind_bora_it.png?ts=" + Date.now();
+    }
+    let passoAladin = 1;            // mappe 01..23, una ogni 3 ore
+    const PASSI_ALADIN = 23;
+    function urlAladin(n) {
+      const nn = String(n).padStart(2, "0");
+      return "https://meteo.arso.gov.si/uploads/probase/www/model/aladin/field/ad_vm-va10m_si-sw_" + nn + ".png?ts=" + Date.now();
+    }
+    function mostraAladin() {
+      document.getElementById("aladinImg").src = urlAladin(passoAladin);
+      document.getElementById("aladinPasso").textContent = passoAladin + " / " + PASSI_ALADIN;
+      document.getElementById("aladinPrec").disabled = passoAladin <= 1;
+      document.getElementById("aladinSucc").disabled = passoAladin >= PASSI_ALADIN;
+    }
+    document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
+    document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
+
+    /* ---------- Tabelle centraline ---------- */
+    function classeVento(kt) {
+      const v = parseFloat(kt);
+      if (isNaN(v)) return "";
+      if (v < 8)  return "vento-calmo";
+      if (v < 15) return "vento-leggero";
+      if (v < 25) return "vento-buono";
+      return "vento-forte";
+    }
+
+    function renderTabella(righe, idBody) {
+      const tbody = document.getElementById(idBody);
+      tbody.innerHTML = "";
+      righe.forEach(r => {
+        const tr = document.createElement("tr");
+        [["ora"], ["direzione"], ["kt", true], ["sunki", true], ["temp"]].forEach(([campo, colora]) => {
+          const td = document.createElement("td");
+          td.textContent = (r[campo] && r[campo] !== "") ? r[campo] : "–";
+          if (colora) td.className = classeVento(r[campo]);
+          tr.appendChild(td);
+        });
         tbody.appendChild(tr);
       });
     }
+
+    function mostraErrore(idBody, idStato, linkLive) {
+      document.getElementById(idBody).innerHTML =
+        '<tr><td colspan="5">Dati momentaneamente non disponibili – ' +
+        '<a href="' + linkLive + '" target="_blank" rel="noopener">apri i dati live su vetercek.com</a></td></tr>';
+      document.getElementById(idStato).textContent = "";
+    }
+
+    let timerAuto = null;
+    function caricaDati() {
+      const btn = document.getElementById("btnAggiorna");
+      btn.disabled = true;
+      fetch(PROXY + "?ts=" + Date.now())
+        .then(res => {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return res.json();
+        })
+        .then(data => {
+          if (Array.isArray(data.monteGrisa) && data.monteGrisa.length) {
+            renderTabella(data.monteGrisa, "grisaBody");
+            document.getElementById("statoGrisa").textContent = "Fonte: vetercek.com · aggiornamento ogni ~5 minuti";
+          } else {
+            mostraErrore("grisaBody", "statoGrisa", LINK_VETERCEK.grisa);
+          }
+          if (Array.isArray(data.muggia) && data.muggia.length) {
+            renderTabella(data.muggia, "muggiaBody");
+            document.getElementById("statoMuggia").textContent = "Fonte: vetercek.com · aggiornamento ogni ~15 minuti";
+          } else {
+            mostraErrore("muggiaBody", "statoMuggia", LINK_VETERCEK.muggia);
+          }
+          document.getElementById("ultimoAggiornamento").textContent =
+            "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+        })
+        .catch(err => {
+          console.error("Errore caricamento dati centraline:", err);
+          mostraErrore("grisaBody", "statoGrisa", LINK_VETERCEK.grisa);
+          mostraErrore("muggiaBody", "statoMuggia", LINK_VETERCEK.muggia);
+          document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
+        })
+        .finally(() => { btn.disabled = false; });
+    }
+    document.getElementById("btnAggiorna").addEventListener("click", () => {
+      caricaDati();
+      document.getElementById("boraImg").src = urlBora();
+    });
+
+    /* ---------- Webcam ---------- */
+    function aggiornaWebcam() {
+      document.querySelectorAll("img.webcam").forEach(img => {
+        img.src = img.dataset.src + "?ts=" + Date.now();
+      });
+    }
+
+    /* ---------- Modal ---------- */
+    function apriModal()  { document.getElementById("modal").style.display = "block"; }
+    function chiudiModal(){ document.getElementById("modal").style.display = "none"; }
+    document.getElementById("modal").addEventListener("click", e => {
+      if (e.target.id === "modal") chiudiModal();
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") chiudiModal();
+    });
+
+    /* ---------- Avvio ---------- */
+    document.getElementById("boraImg").src = urlBora();
+    mostraAladin();
+    aggiornaWebcam();
+    caricaDati();
+    // auto-refresh dati centraline ogni 5 minuti
+    timerAuto = setInterval(caricaDati, 5 * 60 * 1000);
   </script>
 
-  <footer style="text-align:center; font-size: 0.9rem; color: #666; margin-top: 2rem; line-height: 1.6;">
+  <footer>
     <p>
       Pagina creata con lo scopo di pubblica utilità<br>
       nel pieno spirito di condivisione surfista.<br><br>
