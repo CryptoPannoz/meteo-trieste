@@ -3,8 +3,9 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { monteGrisa: [...], muggia: [...], updated: ISO }
- * Ogni riga: { ora, direzione, kt, sunki, temp }
+ * Endpoint: doGet -> { monteGrisa: [...], muggia: [...], barcola: {...}, updated: ISO }
+ * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
+ * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
  */
 
 var STATIONS = {
@@ -23,6 +24,12 @@ function doGet() {
       out[key] = [];
       out[key + 'Error'] = String(e);
     }
+  }
+  try {
+    out.barcola = fetchBarcola();
+  } catch (e) {
+    out.barcola = null;
+    out.barcolaError = String(e);
   }
   out.updated = new Date().toISOString();
   return ContentService
@@ -60,6 +67,25 @@ function scrapeStation(postaja) {
       temp: c[4] || '-'
     };
   });
+}
+
+/**
+ * Stazione Windguru 5307 (Terrapieno di Barcola).
+ * L'API iapi.php risponde solo con Referer windguru.cz; il browser non può
+ * impostarlo, UrlFetchApp sì.
+ * Risposta: { wind_avg, wind_max, wind_min, wind_direction, temperature, mslp, rh, datetime, unixtime }
+ * (vento in nodi, direzione in gradi)
+ */
+function fetchBarcola() {
+  var res = UrlFetchApp.fetch(
+    'https://www.windguru.cz/int/iapi.php?q=station_data_current&id_station=5307',
+    { headers: { Referer: 'https://www.windguru.cz/station/5307' }, muteHttpExceptions: true }
+  );
+  var data = JSON.parse(res.getContentText());
+  if (!data || data['return'] === 'error') {
+    throw new Error('Windguru: ' + (data && data.message ? data.message : 'risposta non valida'));
+  }
+  return data;
 }
 
 /** Test manuale dall'editor */

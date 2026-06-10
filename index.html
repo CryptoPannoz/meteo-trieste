@@ -73,6 +73,38 @@
     }
     nav a:hover { background: var(--azzurro-scuro); }
 
+    /* ---- Card stazione Barcola ---- */
+    .statgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+      gap: .5rem;
+      margin-top: .5rem;
+    }
+    .statbox {
+      background: #eef4fb;
+      border-radius: 8px;
+      padding: .6rem .4rem;
+      text-align: center;
+    }
+    .statbox .etichetta {
+      display: block;
+      font-size: .75rem;
+      color: #555;
+      margin-bottom: .15rem;
+    }
+    .statbox .valore {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--blu);
+      font-variant-numeric: tabular-nums;
+    }
+    .statbox .unita { font-size: .8rem; font-weight: 400; color: #555; }
+    .freccia {
+      display: inline-block;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
     /* ---- Tabelle centraline ---- */
     table {
       width: 100%;
@@ -166,6 +198,7 @@
   <h1>🏄‍♂️ Previsioni vento &amp; surf – Trieste</h1>
 
   <nav aria-label="Sezioni della pagina">
+    <a href="#barcolaLive">📡 Barcola</a>
     <a href="#grisa">📡 Monte Grisa</a>
     <a href="#muggia">📡 Muggia</a>
     <a href="#bora">🌬️ Bora</a>
@@ -174,9 +207,15 @@
     <a href="#barcola">📷 Webcam</a>
   </nav>
 
-  <!-- LINK BARCOLA STAZIONE -->
-  <div class="section">
-    📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Dati stazione LIVE – Terrapieno di Barcola (Windguru)</a>
+  <!-- STAZIONE BARCOLA (Windguru 5307) -->
+  <div class="section" id="barcolaLive">
+    <h2>Terrapieno di Barcola – condizioni attuali</h2>
+    <div class="statgrid" id="barcolaStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoBarcola">
+      📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>
+    </p>
   </div>
 
   <!-- DATI CENTRALINE -->
@@ -345,6 +384,43 @@
     document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
     document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
 
+    /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
+    const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
+    function gradiInDirezione(deg) {
+      if (typeof deg !== "number" || isNaN(deg)) return "–";
+      return PUNTI_CARDINALI[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
+    }
+    function statBox(etichetta, valore, unita, extraHtml) {
+      return '<div class="statbox"><span class="etichetta">' + etichetta + '</span>' +
+             '<span class="valore">' + (extraHtml || "") + valore +
+             (unita ? ' <span class="unita">' + unita + '</span>' : "") + '</span></div>';
+    }
+    function num(v, dec) {
+      return (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec) : "–";
+    }
+    function renderBarcola(b) {
+      const box = document.getElementById("barcolaStat");
+      if (!b) {
+        box.innerHTML = '<div class="statbox"><span class="etichetta">Dati non disponibili</span><span class="valore">–</span></div>';
+        return;
+      }
+      // la direzione del vento è "da dove arriva": la freccia indica dove va
+      const freccia = (typeof b.wind_direction === "number")
+        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + b.wind_direction + 'deg)">↓</span> '
+        : "";
+      box.innerHTML =
+        statBox("Vento medio", num(b.wind_avg, 1), "kt") +
+        statBox("Raffica", num(b.wind_max, 1), "kt") +
+        statBox("Direzione", gradiInDirezione(b.wind_direction), (typeof b.wind_direction === "number" ? Math.round(b.wind_direction) + "°" : ""), freccia) +
+        statBox("Temperatura", num(b.temperature, 1), "°C") +
+        statBox("Pressione", num(b.mslp, 1), "hPa") +
+        statBox("Umidità", num(b.rh, 0), "%");
+      const ora = b.datetime ? b.datetime.replace(/:\d\d [A-Z]+$/, "") : "";
+      document.getElementById("statoBarcola").innerHTML =
+        (ora ? "Rilevazione delle " + ora.split(" ")[1] + " · " : "") +
+        '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
+    }
+
     /* ---------- Tabelle centraline ---------- */
     function classeVento(kt) {
       const v = parseFloat(kt);
@@ -387,6 +463,7 @@
           return res.json();
         })
         .then(data => {
+          renderBarcola(data.barcola);
           if (Array.isArray(data.monteGrisa) && data.monteGrisa.length) {
             renderTabella(data.monteGrisa, "grisaBody");
             document.getElementById("statoGrisa").textContent = "Fonte: vetercek.com · aggiornamento ogni ~5 minuti";
@@ -404,6 +481,7 @@
         })
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
+          renderBarcola(null);
           mostraErrore("grisaBody", "statoGrisa", LINK_VETERCEK.grisa);
           mostraErrore("muggiaBody", "statoMuggia", LINK_VETERCEK.muggia);
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
