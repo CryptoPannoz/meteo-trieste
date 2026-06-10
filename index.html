@@ -201,6 +201,7 @@
     <a href="#barcolaLive">📡 Barcola</a>
     <a href="#grisa">📡 Monte Grisa</a>
     <a href="#muggia">📡 Muggia</a>
+    <a href="#mare">🌊 Mare</a>
     <a href="#bora">🌬️ Bora</a>
     <a href="#aladin">🗺️ Aladin</a>
     <a href="#windy">🌍 Windy</a>
@@ -239,6 +240,25 @@
       <tbody id="muggiaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
     </table>
     <p class="stato" id="statoMuggia"></p>
+  </div>
+
+  <!-- BOE OGS: MARE E ONDE -->
+  <div class="section" id="mare">
+    <h2>Mare e onde – boe OGS</h2>
+
+    <h3 style="margin:.5rem 0 0;">Boa Trieste (MAMBO1, largo di Barcola)</h3>
+    <div class="statgrid" id="mamboStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoMambo"></p>
+
+    <h3 style="margin:1rem 0 0;">Onde – boa Pirano (DWRG1)</h3>
+    <div class="statgrid" id="ondeStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoOnde"></p>
+
+    <p class="stato">Fonte: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">Geoportale OGS – NODC</a> (dati near-real-time via ERDDAP)</p>
   </div>
 
   <div class="section" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
@@ -421,6 +441,83 @@
         '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
     }
 
+    /* ---------- Boe OGS via ERDDAP (CORS aperto, nessun proxy) ---------- */
+    const ERDDAP = "https://nodc.ogs.it/erddap/tabledap/";
+    const MS_IN_KT = 1.94384;
+
+    function oraLocale(isoUtc) {
+      const d = new Date(isoUtc);
+      return isNaN(d) ? "" : d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function erddapRows(dataset, campi, ore) {
+      const url = ERDDAP + dataset + ".json?" + encodeURIComponent(campi.join(",")) +
+                  "&" + encodeURIComponent("time>=now-" + ore + "hours");
+      return fetch(url)
+        .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+        .then(j => {
+          const t = j.table;
+          return t.rows
+            .map(r => Object.fromEntries(t.columnNames.map((c, i) => [c, r[i]])))
+            .sort((a, b) => a.time < b.time ? -1 : 1); // l'ordine di ERDDAP non è garantito
+        });
+    }
+
+    function statErrore(idStat, idStato) {
+      document.getElementById(idStat).innerHTML =
+        '<div class="statbox"><span class="etichetta">Dati non disponibili</span><span class="valore">–</span></div>';
+      document.getElementById(idStato).textContent = "";
+    }
+
+    function caricaMambo() {
+      erddapRows("MAMBO1_TS", ["time", "depth", "WSPD", "GSPD", "WDIR", "DRYT", "TEMP_1"], 6)
+        .then(rows => {
+          // depth 0 = meteo, depth 2 = sensori in acqua; prendo le ultime righe valorizzate
+          const meteo = rows.filter(r => r.WSPD != null).pop();
+          const acqua = rows.filter(r => r.TEMP_1 != null).pop();
+          if (!meteo && !acqua) throw new Error("nessun dato recente");
+          let html = "";
+          if (meteo) {
+            const freccia = (typeof meteo.WDIR === "number")
+              ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + meteo.WDIR + 'deg)">↓</span> ' : "";
+            html += statBox("Vento medio", num(meteo.WSPD * MS_IN_KT, 1), "kt") +
+                    statBox("Raffica", num(meteo.GSPD * MS_IN_KT, 1), "kt") +
+                    statBox("Direzione", gradiInDirezione(meteo.WDIR), Math.round(meteo.WDIR) + "°", freccia) +
+                    statBox("Aria", num(meteo.DRYT, 1), "°C");
+          }
+          if (acqua) html += statBox("Mare (−2 m)", num(acqua.TEMP_1, 1), "°C");
+          document.getElementById("mamboStat").innerHTML = html;
+          const t = (meteo || acqua).time;
+          document.getElementById("statoMambo").textContent = "Rilevazione oraria · ultima delle " + oraLocale(t);
+        })
+        .catch(err => {
+          console.error("Errore boa MAMBO1:", err);
+          statErrore("mamboStat", "statoMambo");
+        });
+    }
+
+    function caricaOnde() {
+      erddapRows("DWRG1_TS", ["time", "VHM0", "VZMX", "VTPK", "VPED"], 24)
+        .then(rows => {
+          const r = rows.filter(x => x.VHM0 != null).pop();
+          if (!r) throw new Error("nessun dato recente");
+          const freccia = (typeof r.VPED === "number")
+            ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + r.VPED + 'deg)">↓</span> ' : "";
+          document.getElementById("ondeStat").innerHTML =
+            statBox("Onda significativa", num(r.VHM0, 2), "m") +
+            statBox("Onda massima", num(r.VZMX, 2), "m") +
+            statBox("Periodo di picco", num(r.VTPK, 1), "s") +
+            statBox("Direzione", gradiInDirezione(r.VPED), (typeof r.VPED === "number" ? Math.round(r.VPED) + "°" : ""), freccia);
+          document.getElementById("statoOnde").textContent = "Ultima rilevazione delle " + oraLocale(r.time);
+        })
+        .catch(err => {
+          console.error("Errore boa DWRG1:", err);
+          statErrore("ondeStat", "statoOnde");
+        });
+    }
+
+    function caricaMare() { caricaMambo(); caricaOnde(); }
+
     /* ---------- Tabelle centraline ---------- */
     function classeVento(kt) {
       const v = parseFloat(kt);
@@ -490,6 +587,7 @@
     }
     document.getElementById("btnAggiorna").addEventListener("click", () => {
       caricaDati();
+      caricaMare();
       document.getElementById("boraImg").src = urlBora();
     });
 
@@ -515,8 +613,9 @@
     mostraAladin();
     aggiornaWebcam();
     caricaDati();
-    // auto-refresh dati centraline ogni 5 minuti
-    timerAuto = setInterval(caricaDati, 5 * 60 * 1000);
+    caricaMare();
+    // auto-refresh dati ogni 5 minuti
+    timerAuto = setInterval(() => { caricaDati(); caricaMare(); }, 5 * 60 * 1000);
   </script>
 
   <footer>
