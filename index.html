@@ -85,28 +85,6 @@
     }
     .gruppo-titolo:first-of-type { margin-top: .5rem; }
 
-    /* ---- Webcam Istria ---- */
-    .cam-video { width: 100%; border-radius: 6px; background: #000; aspect-ratio: 16/9; }
-    .cam-link {
-      display: inline-block;
-      background: var(--azzurro);
-      color: #fff;
-      text-decoration: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-size: .9rem;
-      margin-top: .5rem;
-    }
-    .cam-link:hover { background: var(--azzurro-scuro); }
-    .cam-carica {
-      width: 100%;
-      aspect-ratio: 16/9;
-      border: 2px dashed var(--bordo);
-      border-radius: 6px;
-      background: #f0f4f8;
-      color: var(--blu);
-      font-size: 1rem;
-    }
 
     /* ---- Card stazione Barcola ---- */
     .statgrid {
@@ -331,11 +309,11 @@
         <span class="verdetto-badge" id="verdettoBadge" style="background:#eee;color:#666">—</span>
       </div>
       <div class="scala" id="scala">
-        <span class="banda" style="background:#888780;color:#fff"><b>&lt;12</b><br>ste a casa</span>
+        <span class="banda" style="background:#888780;color:#fff"><b>&lt;12</b><br>stà casa</span>
         <span class="banda" style="background:#97C459;color:#173404"><b>12–18</b><br>sufia</span>
         <span class="banda" style="background:#639922;color:#fff"><b>18–25</b><br>sufia ben</span>
         <span class="banda" style="background:#3B6D11;color:#fff"><b>25–35</b><br>sufia sai ben</span>
-        <span class="banda" style="background:#E24B4A;color:#fff"><b>&gt;35</b><br>ste a casa</span>
+        <span class="banda" style="background:#E24B4A;color:#fff"><b>&gt;35</b><br>cúci e boni</span>
       </div>
     </div>
 
@@ -524,9 +502,6 @@
       <tbody id="prelukaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
     </table>
     <p class="stato" id="statoPreluka"></p>
-    <div id="camPrelukaWrap" style="margin-top:.75rem;">
-      <button class="cam-carica" onclick="caricaCamPreluka()">▶ Carica webcam live (Volosko / Preluka)</button>
-    </div>
   </div>
 
   <div class="section" id="dajla">
@@ -560,7 +535,6 @@
       <tbody id="savudrijaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
     </table>
     <p class="stato" id="statoSavudrija"></p>
-    <a class="cam-link" href="http://vetercek.com/video/index.php?st=savudrija2" target="_blank" rel="noopener">📷 Apri webcam Punta Salvore ↗</a>
   </div>
 
   <!-- JS -->
@@ -616,11 +590,11 @@
     /* Verdetti in dialetto triestino, in base ai nodi (TWS).
        Le fasce e i colori combaciano con l'accelerometro e la scala. */
     const BANDE = [
-      { txt: "Ste a casa",    sub: "xe solo bavisela", gloss: "solo brezza leggera, vento troppo debole", bg: "#888780", fg: "#fff" },
+      { txt: "Stà casa",      sub: "xe solo bavisela", gloss: "solo brezza leggera, vento troppo debole", bg: "#888780", fg: "#fff" },
       { txt: "Sufia",         sub: "se pol sufiar",    gloss: "c'è vento, si può uscire",                 bg: "#97C459", fg: "#173404" },
-      { txt: "Sufia ben",     sub: "bela giornada",    gloss: "bella giornata di vento",                  bg: "#639922", fg: "#fff" },
-      { txt: "Sufia sai ben", sub: "sbregabalon!",     gloss: "vento molto forte e potente",              bg: "#3B6D11", fg: "#fff" },
-      { txt: "Ste a casa",    sub: "xe buriana!",      gloss: "burrasca, troppo vento",                   bg: "#E24B4A", fg: "#fff" }
+      { txt: "Sufia ben",     sub: "movite!",          gloss: "buon vento, muoviti!",                     bg: "#639922", fg: "#fff" },
+      { txt: "Sufia sai ben", sub: "windsurf!",        gloss: "vento forte, da windsurf",                 bg: "#3B6D11", fg: "#fff" },
+      { txt: "Cúci e boni",   sub: "no xè el caso",    gloss: "stai buono, non è il caso: troppo vento",  bg: "#E24B4A", fg: "#fff" }
     ];
     function verdetto(kt) {
       let i;
@@ -968,35 +942,6 @@
       });
     }
 
-    /* Webcam Preluka (Volosko): stream HLS, hls.js caricato solo al click */
-    function caricaCamPreluka() {
-      const wrap = document.getElementById("camPrelukaWrap");
-      const src = "https://wowza.3tcable.hr/Volosko_Surfing/Volosko_Surfing.stream/playlist.m3u8";
-      wrap.innerHTML = '<video class="cam-video" id="camPreluka" controls autoplay muted playsinline></video>';
-      const video = document.getElementById("camPreluka");
-      function avviaHls() {
-        if (window.Hls && Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource(src);
-          hls.attachMedia(video);
-        } else {
-          video.src = src;
-        }
-      }
-      if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = src;                       // Safari / iOS: HLS nativo
-      } else if (window.Hls) {
-        avviaHls();
-      } else {
-        const s = document.createElement("script");
-        s.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js";
-        s.onload = avviaHls;
-        s.onerror = () => {
-          wrap.innerHTML = '<a class="cam-link" href="http://vetercek.com/video/index.php?st=preluka" target="_blank" rel="noopener">📷 Apri webcam Preluka ↗</a>';
-        };
-        document.head.appendChild(s);
-      }
-    }
 
     /* ---------- Modal ---------- */
     function apriModal()  { document.getElementById("modal").style.display = "block"; }
