@@ -496,11 +496,11 @@
     /* Verdetti in dialetto triestino, in base ai nodi (TWS).
        Le fasce e i colori combaciano con l'accelerometro e la scala. */
     const BANDE = [
-      { txt: "Ste a casa",    sub: "masa poco vento", bg: "#888780", fg: "#fff" },
-      { txt: "Sufia",         sub: "se pol sufiar",   bg: "#97C459", fg: "#173404" },
-      { txt: "Sufia ben",     sub: "bela giornada",   bg: "#639922", fg: "#fff" },
-      { txt: "Sufia sai ben", sub: "roba de mati!",   bg: "#3B6D11", fg: "#fff" },
-      { txt: "Ste a casa",    sub: "masa vento!",     bg: "#E24B4A", fg: "#fff" }
+      { txt: "Ste a casa",    sub: "xe solo bavisela", gloss: "solo brezza leggera, vento troppo debole", bg: "#888780", fg: "#fff" },
+      { txt: "Sufia",         sub: "se pol sufiar",    gloss: "c'è vento, si può uscire",                 bg: "#97C459", fg: "#173404" },
+      { txt: "Sufia ben",     sub: "bela giornada",    gloss: "bella giornata di vento",                  bg: "#639922", fg: "#fff" },
+      { txt: "Sufia sai ben", sub: "sbregabalon!",     gloss: "vento molto forte e potente",              bg: "#3B6D11", fg: "#fff" },
+      { txt: "Ste a casa",    sub: "xe buriana!",      gloss: "burrasca, troppo vento",                   bg: "#E24B4A", fg: "#fff" }
     ];
     function verdetto(kt) {
       let i;
@@ -526,6 +526,7 @@
         out.textContent = "–";
         lancetta.setAttribute("transform", "rotate(-90 340 270)");
         badge.innerHTML = "—";
+        badge.title = "";
         badge.style.background = "#eee";
         badge.style.color = "#666";
         aggiornaScala(-1);
@@ -536,6 +537,7 @@
       out.textContent = num(kt, 1);
       const ver = verdetto(kt);
       badge.innerHTML = ver.txt + "<small>" + ver.sub + "</small>";
+      badge.title = ver.gloss;
       badge.style.background = ver.bg;
       badge.style.color = ver.fg;
       aggiornaScala(ver.i);
