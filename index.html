@@ -73,6 +73,41 @@
     }
     nav a:hover { background: var(--azzurro-scuro); }
 
+    /* ---- Titoli di gruppo ---- */
+    .gruppo-titolo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--blu);
+      margin: 1.75rem .25rem .75rem;
+      padding-bottom: .35rem;
+      border-bottom: 3px solid var(--azzurro);
+      scroll-margin-top: 70px;
+    }
+    .gruppo-titolo:first-of-type { margin-top: .5rem; }
+
+    /* ---- Webcam Istria ---- */
+    .cam-video { width: 100%; border-radius: 6px; background: #000; aspect-ratio: 16/9; }
+    .cam-link {
+      display: inline-block;
+      background: var(--azzurro);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: .9rem;
+      margin-top: .5rem;
+    }
+    .cam-link:hover { background: var(--azzurro-scuro); }
+    .cam-carica {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: 2px dashed var(--bordo);
+      border-radius: 6px;
+      background: #f0f4f8;
+      color: var(--blu);
+      font-size: 1rem;
+    }
+
     /* ---- Card stazione Barcola ---- */
     .statgrid {
       display: grid;
@@ -262,15 +297,13 @@
   <h1>🏄‍♂️ Previsioni vento &amp; surf – Trieste</h1>
 
   <nav aria-label="Sezioni della pagina">
-    <a href="#barcolaLive">📡 Barcola</a>
-    <a href="#grisa">📡 Monte Grisa</a>
-    <a href="#muggia">📡 Muggia</a>
-    <a href="#mare">🌊 Mare</a>
-    <a href="#bora">🌬️ Bora</a>
-    <a href="#aladin">🗺️ Aladin</a>
-    <a href="#windy">🌍 Windy</a>
-    <a href="#barcola">📷 Webcam</a>
+    <a href="#vento">🌬️ Vento attuale</a>
+    <a href="#previsioni">📅 Previsioni</a>
+    <a href="#webcam">📷 Webcam</a>
+    <a href="#istria">🏖️ Spot Istria</a>
   </nav>
+
+  <div class="gruppo-titolo" id="vento">🌬️ Vento attuale</div>
 
   <!-- STAZIONE BARCOLA (Windguru 5307) -->
   <div class="section" id="barcolaLive">
@@ -365,6 +398,8 @@
     <span class="stato" id="ultimoAggiornamento"></span>
   </div>
 
+  <div class="gruppo-titolo" id="previsioni">📅 Previsioni</div>
+
   <!-- GRAFICO BORA -->
   <div class="section" id="bora">
     <h2>Grafico della Bora</h2>
@@ -450,6 +485,8 @@
     </div>
   </div>
 
+  <div class="gruppo-titolo" id="webcam">📷 Webcam</div>
+
   <!-- WEBCAM -->
   <div class="section" id="barcola">
     <div class="webcam-intestazione">
@@ -475,6 +512,57 @@
     </a>
   </div>
 
+  <!-- SPOT ISTRIA -->
+  <div class="gruppo-titolo" id="istria">🏖️ Spot Istria</div>
+
+  <div class="section" id="preluka">
+    <h2>Preluka</h2>
+    <div class="statgrid" id="prelukaCards"></div>
+    <div class="trend" id="prelukaTrend"></div>
+    <table aria-describedby="statoPreluka">
+      <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+      <tbody id="prelukaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+    </table>
+    <p class="stato" id="statoPreluka"></p>
+    <div id="camPrelukaWrap" style="margin-top:.75rem;">
+      <button class="cam-carica" onclick="caricaCamPreluka()">▶ Carica webcam live (Volosko / Preluka)</button>
+    </div>
+  </div>
+
+  <div class="section" id="dajla">
+    <h2>Dajla</h2>
+    <div class="statgrid" id="dajlaCards"></div>
+    <div class="trend" id="dajlaTrend"></div>
+    <table aria-describedby="statoDajla">
+      <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+      <tbody id="dajlaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+    </table>
+    <p class="stato" id="statoDajla"></p>
+  </div>
+
+  <div class="section" id="liznjan">
+    <h2>Ližnjan</h2>
+    <div class="statgrid" id="liznjanCards"></div>
+    <div class="trend" id="liznjanTrend"></div>
+    <table aria-describedby="statoLiznjan">
+      <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+      <tbody id="liznjanBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+    </table>
+    <p class="stato" id="statoLiznjan"></p>
+  </div>
+
+  <div class="section" id="savudrija">
+    <h2>Punta Salvore (Savudrija)</h2>
+    <div class="statgrid" id="savudrijaCards"></div>
+    <div class="trend" id="savudrijaTrend"></div>
+    <table aria-describedby="statoSavudrija">
+      <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+      <tbody id="savudrijaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+    </table>
+    <p class="stato" id="statoSavudrija"></p>
+    <a class="cam-link" href="http://vetercek.com/video/index.php?st=savudrija2" target="_blank" rel="noopener">📷 Apri webcam Punta Salvore ↗</a>
+  </div>
+
   <!-- JS -->
   <script>
     // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
@@ -483,6 +571,14 @@
       grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
       muggia: "https://vetercek.com/danes/index.php?postaja=muggia"
     };
+    const SPOT_ISTRIA = ["preluka", "dajla", "liznjan", "savudrija"];
+    const LINK_SPOT = {
+      preluka:   "https://vetercek.com/danes/index.php?id=149&postaja=preluka",
+      dajla:     "https://vetercek.com/danes/index.php?id=39&postaja=dajla",
+      liznjan:   "https://vetercek.com/danes/index.php?id=74&postaja=liznjan",
+      savudrija: "https://vetercek.com/danes/index.php?id=124&postaja=savudrija"
+    };
+    function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
     /* ---------- Immagini Bora / Aladin (caricate direttamente dalle fonti) ---------- */
     function urlBora() {
@@ -832,6 +928,15 @@
             svuotaStazione("muggia");
             mostraErrore("muggiaBody", "statoMuggia", LINK_VETERCEK.muggia);
           }
+          SPOT_ISTRIA.forEach(sp => {
+            if (Array.isArray(data[sp]) && data[sp].length) {
+              renderStazione(data[sp], sp);
+              document.getElementById("stato" + cap(sp)).textContent = "Fonte: vetercek.com · ultime ~45 min";
+            } else {
+              svuotaStazione(sp);
+              mostraErrore(sp + "Body", "stato" + cap(sp), LINK_SPOT[sp]);
+            }
+          });
           document.getElementById("ultimoAggiornamento").textContent =
             "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
         })
@@ -842,6 +947,10 @@
           svuotaStazione("muggia");
           mostraErrore("grisaBody", "statoGrisa", LINK_VETERCEK.grisa);
           mostraErrore("muggiaBody", "statoMuggia", LINK_VETERCEK.muggia);
+          SPOT_ISTRIA.forEach(sp => {
+            svuotaStazione(sp);
+            mostraErrore(sp + "Body", "stato" + cap(sp), LINK_SPOT[sp]);
+          });
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
         })
         .finally(() => { btn.disabled = false; });
@@ -857,6 +966,36 @@
       document.querySelectorAll("img.webcam").forEach(img => {
         img.src = img.dataset.src + "?ts=" + Date.now();
       });
+    }
+
+    /* Webcam Preluka (Volosko): stream HLS, hls.js caricato solo al click */
+    function caricaCamPreluka() {
+      const wrap = document.getElementById("camPrelukaWrap");
+      const src = "https://wowza.3tcable.hr/Volosko_Surfing/Volosko_Surfing.stream/playlist.m3u8";
+      wrap.innerHTML = '<video class="cam-video" id="camPreluka" controls autoplay muted playsinline></video>';
+      const video = document.getElementById("camPreluka");
+      function avviaHls() {
+        if (window.Hls && Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(src);
+          hls.attachMedia(video);
+        } else {
+          video.src = src;
+        }
+      }
+      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = src;                       // Safari / iOS: HLS nativo
+      } else if (window.Hls) {
+        avviaHls();
+      } else {
+        const s = document.createElement("script");
+        s.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js";
+        s.onload = avviaHls;
+        s.onerror = () => {
+          wrap.innerHTML = '<a class="cam-link" href="http://vetercek.com/video/index.php?st=preluka" target="_blank" rel="noopener">📷 Apri webcam Preluka ↗</a>';
+        };
+        document.head.appendChild(s);
+      }
     }
 
     /* ---------- Modal ---------- */
