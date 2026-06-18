@@ -13,7 +13,7 @@ var STATIONS = {
   muggia: 'muggia'
 };
 
-var MAX_ROWS = 6;
+var MAX_ROWS = 10;
 
 function doGet() {
   var out = {};

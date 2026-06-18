@@ -149,6 +149,24 @@
     .scala .banda b { font-weight: 700; }
     .scala .banda.attiva { opacity: 1; transform: scale(1.06); box-shadow: 0 0 0 2px #1a2330; }
 
+    /* ---- Trend stazioni ---- */
+    .trend {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin: .6rem 0 .2rem;
+    }
+    .trend-badge {
+      font-weight: 700;
+      padding: .25rem .8rem;
+      border-radius: 999px;
+      font-size: .9rem;
+      color: #fff;
+    }
+    .trend-delta { font-size: .8rem; color: #555; }
+    .spark { vertical-align: middle; }
+
     /* ---- Tabelle centraline ---- */
     table {
       width: 100%;
@@ -166,6 +184,8 @@
     td.vento-leggero{ background: #e7f6e7; color: #1b6e1b; font-weight: 600; }
     td.vento-buono  { background: #fff1de; color: #b35c00; font-weight: 700; }
     td.vento-forte  { background: #fdeaea; color: #c20202; font-weight: 700; }
+    tr.riga-recente td { font-weight: 600; }
+    .ora-now { font-size: .68rem; background: #1a2330; color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 5px; font-weight: 400; }
     .stato {
       font-size: .85rem;
       color: #666;
@@ -297,6 +317,8 @@
   <!-- DATI CENTRALINE -->
   <div class="section" id="grisa">
     <h2>Monte Grisa – dati in tempo reale</h2>
+    <div class="statgrid" id="grisaCards"></div>
+    <div class="trend" id="grisaTrend"></div>
     <table aria-describedby="statoGrisa">
       <thead>
         <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
@@ -308,6 +330,8 @@
 
   <div class="section" id="muggia">
     <h2>Muggia – dati in tempo reale</h2>
+    <div class="statgrid" id="muggiaCards"></div>
+    <div class="trend" id="muggiaTrend"></div>
     <table aria-describedby="statoMuggia">
       <thead>
         <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
@@ -667,21 +691,115 @@
       return "vento-forte";
     }
 
+    /* Direzione: vetercek dà la sigla inglese (W, NW, ENE…) → gradi per la freccia */
+    const GRADI_CARDINALE = { N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
+      S:180, SSW:202.5, SW:225, WSW:247.5, W:270, WNW:292.5, NW:315, NNW:337.5 };
+    function cardinaleInGradi(str) {
+      if (!str) return null;
+      const g = GRADI_CARDINALE[str.toUpperCase().trim()];
+      return (g === undefined) ? null : g;
+    }
+    function minutiTra(oraA, oraB) {
+      if (!oraA || !oraB) return 0;
+      const [ha, ma] = oraA.split(":").map(Number);
+      const [hb, mb] = oraB.split(":").map(Number);
+      let d = (ha * 60 + ma) - (hb * 60 + mb);
+      if (d < 0) d += 1440;            // a cavallo della mezzanotte
+      return d;
+    }
+    function finestra45(rows) {        // rows newest-first → solo le ultime ~45 min
+      if (!rows.length) return [];
+      const ref = rows[0].ora;
+      return rows.filter(r => minutiTra(ref, r.ora) <= 45);
+    }
+    function sparkline(valori, w, h, colore) {
+      const n = valori.length;
+      if (n < 2) return "";
+      const min = Math.min(...valori), max = Math.max(...valori);
+      const range = (max - min) || 1, pad = 4;
+      const pts = valori.map((v, i) => {
+        const x = pad + i * (w - 2 * pad) / (n - 1);
+        const y = h - pad - (v - min) / range * (h - 2 * pad);
+        return x.toFixed(1) + "," + y.toFixed(1);
+      });
+      const last = pts[n - 1].split(",");
+      return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" aria-hidden="true">' +
+             '<polyline fill="none" stroke="' + colore + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(" ") + '"/>' +
+             '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="3" fill="' + colore + '"/></svg>';
+    }
+    function calcolaTrend(win) {        // win newest-first
+      const kts = win.map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
+      if (kts.length < 2) return null;
+      const media = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+      const meta = Math.max(1, Math.floor(kts.length / 2));
+      const delta = media(kts.slice(0, meta)) - media(kts.slice(-meta));
+      const minuti = minutiTra(win[0].ora, win[win.length - 1].ora);
+      const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " kt" + (minuti ? " in " + minuti + " min" : "");
+      if (delta >= 1.5)  return { stato: "in aumento", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
+      if (delta <= -1.5) return { stato: "in calo",    freccia: "↘", colore: "#b35c00", deltaTxt: txt };
+      return                { stato: "stabile",    freccia: "→", colore: "#5f5e5a", deltaTxt: txt };
+    }
+
+    function renderStazione(rows, prefix) {
+      const win = finestra45(rows);     // ultime ~45 min, la riga 0 è la più recente
+      const r0 = rows[0];
+      // --- card riassuntive (ultima rilevazione) ---
+      const deg = cardinaleInGradi(r0.direzione);
+      const freccia = (deg != null)
+        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "";
+      const dirTxt = (deg != null) ? gradiInDirezione(deg) : (r0.direzione || "–");
+      document.getElementById(prefix + "Cards").innerHTML =
+        cardBarcola("💨", "TWS", (r0.kt != null && r0.kt !== "" ? r0.kt : "–"), "kt", "", "tws") +
+        cardBarcola("🧭", "TWD", freccia + dirTxt, (deg != null ? Math.round(deg) + "°" : ""), "", "twd") +
+        cardBarcola("🌬️", "Raffica", (r0.sunki != null && r0.sunki !== "" ? r0.sunki : "–"), "kt", "", "");
+      // --- badge trend + sparkline ---
+      const trendEl = document.getElementById(prefix + "Trend");
+      const t = calcolaTrend(win);
+      if (t) {
+        const serie = win.slice().reverse().map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
+        trendEl.innerHTML =
+          '<span class="trend-badge" style="background:' + t.colore + '">' + t.freccia + " " + t.stato + '</span>' +
+          '<span class="trend-delta">' + t.deltaTxt + '</span>' +
+          sparkline(serie, 150, 36, t.colore);
+      } else {
+        trendEl.innerHTML = "";
+      }
+      // --- tabella dettaglio (ultime ~45 min) ---
+      renderTabella(win, prefix + "Body");
+    }
+
+    function cella(val, cls) {
+      const td = document.createElement("td");
+      td.textContent = (val != null && val !== "") ? val : "–";
+      if (cls) td.className = cls;
+      return td;
+    }
     function renderTabella(righe, idBody) {
       const tbody = document.getElementById(idBody);
       tbody.innerHTML = "";
-      righe.forEach(r => {
+      righe.forEach((r, idx) => {
         const tr = document.createElement("tr");
-        [["ora"], ["direzione"], ["kt", true], ["sunki", true], ["temp"]].forEach(([campo, colora]) => {
-          const td = document.createElement("td");
-          td.textContent = (r[campo] && r[campo] !== "") ? r[campo] : "–";
-          if (colora) td.className = classeVento(r[campo]);
-          tr.appendChild(td);
-        });
+        if (idx === 0) tr.className = "riga-recente";
+        // ora (con tag "adesso" sulla riga più recente)
+        const tdOra = document.createElement("td");
+        tdOra.innerHTML = (r.ora || "–") + (idx === 0 ? ' <span class="ora-now">adesso</span>' : "");
+        tr.appendChild(tdOra);
+        // direzione con freccia
+        const deg = cardinaleInGradi(r.direzione);
+        const tdDir = document.createElement("td");
+        tdDir.innerHTML = (deg != null ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "") + (r.direzione || "–");
+        tr.appendChild(tdDir);
+        tr.appendChild(cella(r.kt, classeVento(r.kt)));
+        tr.appendChild(cella(r.sunki, classeVento(r.sunki)));
+        tr.appendChild(cella(r.temp, ""));
         tbody.appendChild(tr);
       });
     }
 
+    function svuotaStazione(prefix) {
+      document.getElementById(prefix + "Cards").innerHTML = "";
+      document.getElementById(prefix + "Trend").innerHTML = "";
+    }
     function mostraErrore(idBody, idStato, linkLive) {
       document.getElementById(idBody).innerHTML =
         '<tr><td colspan="5">Dati momentaneamente non disponibili – ' +
@@ -701,15 +819,17 @@
         .then(data => {
           renderBarcola(data.barcola);
           if (Array.isArray(data.monteGrisa) && data.monteGrisa.length) {
-            renderTabella(data.monteGrisa, "grisaBody");
-            document.getElementById("statoGrisa").textContent = "Fonte: vetercek.com · aggiornamento ogni ~5 minuti";
+            renderStazione(data.monteGrisa, "grisa");
+            document.getElementById("statoGrisa").textContent = "Fonte: vetercek.com · ultime ~45 min, aggiornamento ogni ~5 minuti";
           } else {
+            svuotaStazione("grisa");
             mostraErrore("grisaBody", "statoGrisa", LINK_VETERCEK.grisa);
           }
           if (Array.isArray(data.muggia) && data.muggia.length) {
-            renderTabella(data.muggia, "muggiaBody");
-            document.getElementById("statoMuggia").textContent = "Fonte: vetercek.com · aggiornamento ogni ~15 minuti";
+            renderStazione(data.muggia, "muggia");
+            document.getElementById("statoMuggia").textContent = "Fonte: vetercek.com · ultime ~45 min, aggiornamento ogni ~15 minuti";
           } else {
+            svuotaStazione("muggia");
             mostraErrore("muggiaBody", "statoMuggia", LINK_VETERCEK.muggia);
           }
           document.getElementById("ultimoAggiornamento").textContent =
@@ -718,6 +838,8 @@
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
           renderBarcola(null);
+          svuotaStazione("grisa");
+          svuotaStazione("muggia");
           mostraErrore("grisaBody", "statoGrisa", LINK_VETERCEK.grisa);
           mostraErrore("muggiaBody", "statoMuggia", LINK_VETERCEK.muggia);
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
