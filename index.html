@@ -99,11 +99,55 @@
       font-variant-numeric: tabular-nums;
     }
     .statbox .unita { font-size: .8rem; font-weight: 400; color: #555; }
+    .statbox .ic { display: block; font-size: 1.15rem; line-height: 1; margin-bottom: 3px; }
+    .statbox .sub { display: block; font-size: .72rem; color: #777; margin-top: 3px; }
+    .statbox.tws { background: #eaf3df; }
+    .statbox.tws .valore { color: #3b6d11; }
+    .statbox.twd { background: #e6f1fb; }
     .freccia {
       display: inline-block;
       font-size: 1.1rem;
       line-height: 1;
     }
+
+    /* ---- Accelerometro / Surfometro ---- */
+    .surfometro { text-align: center; margin: .25rem 0 1rem; }
+    .surfometro svg { width: 100%; max-width: 420px; height: auto; }
+    .verdetto-badge {
+      display: inline-block;
+      padding: .45rem 1.5rem;
+      border-radius: 999px;
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.1;
+      transition: background-color .4s ease;
+    }
+    .verdetto-badge small {
+      display: block;
+      font-size: .78rem;
+      font-weight: 400;
+      opacity: .9;
+      margin-top: 2px;
+    }
+    .scala {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: .75rem;
+    }
+    .scala .banda {
+      flex: 1 1 0;
+      min-width: 86px;
+      padding: .4rem .25rem;
+      border-radius: 7px;
+      font-size: .74rem;
+      line-height: 1.25;
+      opacity: .55;
+      transition: opacity .3s ease, transform .3s ease;
+    }
+    .scala .banda b { font-weight: 700; }
+    .scala .banda.attiva { opacity: 1; transform: scale(1.06); box-shadow: 0 0 0 2px #1a2330; }
 
     /* ---- Tabelle centraline ---- */
     table {
@@ -210,7 +254,38 @@
 
   <!-- STAZIONE BARCOLA (Windguru 5307) -->
   <div class="section" id="barcolaLive">
-    <h2>Terrapieno di Barcola – condizioni attuali</h2>
+    <h2>Barcola – condizioni vento ora</h2>
+
+    <!-- ACCELEROMETRO -->
+    <div class="surfometro">
+      <svg viewBox="0 35 680 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Accelerometro del vento a Barcola">
+        <path d="M140,270 A200,200 0 0 1 222.4,108.2 L245.9,140.56 A160,160 0 0 0 180,270 Z" fill="#888780"/>
+        <path d="M222.4,108.2 A200,200 0 0 1 308.7,72.46 L315.0,111.97 A160,160 0 0 0 245.9,140.56 Z" fill="#97C459"/>
+        <path d="M308.7,72.46 A200,200 0 0 1 416.5,85.22 L401.2,122.18 A160,160 0 0 0 315.0,111.97 Z" fill="#639922"/>
+        <path d="M416.5,85.22 A200,200 0 0 1 524.8,193.46 L487.8,208.77 A160,160 0 0 0 401.2,122.18 Z" fill="#3B6D11"/>
+        <path d="M524.8,193.46 A200,200 0 0 1 540,270 L500,270 A160,160 0 0 0 487.8,208.77 Z" fill="#E24B4A"/>
+        <text x="116" y="287" text-anchor="middle" font-size="13" fill="#666">0</text>
+        <text x="203" y="92" text-anchor="middle" font-size="13" fill="#666">12</text>
+        <text x="305" y="48" text-anchor="middle" font-size="13" fill="#666">18</text>
+        <text x="428" y="62" text-anchor="middle" font-size="13" fill="#666">25</text>
+        <text x="552" y="188" text-anchor="middle" font-size="13" fill="#666">35</text>
+        <line id="lancetta" x1="340" y1="270" x2="340" y2="114" stroke="#1a2330" stroke-width="4" stroke-linecap="round" transform="rotate(-90 340 270)" style="transition:transform .6s ease"/>
+        <circle cx="340" cy="270" r="9" fill="#1a2330"/>
+        <text id="gaugeTws" x="340" y="316" text-anchor="middle" font-size="44" font-weight="700" fill="#222">–</text>
+        <text x="340" y="338" text-anchor="middle" font-size="14" fill="#666">nodi · TWS</text>
+      </svg>
+      <div>
+        <span class="verdetto-badge" id="verdettoBadge" style="background:#eee;color:#666">—</span>
+      </div>
+      <div class="scala" id="scala">
+        <span class="banda" style="background:#888780;color:#fff"><b>&lt;12</b><br>ste a casa</span>
+        <span class="banda" style="background:#97C459;color:#173404"><b>12–18</b><br>sufia</span>
+        <span class="banda" style="background:#639922;color:#fff"><b>18–25</b><br>sufia ben</span>
+        <span class="banda" style="background:#3B6D11;color:#fff"><b>25–35</b><br>sufia sai ben</span>
+        <span class="banda" style="background:#E24B4A;color:#fff"><b>&gt;35</b><br>ste a casa</span>
+      </div>
+    </div>
+
     <div class="statgrid" id="barcolaStat">
       <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
     </div>
@@ -418,23 +493,85 @@
     function num(v, dec) {
       return (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec) : "–";
     }
+    /* Verdetti in dialetto triestino, in base ai nodi (TWS).
+       Le fasce e i colori combaciano con l'accelerometro e la scala. */
+    const BANDE = [
+      { txt: "Ste a casa",    sub: "masa poco vento", bg: "#888780", fg: "#fff" },
+      { txt: "Sufia",         sub: "se pol sufiar",   bg: "#97C459", fg: "#173404" },
+      { txt: "Sufia ben",     sub: "bela giornada",   bg: "#639922", fg: "#fff" },
+      { txt: "Sufia sai ben", sub: "roba de mati!",   bg: "#3B6D11", fg: "#fff" },
+      { txt: "Ste a casa",    sub: "masa vento!",     bg: "#E24B4A", fg: "#fff" }
+    ];
+    function verdetto(kt) {
+      let i;
+      if (kt < 12) i = 0;
+      else if (kt < 18) i = 1;
+      else if (kt < 25) i = 2;
+      else if (kt <= 35) i = 3;
+      else i = 4;
+      return Object.assign({ i: i }, BANDE[i]);
+    }
+
+    function aggiornaScala(i) {
+      document.querySelectorAll("#scala .banda").forEach((el, idx) => {
+        el.classList.toggle("attiva", idx === i);
+      });
+    }
+
+    function aggiornaGauge(kt) {
+      const lancetta = document.getElementById("lancetta");
+      const out = document.getElementById("gaugeTws");
+      const badge = document.getElementById("verdettoBadge");
+      if (kt == null || isNaN(kt)) {
+        out.textContent = "–";
+        lancetta.setAttribute("transform", "rotate(-90 340 270)");
+        badge.innerHTML = "—";
+        badge.style.background = "#eee";
+        badge.style.color = "#666";
+        aggiornaScala(-1);
+        return;
+      }
+      const v = Math.min(Math.max(kt, 0), 40);   // la lancetta copre 0–40 kt
+      lancetta.setAttribute("transform", "rotate(" + (-90 + 4.5 * v) + " 340 270)");
+      out.textContent = num(kt, 1);
+      const ver = verdetto(kt);
+      badge.innerHTML = ver.txt + "<small>" + ver.sub + "</small>";
+      badge.style.background = ver.bg;
+      badge.style.color = ver.fg;
+      aggiornaScala(ver.i);
+    }
+
+    function cardBarcola(icon, label, valore, unita, sub, cls) {
+      return '<div class="statbox ' + (cls || "") + '">' +
+             '<span class="ic" aria-hidden="true">' + icon + '</span>' +
+             '<span class="etichetta">' + label + '</span>' +
+             '<span class="valore">' + valore +
+             (unita ? ' <span class="unita">' + unita + '</span>' : "") + '</span>' +
+             (sub ? '<span class="sub">' + sub + '</span>' : "") +
+             '</div>';
+    }
+
     function renderBarcola(b) {
       const box = document.getElementById("barcolaStat");
       if (!b) {
+        aggiornaGauge(null);
         box.innerHTML = '<div class="statbox"><span class="etichetta">Dati non disponibili</span><span class="valore">–</span></div>';
         return;
       }
+      aggiornaGauge(b.wind_avg);
       // la direzione del vento è "da dove arriva": la freccia indica dove va
-      const freccia = (typeof b.wind_direction === "number")
-        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + b.wind_direction + 'deg)">↓</span> '
+      const dir = b.wind_direction;
+      const freccia = (typeof dir === "number")
+        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + dir + 'deg)">↓</span> '
         : "";
       box.innerHTML =
-        statBox("Vento medio", num(b.wind_avg, 1), "kt") +
-        statBox("Raffica", num(b.wind_max, 1), "kt") +
-        statBox("Direzione", gradiInDirezione(b.wind_direction), (typeof b.wind_direction === "number" ? Math.round(b.wind_direction) + "°" : ""), freccia) +
-        statBox("Temperatura", num(b.temperature, 1), "°C") +
-        statBox("Pressione", num(b.mslp, 1), "hPa") +
-        statBox("Umidità", num(b.rh, 0), "%");
+        cardBarcola("💨", "TWS", num(b.wind_avg, 1), "kt",
+          (b.wind_max != null ? "raffica " + num(b.wind_max, 1) + " kt" : ""), "tws") +
+        cardBarcola("🧭", "TWD", freccia + gradiInDirezione(dir),
+          (typeof dir === "number" ? Math.round(dir) + "°" : ""), "", "twd") +
+        cardBarcola("🌡️", "Temperatura", num(b.temperature, 1), "°C", "", "") +
+        cardBarcola("📊", "Pressione", num(b.mslp, 1), "hPa", "", "") +
+        cardBarcola("💧", "Umidità", num(b.rh, 0), "%", "", "");
       const ora = b.datetime ? b.datetime.replace(/:\d\d [A-Z]+$/, "") : "";
       document.getElementById("statoBarcola").innerHTML =
         (ora ? "Rilevazione delle " + ora.split(" ")[1] + " · " : "") +
