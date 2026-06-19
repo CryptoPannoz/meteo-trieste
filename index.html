@@ -268,7 +268,7 @@
     .trend-delta { font-size: .8rem; color: var(--label); }
     .spark { vertical-align: middle; }
 
-    /* ---- Tabella dettaglio (pulita, monocromatica) ---- */
+    /* ---- Tabella dettaglio ---- */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -283,7 +283,13 @@
     }
     th { background: #f6f8fa; font-weight: 600; color: var(--slate); font-size: .8rem; }
     td { font-variant-numeric: tabular-nums; }
-    tr.riga-recente td { font-weight: 700; background: #f6f8fa; }
+    /* formattazione condizionale per intensità del vento (kt e raffica) */
+    td.vento-calmo   { color: #8a94a0; }
+    td.vento-leggero { background: #eef6e6; color: #3b6d11; font-weight: 700; }
+    td.vento-buono   { background: #fbeede; color: #b35c00; font-weight: 700; }
+    td.vento-forte   { background: #fbe4e4; color: #c20202; font-weight: 700; }
+    tr.riga-recente td { font-weight: 700; }
+    tr.riga-recente td:first-child { background: #f6f8fa; }
     .ora-now { font-size: .66rem; background: var(--slate); color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 5px; font-weight: 500; }
     .stato {
       font-size: .85rem;
@@ -802,12 +808,13 @@
       const dirDisp = (dirDeg != null)
         ? fre + dirTxt + ' <span class="u">' + Math.round(dirDeg) + '°</span>'
         : (dirTxt || "–");
+      const cTws = coloreIntensita(tws), cGust = coloreIntensita(gust);
       return '<div class="vento-card">' +
         '<div class="tws-label">TWS · vento medio</div>' +
-        '<div class="tws-num">' + (tws != null && tws !== "" ? tws : "–") + ' <span class="u">kt</span></div>' +
+        '<div class="tws-num"' + (cTws ? ' style="color:' + cTws + '"' : "") + '>' + (tws != null && tws !== "" ? tws : "–") + ' <span class="u">kt</span></div>' +
         '<div class="vento-sub">' +
           '<div><div class="lbl">TWD</div><div class="val">' + dirDisp + '</div></div>' +
-          '<div><div class="lbl">Raffica</div><div class="val">' + (gust != null && gust !== "" ? gust : "–") + ' <span class="u">kt</span></div></div>' +
+          '<div><div class="lbl">Raffica</div><div class="val"' + (cGust ? ' style="color:' + cGust + '"' : "") + '>' + (gust != null && gust !== "" ? gust : "–") + ' <span class="u">kt</span></div></div>' +
         '</div></div>';
     }
 
@@ -930,6 +937,12 @@
       if (v < 25) return "vento-buono";
       return "vento-forte";
     }
+    // tocco semantico: colore del numero in base all'intensità (stessa scala della tabella)
+    const COLORE_VENTO = {
+      "vento-calmo": "#8a94a0", "vento-leggero": "#3b6d11",
+      "vento-buono": "#b35c00", "vento-forte": "#c20202"
+    };
+    function coloreIntensita(kt) { return COLORE_VENTO[classeVento(kt)] || ""; }
 
     /* Direzione: vetercek dà la sigla inglese (W, NW, ENE…) → gradi per la freccia */
     const GRADI_CARDINALE = { N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
@@ -1052,8 +1065,8 @@
         const tdDir = document.createElement("td");
         tdDir.innerHTML = (deg != null ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "") + (r.direzione || "–");
         tr.appendChild(tdDir);
-        tr.appendChild(cella(r.kt, ""));
-        tr.appendChild(cella(r.sunki, ""));
+        tr.appendChild(cella(r.kt, classeVento(r.kt)));
+        tr.appendChild(cella(r.sunki, classeVento(r.sunki)));
         tr.appendChild(cella(r.temp, ""));
         tbody.appendChild(tr);
       });
