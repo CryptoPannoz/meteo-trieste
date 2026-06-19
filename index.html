@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <title>Vento Trieste – Surfometro, Bora e previsioni surf e windsurf</title>
   <meta name="description" content="Vento in tempo reale a Trieste e in Istria per surf, windsurf e wing: surfometro di Barcola, grafico della Bora, modello ALADIN e dati live di Monte Grisa, Muggia e spot istriani." />
   <meta name="keywords" content="vento Trieste, Bora Trieste, surf Trieste, windsurf Trieste, vento Barcola, previsioni vento Trieste, ALADIN Trieste, Monte Grisa, Muggia, vento Istria, kitesurf Trieste, golfo di Trieste" />
@@ -23,36 +26,47 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
   <style>
     :root {
-      --blu: #004080;
-      --azzurro: #0077cc;
-      --azzurro-scuro: #005fa3;
-      --sfondo: #f4f7f9;
-      --bordo: #e1e8ee;
+      --slate: #1f2d3d;
+      --slate-2: #45566a;
+      --blu: #1f2d3d;
+      --azzurro: #2f6fb0;
+      --azzurro-scuro: #245991;
+      --sfondo: #eef1f4;
+      --bordo: #dce1e7;
+      --testo: #1a2330;
+      --label: #8a94a0;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
-      padding: 0 1rem 1rem;
+      padding: 0 1rem 1.5rem;
       background: var(--sfondo);
-      color: #222;
+      color: var(--testo);
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "tnum" 1;
     }
     h1 {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
+      font-weight: 700;
       margin: 1rem 0;
+      letter-spacing: -.01em;
     }
     h2 {
-      color: var(--blu);
+      color: var(--slate);
       margin: 0 0 .5rem;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -.01em;
     }
+    h3 { font-weight: 600; color: var(--slate); }
     .section {
       background: white;
-      border-radius: 10px;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
       padding: 1rem;
-      margin-bottom: 1.25rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      margin-bottom: 1rem;
       scroll-margin-top: 70px;
     }
     img, iframe {
@@ -71,121 +85,128 @@
       margin: 0 -1rem 1rem;
       padding: .5rem 1rem;
       display: flex;
-      gap: .5rem;
+      gap: .4rem;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       border-bottom: 1px solid var(--bordo);
     }
     nav a {
       flex-shrink: 0;
-      background: var(--azzurro);
-      color: white;
+      background: #fff;
+      border: 1px solid var(--bordo);
+      color: var(--slate);
       text-decoration: none;
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: .9rem;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: .88rem;
+      font-weight: 500;
       white-space: nowrap;
     }
-    nav a:hover { background: var(--azzurro-scuro); }
+    nav a:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
 
     /* ---- Titoli di gruppo ---- */
     .gruppo-titolo {
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      color: var(--blu);
-      margin: 1.75rem .25rem .75rem;
-      padding-bottom: .35rem;
-      border-bottom: 3px solid var(--azzurro);
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin: 1.75rem .15rem .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 2px solid var(--slate);
       scroll-margin-top: 70px;
     }
     .gruppo-titolo:first-of-type { margin-top: .5rem; }
 
-
-    /* ---- Card stazione Barcola ---- */
+    /* ---- Mini-card dato (stile strumento) ---- */
     .statgrid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
       gap: .5rem;
       margin-top: .5rem;
     }
     .statbox {
-      background: #eef4fb;
-      border-radius: 8px;
-      padding: .6rem .4rem;
-      text-align: center;
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 10px;
+      padding: .6rem .7rem;
+      text-align: left;
     }
     .statbox .etichetta {
       display: block;
-      font-size: .75rem;
-      color: #555;
+      font-size: .68rem;
+      color: var(--label);
+      text-transform: uppercase;
+      letter-spacing: .06em;
       margin-bottom: .15rem;
     }
     .statbox .valore {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #111;
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--testo);
       font-variant-numeric: tabular-nums;
+      line-height: 1.05;
     }
-    .statbox .unita { font-size: .8rem; font-weight: 600; color: #666; }
-    .statbox .ic { display: block; font-size: 1.15rem; line-height: 1; margin-bottom: 3px; }
-    .statbox .sub { display: block; font-size: .72rem; color: #777; margin-top: 3px; }
-    .freccia {
-      display: inline-block;
-      font-size: 1.1rem;
-      line-height: 1;
-    }
+    .statbox .unita { font-size: .8rem; font-weight: 500; color: var(--label); }
+    .statbox .sub { display: block; font-size: .72rem; color: var(--label); margin-top: 3px; }
+    .freccia { display: inline-block; font-size: 1.05rem; line-height: 1; }
 
     /* ---- Card vento principale (stile strumento) ---- */
     .vento-card {
       background: #fff;
       border: 1px solid var(--bordo);
       border-radius: 12px;
-      padding: 1rem 1rem 1.1rem;
+      padding: .9rem 1rem 1rem;
       text-align: center;
       margin-top: .5rem;
     }
     .vento-card .tws-label {
-      font-size: .72rem; color: #888;
-      text-transform: uppercase; letter-spacing: .12em; margin-bottom: .1rem;
+      font-size: .68rem; color: var(--label);
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: .15rem;
     }
     .vento-card .tws-num {
-      font-size: 3.6rem; font-weight: 800; color: #111;
-      line-height: .95; font-variant-numeric: tabular-nums;
+      font-size: 3.6rem; font-weight: 800; color: var(--testo);
+      line-height: .95; font-variant-numeric: tabular-nums; letter-spacing: -.02em;
     }
-    .vento-card .u { font-size: .85rem; font-weight: 600; color: #777; }
+    .vento-card .u { font-size: .85rem; font-weight: 500; color: var(--label); }
     .vento-card .tws-num .u { font-size: 1.15rem; }
     .vento-sub {
-      display: flex; justify-content: center; gap: 2rem;
-      margin-top: .7rem; padding-top: .7rem;
+      display: flex; justify-content: center; gap: 2.5rem;
+      margin-top: .8rem; padding-top: .8rem;
       border-top: 1px solid var(--bordo); flex-wrap: wrap;
     }
     .vento-sub .lbl {
-      font-size: .7rem; color: #888;
+      font-size: .66rem; color: var(--label);
       text-transform: uppercase; letter-spacing: .08em;
     }
     .vento-sub .val {
-      font-size: 1.45rem; font-weight: 800; color: #111;
-      font-variant-numeric: tabular-nums; margin-top: .1rem;
+      font-size: 1.5rem; font-weight: 700; color: var(--testo);
+      font-variant-numeric: tabular-nums; margin-top: .15rem;
     }
 
-    /* ---- Tabella tendenza a scomparsa ---- */
-    details.dettaglio { margin-top: .5rem; }
+    /* ---- Tabella tendenza: dropdown chiuso, si apre al click ---- */
+    details.dettaglio { margin-top: .6rem; }
     details.dettaglio > summary {
-      cursor: pointer; font-size: .85rem; color: var(--azzurro);
-      padding: .35rem 0; list-style: none; user-select: none;
+      cursor: pointer; font-size: .85rem; font-weight: 500; color: var(--slate);
+      padding: .55rem .8rem; list-style: none; user-select: none;
+      border: 1px solid var(--bordo); border-radius: 8px; background: #fff;
+      display: flex; justify-content: space-between; align-items: center;
     }
     details.dettaglio > summary::-webkit-details-marker { display: none; }
-    details.dettaglio > summary::before { content: "▸ "; }
-    details.dettaglio[open] > summary::before { content: "▾ "; }
+    details.dettaglio > summary::after { content: "▾"; color: var(--label); transition: transform .2s; }
+    details.dettaglio[open] > summary { border-radius: 8px 8px 0 0; border-bottom: 0; }
+    details.dettaglio[open] > summary::after { transform: rotate(180deg); }
 
-    /* ---- Link mappa spot ---- */
-    .maps-link {
-      display: inline-block; background: #fff;
-      border: 1px solid var(--azzurro); color: var(--azzurro);
-      text-decoration: none; padding: 8px 14px; border-radius: 6px;
-      font-size: .9rem; margin-top: .75rem;
+    /* ---- Bottoni spot (posizione + guida) ---- */
+    .spot-azioni { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .8rem; }
+    .spot-btn {
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: #fff; border: 1px solid var(--bordo); color: var(--slate);
+      text-decoration: none; padding: 8px 14px; border-radius: 8px;
+      font-size: .88rem; font-weight: 500; font-family: inherit; cursor: pointer;
     }
-    .maps-link:hover { background: #eef4fb; }
+    .spot-btn:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
 
     /* ---- Accelerometro / Surfometro ---- */
     .surfometro { text-align: center; margin: .25rem 0 1rem; }
@@ -235,34 +256,35 @@
       margin: .6rem 0 .2rem;
     }
     .trend-badge {
-      font-weight: 700;
-      padding: .25rem .8rem;
-      border-radius: 999px;
-      font-size: .9rem;
-      color: #fff;
+      font-weight: 600;
+      padding: .25rem .7rem;
+      border-radius: 8px;
+      font-size: .88rem;
+      background: #eef1f4;
+      color: var(--slate);
+      border: 1px solid var(--bordo);
     }
-    .trend-delta { font-size: .8rem; color: #555; }
+    .trend-badge .frec { font-weight: 800; }
+    .trend-delta { font-size: .8rem; color: var(--label); }
     .spark { vertical-align: middle; }
 
-    /* ---- Tabelle centraline ---- */
+    /* ---- Tabella dettaglio (pulita, monocromatica) ---- */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: .5rem;
-      font-size: .95rem;
+      font-size: .9rem;
+      border: 1px solid var(--bordo);
+      border-top: 0;
     }
     th, td {
-      border: 1px solid var(--bordo);
-      padding: 7px 4px;
+      border-bottom: 1px solid var(--bordo);
+      padding: 7px 6px;
       text-align: center;
     }
-    th { background: #eef4fb; font-weight: 600; }
-    td.vento-calmo  { color: #777; }
-    td.vento-leggero{ background: #e7f6e7; color: #1b6e1b; font-weight: 600; }
-    td.vento-buono  { background: #fff1de; color: #b35c00; font-weight: 700; }
-    td.vento-forte  { background: #fdeaea; color: #c20202; font-weight: 700; }
-    tr.riga-recente td { font-weight: 600; }
-    .ora-now { font-size: .68rem; background: #1a2330; color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 5px; font-weight: 400; }
+    th { background: #f6f8fa; font-weight: 600; color: var(--slate); font-size: .8rem; }
+    td { font-variant-numeric: tabular-nums; }
+    tr.riga-recente td { font-weight: 700; background: #f6f8fa; }
+    .ora-now { font-size: .66rem; background: var(--slate); color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 5px; font-weight: 500; }
     .stato {
       font-size: .85rem;
       color: #666;
@@ -310,25 +332,28 @@
     }
 
     /* ---- Modal ---- */
-    #modal {
+    .modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(15,22,30,0.55);
       z-index: 1000;
       padding: 1rem;
     }
-    #modal .contenuto {
+    .modal .contenuto {
       background: white;
       max-width: 600px;
       margin: 10vh auto 0;
-      padding: 20px;
-      border-radius: 10px;
+      padding: 22px;
+      border-radius: 12px;
+      line-height: 1.55;
     }
+    .modal .contenuto h3 { margin-top: 0; }
+    .guida-meta { font-size: .82rem; color: var(--label); margin: .4rem 0 0; }
     footer {
       text-align: center;
       font-size: .9rem;
-      color: #666;
+      color: #6a737d;
       margin-top: 2rem;
       line-height: 1.6;
     }
@@ -426,8 +451,8 @@
   <div class="section" id="mare">
     <h2>Mare e onde – boe OGS</h2>
 
-    <h3 style="margin:.5rem 0 0;">Boa Trieste (MAMBO1, largo di Barcola)</h3>
-    <div class="statgrid" id="mamboStat">
+    <h3 style="margin:.5rem 0 .25rem;">Boa Trieste (MAMBO1, largo di Barcola)</h3>
+    <div id="mamboStat">
       <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
     </div>
     <p class="stato" id="statoMambo"></p>
@@ -516,8 +541,8 @@
     </div>
   </div>
 
-  <!-- MODAL POPUP -->
-  <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
+  <!-- MODAL POPUP MODELLI -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
     <div class="contenuto">
       <h3 id="modalTitolo">Modelli Meteo – Spiegazione</h3>
       <p>
@@ -529,6 +554,17 @@
       </p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="chiudiModal()">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL GUIDA SPOT -->
+  <div id="modalGuida" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaTitolo">
+    <div class="contenuto">
+      <h3 id="guidaTitolo">Guida spot</h3>
+      <div id="guidaCorpo"></div>
+      <div style="text-align:right; margin-top:1rem;">
+        <button onclick="chiudiGuida()">Chiudi</button>
       </div>
     </div>
   </div>
@@ -575,7 +611,10 @@
       </table>
     </details>
     <p class="stato" id="statoSavudrija"></p>
-    <a class="maps-link" href="https://maps.app.goo.gl/jWbtsnTCoohrNenY7" target="_blank" rel="noopener">📍 Come arrivare</a>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/jWbtsnTCoohrNenY7" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('savudrija')">ℹ️ Guida spot</button>
+    </div>
   </div>
 
   <div class="section" id="dajla">
@@ -590,7 +629,10 @@
       </table>
     </details>
     <p class="stato" id="statoDajla"></p>
-    <a class="maps-link" href="https://maps.app.goo.gl/a4ZHnntRdun3bfVb7" target="_blank" rel="noopener">📍 Come arrivare</a>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/a4ZHnntRdun3bfVb7" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('dajla')">ℹ️ Guida spot</button>
+    </div>
   </div>
 
   <div class="section" id="preluka">
@@ -605,7 +647,10 @@
       </table>
     </details>
     <p class="stato" id="statoPreluka"></p>
-    <a class="maps-link" href="https://maps.app.goo.gl/6Depfw25rKGRZX5p8" target="_blank" rel="noopener">📍 Come arrivare</a>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/6Depfw25rKGRZX5p8" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('preluka')">ℹ️ Guida spot</button>
+    </div>
   </div>
 
   <div class="section" id="liznjan">
@@ -620,7 +665,10 @@
       </table>
     </details>
     <p class="stato" id="statoLiznjan"></p>
-    <a class="maps-link" href="https://maps.app.goo.gl/92vRknd8orHBPiVVA" target="_blank" rel="noopener">📍 Come arrivare</a>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/92vRknd8orHBPiVVA" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('liznjan')">ℹ️ Guida spot</button>
+    </div>
   </div>
 
   <div class="section" id="premantura">
@@ -635,7 +683,10 @@
       </table>
     </details>
     <p class="stato" id="statoPremantura"></p>
-    <a class="maps-link" href="https://maps.app.goo.gl/5q7aUMkzww4VWtfU6" target="_blank" rel="noopener">📍 Come arrivare</a>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/5q7aUMkzww4VWtfU6" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('premantura')">ℹ️ Guida spot</button>
+    </div>
   </div>
 
   <!-- JS -->
@@ -680,11 +731,6 @@
     function gradiInDirezione(deg) {
       if (typeof deg !== "number" || isNaN(deg)) return "–";
       return PUNTI_CARDINALI[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
-    }
-    function statBox(etichetta, valore, unita, extraHtml) {
-      return '<div class="statbox"><span class="etichetta">' + etichetta + '</span>' +
-             '<span class="valore">' + (extraHtml || "") + valore +
-             (unita ? ' <span class="unita">' + unita + '</span>' : "") + '</span></div>';
     }
     function num(v, dec) {
       return (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec) : "–";
@@ -739,11 +785,11 @@
       aggiornaScala(ver.i);
     }
 
-    function cardBarcola(icon, label, valore, unita, sub, cls) {
-      return '<div class="statbox ' + (cls || "") + '">' +
-             '<span class="ic" aria-hidden="true">' + icon + '</span>' +
+    /* mini-card dato pulita: etichetta + valore (+ unità, +sub, +prefix html es. freccia) */
+    function miniCard(label, valore, unita, sub, prefix) {
+      return '<div class="statbox">' +
              '<span class="etichetta">' + label + '</span>' +
-             '<span class="valore">' + valore +
+             '<span class="valore">' + (prefix || "") + valore +
              (unita ? ' <span class="unita">' + unita + '</span>' : "") + '</span>' +
              (sub ? '<span class="sub">' + sub + '</span>' : "") +
              '</div>';
@@ -778,9 +824,9 @@
       box.innerHTML =
         ventoCardHtml(num(b.wind_avg, 1), num(b.wind_max, 1), dir, dirTxt) +
         '<div class="statgrid" style="margin-top:.5rem;">' +
-          cardBarcola("🌡️", "Temperatura", num(b.temperature, 1), "°C", "", "") +
-          cardBarcola("📊", "Pressione", num(b.mslp, 1), "hPa", "", "") +
-          cardBarcola("💧", "Umidità", num(b.rh, 0), "%", "", "") +
+          miniCard("Temperatura", num(b.temperature, 1), "°C") +
+          miniCard("Pressione", num(b.mslp, 1), "hPa") +
+          miniCard("Umidità", num(b.rh, 0), "%") +
         '</div>';
       const ora = b.datetime ? b.datetime.replace(/:\d\d [A-Z]+$/, "") : "";
       document.getElementById("statoBarcola").innerHTML =
@@ -795,6 +841,14 @@
     function oraLocale(isoUtc) {
       const d = new Date(isoUtc);
       return isNaN(d) ? "" : d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    }
+    function quandoLocale(isoUtc) {
+      const d = new Date(isoUtc);
+      if (isNaN(d)) return "";
+      const hh = d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+      return (d.toDateString() === new Date().toDateString())
+        ? "oggi " + hh
+        : d.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit" }) + " " + hh;
     }
 
     function erddapRows(dataset, campi, ore) {
@@ -817,7 +871,8 @@
     }
 
     function caricaMambo() {
-      erddapRows("MAMBO1_TS", ["time", "depth", "WSPD", "GSPD", "WDIR", "DRYT", "TEMP_1"], 6)
+      // finestra ampia: la boa a volte salta qualche ora, così pesco comunque l'ultimo dato
+      erddapRows("MAMBO1_TS", ["time", "depth", "WSPD", "GSPD", "WDIR", "DRYT", "TEMP_1"], 24)
         .then(rows => {
           // depth 0 = meteo, depth 2 = sensori in acqua; prendo le ultime righe valorizzate
           const meteo = rows.filter(r => r.WSPD != null).pop();
@@ -825,17 +880,16 @@
           if (!meteo && !acqua) throw new Error("nessun dato recente");
           let html = "";
           if (meteo) {
-            const freccia = (typeof meteo.WDIR === "number")
-              ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + meteo.WDIR + 'deg)">↓</span> ' : "";
-            html += statBox("Vento medio", num(meteo.WSPD * MS_IN_KT, 1), "kt") +
-                    statBox("Raffica", num(meteo.GSPD * MS_IN_KT, 1), "kt") +
-                    statBox("Direzione", gradiInDirezione(meteo.WDIR), Math.round(meteo.WDIR) + "°", freccia) +
-                    statBox("Aria", num(meteo.DRYT, 1), "°C");
+            const deg = (typeof meteo.WDIR === "number") ? meteo.WDIR : null;
+            html += ventoCardHtml(num(meteo.WSPD * MS_IN_KT, 1), num(meteo.GSPD * MS_IN_KT, 1),
+                                  deg, (deg != null ? gradiInDirezione(deg) : "–"));
           }
-          if (acqua) html += statBox("Mare (−2 m)", num(acqua.TEMP_1, 1), "°C");
+          html += '<div class="statgrid" style="margin-top:.5rem;">';
+          if (meteo) html += miniCard("Aria", num(meteo.DRYT, 1), "°C");
+          if (acqua) html += miniCard("Mare (−2 m)", num(acqua.TEMP_1, 1), "°C");
+          html += '</div>';
           document.getElementById("mamboStat").innerHTML = html;
-          const t = (meteo || acqua).time;
-          document.getElementById("statoMambo").textContent = "Rilevazione oraria · ultima delle " + oraLocale(t);
+          document.getElementById("statoMambo").textContent = "Rilevazione " + quandoLocale((meteo || acqua).time);
         })
         .catch(err => {
           console.error("Errore boa MAMBO1:", err);
@@ -844,18 +898,20 @@
     }
 
     function caricaOnde() {
-      erddapRows("DWRG1_TS", ["time", "VHM0", "VZMX", "VTPK", "VPED"], 24)
+      // la boa onde può riportare ogni diverse ore: finestra di 4 giorni per avere sempre l'ultimo dato
+      erddapRows("DWRG1_TS", ["time", "VHM0", "VZMX", "VTPK", "VPED"], 96)
         .then(rows => {
           const r = rows.filter(x => x.VHM0 != null).pop();
           if (!r) throw new Error("nessun dato recente");
-          const freccia = (typeof r.VPED === "number")
-            ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + r.VPED + 'deg)">↓</span> ' : "";
+          const deg = (typeof r.VPED === "number") ? r.VPED : null;
+          const fre = (deg != null)
+            ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "";
           document.getElementById("ondeStat").innerHTML =
-            statBox("Onda significativa", num(r.VHM0, 2), "m") +
-            statBox("Onda massima", num(r.VZMX, 2), "m") +
-            statBox("Periodo di picco", num(r.VTPK, 1), "s") +
-            statBox("Direzione", gradiInDirezione(r.VPED), (typeof r.VPED === "number" ? Math.round(r.VPED) + "°" : ""), freccia);
-          document.getElementById("statoOnde").textContent = "Ultima rilevazione delle " + oraLocale(r.time);
+            miniCard("Onda sign.", num(r.VHM0, 2), "m") +
+            miniCard("Onda max", num(r.VZMX, 2), "m") +
+            miniCard("Periodo", num(r.VTPK, 1), "s") +
+            miniCard("Direzione", (deg != null ? gradiInDirezione(deg) : "–"), (deg != null ? Math.round(deg) + "°" : ""), "", fre);
+          document.getElementById("statoOnde").textContent = "Ultima rilevazione: " + quandoLocale(r.time);
         })
         .catch(err => {
           console.error("Errore boa DWRG1:", err);
@@ -945,9 +1001,9 @@
       if (t) {
         const serie = win.slice().reverse().map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
         trendEl.innerHTML =
-          '<span class="trend-badge" style="background:' + t.colore + '">' + t.freccia + " " + t.stato + '</span>' +
+          '<span class="trend-badge"><span class="frec" style="color:' + t.colore + '">' + t.freccia + '</span> ' + t.stato + '</span>' +
           '<span class="trend-delta">' + t.deltaTxt + '</span>' +
-          sparkline(serie, 150, 36, t.colore);
+          sparkline(serie, 150, 36, "#45566a");
       } else {
         trendEl.innerHTML = "";
       }
@@ -996,8 +1052,8 @@
         const tdDir = document.createElement("td");
         tdDir.innerHTML = (deg != null ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "") + (r.direzione || "–");
         tr.appendChild(tdDir);
-        tr.appendChild(cella(r.kt, classeVento(r.kt)));
-        tr.appendChild(cella(r.sunki, classeVento(r.sunki)));
+        tr.appendChild(cella(r.kt, ""));
+        tr.appendChild(cella(r.sunki, ""));
         tr.appendChild(cella(r.temp, ""));
         tbody.appendChild(tr);
       });
@@ -1042,14 +1098,50 @@
     }
 
 
-    /* ---------- Modal ---------- */
+    /* ---------- Modal modelli ---------- */
     function apriModal()  { document.getElementById("modal").style.display = "block"; }
     function chiudiModal(){ document.getElementById("modal").style.display = "none"; }
-    document.getElementById("modal").addEventListener("click", e => {
-      if (e.target.id === "modal") chiudiModal();
+
+    /* ---------- Guida spot (popup) ----------
+       Fonte condizioni: surf-magazin.de (guida spot Istria) dove indicato. */
+    const GUIDE = {
+      savudrija: { nome: "Punta Salvore (Savudrija)", html:
+        "<p>Funziona con <strong>Bora (E–NE)</strong>, in arrivo dalla zona di Portorose. Mare da piccolo a moderato, che può farsi “da onda” quando la Bora rinforza.</p>" +
+        "<p>Livello <strong>intermedio</strong>. Attenzione all'ingresso roccioso; se gli spot più a sud hanno vento migliore, conviene spostarsi.</p>",
+        fonte: "surf-magazin.de" },
+      dajla: { nome: "Dajla", html:
+        "<p>Spot sulla costa ovest dell'Istria, vicino a Novigrad. In estate lavora soprattutto con la <strong>termica (Maestral, da O/SO nel pomeriggio)</strong>; con Bora (NE) il vento arriva più irregolare.</p>" +
+        "<p>Acqua generalmente poco mossa, adatta anche a chi inizia nelle giornate di termica.</p>",
+        fonte: "nota generale (non presente nella guida surf-magazin)" },
+      preluka: { nome: "Preluka (Volosko)", html:
+        "<p>Spot del Quarnero, tra Rijeka e Opatija (fuori dall'Istria vera e propria). È uno spot da <strong>Bora (E–NE)</strong>: vento forte e raffica, mare mosso/onda quando rinforza.</p>" +
+        "<p>Più adatto a windsurfisti <strong>esperti</strong>.</p>",
+        fonte: "nota generale (non presente nella guida surf-magazin)" },
+      liznjan: { nome: "Ližnjan (Lisignano)", html:
+        "<p>Qui la <strong>Bora (E–NE)</strong> è la più forte e costante dell'Istria. Condizioni bump &amp; jump, con onde onshore moderate sul reef quando rinforza e una zona di acqua piatta per il freestyle.</p>" +
+        "<p>Livello <strong>intermedio–avanzato</strong>; può affollarsi.</p>",
+        fonte: "surf-magazin.de" },
+      premantura: { nome: "Premantura (Stupice)", html:
+        "<p>Il cuore del windsurf istriano, sulla punta più a sud. Lavora con <strong>Bora (E–NE)</strong> onshore (condizioni sicure) e con <strong>Scirocco (SE)</strong> di lato.</p>" +
+        "<p>Acqua perlopiù liscia o piccolo swell, ottimo anche per <strong>principianti</strong>, con buona infrastruttura.</p>",
+        fonte: "surf-magazin.de" }
+    };
+    function apriGuida(prefix) {
+      const g = GUIDE[prefix];
+      if (!g) return;
+      document.getElementById("guidaTitolo").textContent = g.nome;
+      document.getElementById("guidaCorpo").innerHTML = g.html +
+        '<p class="guida-meta">Fonte: ' + g.fonte + '</p>';
+      document.getElementById("modalGuida").style.display = "block";
+    }
+    function chiudiGuida() { document.getElementById("modalGuida").style.display = "none"; }
+
+    // chiusura modali: click sullo sfondo o tasto Esc
+    document.querySelectorAll(".modal").forEach(m => {
+      m.addEventListener("click", e => { if (e.target === m) m.style.display = "none"; });
     });
     document.addEventListener("keydown", e => {
-      if (e.key === "Escape") chiudiModal();
+      if (e.key === "Escape") document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
     });
 
     /* ---------- Avvio ---------- */
