@@ -121,22 +121,71 @@
       margin-bottom: .15rem;
     }
     .statbox .valore {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--blu);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #111;
       font-variant-numeric: tabular-nums;
     }
-    .statbox .unita { font-size: .8rem; font-weight: 400; color: #555; }
+    .statbox .unita { font-size: .8rem; font-weight: 600; color: #666; }
     .statbox .ic { display: block; font-size: 1.15rem; line-height: 1; margin-bottom: 3px; }
     .statbox .sub { display: block; font-size: .72rem; color: #777; margin-top: 3px; }
-    .statbox.tws { background: #eaf3df; }
-    .statbox.tws .valore { color: #3b6d11; }
-    .statbox.twd { background: #e6f1fb; }
     .freccia {
       display: inline-block;
       font-size: 1.1rem;
       line-height: 1;
     }
+
+    /* ---- Card vento principale (stile strumento) ---- */
+    .vento-card {
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+      padding: 1rem 1rem 1.1rem;
+      text-align: center;
+      margin-top: .5rem;
+    }
+    .vento-card .tws-label {
+      font-size: .72rem; color: #888;
+      text-transform: uppercase; letter-spacing: .12em; margin-bottom: .1rem;
+    }
+    .vento-card .tws-num {
+      font-size: 3.6rem; font-weight: 800; color: #111;
+      line-height: .95; font-variant-numeric: tabular-nums;
+    }
+    .vento-card .u { font-size: .85rem; font-weight: 600; color: #777; }
+    .vento-card .tws-num .u { font-size: 1.15rem; }
+    .vento-sub {
+      display: flex; justify-content: center; gap: 2rem;
+      margin-top: .7rem; padding-top: .7rem;
+      border-top: 1px solid var(--bordo); flex-wrap: wrap;
+    }
+    .vento-sub .lbl {
+      font-size: .7rem; color: #888;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .vento-sub .val {
+      font-size: 1.45rem; font-weight: 800; color: #111;
+      font-variant-numeric: tabular-nums; margin-top: .1rem;
+    }
+
+    /* ---- Tabella tendenza a scomparsa ---- */
+    details.dettaglio { margin-top: .5rem; }
+    details.dettaglio > summary {
+      cursor: pointer; font-size: .85rem; color: var(--azzurro);
+      padding: .35rem 0; list-style: none; user-select: none;
+    }
+    details.dettaglio > summary::-webkit-details-marker { display: none; }
+    details.dettaglio > summary::before { content: "▸ "; }
+    details.dettaglio[open] > summary::before { content: "▾ "; }
+
+    /* ---- Link mappa spot ---- */
+    .maps-link {
+      display: inline-block; background: #fff;
+      border: 1px solid var(--azzurro); color: var(--azzurro);
+      text-decoration: none; padding: 8px 14px; border-radius: 6px;
+      font-size: .9rem; margin-top: .75rem;
+    }
+    .maps-link:hover { background: #eef4fb; }
 
     /* ---- Accelerometro / Surfometro ---- */
     .surfometro { text-align: center; margin: .25rem 0 1rem; }
@@ -332,7 +381,7 @@
       </div>
     </div>
 
-    <div class="statgrid" id="barcolaStat">
+    <div id="barcolaStat">
       <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
     </div>
     <p class="stato" id="statoBarcola">
@@ -343,27 +392,33 @@
   <!-- DATI CENTRALINE -->
   <div class="section" id="grisa">
     <h2>Monte Grisa – dati in tempo reale</h2>
-    <div class="statgrid" id="grisaCards"></div>
+    <div id="grisaCards"></div>
     <div class="trend" id="grisaTrend"></div>
-    <table aria-describedby="statoGrisa">
-      <thead>
-        <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
-      </thead>
-      <tbody id="grisaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
-    </table>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoGrisa">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="grisaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
     <p class="stato" id="statoGrisa"></p>
   </div>
 
   <div class="section" id="muggia">
     <h2>Muggia – dati in tempo reale</h2>
-    <div class="statgrid" id="muggiaCards"></div>
+    <div id="muggiaCards"></div>
     <div class="trend" id="muggiaTrend"></div>
-    <table aria-describedby="statoMuggia">
-      <thead>
-        <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
-      </thead>
-      <tbody id="muggiaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
-    </table>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoMuggia">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="muggiaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
     <p class="stato" id="statoMuggia"></p>
   </div>
 
@@ -508,48 +563,79 @@
   <!-- SPOT ISTRIA -->
   <div class="gruppo-titolo" id="istria">🏖️ Spot Istria</div>
 
-  <div class="section" id="preluka">
-    <h2>Preluka</h2>
-    <div class="statgrid" id="prelukaCards"></div>
-    <div class="trend" id="prelukaTrend"></div>
-    <table aria-describedby="statoPreluka">
-      <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
-      <tbody id="prelukaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
-    </table>
-    <p class="stato" id="statoPreluka"></p>
+  <div class="section" id="savudrija">
+    <h2>Punta Salvore (Savudrija)</h2>
+    <div id="savudrijaCards"></div>
+    <div class="trend" id="savudrijaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoSavudrija">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="savudrijaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoSavudrija"></p>
+    <a class="maps-link" href="https://maps.app.goo.gl/jWbtsnTCoohrNenY7" target="_blank" rel="noopener">📍 Come arrivare</a>
   </div>
 
   <div class="section" id="dajla">
     <h2>Dajla</h2>
-    <div class="statgrid" id="dajlaCards"></div>
+    <div id="dajlaCards"></div>
     <div class="trend" id="dajlaTrend"></div>
-    <table aria-describedby="statoDajla">
-      <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
-      <tbody id="dajlaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
-    </table>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoDajla">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="dajlaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
     <p class="stato" id="statoDajla"></p>
+    <a class="maps-link" href="https://maps.app.goo.gl/a4ZHnntRdun3bfVb7" target="_blank" rel="noopener">📍 Come arrivare</a>
+  </div>
+
+  <div class="section" id="preluka">
+    <h2>Preluka</h2>
+    <div id="prelukaCards"></div>
+    <div class="trend" id="prelukaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoPreluka">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="prelukaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoPreluka"></p>
+    <a class="maps-link" href="https://maps.app.goo.gl/6Depfw25rKGRZX5p8" target="_blank" rel="noopener">📍 Come arrivare</a>
   </div>
 
   <div class="section" id="liznjan">
-    <h2>Ližnjan</h2>
-    <div class="statgrid" id="liznjanCards"></div>
+    <h2>Ližnjan (Lisignano)</h2>
+    <div id="liznjanCards"></div>
     <div class="trend" id="liznjanTrend"></div>
-    <table aria-describedby="statoLiznjan">
-      <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
-      <tbody id="liznjanBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
-    </table>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoLiznjan">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="liznjanBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
     <p class="stato" id="statoLiznjan"></p>
+    <a class="maps-link" href="https://maps.app.goo.gl/92vRknd8orHBPiVVA" target="_blank" rel="noopener">📍 Come arrivare</a>
   </div>
 
-  <div class="section" id="savudrija">
-    <h2>Punta Salvore (Savudrija)</h2>
-    <div class="statgrid" id="savudrijaCards"></div>
-    <div class="trend" id="savudrijaTrend"></div>
-    <table aria-describedby="statoSavudrija">
-      <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
-      <tbody id="savudrijaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
-    </table>
-    <p class="stato" id="statoSavudrija"></p>
+  <div class="section" id="premantura">
+    <h2>Premantura (Stupice)</h2>
+    <div id="premanturaCards"></div>
+    <div class="trend" id="premanturaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoPremantura">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="premanturaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoPremantura"></p>
+    <a class="maps-link" href="https://maps.app.goo.gl/5q7aUMkzww4VWtfU6" target="_blank" rel="noopener">📍 Come arrivare</a>
   </div>
 
   <!-- JS -->
@@ -560,12 +646,13 @@
       grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
       muggia: "https://vetercek.com/danes/index.php?postaja=muggia"
     };
-    const SPOT_ISTRIA = ["preluka", "dajla", "liznjan", "savudrija"];
+    const SPOT_ISTRIA = ["savudrija", "dajla", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
-      preluka:   "https://vetercek.com/danes/index.php?id=149&postaja=preluka",
-      dajla:     "https://vetercek.com/danes/index.php?id=39&postaja=dajla",
-      liznjan:   "https://vetercek.com/danes/index.php?id=74&postaja=liznjan",
-      savudrija: "https://vetercek.com/danes/index.php?id=124&postaja=savudrija"
+      preluka:    "https://vetercek.com/danes/index.php?id=149&postaja=preluka",
+      dajla:      "https://vetercek.com/danes/index.php?id=39&postaja=dajla",
+      liznjan:    "https://vetercek.com/danes/index.php?id=74&postaja=liznjan",
+      savudrija:  "https://vetercek.com/danes/index.php?id=124&postaja=savudrija",
+      premantura: "https://vetercek.com/danes/index.php?id=86&postaja=stupice"
     };
     function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
@@ -662,6 +749,22 @@
              '</div>';
     }
 
+    /* Card vento principale in stile strumento: TWS grande + TWD e raffica sotto */
+    function ventoCardHtml(tws, gust, dirDeg, dirTxt) {
+      const fre = (dirDeg != null)
+        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + dirDeg + 'deg)">↓</span> ' : "";
+      const dirDisp = (dirDeg != null)
+        ? fre + dirTxt + ' <span class="u">' + Math.round(dirDeg) + '°</span>'
+        : (dirTxt || "–");
+      return '<div class="vento-card">' +
+        '<div class="tws-label">TWS · vento medio</div>' +
+        '<div class="tws-num">' + (tws != null && tws !== "" ? tws : "–") + ' <span class="u">kt</span></div>' +
+        '<div class="vento-sub">' +
+          '<div><div class="lbl">TWD</div><div class="val">' + dirDisp + '</div></div>' +
+          '<div><div class="lbl">Raffica</div><div class="val">' + (gust != null && gust !== "" ? gust : "–") + ' <span class="u">kt</span></div></div>' +
+        '</div></div>';
+    }
+
     function renderBarcola(b) {
       const box = document.getElementById("barcolaStat");
       if (!b) {
@@ -670,19 +773,15 @@
         return;
       }
       aggiornaGauge(b.wind_avg);
-      // la direzione del vento è "da dove arriva": la freccia indica dove va
-      const dir = b.wind_direction;
-      const freccia = (typeof dir === "number")
-        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + dir + 'deg)">↓</span> '
-        : "";
+      const dir = (typeof b.wind_direction === "number") ? b.wind_direction : null;
+      const dirTxt = (dir != null) ? gradiInDirezione(dir) : "–";
       box.innerHTML =
-        cardBarcola("💨", "TWS", num(b.wind_avg, 1), "kt",
-          (b.wind_max != null ? "raffica " + num(b.wind_max, 1) + " kt" : ""), "tws") +
-        cardBarcola("🧭", "TWD", freccia + gradiInDirezione(dir),
-          (typeof dir === "number" ? Math.round(dir) + "°" : ""), "", "twd") +
-        cardBarcola("🌡️", "Temperatura", num(b.temperature, 1), "°C", "", "") +
-        cardBarcola("📊", "Pressione", num(b.mslp, 1), "hPa", "", "") +
-        cardBarcola("💧", "Umidità", num(b.rh, 0), "%", "", "");
+        ventoCardHtml(num(b.wind_avg, 1), num(b.wind_max, 1), dir, dirTxt) +
+        '<div class="statgrid" style="margin-top:.5rem;">' +
+          cardBarcola("🌡️", "Temperatura", num(b.temperature, 1), "°C", "", "") +
+          cardBarcola("📊", "Pressione", num(b.mslp, 1), "hPa", "", "") +
+          cardBarcola("💧", "Umidità", num(b.rh, 0), "%", "", "") +
+        '</div>';
       const ora = b.datetime ? b.datetime.replace(/:\d\d [A-Z]+$/, "") : "";
       document.getElementById("statoBarcola").innerHTML =
         (ora ? "Rilevazione delle " + ora.split(" ")[1] + " · " : "") +
@@ -825,18 +924,21 @@
       return                { stato: "stabile",    freccia: "→", colore: "#5f5e5a", deltaTxt: txt };
     }
 
+    const cacheStazione = {};     // ultimi dati validi per stazione (se un refresh torna vuoto, li riusiamo)
     function renderStazione(rows, prefix) {
+      let stale = false;
+      if (!Array.isArray(rows) || !rows.length) {
+        if (cacheStazione[prefix]) { rows = cacheStazione[prefix]; stale = true; }
+        else { mostraNoData(prefix); return; }
+      } else {
+        cacheStazione[prefix] = rows;
+      }
       const win = finestra45(rows);     // ultime ~45 min, la riga 0 è la più recente
       const r0 = rows[0];
-      // --- card riassuntive (ultima rilevazione) ---
+      // --- card vento principale (TWS grande + TWD + raffica) ---
       const deg = cardinaleInGradi(r0.direzione);
-      const freccia = (deg != null)
-        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "";
       const dirTxt = (deg != null) ? gradiInDirezione(deg) : (r0.direzione || "–");
-      document.getElementById(prefix + "Cards").innerHTML =
-        cardBarcola("💨", "TWS", (r0.kt != null && r0.kt !== "" ? r0.kt : "–"), "kt", "", "tws") +
-        cardBarcola("🧭", "TWD", freccia + dirTxt, (deg != null ? Math.round(deg) + "°" : ""), "", "twd") +
-        cardBarcola("🌬️", "Raffica", (r0.sunki != null && r0.sunki !== "" ? r0.sunki : "–"), "kt", "", "");
+      document.getElementById(prefix + "Cards").innerHTML = ventoCardHtml(r0.kt, r0.sunki, deg, dirTxt);
       // --- badge trend + sparkline ---
       const trendEl = document.getElementById(prefix + "Trend");
       const t = calcolaTrend(win);
@@ -851,6 +953,26 @@
       }
       // --- tabella dettaglio (ultime ~45 min) ---
       renderTabella(win, prefix + "Body");
+      // --- nota stato ---
+      const st = document.getElementById("stato" + cap(prefix));
+      if (st) {
+        const ora = r0.ora || "";
+        st.textContent = stale
+          ? "⚠️ Ultimo dato disponibile" + (ora ? " (" + ora + ")" : "") + ", in attesa di aggiornamento"
+          : "Fonte: vetercek.com · ultime ~45 min" + (ora ? " · agg. " + ora : "");
+      }
+    }
+
+    function mostraNoData(prefix) {
+      const cards = document.getElementById(prefix + "Cards");
+      if (cards) cards.innerHTML = '<div class="vento-card"><div class="tws-label">Dati non disponibili</div><div class="tws-num">–</div></div>';
+      const tr = document.getElementById(prefix + "Trend");
+      if (tr) tr.innerHTML = "";
+      const body = document.getElementById(prefix + "Body");
+      if (body) body.innerHTML = '<tr><td colspan="5">Dati momentaneamente non disponibili</td></tr>';
+      const st = document.getElementById("stato" + cap(prefix));
+      const link = LINK_SPOT[prefix] || LINK_VETERCEK[prefix] || "https://vetercek.com";
+      if (st) st.innerHTML = '<a href="' + link + '" target="_blank" rel="noopener">apri i dati live su vetercek.com</a>';
     }
 
     function cella(val, cls) {
@@ -881,17 +1003,6 @@
       });
     }
 
-    function svuotaStazione(prefix) {
-      document.getElementById(prefix + "Cards").innerHTML = "";
-      document.getElementById(prefix + "Trend").innerHTML = "";
-    }
-    function mostraErrore(idBody, idStato, linkLive) {
-      document.getElementById(idBody).innerHTML =
-        '<tr><td colspan="5">Dati momentaneamente non disponibili – ' +
-        '<a href="' + linkLive + '" target="_blank" rel="noopener">apri i dati live su vetercek.com</a></td></tr>';
-      document.getElementById(idStato).textContent = "";
-    }
-
     let timerAuto = null;
     function caricaDati() {
       const btn = document.getElementById("btnAggiorna");
@@ -903,43 +1014,16 @@
         })
         .then(data => {
           renderBarcola(data.barcola);
-          if (Array.isArray(data.monteGrisa) && data.monteGrisa.length) {
-            renderStazione(data.monteGrisa, "grisa");
-            document.getElementById("statoGrisa").textContent = "Fonte: vetercek.com · ultime ~45 min, aggiornamento ogni ~5 minuti";
-          } else {
-            svuotaStazione("grisa");
-            mostraErrore("grisaBody", "statoGrisa", LINK_VETERCEK.grisa);
-          }
-          if (Array.isArray(data.muggia) && data.muggia.length) {
-            renderStazione(data.muggia, "muggia");
-            document.getElementById("statoMuggia").textContent = "Fonte: vetercek.com · ultime ~45 min, aggiornamento ogni ~15 minuti";
-          } else {
-            svuotaStazione("muggia");
-            mostraErrore("muggiaBody", "statoMuggia", LINK_VETERCEK.muggia);
-          }
-          SPOT_ISTRIA.forEach(sp => {
-            if (Array.isArray(data[sp]) && data[sp].length) {
-              renderStazione(data[sp], sp);
-              document.getElementById("stato" + cap(sp)).textContent = "Fonte: vetercek.com · ultime ~45 min";
-            } else {
-              svuotaStazione(sp);
-              mostraErrore(sp + "Body", "stato" + cap(sp), LINK_SPOT[sp]);
-            }
-          });
+          renderStazione(data.monteGrisa, "grisa");
+          renderStazione(data.muggia, "muggia");
+          SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
           document.getElementById("ultimoAggiornamento").textContent =
             "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
         })
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
           renderBarcola(null);
-          svuotaStazione("grisa");
-          svuotaStazione("muggia");
-          mostraErrore("grisaBody", "statoGrisa", LINK_VETERCEK.grisa);
-          mostraErrore("muggiaBody", "statoMuggia", LINK_VETERCEK.muggia);
-          SPOT_ISTRIA.forEach(sp => {
-            svuotaStazione(sp);
-            mostraErrore(sp + "Body", "stato" + cap(sp), LINK_SPOT[sp]);
-          });
+          ["grisa", "muggia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
         })
         .finally(() => { btn.disabled = false; });

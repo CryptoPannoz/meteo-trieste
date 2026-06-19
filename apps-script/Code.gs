@@ -18,7 +18,8 @@ var STATIONS = {
   preluka:    { id: 149, postaja: 'preluka' },
   dajla:      { id: 39,  postaja: 'dajla' },
   liznjan:    { id: 74,  postaja: 'liznjan' },
-  savudrija:  { id: 124, postaja: 'savudrija' }
+  savudrija:  { id: 124, postaja: 'savudrija' },
+  premantura: { id: 86,  postaja: 'stupice' }
 };
 
 var BARCOLA_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data_current&id_station=5307';
