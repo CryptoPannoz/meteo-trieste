@@ -6,6 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
   <title>Vento Trieste – Surfometro, Bora e previsioni surf e windsurf</title>
   <meta name="description" content="Vento in tempo reale a Trieste e in Istria per surf, windsurf e wing: surfometro di Barcola, grafico della Bora, modello ALADIN e dati live di Monte Grisa, Muggia e spot istriani." />
   <meta name="keywords" content="vento Trieste, Bora Trieste, surf Trieste, windsurf Trieste, vento Barcola, previsioni vento Trieste, ALADIN Trieste, Monte Grisa, Muggia, vento Istria, kitesurf Trieste, golfo di Trieste" />
@@ -166,11 +167,17 @@
       text-transform: uppercase; letter-spacing: .1em; margin-bottom: .15rem;
     }
     .vento-card .tws-num {
-      font-size: 3.6rem; font-weight: 800; color: var(--testo);
-      line-height: .95; font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+      font-size: 3.1rem; line-height: 1; color: var(--testo);
+      display: flex; align-items: baseline; justify-content: center; gap: .35rem;
     }
+    /* display LCD a 7 segmenti: cifra accesa sopra i segmenti spenti */
+    .lcd { position: relative; display: inline-block; font-family: 'DSEG7-Classic', monospace; }
+    .lcd-ghost { color: rgba(26,35,48,.07); }
+    .lcd-lit { position: absolute; left: 0; top: 0; color: var(--testo); }
     .vento-card .u { font-size: .85rem; font-weight: 500; color: var(--label); }
-    .vento-card .tws-num .u { font-size: 1.15rem; }
+    .vento-card .tws-num .u { font-size: 1.1rem; }
+    .vento-raffica { font-size: .92rem; color: var(--label); margin-top: .35rem; }
+    .vento-raffica b { font-weight: 700; color: var(--slate); font-variant-numeric: tabular-nums; }
     .vento-sub {
       display: flex; justify-content: center; gap: 2.5rem;
       margin-top: .8rem; padding-top: .8rem;
@@ -808,13 +815,20 @@
       const dirDisp = (dirDeg != null)
         ? fre + dirTxt + ' <span class="u">' + Math.round(dirDeg) + '°</span>'
         : (dirTxt || "–");
-      const cTws = coloreIntensita(tws), cGust = coloreIntensita(gust);
+      const cTws = coloreIntensita(tws);
+      const twsStr = (tws != null && tws !== "") ? String(tws) : "–";
+      const ghost = twsStr.replace(/[0-9]/g, "8");   // segmenti "spenti" allineati alla cifra
+      const gustStr = (gust != null && gust !== "") ? gust : "–";
       return '<div class="vento-card">' +
         '<div class="tws-label">TWS · vento medio</div>' +
-        '<div class="tws-num"' + (cTws ? ' style="color:' + cTws + '"' : "") + '>' + (tws != null && tws !== "" ? tws : "–") + ' <span class="u">kt</span></div>' +
+        '<div class="tws-num">' +
+          '<span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
+          '<span class="lcd-lit"' + (cTws ? ' style="color:' + cTws + '"' : "") + '>' + twsStr + '</span></span>' +
+          '<span class="u">kt</span>' +
+        '</div>' +
+        '<div class="vento-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
         '<div class="vento-sub">' +
           '<div><div class="lbl">TWD</div><div class="val">' + dirDisp + '</div></div>' +
-          '<div><div class="lbl">Raffica</div><div class="val"' + (cGust ? ' style="color:' + cGust + '"' : "") + '>' + (gust != null && gust !== "" ? gust : "–") + ' <span class="u">kt</span></div></div>' +
         '</div></div>';
     }
 
