@@ -174,10 +174,9 @@
     .lcd { position: relative; display: inline-block; font-family: 'DSEG7-Classic', monospace; }
     .lcd-ghost { color: rgba(26,35,48,.12); }
     .lcd-lit { position: absolute; left: 0; top: 0; color: #111; }
-    /* pallino intensità: tiene sempre visibile la scala colore accanto al TWS */
-    .tws-dot {
-      display: inline-block; width: 9px; height: 9px; border-radius: 50%;
-      vertical-align: middle; margin-right: 6px;
+    /* barra intensità: tiene sempre visibile la scala colore sotto il TWS */
+    .tws-bar {
+      height: 6px; width: 110px; border-radius: 3px; margin: .5rem auto 0;
     }
     .vento-card .u { font-size: .85rem; font-weight: 500; color: var(--label); }
     .vento-card .tws-num .u { font-size: 1.1rem; }
@@ -824,14 +823,15 @@
       const twsStr = (tws != null && tws !== "") ? String(tws) : "–";
       const ghost = twsStr.replace(/[0-9]/g, "8");   // segmenti "spenti" allineati alla cifra
       const gustStr = (gust != null && gust !== "") ? gust : "–";
-      const dot = cTws ? '<span class="tws-dot" style="background:' + cTws + '"></span>' : "";
+      const bar = cTws ? '<div class="tws-bar" style="background:' + cTws + '"></div>' : "";
       return '<div class="vento-card">' +
-        '<div class="tws-label">' + dot + 'TWS · vento medio</div>' +
+        '<div class="tws-label">TWS · vento medio</div>' +
         '<div class="tws-num">' +
           '<span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
           '<span class="lcd-lit">' + twsStr + '</span></span>' +
           '<span class="u">kt</span>' +
         '</div>' +
+        bar +
         '<div class="vento-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
         '<div class="vento-sub">' +
           '<div><div class="lbl">TWD</div><div class="val">' + dirDisp + '</div></div>' +
@@ -1139,25 +1139,25 @@
        Fonte condizioni: surf-magazin.de (guida spot Istria) dove indicato. */
     const GUIDE = {
       savudrija: { nome: "Punta Salvore (Savudrija)", html:
-        "<p>Funziona con <strong>Bora (E–NE)</strong>, in arrivo dalla zona di Portorose. Mare da piccolo a moderato, che può farsi “da onda” quando la Bora rinforza.</p>" +
-        "<p>Livello <strong>intermedio</strong>. Attenzione all'ingresso roccioso; se gli spot più a sud hanno vento migliore, conviene spostarsi.</p>",
-        fonte: "surf-magazin.de" },
+        "<p>Spot da <strong>Bora (NE)</strong>, in arrivo dalla zona di Portorose; funziona anche con i venti da sud. Ci si attrezza al riparo dalla Bora, ma il lancio è impegnativo: si scavalca un muretto e si attraversano una cinquantina di metri di bonaccia prima di entrare nel vento forte.</p>" +
+        "<p>Mare <strong>bump &amp; jump</strong>, da piccolo a moderato, che può farsi “da onda” quando la Bora rinforza. Ingresso e fondo rocciosi: serve attenzione. Livello <strong>intermedio–avanzato</strong>.</p>",
+        fonte: "surf-magazin.de · kite-and-windsurfing-guide.com" },
       dajla: { nome: "Dajla", html:
-        "<p>Spot sulla costa ovest dell'Istria, vicino a Novigrad. In estate lavora soprattutto con la <strong>termica (Maestral, da O/SO nel pomeriggio)</strong>; con Bora (NE) il vento arriva più irregolare.</p>" +
-        "<p>Acqua generalmente poco mossa, adatta anche a chi inizia nelle giornate di termica.</p>",
-        fonte: "nota generale (non presente nella guida surf-magazin)" },
+        "<p>Spot sulla costa occidentale dell'Istria, vicino a Cittanova (Novigrad). In estate lavora soprattutto con la <strong>termica (Maestrale, da O/SO nel pomeriggio)</strong>; con la <strong>Bora (NE)</strong> il vento arriva più irregolare.</p>" +
+        "<p>Mare in genere poco mosso, adatto anche a chi inizia nelle giornate di termica.</p>",
+        fonte: "nota generale (spot non presente nelle guide consultate)" },
       preluka: { nome: "Preluka (Volosko)", html:
-        "<p>Spot del Quarnero, tra Rijeka e Opatija (fuori dall'Istria vera e propria). È uno spot da <strong>Bora (E–NE)</strong>: vento forte e raffica, mare mosso/onda quando rinforza.</p>" +
+        "<p>Spot del Quarnero, tra Fiume (Rijeka) e Abbazia (Opatija): non è Istria in senso stretto, ma è vicino. È uno spot da <strong>Bora (NE)</strong>, con vento forte e raffica e mare mosso o con onda quando rinforza.</p>" +
         "<p>Più adatto a windsurfisti <strong>esperti</strong>.</p>",
-        fonte: "nota generale (non presente nella guida surf-magazin)" },
+        fonte: "nota generale (spot non presente nelle guide consultate)" },
       liznjan: { nome: "Ližnjan (Lisignano)", html:
-        "<p>Qui la <strong>Bora (E–NE)</strong> è la più forte e costante dell'Istria. Condizioni bump &amp; jump, con onde onshore moderate sul reef quando rinforza e una zona di acqua piatta per il freestyle.</p>" +
-        "<p>Livello <strong>intermedio–avanzato</strong>; può affollarsi.</p>",
-        fonte: "surf-magazin.de" },
+        "<p>Qui la <strong>Bora (NE)</strong> è la più forte e costante dell'Istria: anche un NE debole accelera fino a far planare, e con Bora sostenuta si forma un'onda che frange sul reef. C'è una zona di acqua piatta per il freestyle e onde per il bump &amp; jump.</p>" +
+        "<p>Attenzione al <strong>reef</strong> sopravento (mangia le pinne), agli scogli aguzzi e ai ricci di mare: meglio le scarpette. Livello <strong>intermedio–avanzato</strong>; un tempo segreto dei local, oggi può affollarsi. Ottimo per il windsurf da onda, adatto anche al kite freeride.</p>",
+        fonte: "surf-magazin.de · kite-and-windsurfing-guide.com" },
       premantura: { nome: "Premantura (Stupice)", html:
-        "<p>Il cuore del windsurf istriano, sulla punta più a sud. Lavora con <strong>Bora (E–NE)</strong> onshore (condizioni sicure) e con <strong>Scirocco (SE)</strong> di lato.</p>" +
-        "<p>Acqua perlopiù liscia o piccolo swell, ottimo anche per <strong>principianti</strong>, con buona infrastruttura.</p>",
-        fonte: "surf-magazin.de" }
+        "<p>Il cuore del windsurf istriano, sulla punta più a sud. Lavora con <strong>Bora (NE)</strong> onshore — condizioni sicure — e con <strong>Scirocco (SE)</strong> di lato, che alza onde vicino alle isole al largo. Il lancio più sicuro è al <strong>Camping Stupice</strong>.</p>" +
+        "<p>Acqua perlopiù liscia o con piccolo swell: buono anche per i <strong>principianti</strong> nelle giornate tranquille, mentre con Bora forte diventa terreno da esperti (in autunno ospita le gare di freestyle EFPT). Scogli aguzzi e ricci di mare: consigliate le scarpette. Ottimo per il windsurf, buono per il kite.</p>",
+        fonte: "surf-magazin.de · kite-and-windsurfing-guide.com" }
     };
     function apriGuida(prefix) {
       const g = GUIDE[prefix];
