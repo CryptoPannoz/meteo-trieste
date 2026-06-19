@@ -167,13 +167,18 @@
       text-transform: uppercase; letter-spacing: .1em; margin-bottom: .15rem;
     }
     .vento-card .tws-num {
-      font-size: 3.1rem; line-height: 1; color: var(--testo);
+      font-size: 3.3rem; line-height: 1; color: var(--testo);
       display: flex; align-items: baseline; justify-content: center; gap: .35rem;
     }
-    /* display LCD a 7 segmenti: cifra accesa sopra i segmenti spenti */
+    /* display LCD a 7 segmenti: cifra accesa (nera) sopra i segmenti spenti */
     .lcd { position: relative; display: inline-block; font-family: 'DSEG7-Classic', monospace; }
-    .lcd-ghost { color: rgba(26,35,48,.07); }
-    .lcd-lit { position: absolute; left: 0; top: 0; color: var(--testo); }
+    .lcd-ghost { color: rgba(26,35,48,.12); }
+    .lcd-lit { position: absolute; left: 0; top: 0; color: #111; }
+    /* pallino intensità: tiene sempre visibile la scala colore accanto al TWS */
+    .tws-dot {
+      display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+      vertical-align: middle; margin-right: 6px;
+    }
     .vento-card .u { font-size: .85rem; font-weight: 500; color: var(--label); }
     .vento-card .tws-num .u { font-size: 1.1rem; }
     .vento-raffica { font-size: .92rem; color: var(--label); margin-top: .35rem; }
@@ -819,11 +824,12 @@
       const twsStr = (tws != null && tws !== "") ? String(tws) : "–";
       const ghost = twsStr.replace(/[0-9]/g, "8");   // segmenti "spenti" allineati alla cifra
       const gustStr = (gust != null && gust !== "") ? gust : "–";
+      const dot = cTws ? '<span class="tws-dot" style="background:' + cTws + '"></span>' : "";
       return '<div class="vento-card">' +
-        '<div class="tws-label">TWS · vento medio</div>' +
+        '<div class="tws-label">' + dot + 'TWS · vento medio</div>' +
         '<div class="tws-num">' +
           '<span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
-          '<span class="lcd-lit"' + (cTws ? ' style="color:' + cTws + '"' : "") + '>' + twsStr + '</span></span>' +
+          '<span class="lcd-lit">' + twsStr + '</span></span>' +
           '<span class="u">kt</span>' +
         '</div>' +
         '<div class="vento-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
