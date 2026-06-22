@@ -92,11 +92,15 @@
     }
     @media (min-width: 600px) { nav { grid-template-columns: repeat(4, 1fr); } }
     nav a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
       background: #fff;
       border: 1px solid var(--bordo);
       color: var(--slate);
       text-decoration: none;
-      padding: 10px 8px;
+      padding: 8px;
       border-radius: 8px;
       font-size: .9rem;
       font-weight: 500;
@@ -141,7 +145,7 @@
     /* ---- Mini-card dato (stile strumento) ---- */
     .statgrid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
       gap: .5rem;
       margin-top: .5rem;
     }
@@ -442,6 +446,36 @@
       color: #6a737d;
       margin-top: 2rem;
       line-height: 1.6;
+    }
+
+    /* ============ Rifinitura mobile ============ */
+    @media (max-width: 560px) {
+      body { padding: 0 .7rem 1.5rem; }
+      .section { padding: .85rem; }
+      h1 { font-size: 1.25rem; }
+
+      /* target di tocco ≥44px su tutto ciò che è cliccabile */
+      button,
+      .spot-btn,
+      .osmer-tab,
+      .dona-btn,
+      .cam-link,
+      details.dettaglio > summary,
+      .gruppo-sum {
+        min-height: 44px;
+      }
+      .aladin-controlli { justify-content: center; gap: 1rem; }
+      .aladin-controlli button { min-width: 48px; min-height: 44px; font-size: 1.1rem; }
+
+      /* card piccole allineate: 3 per riga (es. Barcola temp/pressione/umidità) */
+      .statgrid { grid-template-columns: repeat(3, 1fr); gap: .4rem; }
+      .statbox { padding: .55rem .5rem; }
+      .statbox .valore { font-size: 1.3rem; }
+      /* onde (4 dati): griglia 2×2 ordinata */
+      #ondeStat { grid-template-columns: repeat(2, 1fr); }
+      /* bottoni spot a piena larghezza, in colonna, ben distanziati */
+      .spot-azioni { flex-direction: column; }
+      .spot-azioni .spot-btn { width: 100%; justify-content: center; }
     }
   </style>
 </head>
