@@ -366,6 +366,7 @@
     }
     .bollett-testo { font-size: .95rem; line-height: 1.5; color: var(--testo); }
     .bollett.allerta .bollett-giorno { color: #b35c00; }
+    .osmer-mappa { width: 100%; max-width: 360px; display: block; margin: .6rem auto 0; border-radius: 8px; }
 
     /* ---- Modal ---- */
     .modal {
@@ -552,6 +553,14 @@
     <h2>Previsione descrittiva – OSMER FVG</h2>
     <div id="osmerBollettino"><p class="stato">Caricamento…</p></div>
     <p class="stato">Fonte: <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">OSMER – Arpa FVG</a></p>
+  </div>
+
+  <!-- RADAR ARSO -->
+  <div class="section" id="radar">
+    <h2>Radar pioggia – ARSO</h2>
+    <img id="radarImg" alt="Radar precipitazioni ARSO (Slovenia e Golfo di Trieste)" loading="lazy"
+         onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Radar momentaneamente non disponibile.</p>'); this.style.display='none';" />
+    <p class="stato">Fonte: <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a> · animazione delle ultime ore</p>
   </div>
 
   <!-- GRAFICO BORA -->
@@ -799,6 +808,9 @@
     function urlBora() {
       return "https://profiwetter.ch/wind_bora_it.png?ts=" + Date.now();
     }
+    function urlRadar() {
+      return "https://meteo.arso.gov.si/uploads/probase/www/observ/radar/si0-rm-anim.gif?ts=" + Date.now();
+    }
     let passoAladin = 1;            // mappe 01..23, una ogni 3 ore
     const PASSI_ALADIN = 23;
     function urlAladin(n) {
@@ -946,9 +958,11 @@
       box.innerHTML = giorni.map(g => {
         const allerta = /temporal|piogg|rovesc/i.test(g.testo);
         const lbl = (etich[g.giorno] || g.giorno) + (g.data ? " · " + g.data : "");
+        const mappa = '<img class="osmer-mappa" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
+          '" src="https://www.meteo.fvg.it/previ/' + encodeURIComponent(g.giorno) + '.png" onerror="this.style.display=\'none\'" />';
         return '<div class="bollett' + (allerta ? ' allerta' : '') + '">' +
           '<div class="bollett-giorno">' + (allerta ? '⛈️ ' : '') + escHtml(lbl) + '</div>' +
-          '<div class="bollett-testo">' + escHtml(g.testo) + '</div></div>';
+          '<div class="bollett-testo">' + escHtml(g.testo) + '</div>' + mappa + '</div>';
       }).join("");
     }
 
@@ -1215,6 +1229,7 @@
       caricaDati();
       caricaMare();
       document.getElementById("boraImg").src = urlBora();
+      document.getElementById("radarImg").src = urlRadar();
     });
 
     /* ---------- Webcam ---------- */
@@ -1295,10 +1310,26 @@
       if (e.key === "Escape") document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
     });
 
+    /* Avvio automatico della webcam SVBG quando entra in vista (risparmia banda
+       a chi non scorre fin laggiù). Fallback: avvio subito se IntersectionObserver manca. */
+    function autoCamSvbg() {
+      const wrap = document.getElementById("camSvbgWrap");
+      if (!wrap) return;
+      if (!("IntersectionObserver" in window)) { caricaCamSvbg(); return; }
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { obs.disconnect(); caricaCamSvbg(); }
+        });
+      }, { rootMargin: "200px" });
+      obs.observe(wrap);
+    }
+
     /* ---------- Avvio ---------- */
     document.getElementById("boraImg").src = urlBora();
+    document.getElementById("radarImg").src = urlRadar();
     mostraAladin();
     aggiornaWebcam();
+    autoCamSvbg();
     caricaDati();
     caricaMare();
     // auto-refresh dati ogni 5 minuti
