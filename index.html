@@ -119,6 +119,23 @@
     }
     .gruppo-titolo:first-of-type { margin-top: .5rem; }
 
+    /* gruppo collassabile (Spot Istria) */
+    .gruppo-collapse { margin-top: 1.75rem; scroll-margin-top: 70px; }
+    .gruppo-sum {
+      font-size: 1.15rem; font-weight: 700; color: var(--slate);
+      text-transform: uppercase; letter-spacing: .04em;
+      padding-bottom: .4rem; margin-bottom: 1rem;
+      border-bottom: 2px solid var(--slate);
+      cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .gruppo-sum::-webkit-details-marker { display: none; }
+    .gruppo-sum::after {
+      content: "▾ apri"; font-size: .8rem; font-weight: 500;
+      text-transform: none; letter-spacing: 0; color: var(--azzurro);
+    }
+    .gruppo-collapse[open] .gruppo-sum::after { content: "▴ chiudi"; }
+
     /* ---- Mini-card dato (stile strumento) ---- */
     .statgrid {
       display: grid;
@@ -367,6 +384,15 @@
     .bollett-testo { font-size: .95rem; line-height: 1.5; color: var(--testo); }
     .bollett.allerta .bollett-giorno { color: #b35c00; }
     .osmer-mappa { width: 100%; max-width: 360px; display: block; margin: .6rem auto 0; border-radius: 8px; }
+    .osmer-tabs { display: flex; gap: .4rem; margin-bottom: .2rem; }
+    .osmer-tab {
+      flex: 1; background: #fff; border: 1px solid var(--bordo); border-radius: 8px;
+      padding: .5rem .3rem; font-family: inherit; font-size: .82rem; font-weight: 600;
+      color: var(--slate); cursor: pointer; line-height: 1.2;
+    }
+    .osmer-tab-ic { display: block; font-size: 1.35rem; margin-bottom: .15rem; }
+    .osmer-tab:hover { background: #eef1f4; }
+    .osmer-tab.attivo, .osmer-tab.attivo:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
 
     /* ---- Modal ---- */
     .modal {
@@ -692,8 +718,9 @@
     </a>
   </div>
 
-  <!-- SPOT ISTRIA -->
-  <div class="gruppo-titolo" id="istria">🏖️ Spot Istria</div>
+  <!-- SPOT ISTRIA (gruppo collassabile) -->
+  <details class="gruppo-collapse" id="istria">
+  <summary class="gruppo-sum">🏖️ Spot Istria</summary>
 
   <div class="section" id="savudrija">
     <h2>Punta Salvore (Savudrija)</h2>
@@ -784,6 +811,7 @@
       <button class="spot-btn" onclick="apriGuida('premantura')">ℹ️ Guida spot</button>
     </div>
   </div>
+  </details>
 
   <!-- JS -->
   <script>
@@ -948,22 +976,44 @@
     function escHtml(s) {
       return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
     }
+    const OSMER_ETICH = { oggi: "Oggi", domani: "Domani", dopodomani: "Dopodomani" };
+    let OSMER_GIORNI = [];
+    function iconaMeteo(testo) {
+      if (/temporal/i.test(testo)) return "⛈️";
+      if (/piogg|rovesc/i.test(testo)) return "🌧️";
+      if (/coperto|molto nuvol/i.test(testo)) return "☁️";
+      if (/nuvol|variabil/i.test(testo)) return "⛅";
+      return "☀️";
+    }
     function renderOsmer(giorni) {
       const box = document.getElementById("osmerBollettino");
       if (!Array.isArray(giorni) || !giorni.length) {
         box.innerHTML = '<p class="stato">Bollettino non disponibile — <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">apri OSMER</a></p>';
         return;
       }
-      const etich = { oggi: "Oggi", domani: "Domani", dopodomani: "Dopodomani" };
-      box.innerHTML = giorni.map(g => {
-        const allerta = /temporal|piogg|rovesc/i.test(g.testo);
-        const lbl = (etich[g.giorno] || g.giorno) + (g.data ? " · " + g.data : "");
-        const mappa = '<img class="osmer-mappa" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
-          '" src="https://www.meteo.fvg.it/previ/' + encodeURIComponent(g.giorno) + '.png" onerror="this.style.display=\'none\'" />';
-        return '<div class="bollett' + (allerta ? ' allerta' : '') + '">' +
-          '<div class="bollett-giorno">' + (allerta ? '⛈️ ' : '') + escHtml(lbl) + '</div>' +
-          '<div class="bollett-testo">' + escHtml(g.testo) + '</div>' + mappa + '</div>';
-      }).join("");
+      OSMER_GIORNI = giorni;
+      const tabs = giorni.map((g, i) =>
+        '<button class="osmer-tab" id="osmerTab' + i + '" onclick="selOsmer(' + i + ')">' +
+          '<span class="osmer-tab-ic">' + iconaMeteo(g.testo) + '</span>' +
+          (OSMER_ETICH[g.giorno] || g.giorno) + '</button>'
+      ).join("");
+      box.innerHTML = '<div class="osmer-tabs">' + tabs + '</div><div id="osmerGiorno"></div>';
+      selOsmer(0);
+    }
+    function selOsmer(i) {
+      const g = OSMER_GIORNI[i];
+      if (!g) return;
+      document.querySelectorAll(".osmer-tab").forEach((t, idx) => t.classList.toggle("attivo", idx === i));
+      const allerta = /temporal|piogg|rovesc/i.test(g.testo);
+      const lbl = (OSMER_ETICH[g.giorno] || g.giorno) + (g.data ? " · " + g.data : "");
+      const cb = new Date().toISOString().slice(0, 13);   // cache-bust orario: la mappa cambia di giorno
+      document.getElementById("osmerGiorno").innerHTML =
+        '<div class="bollett' + (allerta ? ' allerta' : '') + '">' +
+        '<div class="bollett-giorno">' + (allerta ? '⛈️ ' : '') + escHtml(lbl) + '</div>' +
+        '<div class="bollett-testo">' + escHtml(g.testo) + '</div>' +
+        '<img class="osmer-mappa" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
+          '" src="https://www.meteo.fvg.it/previ/' + encodeURIComponent(g.giorno) + '.png?v=' + cb +
+          '" onerror="this.style.display=\'none\'"></div>';
     }
 
     /* ---------- Boe OGS via ERDDAP (CORS aperto, nessun proxy) ---------- */
@@ -1324,6 +1374,13 @@
       obs.observe(wrap);
     }
 
+    // dal menu "Spot Istria": apre il gruppo collassato
+    const navIstria = document.querySelector('nav a[href="#istria"]');
+    if (navIstria) navIstria.addEventListener("click", () => {
+      const d = document.getElementById("istria");
+      if (d) d.open = true;
+    });
+
     /* ---------- Avvio ---------- */
     document.getElementById("boraImg").src = urlBora();
     document.getElementById("radarImg").src = urlRadar();
@@ -1337,9 +1394,9 @@
   </script>
 
   <div class="dona">
-    <p>🍺 Ti è utile? Il progetto è gratuito ma ha qualche costo: offrimi una birra</p>
-    <a class="dona-btn" href="https://revolut.me/albertjsz" target="_blank" rel="noopener">🍺 Offrimi una birra · Revolut</a>
-    <p class="dona-nota">Sulla pagina Revolut scegli l'importo (es. 5€) · carta, Apple Pay o Google Pay</p>
+    <p>Il progetto è gratuito ma ha qualche costo: se ti va, offrimi una birra 🍺</p>
+    <a class="dona-btn" href="https://revolut.me/albertjsz" target="_blank" rel="noopener">🍺 Offrimi una birra</a>
+    <p class="dona-nota">Scegli l'importo (es. 5€) · carta, Apple Pay o Google Pay</p>
   </div>
 
   <footer>
