@@ -68,7 +68,7 @@
       border-radius: 12px;
       padding: 1rem;
       margin-bottom: 1rem;
-      scroll-margin-top: 70px;
+      scroll-margin-top: 100px;
     }
     img, iframe {
       max-width: 100%;
@@ -85,23 +85,25 @@
       background: var(--sfondo);
       margin: 0 -1rem 1rem;
       padding: .5rem 1rem;
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: .4rem;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
       border-bottom: 1px solid var(--bordo);
     }
+    @media (min-width: 600px) { nav { grid-template-columns: repeat(4, 1fr); } }
     nav a {
-      flex-shrink: 0;
       background: #fff;
       border: 1px solid var(--bordo);
       color: var(--slate);
       text-decoration: none;
-      padding: 7px 14px;
+      padding: 10px 8px;
       border-radius: 8px;
-      font-size: .88rem;
+      font-size: .9rem;
       font-weight: 500;
+      text-align: center;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     nav a:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
 
@@ -115,12 +117,12 @@
       margin: 1.75rem .15rem .75rem;
       padding-bottom: .4rem;
       border-bottom: 2px solid var(--slate);
-      scroll-margin-top: 70px;
+      scroll-margin-top: 100px;
     }
     .gruppo-titolo:first-of-type { margin-top: .5rem; }
 
     /* gruppo collassabile (Spot Istria) */
-    .gruppo-collapse { margin-top: 1.75rem; scroll-margin-top: 70px; }
+    .gruppo-collapse { margin-top: 1.75rem; scroll-margin-top: 100px; }
     .gruppo-sum {
       font-size: 1.15rem; font-weight: 700; color: var(--slate);
       text-transform: uppercase; letter-spacing: .04em;
@@ -390,7 +392,6 @@
       padding: .5rem .3rem; font-family: inherit; font-size: .82rem; font-weight: 600;
       color: var(--slate); cursor: pointer; line-height: 1.2;
     }
-    .osmer-tab-ic { display: block; font-size: 1.35rem; margin-bottom: .15rem; }
     .osmer-tab:hover { background: #eef1f4; }
     .osmer-tab.attivo, .osmer-tab.attivo:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
 
@@ -978,13 +979,6 @@
     }
     const OSMER_ETICH = { oggi: "Oggi", domani: "Domani", dopodomani: "Dopodomani" };
     let OSMER_GIORNI = [];
-    function iconaMeteo(testo) {
-      if (/temporal/i.test(testo)) return "⛈️";
-      if (/piogg|rovesc/i.test(testo)) return "🌧️";
-      if (/coperto|molto nuvol/i.test(testo)) return "☁️";
-      if (/nuvol|variabil/i.test(testo)) return "⛅";
-      return "☀️";
-    }
     function renderOsmer(giorni) {
       const box = document.getElementById("osmerBollettino");
       if (!Array.isArray(giorni) || !giorni.length) {
@@ -994,7 +988,6 @@
       OSMER_GIORNI = giorni;
       const tabs = giorni.map((g, i) =>
         '<button class="osmer-tab" id="osmerTab' + i + '" onclick="selOsmer(' + i + ')">' +
-          '<span class="osmer-tab-ic">' + iconaMeteo(g.testo) + '</span>' +
           (OSMER_ETICH[g.giorno] || g.giorno) + '</button>'
       ).join("");
       box.innerHTML = '<div class="osmer-tabs">' + tabs + '</div><div id="osmerGiorno"></div>';
