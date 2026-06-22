@@ -347,6 +347,14 @@
       flex-wrap: wrap;
       gap: .5rem;
     }
+    .cam-video { width: 100%; border-radius: 8px; background: #000; aspect-ratio: 16/9; margin-top: .5rem; }
+    .cam-play {
+      width: 100%; aspect-ratio: 16/9; margin-top: .5rem;
+      border: 1px dashed var(--bordo); border-radius: 8px;
+      background: #f6f8fa; color: var(--slate); font-size: 1rem;
+      font-family: inherit; font-weight: 500; cursor: pointer;
+    }
+    .cam-play:hover { background: #eef1f4; }
 
     /* ---- Modal ---- */
     .modal {
@@ -597,6 +605,12 @@
     <a id="barcolaLink" href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank" rel="noopener">
       <img class="webcam" data-src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" loading="lazy" />
     </a>
+
+    <h2 style="margin-top:1.25rem;">Webcam Barcola – S.V.B.G.</h2>
+    <div id="camSvbgWrap">
+      <button class="cam-play" onclick="caricaCamSvbg()">▶ Avvia webcam live (Soc. Velica Barcola Grignano)</button>
+    </div>
+    <p class="stato">Fonte: <a href="https://www.svbg.it/" target="_blank" rel="noopener">svbg.it</a> · stream live (HLS)</p>
   </div>
 
   <div class="section" id="grisaCam">
@@ -1129,6 +1143,30 @@
         img.src = img.dataset.src + "?ts=" + Date.now();
       });
     }
+
+    /* Webcam HLS incorporata: hls.js caricato solo al click (risparmia banda) */
+    function caricaCamHls(wrapId, src) {
+      const wrap = document.getElementById(wrapId);
+      wrap.innerHTML = '<video class="cam-video" controls autoplay muted playsinline></video>';
+      const video = wrap.querySelector("video");
+      function avvia() {
+        if (window.Hls && Hls.isSupported()) {
+          const h = new Hls(); h.loadSource(src); h.attachMedia(video);
+        } else { video.src = src; }
+      }
+      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = src;                       // Safari / iOS: HLS nativo
+      } else if (window.Hls) {
+        avvia();
+      } else {
+        const s = document.createElement("script");
+        s.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js";
+        s.onload = avvia;
+        s.onerror = () => { wrap.innerHTML = '<p class="stato">Webcam non disponibile al momento.</p>'; };
+        document.head.appendChild(s);
+      }
+    }
+    function caricaCamSvbg() { caricaCamHls("camSvbgWrap", "https://webcam.svbg.it/webcam.m3u8"); }
 
 
     /* ---------- Modal modelli ---------- */
