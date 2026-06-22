@@ -375,6 +375,28 @@
     }
     .modal .contenuto h3 { margin-top: 0; }
     .guida-meta { font-size: .82rem; color: var(--label); margin: .4rem 0 0; }
+    .dona {
+      text-align: center;
+      max-width: 420px;
+      margin: 2rem auto 0;
+      padding: 1rem 1.2rem;
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+    }
+    .dona p { margin: 0 0 .7rem; font-size: .9rem; color: var(--slate); }
+    .dona-btn {
+      display: inline-block;
+      background: var(--slate);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: .95rem;
+    }
+    .dona-btn:hover { background: #0d141d; }
+    .dona-nota { font-size: .72rem !important; color: var(--label) !important; margin: .6rem 0 0 !important; }
     footer {
       text-align: center;
       font-size: .9rem;
@@ -470,6 +492,22 @@
       </table>
     </details>
     <p class="stato" id="statoMuggia"></p>
+  </div>
+
+  <div class="section" id="marinajulia">
+    <h2>Marina Julia (Monfalcone) – dati in tempo reale</h2>
+    <div id="marinajuliaCards"></div>
+    <div class="trend" id="marinajuliaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoMarinajulia">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="marinajuliaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoMarinajulia"></p>
   </div>
 
   <!-- BOE OGS: MARE E ONDE -->
@@ -726,7 +764,8 @@
     const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
     const LINK_VETERCEK = {
       grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
-      muggia: "https://vetercek.com/danes/index.php?postaja=muggia"
+      muggia: "https://vetercek.com/danes/index.php?postaja=muggia",
+      marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4"
     };
     const SPOT_ISTRIA = ["savudrija", "dajla", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
@@ -1119,6 +1158,7 @@
           renderBarcola(data.barcola);
           renderStazione(data.monteGrisa, "grisa");
           renderStazione(data.muggia, "muggia");
+          renderStazione(data.marinajulia, "marinajulia");
           SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
           document.getElementById("ultimoAggiornamento").textContent =
             "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
@@ -1126,7 +1166,7 @@
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
           renderBarcola(null);
-          ["grisa", "muggia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
+          ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
         })
         .finally(() => { btn.disabled = false; });
@@ -1224,6 +1264,12 @@
     // auto-refresh dati ogni 5 minuti
     timerAuto = setInterval(() => { caricaDati(); caricaMare(); }, 5 * 60 * 1000);
   </script>
+
+  <div class="dona">
+    <p>🍺 Ti è utile? Il progetto è gratuito ma ha qualche costo: offrimi una birra</p>
+    <a class="dona-btn" href="https://revolut.me/albertjsz/eur5" target="_blank" rel="noopener">Offri 5€ con Revolut</a>
+    <p class="dona-nota">Pagamento su pagina Revolut (carta, Apple Pay o Google Pay)</p>
+  </div>
 
   <footer>
     <p>
