@@ -356,6 +356,17 @@
     }
     .cam-play:hover { background: #eef1f4; }
 
+    /* ---- Bollettino OSMER ---- */
+    .bollett { padding: .6rem 0; border-bottom: 1px solid var(--bordo); }
+    .bollett:first-child { padding-top: 0; }
+    .bollett:last-child { border-bottom: 0; padding-bottom: 0; }
+    .bollett-giorno {
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--label); font-weight: 600; margin-bottom: .25rem;
+    }
+    .bollett-testo { font-size: .95rem; line-height: 1.5; color: var(--testo); }
+    .bollett.allerta .bollett-giorno { color: #b35c00; }
+
     /* ---- Modal ---- */
     .modal {
       display: none;
@@ -535,6 +546,13 @@
   </div>
 
   <div class="gruppo-titolo" id="previsioni">📅 Previsioni</div>
+
+  <!-- BOLLETTINO OSMER -->
+  <div class="section" id="osmer">
+    <h2>Previsione descrittiva – OSMER FVG</h2>
+    <div id="osmerBollettino"><p class="stato">Caricamento…</p></div>
+    <p class="stato">Fonte: <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">OSMER – Arpa FVG</a></p>
+  </div>
 
   <!-- GRAFICO BORA -->
   <div class="section" id="bora">
@@ -914,6 +932,26 @@
         '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
     }
 
+    /* ---------- Bollettino OSMER FVG ---------- */
+    function escHtml(s) {
+      return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    }
+    function renderOsmer(giorni) {
+      const box = document.getElementById("osmerBollettino");
+      if (!Array.isArray(giorni) || !giorni.length) {
+        box.innerHTML = '<p class="stato">Bollettino non disponibile — <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">apri OSMER</a></p>';
+        return;
+      }
+      const etich = { oggi: "Oggi", domani: "Domani", dopodomani: "Dopodomani" };
+      box.innerHTML = giorni.map(g => {
+        const allerta = /temporal|piogg|rovesc/i.test(g.testo);
+        const lbl = (etich[g.giorno] || g.giorno) + (g.data ? " · " + g.data : "");
+        return '<div class="bollett' + (allerta ? ' allerta' : '') + '">' +
+          '<div class="bollett-giorno">' + (allerta ? '⛈️ ' : '') + escHtml(lbl) + '</div>' +
+          '<div class="bollett-testo">' + escHtml(g.testo) + '</div></div>';
+      }).join("");
+    }
+
     /* ---------- Boe OGS via ERDDAP (CORS aperto, nessun proxy) ---------- */
     const ERDDAP = "https://nodc.ogs.it/erddap/tabledap/";
     const MS_IN_KT = 1.94384;
@@ -1156,6 +1194,7 @@
         })
         .then(data => {
           renderBarcola(data.barcola);
+          renderOsmer(data.osmer);
           renderStazione(data.monteGrisa, "grisa");
           renderStazione(data.muggia, "muggia");
           renderStazione(data.marinajulia, "marinajulia");
@@ -1166,6 +1205,7 @@
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
           renderBarcola(null);
+          renderOsmer([]);
           ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
         })

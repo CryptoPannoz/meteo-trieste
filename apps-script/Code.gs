@@ -24,6 +24,7 @@ var STATIONS = {
 };
 
 var BARCOLA_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data_current&id_station=5307';
+var OSMER_URL = 'https://www.osmer.fvg.it/previsioni.php?ln=';
 var MAX_ROWS = 10;
 
 function stationUrl(s) {
@@ -38,8 +39,10 @@ function doGet() {
   var requests = keys.map(function (k) {
     return { url: stationUrl(STATIONS[k]), muteHttpExceptions: true, followRedirects: true };
   });
-  // ultima richiesta: stazione Windguru di Barcola (richiede Referer windguru.cz)
+  // penultima: stazione Windguru di Barcola (richiede Referer windguru.cz)
   requests.push({ url: BARCOLA_URL, headers: { Referer: 'https://www.windguru.cz/station/5307' }, muteHttpExceptions: true });
+  // ultima: bollettino testuale OSMER FVG
+  requests.push({ url: OSMER_URL, muteHttpExceptions: true, followRedirects: true });
 
   var responses = UrlFetchApp.fetchAll(requests);
 
@@ -59,6 +62,13 @@ function doGet() {
   } catch (e) {
     out.barcola = null;
     out.barcolaError = String(e);
+  }
+
+  try {
+    out.osmer = parseOsmer(responses[keys.length + 1].getContentText());
+  } catch (e) {
+    out.osmer = [];
+    out.osmerError = String(e);
   }
 
   out.updated = new Date().toISOString();
@@ -94,6 +104,36 @@ function parseStation(html, label) {
       temp: c[4] || '-'
     };
   });
+}
+
+/* Bollettino OSMER FVG: estrae i pannelli oggi/domani/dopodomani con il testo descrittivo */
+function parseOsmer(html) {
+  var out = [];
+  var giorni = { oggi: 1, domani: 1, dopodomani: 1 };
+  var re = /panel-heading">([^<]+)<\/div>([\s\S]*?)(?=panel-heading">|$)/g;
+  var m;
+  while ((m = re.exec(html)) !== null) {
+    var titolo = m[1].trim().toLowerCase();
+    if (!giorni[titolo]) continue;
+    var blocco = m[2];
+    var t = blocco.match(/text-justify sipadd">([\s\S]*?)<\/div>/);
+    if (!t) continue;
+    var dm = blocco.match(/<strong>([^<]+)<\/strong>/);
+    out.push({
+      giorno: titolo,
+      data: dm ? decodeEnt(dm[1].trim()) : '',
+      testo: decodeEnt(t[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')).trim()
+    });
+  }
+  return out;
+}
+
+function decodeEnt(s) {
+  return s
+    .replace(/&agrave;/g, 'à').replace(/&egrave;/g, 'è').replace(/&eacute;/g, 'é')
+    .replace(/&igrave;/g, 'ì').replace(/&ograve;/g, 'ò').replace(/&ugrave;/g, 'ù')
+    .replace(/&ccedil;/g, 'ç').replace(/&deg;/g, '°').replace(/&nbsp;/g, ' ')
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
 }
 
 /** Test manuale dall'editor */
