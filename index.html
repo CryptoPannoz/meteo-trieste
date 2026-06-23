@@ -460,6 +460,38 @@
       .spot-azioni { flex-direction: column; }
       .spot-azioni .spot-btn { width: 100%; justify-content: center; }
     }
+
+    /* ---------- Overlay di caricamento iniziale ---------- */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1rem; text-align: center; padding: 1rem;
+      background: var(--sfondo);
+      transition: opacity .5s ease;
+    }
+    #loader.nascondi { opacity: 0; pointer-events: none; }
+    .loader-spin { position: relative; width: 96px; height: 96px; }
+    .loader-spin .anello {
+      position: absolute; inset: 0;
+      border: 5px solid var(--bordo); border-top-color: var(--azzurro);
+      border-radius: 50%; animation: loader-gira .9s linear infinite;
+    }
+    .loader-spin .surf {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.4rem; animation: loader-onda 1.6s ease-in-out infinite;
+    }
+    .loader-txt { font-weight: 600; color: var(--slate); font-size: 1.02rem; }
+    .loader-sub { color: var(--label); font-size: .85rem; margin-top: -.6rem; }
+    @keyframes loader-gira { to { transform: rotate(360deg); } }
+    @keyframes loader-onda {
+      0%, 100% { transform: translateY(3px) rotate(-8deg); }
+      50%      { transform: translateY(-4px) rotate(8deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .loader-spin .anello { animation-duration: 2.2s; }
+      .loader-spin .surf { animation: none; }
+    }
   </style>
 
   <!-- Dati strutturati per Google (rich results) -->
@@ -504,6 +536,15 @@
   </script>
 </head>
 <body>
+
+  <div id="loader" role="status" aria-live="polite" aria-label="Caricamento dati in corso">
+    <div class="loader-spin">
+      <div class="anello"></div>
+      <div class="surf">🏄‍♂️</div>
+    </div>
+    <div class="loader-txt">Carico vento e onde…</div>
+    <div class="loader-sub">dati live da centraline e boe</div>
+  </div>
 
   <h1>🏄‍♂️ Previsioni vento &amp; surf – Trieste</h1>
 
@@ -1362,7 +1403,7 @@
     function caricaDati() {
       const btn = document.getElementById("btnAggiorna");
       btn.disabled = true;
-      fetch(PROXY + "?ts=" + Date.now())
+      return fetch(PROXY + "?ts=" + Date.now())
         .then(res => {
           if (!res.ok) throw new Error("HTTP " + res.status);
           return res.json();
@@ -1554,13 +1595,20 @@
     });
 
     /* ---------- Avvio ---------- */
+    function nascondiLoader() {
+      const l = document.getElementById("loader");
+      if (l) l.classList.add("nascondi");
+    }
     document.getElementById("boraImg").src = urlBora();
     document.getElementById("radarImg").src = urlRadar();
     mostraAladin();
     aggiornaWebcam();
     autoCamSvbg();
     autoCamMonfalcone();
-    caricaDati();
+    // l'overlay si dissolve quando i dati principali sono pronti
+    caricaDati().finally(nascondiLoader);
+    // safety: non lasciare mai l'utente bloccato dietro l'overlay
+    setTimeout(nascondiLoader, 8000);
     caricaMare();
     caricaDeltaBora();
     // auto-refresh dati ogni 5 minuti
