@@ -185,6 +185,10 @@
     .statbox .sub { display: block; font-size: .72rem; color: var(--label); margin-top: 3px; }
     .freccia { display: inline-block; font-size: 1.05rem; line-height: 1; }
 
+    /* ---- Intestazione sezione con azione a destra (es. "come si legge") ---- */
+    .sec-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; }
+    .sec-head h2 { margin: 0; }
+
     /* ---- Box differenza pressione Bora (live) ---- */
     .bora-delta { margin-top: 1.1rem; }
     .bora-delta .bd-titolo { font-size: 1rem; margin: 0 0 .15rem; }
@@ -305,10 +309,12 @@
     tr.riga-recente td:first-child { background: #f6f8fa; }
     .ora-now { font-size: .66rem; background: var(--slate); color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 5px; font-weight: 500; }
     .stato {
-      font-size: .85rem;
+      font-size: .72rem;
       color: #666;
       margin: .25rem 0 0;
     }
+    /* nel grafico della Bora la fonte resta della dimensione originale */
+    #bora > .stato { font-size: .85rem; }
     .errore {
       background: #fdf2f2;
       border: 1px solid #f5c2c2;
@@ -637,7 +643,10 @@
 
   <!-- GRAFICO BORA -->
   <div class="section" id="bora">
-    <h2>Grafico della Bora</h2>
+    <div class="sec-head">
+      <h2>Grafico della Bora</h2>
+      <button type="button" class="bd-info" onclick="apriGuidaBora()">ℹ️ come si legge</button>
+    </div>
     <p class="stato">Fonte: <a href="https://profiwetter.ch" target="_blank" rel="noopener">profiwetter.ch</a></p>
     <img id="boraImg" alt="Diagramma previsione Bora" loading="lazy"
          onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Grafico Bora momentaneamente non disponibile.</p>'); this.style.display='none';" />
@@ -760,6 +769,24 @@
       <p class="guida-meta">Il grafico qui sopra mostra la differenza <em>prevista</em> per i prossimi 5 giorni (fonte DWD / profiwetter.ch); questo box invece usa la pressione <em>attuale</em>, normalizzata al livello del mare così che Maribor (262&nbsp;m) e Trieste siano confrontabili. Fonte dati live: Open-Meteo.</p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="document.getElementById('modalDeltaBora').style.display='none'">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL "COME SI LEGGE" – GRAFICO BORA -->
+  <div id="modalGuidaBora" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaBoraTitolo">
+    <div class="contenuto">
+      <h3 id="guidaBoraTitolo">Grafico della Bora – come si legge</h3>
+      <p>È la <strong>previsione della Bora</strong> per il Golfo di Trieste nei prossimi giorni, elaborata da profiwetter.ch sul modello DWD.</p>
+      <p>Si basa sulla <strong>differenza di pressione</strong> tra l'entroterra sloveno (sopravento) e l'Adriatico: quando l'entroterra ha pressione nettamente più alta della costa, l'aria scavalca le Alpi Dinariche e precipita sul golfo come Bora.</p>
+      <p>
+        • L'asse del tempo scorre verso <strong>i prossimi giorni</strong>.<br>
+        • Più il <strong>gradiente è negativo</strong> (entroterra ≫ costa), più <strong>forte</strong> sarà la Bora prevista in quel momento.<br>
+        • Tratti vicini allo zero = <strong>niente Bora</strong>.
+      </p>
+      <p class="guida-meta">Questa è la <em>previsione</em> a più giorni. Per la situazione <em>in tempo reale</em> usa il box “Differenza di pressione ora” sotto al grafico. Fonte: profiwetter.ch (modello DWD).</p>
+      <div style="text-align:right; margin-top:1rem;">
+        <button onclick="document.getElementById('modalGuidaBora').style.display='none'">Chiudi</button>
       </div>
     </div>
   </div>
@@ -1404,6 +1431,7 @@
     /* ---------- Modal modelli ---------- */
     function apriModal()  { document.getElementById("modal").style.display = "block"; }
     function chiudiModal(){ document.getElementById("modal").style.display = "none"; }
+    function apriGuidaBora(){ document.getElementById("modalGuidaBora").style.display = "block"; }
 
     /* ---------- Differenza pressione Trieste–Maribor (live, Open-Meteo MSLP) ----------
        MSLP = pressione ridotta al livello del mare: necessaria perché Maribor è a 262 m
