@@ -1117,7 +1117,7 @@
           '" onerror="this.style.display=\'none\'"></div>';
     }
 
-    /* ---------- Boe OGS via ERDDAP (CORS aperto, nessun proxy) ---------- */
+    /* ---------- Boe OGS via ERDDAP (CORS aperto: Access-Control-Allow-Origin: *) ---------- */
     const ERDDAP = "https://nodc.ogs.it/erddap/tabledap/";
     const MS_IN_KT = 1.94384;
 
@@ -1137,8 +1137,15 @@
     function erddapRows(dataset, campi, ore) {
       const url = ERDDAP + dataset + ".json?" + encodeURIComponent(campi.join(",")) +
                   "&" + encodeURIComponent("time>=now-" + ore + "hours");
-      return fetch(url)
+      // OGS rate-limita gli IP troppo insistenti con un 403 (privo di header CORS,
+      // da cui il fuorviante "CORS error" in console): un retry assorbe i blip.
+      const tenta = (n) => fetch(url)
         .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+        .catch(err => {
+          if (n > 1) return new Promise(r => setTimeout(r, 1500)).then(() => tenta(n - 1));
+          throw err;
+        });
+      return tenta(2)
         .then(j => {
           const t = j.table;
           return t.rows
