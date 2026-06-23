@@ -483,8 +483,6 @@
       .statgrid { grid-template-columns: repeat(3, 1fr); gap: .4rem; }
       .statbox { padding: .55rem .5rem; }
       .statbox .valore { font-size: 1.3rem; }
-      /* onde (4 dati): griglia 2×2 ordinata */
-      #ondeStat { grid-template-columns: repeat(2, 1fr); }
       /* bottoni spot a piena larghezza, in colonna, ben distanziati */
       .spot-azioni { flex-direction: column; }
       .spot-azioni .spot-btn { width: 100%; justify-content: center; }
@@ -605,13 +603,13 @@
     </div>
     <p class="stato" id="statoMambo"></p>
 
-    <h3 style="margin:1rem 0 0;">Onde – boa Pirano (DWRG1)</h3>
-    <div class="statgrid" id="ondeStat">
+    <h3 style="margin:1rem 0 .25rem;">Boa Pirano (Vida, NIB)</h3>
+    <div id="piranStat">
       <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
     </div>
-    <p class="stato" id="statoOnde"></p>
+    <p class="stato" id="statoPiran"></p>
 
-    <p class="stato">Fonte: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">Geoportale OGS – NODC</a> (dati near-real-time via ERDDAP)</p>
+    <p class="stato">Fonti: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a> (boa Trieste, via ERDDAP) · <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB – boa Vida</a> (Pirano)</p>
   </div>
 
   <div class="section" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
@@ -1170,29 +1168,32 @@
         });
     }
 
-    function caricaOnde() {
-      // la boa onde può riportare ogni diverse ore: finestra di 4 giorni per avere sempre l'ultimo dato
-      erddapRows("DWRG1_TS", ["time", "VHM0", "VZMX", "VTPK", "VPED"], 96)
-        .then(rows => {
-          const r = rows.filter(x => x.VHM0 != null).pop();
-          if (!r) throw new Error("nessun dato recente");
-          const deg = (typeof r.VPED === "number") ? r.VPED : null;
-          const fre = (deg != null)
-            ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "";
-          document.getElementById("ondeStat").innerHTML =
-            miniCard("Onda sign.", num(r.VHM0, 2), "m") +
-            miniCard("Onda max", num(r.VZMX, 2), "m") +
-            miniCard("Periodo", num(r.VTPK, 1), "s") +
-            miniCard("Direzione", (deg != null ? gradiInDirezione(deg) : "–"), (deg != null ? Math.round(deg) + "°" : ""), "", fre);
-          document.getElementById("statoOnde").textContent = "Ultima rilevazione: " + quandoLocale(r.time);
-        })
-        .catch(err => {
-          console.error("Errore boa DWRG1:", err);
-          statErrore("ondeStat", "statoOnde");
-        });
+    /* Boa Vida (NIB Pirano): dati dal proxy (data.piran). Stesso layout della boa Trieste:
+       card vento + mini-card temperatura aria/mare; aggiungo l'altezza onda. */
+    function renderPiran(p) {
+      const stato = document.getElementById("statoPiran");
+      if (!p || (p.wind == null && p.airTemp == null && p.seaTemp == null)) {
+        statErrore("piranStat", "statoPiran");
+        return;
+      }
+      let html = "";
+      if (p.wind != null) {
+        const deg = (typeof p.dir === "number") ? p.dir : null;
+        html += ventoCardHtml(num(p.wind * MS_IN_KT, 1),
+                              (p.gust != null ? num(p.gust * MS_IN_KT, 1) : "–"),
+                              deg, (deg != null ? gradiInDirezione(deg) : "–"));
+      }
+      html += '<div class="statgrid" style="margin-top:.5rem;">';
+      if (p.airTemp != null) html += miniCard("Aria", num(p.airTemp, 1), "°C");
+      if (p.seaTemp != null) html += miniCard("Mare (−2,5 m)", num(p.seaTemp, 1), "°C");
+      if (p.waveH != null)   html += miniCard("Onda", num(p.waveH, 1), "m");
+      html += '</div>';
+      document.getElementById("piranStat").innerHTML = html;
+      const t = p.time ? p.time.replace(/:\d{2}$/, "") : "";
+      stato.textContent = (t ? "Rilevazione " + t + " (ora locale)" : "Fonte NIB – boa Vida");
     }
 
-    function caricaMare() { caricaMambo(); caricaOnde(); }
+    function caricaMare() { caricaMambo(); }
 
     /* ---------- Tabelle centraline ---------- */
     function classeVento(kt) {
@@ -1354,6 +1355,7 @@
           renderStazione(data.muggia, "muggia");
           renderStazione(data.marinajulia, "marinajulia");
           SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
+          renderPiran(data.piran);
           document.getElementById("ultimoAggiornamento").textContent =
             "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
         })
@@ -1361,6 +1363,7 @@
           console.error("Errore caricamento dati centraline:", err);
           renderBarcola(null);
           renderOsmer([]);
+          renderPiran(null);
           ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
         })
