@@ -218,12 +218,6 @@
     .tws-dir { font-size: 1.55rem; font-weight: 800; color: var(--testo); margin-top: .55rem; line-height: 1.1; }
     .tws-dir .deg { font-size: 1rem; font-weight: 600; color: var(--label); }
     .tws-dir .freccia { font-size: 1.4rem; vertical-align: -1px; }
-    .meta-row {
-      display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem;
-      margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--bordo);
-      font-size: .9rem; color: var(--label);
-    }
-    .meta-row b { font-weight: 700; color: var(--testo); font-variant-numeric: tabular-nums; }
 
     /* ---- Surfometro orizzontale ---- */
     .surf2-verdetto { text-align: center; font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.3rem; }
@@ -1109,13 +1103,13 @@
       aggiornaSurfometro(b.wind_avg);
       const dir = (typeof b.wind_direction === "number") ? b.wind_direction : null;
       const dirTxt = (dir != null) ? gradiInDirezione(dir) : "–";
+      let boxes = '<div class="statgrid" style="margin-top:.5rem;">';
+      if (b.temperature != null) boxes += miniCard("Aria", num(b.temperature, 1), "°C");
+      if (b.mslp != null)        boxes += miniCard("Pressione", num(b.mslp, 0), "hPa");
+      if (b.rh != null)          boxes += miniCard("Umidità", num(b.rh, 0), "%");
+      boxes += '</div>';
       box.innerHTML =
-        ventoCardHtml(num(b.wind_avg, 1), num(b.wind_max, 1), dir, dirTxt) +
-        '<div class="meta-row">' +
-          '<span>Aria <b>' + num(b.temperature, 1) + '°</b></span>' +
-          '<span>Pressione <b>' + num(b.mslp, 0) + '</b> hPa</span>' +
-          '<span>Umidità <b>' + num(b.rh, 0) + '%</b></span>' +
-        '</div>';
+        ventoCardHtml(num(b.wind_avg, 1), num(b.wind_max, 1), dir, dirTxt) + boxes;
       const oraHm = b.datetime ? (b.datetime.split(" ")[1] || "").slice(0, 5) : "";
       document.getElementById("statoBarcola").innerHTML =
         (oraHm ? "Rilevazione delle " + oraHm + " · " : "") +
