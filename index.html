@@ -1195,9 +1195,11 @@
       document.getElementById(idStato).textContent = "";
     }
 
+    let mamboOk = false;   // una volta mostrati i dati, non azzero la card per un blip temporaneo
     function caricaMambo() {
-      // finestra ampia: la boa a volte salta qualche ora, così pesco comunque l'ultimo dato
-      erddapRows("MAMBO1_TS", ["time", "depth", "WSPD", "GSPD", "WDIR", "DRYT", "TEMP_1"], 24)
+      // finestra ampia (72h): la boa a volte salta ore o un giorno intero; con .pop() prendo
+      // comunque l'ultima rilevazione valida (la data esatta è mostrata sotto la card)
+      erddapRows("MAMBO1_TS", ["time", "depth", "WSPD", "GSPD", "WDIR", "DRYT", "TEMP_1"], 72)
         .then(rows => {
           // depth 0 = meteo, depth 2 = sensori in acqua; prendo le ultime righe valorizzate
           const meteo = rows.filter(r => r.WSPD != null).pop();
@@ -1215,10 +1217,12 @@
           html += '</div>';
           document.getElementById("mamboStat").innerHTML = html;
           document.getElementById("statoMambo").textContent = "Rilevazione " + quandoLocale((meteo || acqua).time);
+          mamboOk = true;
         })
         .catch(err => {
           console.error("Errore boa MAMBO1:", err);
-          statErrore("mamboStat", "statoMambo");
+          // se la card mostrava già dei dati, li lascio: meglio un dato vecchio che "non disponibili"
+          if (!mamboOk) statErrore("mamboStat", "statoMambo");
         });
     }
 
