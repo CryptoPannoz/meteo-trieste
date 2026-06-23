@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
   <title>Vento Trieste – Surfometro, Bora e previsioni surf e windsurf</title>
   <meta name="description" content="Vento in tempo reale a Trieste e in Istria per surf, windsurf e wing: surfometro di Barcola, grafico della Bora, modello ALADIN e dati live di Monte Grisa, Muggia e spot istriani." />
@@ -39,19 +39,22 @@
       --azzurro-scuro: #245991;
       --sfondo: #eef1f4;
       --bordo: #dce1e7;
-      --testo: #1a2330;
-      --label: #8a94a0;
+      --testo: #16202b;
+      --label: #5c6675;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
       padding: 0 1rem 1.5rem;
       background: var(--sfondo);
       color: var(--testo);
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
       font-feature-settings: "tnum" 1;
+      line-height: 1.5;
     }
     h1 {
       font-size: 1.35rem;
@@ -163,11 +166,12 @@
     }
     .statbox .etichetta {
       display: block;
-      font-size: .68rem;
+      font-size: .72rem;
+      font-weight: 600;
       color: var(--label);
       text-transform: uppercase;
-      letter-spacing: .06em;
-      margin-bottom: .15rem;
+      letter-spacing: .04em;
+      margin-bottom: .2rem;
     }
     .statbox .valore {
       display: block;
