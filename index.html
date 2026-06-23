@@ -753,6 +753,14 @@
     </a>
   </div>
 
+  <div class="section" id="monfalconeCam">
+    <h2>Webcam Marina Monfalcone – panoramica 360°</h2>
+    <div id="camMonfalconeWrap">
+      <button class="cam-play" onclick="caricaCamMonfalcone()">▶ Avvia webcam live (Marina Monfalcone · Panomax 360°)</button>
+    </div>
+    <p class="stato">Fonte: <a href="https://marinamonfalcone.panomax.com/" target="_blank" rel="noopener">marinamonfalcone.panomax.com</a> · panorama live (Panomax)</p>
+  </div>
+
   <!-- SPOT ISTRIA (gruppo collassabile) -->
   <details class="gruppo-collapse" id="istria">
   <summary class="gruppo-sum">🏖️ Spot Istria</summary>
@@ -1340,6 +1348,14 @@
     }
     function caricaCamSvbg() { caricaCamHls("camSvbgWrap", "https://webcam.svbg.it/webcam.m3u8"); }
 
+    /* Webcam Marina Monfalcone (Panomax 360°): iframe caricato solo quando serve */
+    function caricaCamMonfalcone() {
+      const wrap = document.getElementById("camMonfalconeWrap");
+      if (!wrap || wrap.dataset.loaded) return;
+      wrap.dataset.loaded = "1";
+      wrap.innerHTML = '<iframe class="cam-video" title="Webcam Marina Monfalcone (Panomax 360°)" loading="lazy" allowfullscreen src="https://marinamonfalcone.panomax.com/"></iframe>';
+    }
+
 
     /* ---------- Modal modelli ---------- */
     function apriModal()  { document.getElementById("modal").style.display = "block"; }
@@ -1401,6 +1417,19 @@
       obs.observe(wrap);
     }
 
+    /* Avvio automatico della webcam Marina Monfalcone quando entra in vista */
+    function autoCamMonfalcone() {
+      const wrap = document.getElementById("camMonfalconeWrap");
+      if (!wrap) return;
+      if (!("IntersectionObserver" in window)) { caricaCamMonfalcone(); return; }
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { obs.disconnect(); caricaCamMonfalcone(); }
+        });
+      }, { rootMargin: "200px" });
+      obs.observe(wrap);
+    }
+
     // dal menu "Spot Istria": apre il gruppo collassato
     const navIstria = document.querySelector('nav a[href="#istria"]');
     if (navIstria) navIstria.addEventListener("click", () => {
@@ -1414,6 +1443,7 @@
     mostraAladin();
     aggiornaWebcam();
     autoCamSvbg();
+    autoCamMonfalcone();
     caricaDati();
     caricaMare();
     // auto-refresh dati ogni 5 minuti
