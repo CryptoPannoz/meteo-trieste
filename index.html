@@ -237,7 +237,13 @@
     .meter-pointer {
       position: absolute; top: 0; height: 42px;
       display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
-      line-height: 1; transition: left .5s ease, opacity .3s ease; z-index: 2;
+      line-height: 1; transition: left .5s ease, transform .5s ease, opacity .3s ease; z-index: 2;
+    }
+    /* indicatore "fuori scala" (>40 kt): chevron rosso sull'estremità destra della barra */
+    .meter-over {
+      position: absolute; top: 46px; right: 6px; height: 16px;
+      display: flex; align-items: center; font-size: 12px; font-weight: 800; color: #fff;
+      opacity: 0; transition: opacity .3s ease; pointer-events: none; z-index: 1;
     }
     .mp-main { display: flex; flex-direction: row; align-items: center; gap: 4px; }
     .mp-main .meter-dir { font-size: 17px; line-height: 1; color: var(--slate-2); transform-origin: center; display: inline-block; }
@@ -595,6 +601,7 @@
           <div style="flex:12.5;background:#E24B4A;"></div>
           <div class="meter-range" id="meterRange" style="left:0%;width:0%;opacity:0;"></div>
         </div>
+        <div class="meter-over" id="meterOver" aria-hidden="true">» 40+</div>
         <div class="meter-ticks">
           <span style="left:30%;">12</span><span style="left:45%;">18</span><span style="left:62.5%;">25</span><span style="left:87.5%;">35</span>
         </div>
@@ -1075,6 +1082,7 @@
       const gapp  = document.getElementById("meterGust");        // appendice raffica (dentro il pointer)
       const gval  = document.getElementById("meterGustVal");
       const range = document.getElementById("meterRange");
+      const over  = document.getElementById("meterOver");        // indicatore "fuori scala" (>40 kt)
       if (!verd || !ptr || !val) return;
       const spegniRaffica = () => {
         if (gapp)  gapp.style.display = "none";
@@ -1084,14 +1092,19 @@
         verd.innerHTML = "—";
         verd.style.color = "var(--label)";
         ptr.style.left = "0%";
+        ptr.style.transform = "translateX(0)";
         ptr.style.opacity = "0";
         val.textContent = "–";
         if (dirEl) dirEl.style.display = "none";
+        if (over)  over.style.opacity = "0";
         spegniRaffica();
         return;
       }
       const pa = posSurf(kt);
       ptr.style.left = pa + "%";
+      // l'indicatore scorre con la posizione (0%→nessuno shift, 100%→tutto a sinistra)
+      // così il blocco numeri resta sempre dentro i bordi, anche oltre i 40 kt
+      ptr.style.transform = "translateX(-" + pa + "%)";
       ptr.style.opacity = "1";
       val.textContent = num(kt, 1);
       // freccia della direzione reale (stessa convenzione del riquadro live: ↓ ruotato dei gradi)
@@ -1115,6 +1128,9 @@
       } else {
         spegniRaffica();
       }
+      // fuori scala: medio o raffica oltre 40 kt → la posizione è pinnata a destra, segnalalo
+      const fuoriScala = kt > SURF_SCALA || (gust != null && !isNaN(gust) && gust > SURF_SCALA);
+      if (over) over.style.opacity = fuoriScala ? "1" : "0";
     }
 
     /* ---- Fallback Barcola → Monte Grisa per il surfometro ----
