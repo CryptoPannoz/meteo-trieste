@@ -34,7 +34,6 @@
     :root {
       --slate: #1f2d3d;
       --slate-2: #45566a;
-      --blu: #1f2d3d;
       --azzurro: #2f6fb0;
       --azzurro-scuro: #245991;
       --sfondo: #eef1f4;
@@ -456,7 +455,6 @@
       .spot-btn,
       .osmer-tab,
       .dona-btn,
-      .cam-link,
       details.dettaglio > summary,
       .gruppo-sum {
         min-height: 44px;
@@ -1068,8 +1066,8 @@
     }
 
     /* Surfometro orizzontale: indicatore unico del vento medio sulla scala 0–40 kt + verdetto.
-       La raffica (gust) è solo visiva: appendice numerica sotto il medio + fascia di range
-       sulla barra (più la fascia è larga, più lo spot è rafficato). Verdetto = solo medio. */
+       La raffica (gust) è solo visiva: numero a destra del medio (come range) + fascia sulla
+       barra (più la fascia è larga, più lo spot è rafficato). Verdetto = solo medio. */
     const SURF_SCALA = 40;                          // la scala copre 0–40 kt
     function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_SCALA) / SURF_SCALA * 100; }
     function aggiornaSurfometro(kt, gust, dir) {
@@ -1122,7 +1120,8 @@
         if (gapp) gapp.style.display = "";
         if (gval) gval.textContent = num(gust, 1);
         const pg = posSurf(gust);
-        if (range) { range.style.left = pa + "%"; range.style.width = Math.max(pg - pa, 0) + "%"; range.style.opacity = "1"; }
+        const w = Math.max(pg - pa, 0);
+        if (range) { range.style.left = pa + "%"; range.style.width = w + "%"; range.style.opacity = (w >= 1) ? "1" : "0"; }
       } else {
         spegniRaffica();
       }
