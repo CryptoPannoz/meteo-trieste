@@ -1137,12 +1137,13 @@
        surfometro con Monte Grisa, segnalandolo. Al ritorno di Barcola si ripristina. */
     function barcolaTws(b) {
       if (!b) return null;
-      const avg = b.wind_avg, max = b.wind_max;
-      if (avg == null || isNaN(avg)) return null;
+      const avg = parseFloat(b.wind_avg);   // robusto a numero o stringa (come grisaTws)
+      const max = parseFloat(b.wind_max);
+      const dir = parseFloat(b.wind_direction);
+      if (isNaN(avg)) return null;
       // centralina disattivata: vento medio e raffica entrambi a zero → offline
-      if (avg === 0 && (max == null || isNaN(max) || max === 0)) return null;
-      const dir = (typeof b.wind_direction === "number") ? b.wind_direction : null;
-      return { avg: avg, gust: (max != null && !isNaN(max)) ? max : null, dir: dir };
+      if (avg === 0 && (isNaN(max) || max === 0)) return null;
+      return { avg: avg, gust: isNaN(max) ? null : max, dir: isNaN(dir) ? null : dir };
     }
     function grisaTws(data) {
       let rows = (data && Array.isArray(data.monteGrisa) && data.monteGrisa.length)
