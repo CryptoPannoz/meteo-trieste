@@ -223,13 +223,29 @@
     .surf2-verdetto { text-align: center; font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.3rem; }
     .surf2-verdetto small { display: block; font-size: .85rem; font-weight: 500; color: var(--label); margin-top: .15rem; }
     .meter { position: relative; padding-top: 32px; }
-    .meter-bar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; }
-    .meter-pointer { position: absolute; top: 0; transform: translateX(-50%); text-align: center; transition: left .5s ease, opacity .3s ease; }
+    .meter-bar { position: relative; display: flex; height: 16px; border-radius: 8px; overflow: hidden; }
+    /* fascia raffica: dal vento medio alla raffica, più è larga più lo spot è rafficato */
+    .meter-range {
+      position: absolute; top: 0; bottom: 0; left: 0; width: 0; pointer-events: none;
+      background: rgba(31,45,61,.28);
+      border-left: 2px solid rgba(31,45,61,.65);
+      border-right: 2px solid rgba(31,45,61,.8);
+      transition: left .5s ease, width .5s ease, opacity .3s ease;
+    }
+    .meter-pointer { position: absolute; top: 0; transform: translateX(-50%); text-align: center; transition: left .5s ease, opacity .3s ease; z-index: 2; }
     .meter-pointer .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 15px; color: var(--testo); }
     .meter-pointer::after {
       content: ""; display: block; margin: 2px auto 0;
       width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent;
       border-top: 8px solid var(--testo);
+    }
+    /* freccina raffica: marker secondario, più piccolo e chiaro */
+    .meter-gust { position: absolute; top: 6px; transform: translateX(-50%); text-align: center; transition: left .5s ease, opacity .3s ease; z-index: 2; }
+    .meter-gust .mg-val { font-size: 11px; font-weight: 700; color: var(--slate-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .meter-gust::after {
+      content: ""; display: block; margin: 1px auto 0;
+      width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent;
+      border-top: 7px solid var(--slate-2);
     }
     .meter-ticks { position: relative; height: 15px; margin-top: 4px; font-size: 11px; color: var(--label); }
     .meter-ticks span { position: absolute; transform: translateX(-50%); }
@@ -569,12 +585,14 @@
       <div class="surf2-verdetto" id="verdettoBig">—</div>
       <div class="meter">
         <div class="meter-pointer" id="meterPointer" style="left:0%;opacity:0;"><span class="meter-val" id="meterVal">–</span></div>
+        <div class="meter-gust" id="meterGust" style="left:0%;opacity:0;"><span class="mg-val">↗ <span id="meterGustVal">–</span></span></div>
         <div class="meter-bar">
           <div style="flex:30;background:#b9b8b2;"></div>
           <div style="flex:15;background:#97C459;"></div>
           <div style="flex:17.5;background:#639922;"></div>
           <div style="flex:25;background:#3B6D11;"></div>
           <div style="flex:12.5;background:#E24B4A;"></div>
+          <div class="meter-range" id="meterRange" style="left:0%;width:0%;opacity:0;"></div>
         </div>
         <div class="meter-ticks">
           <span style="left:30%;">12</span><span style="left:45%;">18</span><span style="left:62.5%;">25</span><span style="left:87.5%;">35</span>
@@ -1043,27 +1061,48 @@
       return Object.assign({ i: i }, BANDE[i]);
     }
 
-    /* Surfometro orizzontale: posiziona l'indicatore sulla scala 0–40 kt e aggiorna il verdetto */
-    function aggiornaSurfometro(kt) {
-      const verd = document.getElementById("verdettoBig");
-      const ptr = document.getElementById("meterPointer");
-      const val = document.getElementById("meterVal");
+    /* Surfometro orizzontale: indicatore del vento medio sulla scala 0–40 kt + verdetto.
+       La raffica (gust) è solo visiva: freccina + fascia di range dal medio alla raffica
+       (più la fascia è larga, più lo spot è rafficato). Il verdetto resta sul solo medio. */
+    const SURF_SCALA = 40;                          // la scala copre 0–40 kt
+    function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_SCALA) / SURF_SCALA * 100; }
+    function aggiornaSurfometro(kt, gust) {
+      const verd  = document.getElementById("verdettoBig");
+      const ptr   = document.getElementById("meterPointer");
+      const val   = document.getElementById("meterVal");
+      const gptr  = document.getElementById("meterGust");
+      const gval  = document.getElementById("meterGustVal");
+      const range = document.getElementById("meterRange");
       if (!verd || !ptr || !val) return;
+      const spegniRaffica = () => {
+        if (gptr)  gptr.style.opacity = "0";
+        if (range) range.style.opacity = "0";
+      };
       if (kt == null || isNaN(kt)) {
         verd.innerHTML = "—";
         verd.style.color = "var(--label)";
         ptr.style.left = "0%";
         ptr.style.opacity = "0";
         val.textContent = "–";
+        spegniRaffica();
         return;
       }
-      const v = Math.min(Math.max(kt, 0), 40);   // la scala copre 0–40 kt
+      const pa = posSurf(kt);
       ptr.style.opacity = "1";
-      ptr.style.left = (v / 40 * 100) + "%";
+      ptr.style.left = pa + "%";
       val.textContent = num(kt, 1);
       const ver = verdetto(kt);
       verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>";
       verd.style.color = ver.bg;
+      // raffica: mostra freccina + fascia di range solo se è apprezzabilmente sopra il medio
+      if (gust != null && !isNaN(gust) && gust > kt + 0.1) {
+        const pg = posSurf(gust);
+        if (gptr) { gptr.style.left = pg + "%"; gptr.style.opacity = "1"; }
+        if (gval) gval.textContent = num(gust, 1);
+        if (range) { range.style.left = pa + "%"; range.style.width = Math.max(pg - pa, 0) + "%"; range.style.opacity = "1"; }
+      } else {
+        spegniRaffica();
+      }
     }
 
     /* ---- Fallback Barcola → Monte Grisa per il surfometro ----
@@ -1077,14 +1116,16 @@
       if (avg == null || isNaN(avg)) return null;
       // centralina disattivata: vento medio e raffica entrambi a zero → offline
       if (avg === 0 && (max == null || isNaN(max) || max === 0)) return null;
-      return avg;
+      return { avg: avg, gust: (max != null && !isNaN(max)) ? max : null };
     }
     function grisaTws(data) {
       let rows = (data && Array.isArray(data.monteGrisa) && data.monteGrisa.length)
         ? data.monteGrisa : cacheStazione["grisa"];
       if (!Array.isArray(rows) || !rows.length) return null;
-      const v = parseFloat(rows[0].kt);
-      return isNaN(v) ? null : v;
+      const avg = parseFloat(rows[0].kt);
+      if (isNaN(avg)) return null;
+      const g = parseFloat(rows[0].sunki);
+      return { avg: avg, gust: isNaN(g) ? null : g };
     }
     function aggiornaSurfometroAuto(data) {
       const sez    = document.getElementById("barcolaLive");
@@ -1095,7 +1136,7 @@
         if (sez)    sez.style.display = "";
         if (titolo) titolo.textContent = "Surfometro – Barcola";
         if (fonte)  fonte.textContent = "";
-        aggiornaSurfometro(bTws);
+        aggiornaSurfometro(bTws.avg, bTws.gust);
         return;
       }
       // Barcola offline → nascondi la scheda e passa a Monte Grisa
@@ -1104,7 +1145,7 @@
       if (gTws != null) {
         if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
         if (fonte)  fonte.innerHTML = "⚠️ Barcola momentaneamente offline — surfometro calcolato sui dati di <strong>Monte Grisa</strong>.";
-        aggiornaSurfometro(gTws);
+        aggiornaSurfometro(gTws.avg, gTws.gust);
       } else {                                  // nemmeno Grisa disponibile
         if (titolo) titolo.textContent = "Surfometro – Barcola";
         if (fonte)  fonte.textContent = "⚠️ Dati vento momentaneamente non disponibili.";
