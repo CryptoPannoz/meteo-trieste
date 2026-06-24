@@ -232,19 +232,17 @@
       border-right: 2px solid rgba(31,45,61,.8);
       transition: left .5s ease, width .5s ease, opacity .3s ease;
     }
-    /* indicatore unico: vento medio (grande) con la raffica come appendice bassa,
-       e una sola freccia in basso a sinistra che marca la posizione sulla barra */
+    /* indicatore unico: freccia della direzione (reale) a lato, poi vento medio grande
+       con la raffica come appendice bassa. Posizionato sul punto del medio nella scala. */
     .meter-pointer {
-      position: absolute; top: 0; height: 44px;
+      position: absolute; top: 0; height: 42px;
       display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
       line-height: 1; transition: left .5s ease, opacity .3s ease; z-index: 2;
     }
-    .meter-pointer .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 15px; color: var(--testo); }
-    .meter-pointer .meter-gust-app { font-size: 11px; font-weight: 700; color: var(--slate-2); margin-top: 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .meter-pointer .meter-arrow {
-      margin-top: 2px; width: 0; height: 0;
-      border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--testo);
-    }
+    .mp-main { display: flex; flex-direction: row; align-items: center; gap: 4px; }
+    .mp-main .meter-dir { font-size: 17px; line-height: 1; color: var(--slate-2); transform-origin: center; display: inline-block; }
+    .mp-main .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 15px; color: var(--testo); }
+    .meter-pointer .meter-gust-app { font-size: 11px; font-weight: 700; color: var(--slate-2); margin-top: 3px; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .meter-ticks { position: relative; height: 15px; margin-top: 4px; font-size: 11px; color: var(--label); }
     .meter-ticks span { position: absolute; transform: translateX(-50%); }
     .meter-labels { display: flex; margin-top: 5px; font-size: 10.5px; text-align: center; color: var(--label); line-height: 1.2; }
@@ -583,9 +581,11 @@
       <div class="surf2-verdetto" id="verdettoBig">—</div>
       <div class="meter">
         <div class="meter-pointer" id="meterPointer" style="left:0%;opacity:0;">
-          <span class="meter-val" id="meterVal">–</span>
-          <span class="meter-gust-app" id="meterGust" style="display:none;">↗ <span id="meterGustVal">–</span></span>
-          <span class="meter-arrow" aria-hidden="true"></span>
+          <span class="mp-main">
+            <span class="meter-dir" id="meterDir" aria-hidden="true" style="display:none;">↓</span>
+            <span class="meter-val" id="meterVal">–</span>
+          </span>
+          <span class="meter-gust-app" id="meterGust" style="display:none;"><span id="meterGustVal">–</span></span>
         </div>
         <div class="meter-bar">
           <div style="flex:30;background:#b9b8b2;"></div>
@@ -1067,10 +1067,11 @@
        sulla barra (più la fascia è larga, più lo spot è rafficato). Verdetto = solo medio. */
     const SURF_SCALA = 40;                          // la scala copre 0–40 kt
     function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_SCALA) / SURF_SCALA * 100; }
-    function aggiornaSurfometro(kt, gust) {
+    function aggiornaSurfometro(kt, gust, dir) {
       const verd  = document.getElementById("verdettoBig");
       const ptr   = document.getElementById("meterPointer");
       const val   = document.getElementById("meterVal");
+      const dirEl = document.getElementById("meterDir");         // freccia direzione (reale)
       const gapp  = document.getElementById("meterGust");        // appendice raffica (dentro il pointer)
       const gval  = document.getElementById("meterGustVal");
       const range = document.getElementById("meterRange");
@@ -1085,6 +1086,7 @@
         ptr.style.left = "0%";
         ptr.style.opacity = "0";
         val.textContent = "–";
+        if (dirEl) dirEl.style.display = "none";
         spegniRaffica();
         return;
       }
@@ -1092,6 +1094,15 @@
       ptr.style.left = pa + "%";
       ptr.style.opacity = "1";
       val.textContent = num(kt, 1);
+      // freccia della direzione reale (stessa convenzione del riquadro live: ↓ ruotato dei gradi)
+      if (dirEl) {
+        if (dir != null && !isNaN(dir)) {
+          dirEl.style.transform = "rotate(" + dir + "deg)";
+          dirEl.style.display = "";
+        } else {
+          dirEl.style.display = "none";
+        }
+      }
       const ver = verdetto(kt);
       verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>";
       verd.style.color = ver.bg;
@@ -1117,7 +1128,8 @@
       if (avg == null || isNaN(avg)) return null;
       // centralina disattivata: vento medio e raffica entrambi a zero → offline
       if (avg === 0 && (max == null || isNaN(max) || max === 0)) return null;
-      return { avg: avg, gust: (max != null && !isNaN(max)) ? max : null };
+      const dir = (typeof b.wind_direction === "number") ? b.wind_direction : null;
+      return { avg: avg, gust: (max != null && !isNaN(max)) ? max : null, dir: dir };
     }
     function grisaTws(data) {
       let rows = (data && Array.isArray(data.monteGrisa) && data.monteGrisa.length)
@@ -1126,7 +1138,8 @@
       const avg = parseFloat(rows[0].kt);
       if (isNaN(avg)) return null;
       const g = parseFloat(rows[0].sunki);
-      return { avg: avg, gust: isNaN(g) ? null : g };
+      const dir = cardinaleInGradi(rows[0].direzione);   // da cardinale (es. "O") a gradi
+      return { avg: avg, gust: isNaN(g) ? null : g, dir: (dir != null && !isNaN(dir)) ? dir : null };
     }
     function aggiornaSurfometroAuto(data) {
       const sez    = document.getElementById("barcolaLive");
@@ -1137,7 +1150,7 @@
         if (sez)    sez.style.display = "";
         if (titolo) titolo.textContent = "Surfometro – Barcola";
         if (fonte)  fonte.textContent = "";
-        aggiornaSurfometro(bTws.avg, bTws.gust);
+        aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir);
         return;
       }
       // Barcola offline → nascondi la scheda e passa a Monte Grisa
@@ -1146,7 +1159,7 @@
       if (gTws != null) {
         if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
         if (fonte)  fonte.innerHTML = "⚠️ Barcola momentaneamente offline — surfometro calcolato sui dati di <strong>Monte Grisa</strong>.";
-        aggiornaSurfometro(gTws.avg, gTws.gust);
+        aggiornaSurfometro(gTws.avg, gTws.gust, gTws.dir);
       } else {                                  // nemmeno Grisa disponibile
         if (titolo) titolo.textContent = "Surfometro – Barcola";
         if (fonte)  fonte.textContent = "⚠️ Dati vento momentaneamente non disponibili.";
