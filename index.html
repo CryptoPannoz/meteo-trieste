@@ -564,7 +564,7 @@
 
   <!-- SURFOMETRO (scheda a parte) -->
   <div class="section" id="surfometroCard">
-    <h2>Surfometro – Barcola</h2>
+    <h2 id="surfTitolo">Surfometro – Barcola</h2>
     <div class="surf2">
       <div class="surf2-verdetto" id="verdettoBig">—</div>
       <div class="meter">
@@ -584,6 +584,7 @@
         </div>
       </div>
     </div>
+    <p class="stato" id="surfFonte"></p>
   </div>
 
   <!-- DATI CENTRALINE -->
@@ -1065,6 +1066,52 @@
       verd.style.color = ver.bg;
     }
 
+    /* ---- Fallback Barcola → Monte Grisa per il surfometro ----
+       La centralina di Barcola può essere momentaneamente disattivata: in quel caso i
+       dati arrivano assenti o piatti a 0.00 kt (medio e raffica entrambi a zero). Quando
+       succede nascondiamo la scheda "Barcola – condizioni vento ora" e alimentiamo il
+       surfometro con Monte Grisa, segnalandolo. Al ritorno di Barcola si ripristina. */
+    function barcolaTws(b) {
+      if (!b) return null;
+      const avg = b.wind_avg, max = b.wind_max;
+      if (avg == null || isNaN(avg)) return null;
+      // centralina disattivata: vento medio e raffica entrambi a zero → offline
+      if (avg === 0 && (max == null || isNaN(max) || max === 0)) return null;
+      return avg;
+    }
+    function grisaTws(data) {
+      let rows = (data && Array.isArray(data.monteGrisa) && data.monteGrisa.length)
+        ? data.monteGrisa : cacheStazione["grisa"];
+      if (!Array.isArray(rows) || !rows.length) return null;
+      const v = parseFloat(rows[0].kt);
+      return isNaN(v) ? null : v;
+    }
+    function aggiornaSurfometroAuto(data) {
+      const sez    = document.getElementById("barcolaLive");
+      const titolo = document.getElementById("surfTitolo");
+      const fonte  = document.getElementById("surfFonte");
+      const bTws = barcolaTws(data && data.barcola);
+      if (bTws != null) {                       // Barcola attiva → tutto normale
+        if (sez)    sez.style.display = "";
+        if (titolo) titolo.textContent = "Surfometro – Barcola";
+        if (fonte)  fonte.textContent = "";
+        aggiornaSurfometro(bTws);
+        return;
+      }
+      // Barcola offline → nascondi la scheda e passa a Monte Grisa
+      if (sez) sez.style.display = "none";
+      const gTws = grisaTws(data);
+      if (gTws != null) {
+        if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
+        if (fonte)  fonte.innerHTML = "⚠️ Barcola momentaneamente offline — surfometro calcolato sui dati di <strong>Monte Grisa</strong>.";
+        aggiornaSurfometro(gTws);
+      } else {                                  // nemmeno Grisa disponibile
+        if (titolo) titolo.textContent = "Surfometro – Barcola";
+        if (fonte)  fonte.textContent = "⚠️ Dati vento momentaneamente non disponibili.";
+        aggiornaSurfometro(null);
+      }
+    }
+
     /* mini-card dato pulita: etichetta + valore (+ unità, +sub, +prefix html es. freccia) */
     function miniCard(label, valore, unita, sub, prefix) {
       return '<div class="statbox">' +
@@ -1096,11 +1143,9 @@
     function renderBarcola(b) {
       const box = document.getElementById("barcolaStat");
       if (!b) {
-        aggiornaSurfometro(null);
         box.innerHTML = '<div class="pannello"><div class="tws-dir">Dati non disponibili</div></div>';
         return;
       }
-      aggiornaSurfometro(b.wind_avg);
       const dir = (typeof b.wind_direction === "number") ? b.wind_direction : null;
       const dirTxt = (dir != null) ? gradiInDirezione(dir) : "–";
       let boxes = '<div class="statgrid" style="margin-top:.5rem;">';
@@ -1414,6 +1459,7 @@
           renderStazione(data.marinajulia, "marinajulia");
           SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
           renderPiran(data.piran);
+          aggiornaSurfometroAuto(data);
           document.getElementById("ultimoAggiornamento").textContent =
             "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
         })
@@ -1423,6 +1469,7 @@
           renderOsmer([]);
           renderPiran(null);
           ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
+          aggiornaSurfometroAuto({ barcola: null, monteGrisa: null });
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
         })
         .finally(() => { btn.disabled = false; });
