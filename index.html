@@ -232,16 +232,19 @@
       border-right: 2px solid rgba(31,45,61,.8);
       transition: left .5s ease, width .5s ease, opacity .3s ease;
     }
-    /* etichette su due corsie verticali: medio sopra, raffica sotto → mai sovrapposte */
-    .meter-lbl { position: absolute; transform: translateX(-50%); text-align: center; white-space: nowrap; transition: left .5s ease, opacity .3s ease; z-index: 2; }
-    .meter-mean { top: 0; }
-    .meter-mean .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 15px; color: var(--testo); }
-    .meter-gust { top: 21px; }
-    .meter-gust .mg-val { font-size: 11px; font-weight: 700; color: var(--slate-2); font-variant-numeric: tabular-nums; }
-    /* triangolini: posizione esatta di medio e raffica, appena sopra la barra */
-    .meter-tri { position: absolute; transform: translateX(-50%); width: 0; height: 0; transition: left .5s ease, opacity .3s ease; z-index: 2; }
-    .meter-tri-mean { top: 37px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--testo); }
-    .meter-tri-gust { top: 38px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--slate-2); }
+    /* indicatore unico: vento medio (grande) con la raffica come appendice bassa,
+       e una sola freccia in basso a sinistra che marca la posizione sulla barra */
+    .meter-pointer {
+      position: absolute; top: 0; height: 44px;
+      display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
+      line-height: 1; transition: left .5s ease, opacity .3s ease; z-index: 2;
+    }
+    .meter-pointer .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 15px; color: var(--testo); }
+    .meter-pointer .meter-gust-app { font-size: 11px; font-weight: 700; color: var(--slate-2); margin-top: 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .meter-pointer .meter-arrow {
+      margin-top: 2px; width: 0; height: 0;
+      border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--testo);
+    }
     .meter-ticks { position: relative; height: 15px; margin-top: 4px; font-size: 11px; color: var(--label); }
     .meter-ticks span { position: absolute; transform: translateX(-50%); }
     .meter-labels { display: flex; margin-top: 5px; font-size: 10.5px; text-align: center; color: var(--label); line-height: 1.2; }
@@ -579,10 +582,11 @@
     <div class="surf2">
       <div class="surf2-verdetto" id="verdettoBig">—</div>
       <div class="meter">
-        <div class="meter-lbl meter-mean" id="meterPointer" style="left:0%;opacity:0;"><span class="meter-val" id="meterVal">–</span></div>
-        <div class="meter-lbl meter-gust" id="meterGust" style="left:0%;opacity:0;"><span class="mg-val">↗ <span id="meterGustVal">–</span></span></div>
-        <div class="meter-tri meter-tri-mean" id="meterTriMean" style="left:0%;opacity:0;"></div>
-        <div class="meter-tri meter-tri-gust" id="meterTriGust" style="left:0%;opacity:0;"></div>
+        <div class="meter-pointer" id="meterPointer" style="left:0%;opacity:0;">
+          <span class="meter-val" id="meterVal">–</span>
+          <span class="meter-gust-app" id="meterGust" style="display:none;">↗ <span id="meterGustVal">–</span></span>
+          <span class="meter-arrow" aria-hidden="true"></span>
+        </div>
         <div class="meter-bar">
           <div style="flex:30;background:#b9b8b2;"></div>
           <div style="flex:15;background:#97C459;"></div>
@@ -1058,48 +1062,44 @@
       return Object.assign({ i: i }, BANDE[i]);
     }
 
-    /* Surfometro orizzontale: indicatore del vento medio sulla scala 0–40 kt + verdetto.
-       La raffica (gust) è solo visiva: freccina + fascia di range dal medio alla raffica
-       (più la fascia è larga, più lo spot è rafficato). Il verdetto resta sul solo medio. */
+    /* Surfometro orizzontale: indicatore unico del vento medio sulla scala 0–40 kt + verdetto.
+       La raffica (gust) è solo visiva: appendice numerica sotto il medio + fascia di range
+       sulla barra (più la fascia è larga, più lo spot è rafficato). Verdetto = solo medio. */
     const SURF_SCALA = 40;                          // la scala copre 0–40 kt
     function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_SCALA) / SURF_SCALA * 100; }
     function aggiornaSurfometro(kt, gust) {
       const verd  = document.getElementById("verdettoBig");
       const ptr   = document.getElementById("meterPointer");
       const val   = document.getElementById("meterVal");
-      const triM  = document.getElementById("meterTriMean");
-      const gptr  = document.getElementById("meterGust");
+      const gapp  = document.getElementById("meterGust");        // appendice raffica (dentro il pointer)
       const gval  = document.getElementById("meterGustVal");
-      const triG  = document.getElementById("meterTriGust");
       const range = document.getElementById("meterRange");
       if (!verd || !ptr || !val) return;
       const spegniRaffica = () => {
-        [gptr, triG, range].forEach(e => { if (e) e.style.opacity = "0"; });
+        if (gapp)  gapp.style.display = "none";
+        if (range) range.style.opacity = "0";
       };
-      const setPos = (el, p) => { if (el) { el.style.left = p + "%"; el.style.opacity = "1"; } };
       if (kt == null || isNaN(kt)) {
         verd.innerHTML = "—";
         verd.style.color = "var(--label)";
         ptr.style.left = "0%";
         ptr.style.opacity = "0";
         val.textContent = "–";
-        if (triM) triM.style.opacity = "0";
         spegniRaffica();
         return;
       }
       const pa = posSurf(kt);
-      setPos(ptr, pa);
-      setPos(triM, pa);
+      ptr.style.left = pa + "%";
+      ptr.style.opacity = "1";
       val.textContent = num(kt, 1);
       const ver = verdetto(kt);
       verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>";
       verd.style.color = ver.bg;
-      // raffica: mostra freccina + fascia di range solo se è apprezzabilmente sopra il medio
+      // raffica: appendice numerica sotto il medio + fascia di range solo se sopra il medio
       if (gust != null && !isNaN(gust) && gust > kt + 0.1) {
-        const pg = posSurf(gust);
-        setPos(gptr, pg);
-        setPos(triG, pg);
+        if (gapp) gapp.style.display = "";
         if (gval) gval.textContent = num(gust, 1);
+        const pg = posSurf(gust);
         if (range) { range.style.left = pa + "%"; range.style.width = Math.max(pg - pa, 0) + "%"; range.style.opacity = "1"; }
       } else {
         spegniRaffica();
