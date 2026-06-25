@@ -566,17 +566,6 @@
 
   <div class="gruppo-titolo" id="vento">🌬️ Vento attuale</div>
 
-  <!-- STAZIONE BARCOLA (Windguru 5307) -->
-  <div class="section" id="barcolaLive">
-    <h2>Barcola – condizioni vento ora</h2>
-    <div id="barcolaStat">
-      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
-    </div>
-    <p class="stato" id="statoBarcola">
-      📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>
-    </p>
-  </div>
-
   <!-- SURFOMETRO (scheda a parte) -->
   <div class="section" id="surfometroCard">
     <h2 id="surfTitolo">Surfometro – Muggia</h2>
@@ -609,22 +598,6 @@
   </div>
 
   <!-- DATI CENTRALINE -->
-  <div class="section" id="grisa">
-    <h2>Monte Grisa – dati in tempo reale</h2>
-    <div id="grisaCards"></div>
-    <div class="trend" id="grisaTrend"></div>
-    <details class="dettaglio">
-      <summary>Tabella dettaglio · ultimi 45 min</summary>
-      <table aria-describedby="statoGrisa">
-        <thead>
-          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
-        </thead>
-        <tbody id="grisaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
-      </table>
-    </details>
-    <p class="stato" id="statoGrisa"></p>
-  </div>
-
   <div class="section" id="muggia">
     <h2>Muggia – dati in tempo reale</h2>
     <div id="muggiaCards"></div>
@@ -655,6 +628,22 @@
       </table>
     </details>
     <p class="stato" id="statoMarinajulia"></p>
+  </div>
+
+  <div class="section" id="grisa">
+    <h2>Monte Grisa – dati in tempo reale</h2>
+    <div id="grisaCards"></div>
+    <div class="trend" id="grisaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoGrisa">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="grisaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoGrisa"></p>
   </div>
 
   <!-- BOE OGS: MARE E ONDE -->
@@ -1143,27 +1132,6 @@
       '</div>';
     }
 
-    function renderBarcola(b) {
-      const box = document.getElementById("barcolaStat");
-      if (!b) {
-        box.innerHTML = '<div class="pannello"><div class="tws-dir">Dati non disponibili</div></div>';
-        return;
-      }
-      const dir = (typeof b.wind_direction === "number") ? b.wind_direction : null;
-      const dirTxt = (dir != null) ? gradiInDirezione(dir) : "–";
-      let boxes = '<div class="statgrid" style="margin-top:.5rem;">';
-      if (b.temperature != null) boxes += miniCard("Aria", num(b.temperature, 1), "°C");
-      if (b.mslp != null)        boxes += miniCard("Pressione", num(b.mslp, 0), "hPa");
-      if (b.rh != null)          boxes += miniCard("Umidità", num(b.rh, 0), "%");
-      boxes += '</div>';
-      box.innerHTML =
-        ventoCardHtml(num(b.wind_avg, 1), num(b.wind_max, 1), dir, dirTxt) + boxes;
-      const oraHm = b.datetime ? (b.datetime.split(" ")[1] || "").slice(0, 5) : "";
-      document.getElementById("statoBarcola").innerHTML =
-        (oraHm ? "Rilevazione delle " + oraHm + " · " : "") +
-        '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
-    }
-
     /* ---------- Bollettino OSMER FVG ---------- */
     function escHtml(s) {
       return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
@@ -1455,7 +1423,6 @@
           return res.json();
         })
         .then(data => {
-          renderBarcola(data.barcola);
           renderOsmer(data.osmer);
           renderStazione(data.monteGrisa, "grisa");
           renderStazione(data.muggia, "muggia");
@@ -1468,7 +1435,6 @@
         })
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
-          renderBarcola(null);
           renderOsmer([]);
           renderPiran(null);
           ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
