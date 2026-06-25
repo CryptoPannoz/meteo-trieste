@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
+  <title>Vento Muggia – Surfometro, Bora e previsioni surf e windsurf</title>
+  <meta name="description" content="Vento in tempo reale a Muggia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Muggia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
+  <meta name="keywords" content="vento Trieste, Bora Trieste, surf Trieste, windsurf Trieste, vento Barcola, previsioni vento Trieste, ALADIN Trieste, Monte Grisa, Muggia, vento Istria, kitesurf Trieste, golfo di Trieste" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="bebroggi" />
+  <link rel="canonical" href="https://ventotrieste.info/muggia/" />
+
+  <!-- Open Graph / anteprima social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content="Vento Muggia – Surfometro, Bora e previsioni surf e windsurf" />
+  <meta property="og:description" content="Vento in tempo reale a Muggia e nel golfo di Trieste: surfometro della centralina di Muggia, Bora, ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
+  <meta property="og:url" content="https://ventotrieste.info/muggia/" />
+  <meta property="og:image" content="https://ventotrieste.info/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Surfometro di Trieste: vento medio e raffica in tempo reale a Barcola" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ventotrieste.info/og-image.png" />
+
+  <!-- Favicon 💨 (SVG inline, nessuna richiesta esterna) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --slate: #1f2d3d;
+      --slate-2: #45566a;
+      --azzurro: #2f6fb0;
+      --azzurro-scuro: #245991;
+      --sfondo: #eef1f4;
+      --bordo: #dce1e7;
+      --testo: #16202b;
+      --label: #5c6675;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0 1rem 1.5rem;
+      background: var(--sfondo);
+      color: var(--testo);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      font-feature-settings: "tnum" 1;
+      line-height: 1.5;
+    }
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      letter-spacing: -.01em;
+    }
+    h2 {
+      color: var(--slate);
+      margin: 0 0 .5rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -.01em;
+    }
+    h3 { font-weight: 600; color: var(--slate); }
+    .section {
+      background: white;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      scroll-margin-top: 100px;
+    }
+    img, iframe {
+      max-width: 100%;
+      border-radius: 6px;
+      border: 0;
+    }
+    a { color: var(--azzurro); }
+
+    /* ---- Barra di navigazione fissa ---- */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--sfondo);
+      margin: 0 -1rem 1rem;
+      padding: .5rem 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .4rem;
+      border-bottom: 1px solid var(--bordo);
+    }
+    @media (min-width: 600px) { nav { grid-template-columns: repeat(4, 1fr); } }
+    nav a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      background: #fff;
+      border: 1px solid var(--bordo);
+      color: var(--slate);
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 500;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    nav a:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+    /* ---- Titoli di gruppo ---- */
+    .gruppo-titolo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin: 1.75rem .15rem .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 2px solid var(--slate);
+      scroll-margin-top: 100px;
+    }
+    .gruppo-titolo:first-of-type { margin-top: .5rem; }
+
+    /* gruppo collassabile (Spot Istria) */
+    .gruppo-collapse { margin-top: 1.75rem; scroll-margin-top: 100px; }
+    .gruppo-sum {
+      font-size: 1.15rem; font-weight: 700; color: var(--slate);
+      text-transform: uppercase; letter-spacing: .04em;
+      padding-bottom: .4rem; margin-bottom: 1rem;
+      border-bottom: 2px solid var(--slate);
+      cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .gruppo-sum::-webkit-details-marker { display: none; }
+    .gruppo-sum::after {
+      content: "▾ apri"; font-size: .8rem; font-weight: 500;
+      text-transform: none; letter-spacing: 0; color: var(--azzurro);
+    }
+    .gruppo-collapse[open] .gruppo-sum::after { content: "▴ chiudi"; }
+
+    /* ---- Mini-card dato (stile strumento) ---- */
+    .statgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+      gap: .5rem;
+      margin-top: .5rem;
+    }
+    .statbox {
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 10px;
+      padding: .6rem .7rem;
+      text-align: left;
+    }
+    .statbox .etichetta {
+      display: block;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--label);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: .2rem;
+    }
+    .statbox .valore {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--testo);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+    .statbox .unita { font-size: .8rem; font-weight: 500; color: var(--label); }
+    .statbox .sub { display: block; font-size: .72rem; color: var(--label); margin-top: 3px; }
+    .freccia { display: inline-block; font-size: 1.05rem; line-height: 1; }
+
+    /* ---- Intestazione sezione con azione a destra (es. "come si legge") ---- */
+    .sec-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; }
+    .sec-head h2 { margin: 0; }
+
+    /* ---- Box differenza pressione Bora (live) ---- */
+    .bora-delta { margin-top: 1.1rem; }
+    .bora-delta .bd-titolo { font-size: 1rem; margin: 0 0 .15rem; }
+    #deltaBox { transition: border-color .2s; }
+    #deltaBox .sub { font-weight: 600; }
+    .bd-info {
+      border: 1px solid var(--bordo); background: #fff; color: var(--azzurro);
+      border-radius: 999px; padding: .12rem .55rem; font-size: .78rem;
+      cursor: pointer; line-height: 1.4; white-space: nowrap;
+    }
+    .bd-info:hover { background: var(--sfondo); }
+
+    /* display LCD a 7 segmenti: cifra accesa (nera) sopra i segmenti spenti */
+    .lcd { position: relative; display: inline-block; font-family: 'DSEG7-Classic', monospace; }
+    .lcd-ghost { color: rgba(26,35,48,.12); }
+    .lcd-lit { position: absolute; left: 0; top: 0; color: #111; }
+
+    /* ---- Pannello vento piatto (tutte le stazioni, niente box annidati) ---- */
+    .pannello { text-align: center; padding: .2rem 0 .1rem; }
+    .tws-hero {
+      display: flex; align-items: baseline; justify-content: center; gap: .35rem;
+      font-size: 3.4rem; line-height: 1;
+    }
+    .tws-hero .u { font-size: 1rem; font-weight: 600; color: var(--label); }
+    .tws-raffica { font-size: .85rem; color: var(--label); margin-top: .25rem; }
+    .tws-raffica b { color: var(--testo); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .tws-dir { font-size: 1.55rem; font-weight: 800; color: var(--testo); margin-top: .55rem; line-height: 1.1; }
+    .tws-dir .deg { font-size: 1rem; font-weight: 600; color: var(--label); }
+    .tws-dir .freccia { font-size: 1.4rem; vertical-align: -1px; }
+
+    /* ---- Surfometro orizzontale ---- */
+    .surf2-verdetto { text-align: center; font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.3rem; }
+    .surf2-verdetto small { display: block; font-size: .85rem; font-weight: 500; color: var(--label); margin-top: .15rem; }
+    .meter { position: relative; padding-top: 46px; }
+    .meter-bar { position: relative; display: flex; height: 16px; border-radius: 8px; overflow: hidden; }
+    /* fascia raffica: dal vento medio alla raffica, più è larga più lo spot è rafficato */
+    .meter-range {
+      position: absolute; top: 0; bottom: 0; left: 0; width: 0; pointer-events: none;
+      background: rgba(31,45,61,.28);
+      border-left: 2px solid rgba(31,45,61,.65);
+      border-right: 2px solid rgba(31,45,61,.8);
+      transition: left .5s ease, width .5s ease, opacity .3s ease;
+    }
+    /* indicatore unico: freccia della direzione (reale) a lato, poi vento medio grande
+       con la raffica come appendice bassa. Posizionato sul punto del medio nella scala. */
+    .meter-pointer {
+      position: absolute; top: 0; height: 42px;
+      display: flex; flex-direction: row; align-items: flex-end; gap: 5px;
+      line-height: 1; transition: left .5s ease, transform .5s ease, opacity .3s ease; z-index: 2;
+    }
+    /* indicatore "fuori scala" (>40 kt): chevron rosso sull'estremità destra della barra */
+    .meter-over {
+      position: absolute; top: 46px; right: 6px; height: 16px;
+      display: flex; align-items: center; font-size: 12px; font-weight: 800; color: #fff;
+      opacity: 0; transition: opacity .3s ease; pointer-events: none; z-index: 1;
+    }
+    .meter-pointer .meter-dir { font-size: 17px; line-height: 1; color: var(--slate-2); transform-origin: center; display: inline-block; }
+    .meter-pointer .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 15px; color: var(--testo); }
+    /* raffica: a destra del medio (è sempre maggiore del TWS medio), più piccola e chiara */
+    .meter-pointer .meter-gust-app { font-size: 12px; font-weight: 700; color: var(--slate-2); font-variant-numeric: tabular-nums; white-space: nowrap; margin-bottom: 1px; }
+    .meter-ticks { position: relative; height: 15px; margin-top: 4px; font-size: 11px; color: var(--label); }
+    .meter-ticks span { position: absolute; transform: translateX(-50%); }
+    .meter-labels { display: flex; margin-top: 5px; font-size: 10.5px; text-align: center; color: var(--label); line-height: 1.2; }
+
+    /* ---- Tabella tendenza: dropdown chiuso, si apre al click ---- */
+    details.dettaglio { margin-top: .6rem; }
+    details.dettaglio > summary {
+      cursor: pointer; font-size: .85rem; font-weight: 500; color: var(--slate);
+      padding: .55rem .8rem; list-style: none; user-select: none;
+      border: 1px solid var(--bordo); border-radius: 8px; background: #fff;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    details.dettaglio > summary::-webkit-details-marker { display: none; }
+    details.dettaglio > summary::after { content: "▾"; color: var(--label); transition: transform .2s; }
+    details.dettaglio[open] > summary { border-radius: 8px 8px 0 0; border-bottom: 0; }
+    details.dettaglio[open] > summary::after { transform: rotate(180deg); }
+
+    /* ---- Bottoni spot (posizione + guida) ---- */
+    .spot-azioni { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .8rem; }
+    .spot-btn {
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: #fff; border: 1px solid var(--bordo); color: var(--slate);
+      text-decoration: none; padding: 8px 14px; border-radius: 8px;
+      font-size: .88rem; font-weight: 500; font-family: inherit; cursor: pointer;
+    }
+    .spot-btn:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+    /* ---- Trend stazioni ---- */
+    .trend {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin: .6rem 0 .2rem;
+    }
+    .trend-badge {
+      font-weight: 600;
+      padding: .25rem .7rem;
+      border-radius: 8px;
+      font-size: .88rem;
+      background: #eef1f4;
+      color: var(--slate);
+      border: 1px solid var(--bordo);
+    }
+    .trend-badge .frec { font-weight: 800; }
+    .trend-delta { font-size: .8rem; color: var(--label); }
+    .spark { vertical-align: middle; }
+
+    /* ---- Tabella dettaglio ---- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      border: 1px solid var(--bordo);
+      border-top: 0;
+    }
+    th, td {
+      border-bottom: 1px solid var(--bordo);
+      padding: 7px 6px;
+      text-align: center;
+    }
+    th { background: #f6f8fa; font-weight: 600; color: var(--slate); font-size: .8rem; }
+    td { font-variant-numeric: tabular-nums; }
+    /* formattazione condizionale per intensità del vento (kt e raffica) */
+    td.vento-calmo   { color: #8a94a0; }
+    td.vento-leggero { background: #eef6e6; color: #3b6d11; font-weight: 700; }
+    td.vento-buono   { background: #fbeede; color: #b35c00; font-weight: 700; }
+    td.vento-forte   { background: #fbe4e4; color: #c20202; font-weight: 700; }
+    tr.riga-recente td { font-weight: 700; }
+    tr.riga-recente td:first-child { background: #f6f8fa; }
+    .ora-now { font-size: .66rem; background: var(--slate); color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 5px; font-weight: 500; }
+    .stato {
+      font-size: .72rem;
+      color: #666;
+      margin: .25rem 0 0;
+    }
+    /* nel grafico della Bora la fonte resta della dimensione originale */
+    #bora > .stato { font-size: .85rem; }
+    .errore {
+      background: #fdf2f2;
+      border: 1px solid #f5c2c2;
+      border-radius: 6px;
+      padding: .6rem .8rem;
+      font-size: .9rem;
+      color: #8a1f1f;
+      margin-top: .5rem;
+    }
+
+    /* ---- Bottoni ---- */
+    button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--azzurro);
+      color: white;
+      cursor: pointer;
+      font-size: .9rem;
+    }
+    button:hover { background-color: var(--azzurro-scuro); }
+    button:disabled { opacity: .5; cursor: default; }
+
+    /* ---- Viewer Aladin ---- */
+    .aladin-controlli {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: .5rem 0;
+    }
+    .aladin-controlli span { font-variant-numeric: tabular-nums; color: #444; }
+
+    /* ---- Webcam ---- */
+    .webcam-intestazione {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .cam-video { width: 100%; border-radius: 8px; background: #000; aspect-ratio: 16/9; margin-top: .5rem; }
+    .cam-play {
+      width: 100%; aspect-ratio: 16/9; margin-top: .5rem;
+      border: 1px dashed var(--bordo); border-radius: 8px;
+      background: #f6f8fa; color: var(--slate); font-size: 1rem;
+      font-family: inherit; font-weight: 500; cursor: pointer;
+    }
+    .cam-play:hover { background: #eef1f4; }
+
+    /* ---- Bollettino OSMER ---- */
+    .bollett { padding: .6rem 0; border-bottom: 1px solid var(--bordo); }
+    .bollett:first-child { padding-top: 0; }
+    .bollett:last-child { border-bottom: 0; padding-bottom: 0; }
+    .bollett-giorno {
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--label); font-weight: 600; margin-bottom: .25rem;
+    }
+    .bollett-testo { font-size: .95rem; line-height: 1.5; color: var(--testo); }
+    .bollett.allerta .bollett-giorno { color: #b35c00; }
+    .osmer-mappa { width: 100%; max-width: 360px; display: block; margin: .6rem auto 0; border-radius: 8px; }
+    .osmer-tabs { display: flex; gap: .4rem; margin-bottom: .2rem; }
+    .osmer-tab {
+      flex: 1; background: #fff; border: 1px solid var(--bordo); border-radius: 8px;
+      padding: .5rem .3rem; font-family: inherit; font-size: .82rem; font-weight: 600;
+      color: var(--slate); cursor: pointer; line-height: 1.2;
+    }
+    .osmer-tab:hover { background: #eef1f4; }
+    .osmer-tab.attivo, .osmer-tab.attivo:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+    /* ---- Modal ---- */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,22,30,0.55);
+      z-index: 1000;
+      padding: 1rem;
+    }
+    .modal .contenuto {
+      background: white;
+      max-width: 600px;
+      margin: 10vh auto 0;
+      padding: 22px;
+      border-radius: 12px;
+      line-height: 1.55;
+    }
+    .modal .contenuto h3 { margin-top: 0; }
+    .guida-meta { font-size: .82rem; color: var(--label); margin: .4rem 0 0; }
+    .dona {
+      text-align: center;
+      max-width: 420px;
+      margin: 2rem auto 0;
+      padding: 1rem 1.2rem;
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+    }
+    .dona p { margin: 0 0 .7rem; font-size: .9rem; color: var(--slate); }
+    .dona-btn {
+      display: inline-block;
+      background: var(--slate);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: .95rem;
+    }
+    .dona-btn:hover { background: #0d141d; }
+    .dona-nota { font-size: .72rem !important; color: var(--label) !important; margin: .6rem 0 0 !important; }
+    footer {
+      text-align: center;
+      font-size: .9rem;
+      color: #6a737d;
+      margin-top: 2rem;
+      line-height: 1.6;
+    }
+
+    /* ============ Rifinitura mobile ============ */
+    @media (max-width: 560px) {
+      body { padding: 0 .7rem 1.5rem; }
+      .section { padding: .85rem; }
+      h1 { font-size: 1.25rem; }
+
+      /* target di tocco ≥44px su tutto ciò che è cliccabile */
+      button,
+      .spot-btn,
+      .osmer-tab,
+      .dona-btn,
+      details.dettaglio > summary,
+      .gruppo-sum {
+        min-height: 44px;
+      }
+      .aladin-controlli { justify-content: center; gap: 1rem; }
+      .aladin-controlli button { min-width: 48px; min-height: 44px; font-size: 1.1rem; }
+
+      /* card piccole allineate: 3 per riga (es. Barcola temp/pressione/umidità) */
+      .statgrid { grid-template-columns: repeat(3, 1fr); gap: .4rem; }
+      .statbox { padding: .55rem .5rem; }
+      .statbox .valore { font-size: 1.3rem; }
+      /* bottoni spot a piena larghezza, in colonna, ben distanziati */
+      .spot-azioni { flex-direction: column; }
+      .spot-azioni .spot-btn { width: 100%; justify-content: center; }
+    }
+
+    /* ---------- Overlay di caricamento iniziale ---------- */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1rem; text-align: center; padding: 1rem;
+      background: var(--sfondo);
+      transition: opacity .5s ease;
+    }
+    #loader.nascondi { opacity: 0; pointer-events: none; }
+    .loader-spin { position: relative; width: 96px; height: 96px; }
+    .loader-spin .anello {
+      position: absolute; inset: 0;
+      border: 5px solid var(--bordo); border-top-color: var(--azzurro);
+      border-radius: 50%; animation: loader-gira .9s linear infinite;
+    }
+    .loader-spin .surf {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.4rem; animation: loader-onda 1.6s ease-in-out infinite;
+    }
+    .loader-txt { font-weight: 600; color: var(--slate); font-size: 1.02rem; }
+    .loader-sub { color: var(--label); font-size: .85rem; margin-top: -.6rem; }
+    @keyframes loader-gira { to { transform: rotate(360deg); } }
+    @keyframes loader-onda {
+      0%, 100% { transform: translateY(3px) rotate(-8deg); }
+      50%      { transform: translateY(-4px) rotate(8deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .loader-spin .anello { animation-duration: 2.2s; }
+      .loader-spin .surf { animation: none; }
+    }
+  </style>
+
+  <!-- Dati strutturati per Google (rich results) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://ventotrieste.info/muggia/#website",
+        "url": "https://ventotrieste.info/muggia/",
+        "name": "Vento Muggia",
+        "description": "Vento in tempo reale a Muggia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Muggia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani.",
+        "inLanguage": "it-IT"
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Vento Muggia – Surfometro",
+        "url": "https://ventotrieste.info/muggia/",
+        "applicationCategory": "WeatherApplication",
+        "operatingSystem": "Web",
+        "browserRequirements": "Requires JavaScript",
+        "inLanguage": "it-IT",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR"
+        },
+        "about": {
+          "@type": "Place",
+          "name": "Golfo di Trieste",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Trieste",
+            "addressRegion": "Friuli-Venezia Giulia",
+            "addressCountry": "IT"
+          }
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <div id="loader" role="status" aria-live="polite" aria-label="Caricamento dati in corso">
+    <div class="loader-spin">
+      <div class="anello"></div>
+      <div class="surf">🏄‍♂️</div>
+    </div>
+    <div class="loader-txt">Carico vento e onde…</div>
+    <div class="loader-sub">dati live da centraline e boe</div>
+  </div>
+
+  <h1>🏄‍♂️ Previsioni vento &amp; surf – Muggia</h1>
+
+  <nav aria-label="Sezioni della pagina">
+    <a href="#vento">🌬️ Vento attuale</a>
+    <a href="#previsioni">📅 Previsioni</a>
+    <a href="#istria">🏖️ Spot Istria</a>
+  </nav>
+
+  <div class="gruppo-titolo" id="vento">🌬️ Vento attuale</div>
+
+  <!-- STAZIONE BARCOLA (Windguru 5307) -->
+  <div class="section" id="barcolaLive">
+    <h2>Barcola – condizioni vento ora</h2>
+    <div id="barcolaStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoBarcola">
+      📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>
+    </p>
+  </div>
+
+  <!-- SURFOMETRO (scheda a parte) -->
+  <div class="section" id="surfometroCard">
+    <h2 id="surfTitolo">Surfometro – Muggia</h2>
+    <div class="surf2">
+      <div class="surf2-verdetto" id="verdettoBig">—</div>
+      <div class="meter">
+        <div class="meter-pointer" id="meterPointer" style="left:0%;opacity:0;">
+          <span class="meter-dir" id="meterDir" aria-hidden="true" style="display:none;">↓</span>
+          <span class="meter-val" id="meterVal">–</span>
+          <span class="meter-gust-app" id="meterGust" style="display:none;">&#8211;&#8201;<span id="meterGustVal">–</span></span>
+        </div>
+        <div class="meter-bar">
+          <div style="flex:30;background:#b9b8b2;"></div>
+          <div style="flex:15;background:#97C459;"></div>
+          <div style="flex:17.5;background:#639922;"></div>
+          <div style="flex:25;background:#3B6D11;"></div>
+          <div style="flex:12.5;background:#E24B4A;"></div>
+          <div class="meter-range" id="meterRange" style="left:0%;width:0%;opacity:0;"></div>
+        </div>
+        <div class="meter-over" id="meterOver" aria-hidden="true">» 40+</div>
+        <div class="meter-ticks">
+          <span style="left:30%;">12</span><span style="left:45%;">18</span><span style="left:62.5%;">25</span><span style="left:87.5%;">35</span>
+        </div>
+        <div class="meter-labels">
+          <div style="flex:30;">stà casa</div><div style="flex:15;">sufia</div><div style="flex:17.5;">sufia ben</div><div style="flex:25;">sufia sai ben</div><div style="flex:12.5;">cúci e boni</div>
+        </div>
+      </div>
+    </div>
+    <p class="stato" id="surfFonte"></p>
+  </div>
+
+  <!-- DATI CENTRALINE -->
+  <div class="section" id="grisa">
+    <h2>Monte Grisa – dati in tempo reale</h2>
+    <div id="grisaCards"></div>
+    <div class="trend" id="grisaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoGrisa">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="grisaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoGrisa"></p>
+  </div>
+
+  <div class="section" id="muggia">
+    <h2>Muggia – dati in tempo reale</h2>
+    <div id="muggiaCards"></div>
+    <div class="trend" id="muggiaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoMuggia">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="muggiaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoMuggia"></p>
+  </div>
+
+  <div class="section" id="marinajulia">
+    <h2>Marina Julia (Monfalcone) – dati in tempo reale</h2>
+    <div id="marinajuliaCards"></div>
+    <div class="trend" id="marinajuliaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoMarinajulia">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="marinajuliaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoMarinajulia"></p>
+  </div>
+
+  <!-- BOE OGS: MARE E ONDE -->
+  <div class="section" id="mare">
+    <h2>Mare e onde – boe OGS</h2>
+
+    <h3 style="margin:.5rem 0 .25rem;">Boa Trieste (MAMBO1, largo di Barcola)</h3>
+    <div id="mamboStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoMambo"></p>
+
+    <h3 style="margin:1rem 0 .25rem;">Boa Pirano (Vida, NIB)</h3>
+    <div id="piranStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoPiran"></p>
+
+    <p class="stato">Fonti: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a> (boa Trieste, via ERDDAP) · <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB – boa Vida</a> (Pirano)</p>
+  </div>
+
+  <div class="section" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+    <button id="btnAggiorna">🔄 Aggiorna dati</button>
+    <span class="stato" id="ultimoAggiornamento"></span>
+  </div>
+
+  <div class="gruppo-titolo" id="previsioni">📅 Previsioni</div>
+
+  <!-- BOLLETTINO OSMER -->
+  <div class="section" id="osmer">
+    <h2>Previsione descrittiva – OSMER FVG</h2>
+    <div id="osmerBollettino"><p class="stato">Caricamento…</p></div>
+    <p class="stato">Fonte: <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">OSMER – Arpa FVG</a></p>
+  </div>
+
+  <!-- RADAR ARSO -->
+  <div class="section" id="radar">
+    <h2>Radar pioggia – ARSO</h2>
+    <img id="radarImg" alt="Radar precipitazioni ARSO (Slovenia e Golfo di Trieste)" loading="lazy"
+         onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Radar momentaneamente non disponibile.</p>'); this.style.display='none';" />
+    <p class="stato">Fonte: <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a> · animazione delle ultime ore</p>
+  </div>
+
+  <!-- GRAFICO BORA -->
+  <div class="section" id="bora">
+    <div class="sec-head">
+      <h2>Grafico della Bora</h2>
+      <button type="button" class="bd-info" onclick="apriGuidaBora()">ℹ️ come si legge</button>
+    </div>
+    <p class="stato">Fonte: <a href="https://profiwetter.ch" target="_blank" rel="noopener">profiwetter.ch</a></p>
+    <img id="boraImg" alt="Diagramma previsione Bora" loading="lazy"
+         onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Grafico Bora momentaneamente non disponibile.</p>'); this.style.display='none';" />
+
+    <!-- Differenza di pressione Trieste–Maribor in tempo reale (MSLP) -->
+    <div class="bora-delta">
+      <h3 class="bd-titolo">Differenza di pressione ora</h3>
+      <div class="statgrid" id="deltaBoraGrid">
+        <div class="statbox">
+          <span class="etichetta">Maribor (SLO)</span>
+          <span class="valore" id="pMaribor">–<span class="unita"> hPa</span></span>
+        </div>
+        <div class="statbox">
+          <span class="etichetta">Trieste (ITA)</span>
+          <span class="valore" id="pTrieste">–<span class="unita"> hPa</span></span>
+        </div>
+        <div class="statbox" id="deltaBox">
+          <span class="etichetta">Δ Trieste − Maribor</span>
+          <span class="valore" id="pDelta">–<span class="unita"> hPa</span></span>
+          <span class="sub" id="deltaGiudizio"></span>
+        </div>
+      </div>
+      <p class="stato" id="deltaBoraStato">
+        Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
+        · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- MODELLO ALADIN -->
+  <div class="section" id="aladin">
+    <h2>Modello Aladin – vento golfo di Trieste</h2>
+    <p class="stato">
+      Previsioni a passi di 3 ore (fonte ARSO) – serie completa su
+      <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">kuguluff.altervista.org</a>
+    </p>
+    <div class="aladin-controlli">
+      <button id="aladinPrec" aria-label="Mappa precedente">◀</button>
+      <span id="aladinPasso">1 / 23</span>
+      <button id="aladinSucc" aria-label="Mappa successiva">▶</button>
+    </div>
+    <img id="aladinImg" alt="Mappa vento modello Aladin" loading="lazy"
+         onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Mappa Aladin momentaneamente non disponibile.</p>'); this.style.display='none';" />
+  </div>
+
+  <!-- WINDY + WINDGURU -->
+  <div class="section" id="windy">
+    <h2>Windy – GFS Trieste</h2>
+    <iframe title="Mappa vento Windy" loading="lazy" src="https://embed.windy.com/embed2.html?lat=45.659&lon=13.745&detailLat=45.659&detailLon=13.745&width=100%&height=400&zoom=10&level=surface&overlay=wind&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=kt&metricTemp=°C&radarRange=-1" height="400" style="width:100%;"></iframe>
+
+    <h2 style="margin-top:1.5rem;">Windguru – ALADIN Trieste</h2>
+    <div style="margin-top: 1rem; overflow-x:auto;">
+      <!-- Windguru widget -->
+      <script id="wg_fwdg_49156_107_1753785367900">
+        (function (window, document) {
+          var loader = function () {
+            var arg = [
+              "s=49156",
+              "m=107",
+              "uid=wg_fwdg_49156_107_1753785367900",
+              "wj=knots",
+              "tj=c",
+              "waj=m",
+              "tij=cm",
+              "odh=0",
+              "doh=24",
+              "fhours=240",
+              "hrsm=2",
+              "vt=forecasts",
+              "lng=it",
+              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
+            ];
+            var script = document.createElement("script");
+            var tag = document.getElementsByTagName("script")[0];
+            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
+            tag.parentNode.insertBefore(script, tag);
+          };
+          window.addEventListener
+            ? window.addEventListener("load", loader, false)
+            : window.attachEvent("onload", loader);
+        })(window, document);
+      </script>
+    </div>
+
+    <div style="text-align:center; margin-top: 1.5rem;">
+      <button onclick="apriModal()">ℹ️ Differenze tra i modelli meteo</button>
+    </div>
+  </div>
+
+  <!-- MODAL POPUP MODELLI -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
+    <div class="contenuto">
+      <h3 id="modalTitolo">Modelli Meteo – Spiegazione</h3>
+      <p>
+        • <strong>GFS</strong>: modello americano, buono per tendenze globali.<br>
+        • <strong>ICON</strong>: tedesco, buon dettaglio ma meno preciso sulla costa.<br>
+        • <strong>HARMONIE</strong>: ad alta risoluzione per l’Europa, ottimo per previsioni locali.<br>
+        • <strong>ALADIN</strong>: molto preciso sul Nord Adriatico.<br><br>
+        👉 Per Trieste, ALADIN è spesso il più affidabile.
+      </p>
+      <div style="text-align:right; margin-top:1rem;">
+        <button onclick="chiudiModal()">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POPUP DIFFERENZA PRESSIONE BORA -->
+  <div id="modalDeltaBora" class="modal" role="dialog" aria-modal="true" aria-labelledby="deltaBoraTitolo">
+    <div class="contenuto">
+      <h3 id="deltaBoraTitolo">Differenza di pressione e Bora</h3>
+      <p>Il box mostra la <strong>differenza di pressione a livello del mare (MSLP)</strong> misurata <em>in questo momento</em> tra Trieste e Maribor (Slovenia):</p>
+      <p style="text-align:center; margin:.6rem 0;"><strong>Δ = pressione Trieste − pressione Maribor</strong></p>
+      <p>Un valore <strong>negativo</strong> significa che a <strong>Maribor c'è più pressione che a Trieste</strong>: è la condizione che innesca la Bora in Adriatico. Più il valore è negativo, più forte sarà la Bora.</p>
+      <p>Soglie indicative:</p>
+      <p>
+        • <strong>Δ &gt; −4 hPa</strong> → Bora assente (gradiente sotto soglia).<br>
+        • <strong>Δ ≤ −4 hPa</strong> → soglia di <strong>genesi</strong>: la Bora si innesca (consistente).<br>
+        • <strong>Δ ≤ −8 hPa</strong> → Bora forte.
+      </p>
+      <p class="guida-meta">Il grafico qui sopra mostra la differenza <em>prevista</em> per i prossimi 5 giorni (fonte DWD / profiwetter.ch); questo box invece usa la pressione <em>attuale</em>, normalizzata al livello del mare così che Maribor (262&nbsp;m) e Trieste siano confrontabili. Fonte dati live: Open-Meteo.</p>
+      <div style="text-align:right; margin-top:1rem;">
+        <button onclick="document.getElementById('modalDeltaBora').style.display='none'">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL "COME SI LEGGE" – GRAFICO BORA -->
+  <div id="modalGuidaBora" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaBoraTitolo">
+    <div class="contenuto">
+      <h3 id="guidaBoraTitolo">Grafico della Bora – come si legge</h3>
+      <p>È la <strong>previsione della Bora</strong> per il Golfo di Trieste nei prossimi giorni, elaborata da profiwetter.ch sul modello DWD.</p>
+      <p>Si basa sulla <strong>differenza di pressione</strong> tra l'entroterra sloveno (sopravento) e l'Adriatico: quando l'entroterra ha pressione nettamente più alta della costa, l'aria scavalca le Alpi Dinariche e precipita sul golfo come Bora.</p>
+      <p>
+        • L'asse del tempo scorre verso <strong>i prossimi giorni</strong>.<br>
+        • Più il <strong>gradiente è negativo</strong> (entroterra ≫ costa), più <strong>forte</strong> sarà la Bora prevista in quel momento.<br>
+        • Tratti vicini allo zero = <strong>niente Bora</strong>.
+      </p>
+      <p class="guida-meta">Questa è la <em>previsione</em> a più giorni. Per la situazione <em>in tempo reale</em> usa il box “Differenza di pressione ora” sotto al grafico. Fonte: profiwetter.ch (modello DWD).</p>
+      <div style="text-align:right; margin-top:1rem;">
+        <button onclick="document.getElementById('modalGuidaBora').style.display='none'">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL GUIDA SPOT -->
+  <div id="modalGuida" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaTitolo">
+    <div class="contenuto">
+      <h3 id="guidaTitolo">Guida spot</h3>
+      <div id="guidaCorpo"></div>
+      <div style="text-align:right; margin-top:1rem;">
+        <button onclick="chiudiGuida()">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPOT ISTRIA (gruppo collassabile) -->
+  <details class="gruppo-collapse" id="istria">
+  <summary class="gruppo-sum">🏖️ Spot Istria</summary>
+
+  <div class="section" id="savudrija">
+    <h2>Punta Salvore (Savudrija)</h2>
+    <div id="savudrijaCards"></div>
+    <div class="trend" id="savudrijaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoSavudrija">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="savudrijaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoSavudrija"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/jWbtsnTCoohrNenY7" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('savudrija')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+
+  <div class="section" id="dajla">
+    <h2>Dajla</h2>
+    <div id="dajlaCards"></div>
+    <div class="trend" id="dajlaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoDajla">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="dajlaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoDajla"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/a4ZHnntRdun3bfVb7" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('dajla')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+
+  <div class="section" id="preluka">
+    <h2>Preluka</h2>
+    <div id="prelukaCards"></div>
+    <div class="trend" id="prelukaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoPreluka">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="prelukaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoPreluka"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/6Depfw25rKGRZX5p8" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('preluka')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+
+  <div class="section" id="liznjan">
+    <h2>Ližnjan (Lisignano)</h2>
+    <div id="liznjanCards"></div>
+    <div class="trend" id="liznjanTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoLiznjan">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="liznjanBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoLiznjan"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/92vRknd8orHBPiVVA" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('liznjan')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+
+  <div class="section" id="premantura">
+    <h2>Premantura (Stupice)</h2>
+    <div id="premanturaCards"></div>
+    <div class="trend" id="premanturaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoPremantura">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="premanturaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoPremantura"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/5q7aUMkzww4VWtfU6" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('premantura')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+  </details>
+
+  <!-- JS -->
+  <script>
+    // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
+    const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
+    const LINK_VETERCEK = {
+      grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
+      muggia: "https://vetercek.com/danes/index.php?postaja=muggia",
+      marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4"
+    };
+    const SPOT_ISTRIA = ["savudrija", "dajla", "preluka", "liznjan", "premantura"];
+    const LINK_SPOT = {
+      preluka:    "https://vetercek.com/danes/index.php?id=149&postaja=preluka",
+      dajla:      "https://vetercek.com/danes/index.php?id=39&postaja=dajla",
+      liznjan:    "https://vetercek.com/danes/index.php?id=74&postaja=liznjan",
+      savudrija:  "https://vetercek.com/danes/index.php?id=124&postaja=savudrija",
+      premantura: "https://vetercek.com/danes/index.php?id=86&postaja=stupice"
+    };
+    function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    /* ---------- Immagini Bora / Aladin (caricate direttamente dalle fonti) ---------- */
+    function urlBora() {
+      return "https://profiwetter.ch/wind_bora_it.png?ts=" + Date.now();
+    }
+    function urlRadar() {
+      return "https://meteo.arso.gov.si/uploads/probase/www/observ/radar/si0-rm-anim.gif?ts=" + Date.now();
+    }
+    let passoAladin = 1;            // mappe 01..23, una ogni 3 ore
+    const PASSI_ALADIN = 23;
+    function urlAladin(n) {
+      const nn = String(n).padStart(2, "0");
+      return "https://meteo.arso.gov.si/uploads/probase/www/model/aladin/field/ad_vm-va10m_si-sw_" + nn + ".png?ts=" + Date.now();
+    }
+    function mostraAladin() {
+      document.getElementById("aladinImg").src = urlAladin(passoAladin);
+      document.getElementById("aladinPasso").textContent = passoAladin + " / " + PASSI_ALADIN;
+      document.getElementById("aladinPrec").disabled = passoAladin <= 1;
+      document.getElementById("aladinSucc").disabled = passoAladin >= PASSI_ALADIN;
+    }
+    document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
+    document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
+
+    /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
+    const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
+    function gradiInDirezione(deg) {
+      if (typeof deg !== "number" || isNaN(deg)) return "–";
+      return PUNTI_CARDINALI[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
+    }
+    function num(v, dec) {
+      return (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec) : "–";
+    }
+    /* Verdetti in dialetto triestino, in base ai nodi (TWS).
+       Le fasce e i colori combaciano con l'accelerometro e la scala. */
+    const BANDE = [
+      { txt: "Stà casa",      sub: "xe solo bavisela", gloss: "solo brezza leggera, vento troppo debole", bg: "#888780", fg: "#fff" },
+      { txt: "Sufia",         sub: "se pol sufiar",    gloss: "c'è vento, si può uscire",                 bg: "#97C459", fg: "#173404" },
+      { txt: "Sufia ben",     sub: "movite!",          gloss: "buon vento, muoviti!",                     bg: "#639922", fg: "#fff" },
+      { txt: "Sufia sai ben", sub: "windsurf!",        gloss: "vento forte, da windsurf",                 bg: "#3B6D11", fg: "#fff" },
+      { txt: "Cúci e boni",   sub: "no xè el caso",    gloss: "stai buono, non è il caso: troppo vento",  bg: "#E24B4A", fg: "#fff" }
+    ];
+    function verdetto(kt) {
+      let i;
+      if (kt < 12) i = 0;
+      else if (kt < 18) i = 1;
+      else if (kt < 25) i = 2;
+      else if (kt <= 35) i = 3;
+      else i = 4;
+      return Object.assign({ i: i }, BANDE[i]);
+    }
+
+    /* Surfometro orizzontale: indicatore unico del vento medio sulla scala 0–40 kt + verdetto.
+       La raffica (gust) è solo visiva: numero a destra del medio (come range) + fascia sulla
+       barra (più la fascia è larga, più lo spot è rafficato). Verdetto = solo medio. */
+    const SURF_SCALA = 40;                          // la scala copre 0–40 kt
+    function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_SCALA) / SURF_SCALA * 100; }
+    function aggiornaSurfometro(kt, gust, dir) {
+      const verd  = document.getElementById("verdettoBig");
+      const ptr   = document.getElementById("meterPointer");
+      const val   = document.getElementById("meterVal");
+      const dirEl = document.getElementById("meterDir");         // freccia direzione (reale)
+      const gapp  = document.getElementById("meterGust");        // appendice raffica (dentro il pointer)
+      const gval  = document.getElementById("meterGustVal");
+      const range = document.getElementById("meterRange");
+      const over  = document.getElementById("meterOver");        // indicatore "fuori scala" (>40 kt)
+      if (!verd || !ptr || !val) return;
+      const spegniRaffica = () => {
+        if (gapp)  gapp.style.display = "none";
+        if (range) range.style.opacity = "0";
+      };
+      if (kt == null || isNaN(kt)) {
+        verd.innerHTML = "—";
+        verd.style.color = "var(--label)";
+        ptr.style.left = "0%";
+        ptr.style.transform = "translateX(0)";
+        ptr.style.opacity = "0";
+        val.textContent = "–";
+        if (dirEl) dirEl.style.display = "none";
+        if (over)  over.style.opacity = "0";
+        spegniRaffica();
+        return;
+      }
+      const pa = posSurf(kt);
+      ptr.style.left = pa + "%";
+      // l'indicatore scorre con la posizione (0%→nessuno shift, 100%→tutto a sinistra)
+      // così il blocco numeri resta sempre dentro i bordi, anche oltre i 40 kt
+      ptr.style.transform = "translateX(-" + pa + "%)";
+      ptr.style.opacity = "1";
+      val.textContent = num(kt, 1);
+      // freccia della direzione reale (stessa convenzione del riquadro live: ↓ ruotato dei gradi)
+      if (dirEl) {
+        if (dir != null && !isNaN(dir)) {
+          dirEl.style.transform = "rotate(" + dir + "deg)";
+          dirEl.style.display = "";
+        } else {
+          dirEl.style.display = "none";
+        }
+      }
+      const ver = verdetto(kt);
+      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>";
+      verd.style.color = ver.bg;
+      // raffica: appendice numerica sotto il medio + fascia di range solo se sopra il medio
+      if (gust != null && !isNaN(gust) && gust > kt + 0.1) {
+        if (gapp) gapp.style.display = "";
+        if (gval) gval.textContent = num(gust, 1);
+        const pg = posSurf(gust);
+        const w = Math.max(pg - pa, 0);
+        if (range) { range.style.left = pa + "%"; range.style.width = w + "%"; range.style.opacity = (w >= 1) ? "1" : "0"; }
+      } else {
+        spegniRaffica();
+      }
+      // fuori scala: medio o raffica oltre 40 kt → la posizione è pinnata a destra, segnalalo
+      const fuoriScala = kt > SURF_SCALA || (gust != null && !isNaN(gust) && gust > SURF_SCALA);
+      if (over) over.style.opacity = fuoriScala ? "1" : "0";
+    }
+
+    /* ---- Surfometro basato sulla centralina di MUGGIA (variante Muggia del sito) ----
+       Il surfometro usa i dati live della stazione di Muggia (stesso flusso delle altre
+       centraline: array più recente in testa). Se Muggia non ha dati, mostra "non disponibili". */
+    function muggiaTws(data) {
+      let rows = (data && Array.isArray(data.muggia) && data.muggia.length)
+        ? data.muggia : cacheStazione["muggia"];
+      if (!Array.isArray(rows) || !rows.length) return null;
+      const avg = parseFloat(rows[0].kt);
+      if (isNaN(avg)) return null;
+      const g = parseFloat(rows[0].sunki);
+      const dir = cardinaleInGradi(rows[0].direzione);   // da cardinale (es. "O") a gradi
+      return { avg: avg, gust: isNaN(g) ? null : g, dir: (dir != null && !isNaN(dir)) ? dir : null };
+    }
+    function aggiornaSurfometroAuto(data) {
+      const titolo = document.getElementById("surfTitolo");
+      const fonte  = document.getElementById("surfFonte");
+      if (titolo) titolo.textContent = "Surfometro – Muggia";
+      const m = muggiaTws(data);
+      if (m != null) {
+        if (fonte) fonte.textContent = "";
+        aggiornaSurfometro(m.avg, m.gust, m.dir);
+      } else {
+        if (fonte) fonte.textContent = "⚠️ Dati Muggia momentaneamente non disponibili.";
+        aggiornaSurfometro(null);
+      }
+    }
+
+    /* mini-card dato pulita: etichetta + valore (+ unità, +sub, +prefix html es. freccia) */
+    function miniCard(label, valore, unita, sub, prefix) {
+      return '<div class="statbox">' +
+             '<span class="etichetta">' + label + '</span>' +
+             '<span class="valore">' + (prefix || "") + valore +
+             (unita ? ' <span class="unita">' + unita + '</span>' : "") + '</span>' +
+             (sub ? '<span class="sub">' + sub + '</span>' : "") +
+             '</div>';
+    }
+
+    /* Pannello vento piatto (niente box annidati): TWS LCD grande, raffica sotto,
+       direzione ben visibile. La freccia prende il colore dell'intensità. */
+    function ventoCardHtml(tws, gust, dirDeg, dirTxt) {
+      const twsStr = (tws != null && tws !== "") ? String(tws) : "–";
+      const ghost = twsStr.replace(/[0-9]/g, "8");   // segmenti "spenti" allineati alla cifra
+      const cTws = coloreIntensita(tws);
+      const arrow = (dirDeg != null)
+        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + dirDeg + 'deg)' + (cTws ? ';color:' + cTws : '') + '">↓</span> ' : "";
+      const gustStr = (gust != null && gust !== "") ? gust : "–";
+      return '<div class="pannello">' +
+        '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
+          '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
+        '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
+        '<div class="tws-dir">' + arrow + (dirTxt || "–") +
+          (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</div>' +
+      '</div>';
+    }
+
+    function renderBarcola(b) {
+      const box = document.getElementById("barcolaStat");
+      if (!b) {
+        box.innerHTML = '<div class="pannello"><div class="tws-dir">Dati non disponibili</div></div>';
+        return;
+      }
+      const dir = (typeof b.wind_direction === "number") ? b.wind_direction : null;
+      const dirTxt = (dir != null) ? gradiInDirezione(dir) : "–";
+      let boxes = '<div class="statgrid" style="margin-top:.5rem;">';
+      if (b.temperature != null) boxes += miniCard("Aria", num(b.temperature, 1), "°C");
+      if (b.mslp != null)        boxes += miniCard("Pressione", num(b.mslp, 0), "hPa");
+      if (b.rh != null)          boxes += miniCard("Umidità", num(b.rh, 0), "%");
+      boxes += '</div>';
+      box.innerHTML =
+        ventoCardHtml(num(b.wind_avg, 1), num(b.wind_max, 1), dir, dirTxt) + boxes;
+      const oraHm = b.datetime ? (b.datetime.split(" ")[1] || "").slice(0, 5) : "";
+      document.getElementById("statoBarcola").innerHTML =
+        (oraHm ? "Rilevazione delle " + oraHm + " · " : "") +
+        '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
+    }
+
+    /* ---------- Bollettino OSMER FVG ---------- */
+    function escHtml(s) {
+      return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    }
+    const OSMER_ETICH = { oggi: "Oggi", domani: "Domani", dopodomani: "Dopodomani" };
+    let OSMER_GIORNI = [];
+    function renderOsmer(giorni) {
+      const box = document.getElementById("osmerBollettino");
+      if (!Array.isArray(giorni) || !giorni.length) {
+        box.innerHTML = '<p class="stato">Bollettino non disponibile — <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">apri OSMER</a></p>';
+        return;
+      }
+      OSMER_GIORNI = giorni;
+      const tabs = giorni.map((g, i) =>
+        '<button class="osmer-tab" id="osmerTab' + i + '" onclick="selOsmer(' + i + ')">' +
+          (OSMER_ETICH[g.giorno] || g.giorno) + '</button>'
+      ).join("");
+      box.innerHTML = '<div class="osmer-tabs">' + tabs + '</div><div id="osmerGiorno"></div>';
+      selOsmer(0);
+    }
+    function selOsmer(i) {
+      const g = OSMER_GIORNI[i];
+      if (!g) return;
+      document.querySelectorAll(".osmer-tab").forEach((t, idx) => t.classList.toggle("attivo", idx === i));
+      const allerta = /temporal|piogg|rovesc/i.test(g.testo);
+      const lbl = (OSMER_ETICH[g.giorno] || g.giorno) + (g.data ? " · " + g.data : "");
+      const cb = new Date().toISOString().slice(0, 13);   // cache-bust orario: la mappa cambia di giorno
+      document.getElementById("osmerGiorno").innerHTML =
+        '<div class="bollett' + (allerta ? ' allerta' : '') + '">' +
+        '<div class="bollett-giorno">' + (allerta ? '⛈️ ' : '') + escHtml(lbl) + '</div>' +
+        '<div class="bollett-testo">' + escHtml(g.testo) + '</div>' +
+        '<img class="osmer-mappa" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
+          '" src="https://www.meteo.fvg.it/previ/' + encodeURIComponent(g.giorno) + '.png?v=' + cb +
+          '" onerror="this.style.display=\'none\'"></div>';
+    }
+
+    /* ---------- Boe OGS via ERDDAP (CORS aperto: Access-Control-Allow-Origin: *) ---------- */
+    const ERDDAP = "https://nodc.ogs.it/erddap/tabledap/";
+    const MS_IN_KT = 1.94384;
+
+    function oraLocale(isoUtc) {
+      const d = new Date(isoUtc);
+      return isNaN(d) ? "" : d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    }
+    function quandoLocale(isoUtc) {
+      const d = new Date(isoUtc);
+      if (isNaN(d)) return "";
+      const hh = d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+      return (d.toDateString() === new Date().toDateString())
+        ? "oggi " + hh
+        : d.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit" }) + " " + hh;
+    }
+
+    function erddapRows(dataset, campi, ore) {
+      const url = ERDDAP + dataset + ".json?" + encodeURIComponent(campi.join(",")) +
+                  "&" + encodeURIComponent("time>=now-" + ore + "hours");
+      // OGS rate-limita gli IP troppo insistenti con un 403 (privo di header CORS,
+      // da cui il fuorviante "CORS error" in console): un retry assorbe i blip.
+      const tenta = (n) => fetch(url)
+        .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+        .catch(err => {
+          if (n > 1) return new Promise(r => setTimeout(r, 1500)).then(() => tenta(n - 1));
+          throw err;
+        });
+      return tenta(2)
+        .then(j => {
+          const t = j.table;
+          return t.rows
+            .map(r => Object.fromEntries(t.columnNames.map((c, i) => [c, r[i]])))
+            .sort((a, b) => a.time < b.time ? -1 : 1); // l'ordine di ERDDAP non è garantito
+        });
+    }
+
+    function statErrore(idStat, idStato) {
+      document.getElementById(idStat).innerHTML =
+        '<div class="statbox"><span class="etichetta">Dati non disponibili</span><span class="valore">–</span></div>';
+      document.getElementById(idStato).textContent = "";
+    }
+
+    let mamboOk = false;   // una volta mostrati i dati, non azzero la card per un blip temporaneo
+    function caricaMambo() {
+      // finestra ampia (72h): la boa a volte salta ore o un giorno intero; con .pop() prendo
+      // comunque l'ultima rilevazione valida (la data esatta è mostrata sotto la card)
+      erddapRows("MAMBO1_TS", ["time", "depth", "WSPD", "GSPD", "WDIR", "DRYT", "TEMP_1"], 72)
+        .then(rows => {
+          // depth 0 = meteo, depth 2 = sensori in acqua; prendo le ultime righe valorizzate
+          const meteo = rows.filter(r => r.WSPD != null).pop();
+          const acqua = rows.filter(r => r.TEMP_1 != null).pop();
+          if (!meteo && !acqua) throw new Error("nessun dato recente");
+          let html = "";
+          if (meteo) {
+            const deg = (typeof meteo.WDIR === "number") ? meteo.WDIR : null;
+            html += ventoCardHtml(num(meteo.WSPD * MS_IN_KT, 1), num(meteo.GSPD * MS_IN_KT, 1),
+                                  deg, (deg != null ? gradiInDirezione(deg) : "–"));
+          }
+          html += '<div class="statgrid" style="margin-top:.5rem;">';
+          if (meteo) html += miniCard("Aria", num(meteo.DRYT, 1), "°C");
+          if (acqua) html += miniCard("Mare (−2 m)", num(acqua.TEMP_1, 1), "°C");
+          html += '</div>';
+          document.getElementById("mamboStat").innerHTML = html;
+          document.getElementById("statoMambo").textContent = "Rilevazione " + quandoLocale((meteo || acqua).time);
+          mamboOk = true;
+        })
+        .catch(err => {
+          console.error("Errore boa MAMBO1:", err);
+          // se la card mostrava già dei dati, li lascio: meglio un dato vecchio che "non disponibili"
+          if (!mamboOk) statErrore("mamboStat", "statoMambo");
+        });
+    }
+
+    /* Boa Vida (NIB Pirano): dati dal proxy (data.piran). Stesso layout della boa Trieste:
+       card vento + mini-card temperatura aria/mare; aggiungo l'altezza onda. */
+    function renderPiran(p) {
+      const stato = document.getElementById("statoPiran");
+      if (!p || (p.wind == null && p.airTemp == null && p.seaTemp == null)) {
+        statErrore("piranStat", "statoPiran");
+        return;
+      }
+      let html = "";
+      if (p.wind != null) {
+        const deg = (typeof p.dir === "number") ? p.dir : null;
+        html += ventoCardHtml(num(p.wind * MS_IN_KT, 1),
+                              (p.gust != null ? num(p.gust * MS_IN_KT, 1) : "–"),
+                              deg, (deg != null ? gradiInDirezione(deg) : "–"));
+      }
+      html += '<div class="statgrid" style="margin-top:.5rem;">';
+      if (p.airTemp != null) html += miniCard("Aria", num(p.airTemp, 1), "°C");
+      if (p.seaTemp != null) html += miniCard("Mare (−2,5 m)", num(p.seaTemp, 1), "°C");
+      if (p.waveH != null)   html += miniCard("Onda", num(p.waveH, 1), "m");
+      html += '</div>';
+      document.getElementById("piranStat").innerHTML = html;
+      const t = p.time ? p.time.replace(/:\d{2}$/, "") : "";
+      stato.textContent = (t ? "Rilevazione " + t + " (ora locale)" : "Fonte NIB – boa Vida");
+    }
+
+    function caricaMare() { caricaMambo(); }
+
+    /* ---------- Tabelle centraline ---------- */
+    function classeVento(kt) {
+      const v = parseFloat(kt);
+      if (isNaN(v)) return "";
+      if (v < 8)  return "vento-calmo";
+      if (v < 15) return "vento-leggero";
+      if (v < 25) return "vento-buono";
+      return "vento-forte";
+    }
+    // tocco semantico: colore del numero in base all'intensità (stessa scala della tabella)
+    const COLORE_VENTO = {
+      "vento-calmo": "#8a94a0", "vento-leggero": "#3b6d11",
+      "vento-buono": "#b35c00", "vento-forte": "#c20202"
+    };
+    function coloreIntensita(kt) { return COLORE_VENTO[classeVento(kt)] || ""; }
+
+    /* Direzione: vetercek dà la sigla inglese (W, NW, ENE…) → gradi per la freccia */
+    const GRADI_CARDINALE = { N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
+      S:180, SSW:202.5, SW:225, WSW:247.5, W:270, WNW:292.5, NW:315, NNW:337.5 };
+    function cardinaleInGradi(str) {
+      if (!str) return null;
+      const g = GRADI_CARDINALE[str.toUpperCase().trim()];
+      return (g === undefined) ? null : g;
+    }
+    function minutiTra(oraA, oraB) {
+      if (!oraA || !oraB) return 0;
+      const [ha, ma] = oraA.split(":").map(Number);
+      const [hb, mb] = oraB.split(":").map(Number);
+      let d = (ha * 60 + ma) - (hb * 60 + mb);
+      if (d < 0) d += 1440;            // a cavallo della mezzanotte
+      return d;
+    }
+    function finestra45(rows) {        // rows newest-first → solo le ultime ~45 min
+      if (!rows.length) return [];
+      const ref = rows[0].ora;
+      return rows.filter(r => minutiTra(ref, r.ora) <= 45);
+    }
+    function sparkline(valori, w, h, colore) {
+      const n = valori.length;
+      if (n < 2) return "";
+      const min = Math.min(...valori), max = Math.max(...valori);
+      const range = (max - min) || 1, pad = 4;
+      const pts = valori.map((v, i) => {
+        const x = pad + i * (w - 2 * pad) / (n - 1);
+        const y = h - pad - (v - min) / range * (h - 2 * pad);
+        return x.toFixed(1) + "," + y.toFixed(1);
+      });
+      const last = pts[n - 1].split(",");
+      return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" aria-hidden="true">' +
+             '<polyline fill="none" stroke="' + colore + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(" ") + '"/>' +
+             '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="3" fill="' + colore + '"/></svg>';
+    }
+    function calcolaTrend(win) {        // win newest-first
+      const kts = win.map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
+      if (kts.length < 2) return null;
+      const media = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+      const meta = Math.max(1, Math.floor(kts.length / 2));
+      const delta = media(kts.slice(0, meta)) - media(kts.slice(-meta));
+      const minuti = minutiTra(win[0].ora, win[win.length - 1].ora);
+      const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " kt" + (minuti ? " in " + minuti + " min" : "");
+      if (delta >= 1.5)  return { stato: "in aumento", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
+      if (delta <= -1.5) return { stato: "in calo",    freccia: "↘", colore: "#b35c00", deltaTxt: txt };
+      return                { stato: "stabile",    freccia: "→", colore: "#5f5e5a", deltaTxt: txt };
+    }
+
+    const cacheStazione = {};     // ultimi dati validi per stazione (se un refresh torna vuoto, li riusiamo)
+    function renderStazione(rows, prefix) {
+      let stale = false;
+      if (!Array.isArray(rows) || !rows.length) {
+        if (cacheStazione[prefix]) { rows = cacheStazione[prefix]; stale = true; }
+        else { mostraNoData(prefix); return; }
+      } else {
+        cacheStazione[prefix] = rows;
+      }
+      const win = finestra45(rows);     // ultime ~45 min, la riga 0 è la più recente
+      const r0 = rows[0];
+      // --- card vento principale (TWS grande + TWD + raffica) ---
+      const deg = cardinaleInGradi(r0.direzione);
+      const dirTxt = (deg != null) ? gradiInDirezione(deg) : (r0.direzione || "–");
+      document.getElementById(prefix + "Cards").innerHTML = ventoCardHtml(r0.kt, r0.sunki, deg, dirTxt);
+      // --- badge trend + sparkline ---
+      const trendEl = document.getElementById(prefix + "Trend");
+      const t = calcolaTrend(win);
+      if (t) {
+        const serie = win.slice().reverse().map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
+        trendEl.innerHTML =
+          '<span class="trend-badge"><span class="frec" style="color:' + t.colore + '">' + t.freccia + '</span> ' + t.stato + '</span>' +
+          '<span class="trend-delta">' + t.deltaTxt + '</span>' +
+          sparkline(serie, 150, 36, "#45566a");
+      } else {
+        trendEl.innerHTML = "";
+      }
+      // --- tabella dettaglio (ultime ~45 min) ---
+      renderTabella(win, prefix + "Body");
+      // --- nota stato ---
+      const st = document.getElementById("stato" + cap(prefix));
+      if (st) {
+        const ora = r0.ora || "";
+        st.textContent = stale
+          ? "⚠️ Ultimo dato disponibile" + (ora ? " (" + ora + ")" : "") + ", in attesa di aggiornamento"
+          : "Fonte: vetercek.com · ultime ~45 min" + (ora ? " · agg. " + ora : "");
+      }
+    }
+
+    function mostraNoData(prefix) {
+      const cards = document.getElementById(prefix + "Cards");
+      if (cards) cards.innerHTML = '<div class="pannello"><div class="tws-dir">Dati non disponibili</div></div>';
+      const tr = document.getElementById(prefix + "Trend");
+      if (tr) tr.innerHTML = "";
+      const body = document.getElementById(prefix + "Body");
+      if (body) body.innerHTML = '<tr><td colspan="5">Dati momentaneamente non disponibili</td></tr>';
+      const st = document.getElementById("stato" + cap(prefix));
+      const link = LINK_SPOT[prefix] || LINK_VETERCEK[prefix] || "https://vetercek.com";
+      if (st) st.innerHTML = '<a href="' + link + '" target="_blank" rel="noopener">apri i dati live su vetercek.com</a>';
+    }
+
+    function cella(val, cls) {
+      const td = document.createElement("td");
+      td.textContent = (val != null && val !== "") ? val : "–";
+      if (cls) td.className = cls;
+      return td;
+    }
+    function renderTabella(righe, idBody) {
+      const tbody = document.getElementById(idBody);
+      tbody.innerHTML = "";
+      righe.forEach((r, idx) => {
+        const tr = document.createElement("tr");
+        if (idx === 0) tr.className = "riga-recente";
+        // ora (con tag "adesso" sulla riga più recente)
+        const tdOra = document.createElement("td");
+        tdOra.innerHTML = (r.ora || "–") + (idx === 0 ? ' <span class="ora-now">adesso</span>' : "");
+        tr.appendChild(tdOra);
+        // direzione con freccia
+        const deg = cardinaleInGradi(r.direzione);
+        const tdDir = document.createElement("td");
+        tdDir.innerHTML = (deg != null ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "") + (r.direzione || "–");
+        tr.appendChild(tdDir);
+        tr.appendChild(cella(r.kt, classeVento(r.kt)));
+        tr.appendChild(cella(r.sunki, classeVento(r.sunki)));
+        tr.appendChild(cella(r.temp, ""));
+        tbody.appendChild(tr);
+      });
+    }
+
+    let timerAuto = null;
+    function caricaDati() {
+      const btn = document.getElementById("btnAggiorna");
+      btn.disabled = true;
+      return fetch(PROXY + "?ts=" + Date.now())
+        .then(res => {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return res.json();
+        })
+        .then(data => {
+          renderBarcola(data.barcola);
+          renderOsmer(data.osmer);
+          renderStazione(data.monteGrisa, "grisa");
+          renderStazione(data.muggia, "muggia");
+          renderStazione(data.marinajulia, "marinajulia");
+          SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
+          renderPiran(data.piran);
+          aggiornaSurfometroAuto(data);
+          document.getElementById("ultimoAggiornamento").textContent =
+            "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+        })
+        .catch(err => {
+          console.error("Errore caricamento dati centraline:", err);
+          renderBarcola(null);
+          renderOsmer([]);
+          renderPiran(null);
+          ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
+          aggiornaSurfometroAuto({ muggia: null });
+          document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
+        })
+        .finally(() => { btn.disabled = false; });
+    }
+    document.getElementById("btnAggiorna").addEventListener("click", () => {
+      caricaDati();
+      caricaMare();
+      document.getElementById("boraImg").src = urlBora();
+      document.getElementById("radarImg").src = urlRadar();
+    });
+
+    /* ---------- Modal modelli ---------- */
+    function apriModal()  { document.getElementById("modal").style.display = "block"; }
+    function chiudiModal(){ document.getElementById("modal").style.display = "none"; }
+    function apriGuidaBora(){ document.getElementById("modalGuidaBora").style.display = "block"; }
+
+    /* ---------- Differenza pressione Trieste–Maribor (live, Open-Meteo MSLP) ----------
+       MSLP = pressione ridotta al livello del mare: necessaria perché Maribor è a 262 m
+       (la pressione di superficie sarebbe ~30 hPa più bassa solo per via dell'altitudine). */
+    function apriDeltaBora(){ document.getElementById("modalDeltaBora").style.display = "block"; }
+    function caricaDeltaBora() {
+      const stato = document.getElementById("deltaBoraStato");
+      const infoBtn = ' · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>';
+      const api = (lat, lon) =>
+        "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon +
+        "&current=pressure_msl&timezone=Europe%2FRome";
+      Promise.all([
+        fetch(api(46.5547, 15.6459)).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }), // Maribor
+        fetch(api(45.6495, 13.7768)).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })  // Trieste
+      ]).then(([mb, ts]) => {
+        const pMb = mb.current.pressure_msl, pTs = ts.current.pressure_msl;
+        const delta = Math.round((pTs - pMb) * 10) / 10;
+        document.getElementById("pMaribor").innerHTML = pMb.toFixed(1) + '<span class="unita"> hPa</span>';
+        document.getElementById("pTrieste").innerHTML = pTs.toFixed(1) + '<span class="unita"> hPa</span>';
+        let testo, colore;
+        if (delta > -4)       { testo = "Bora assente";     colore = "#5b6470"; } // sopra −4 hPa: niente Bora
+        else if (delta > -8)  { testo = "Bora consistente"; colore = "#e2680f"; } // da −4 hPa la Bora si innesca
+        else                  { testo = "Bora forte";       colore = "#cf2e22"; }
+        const dv = document.getElementById("pDelta");
+        dv.innerHTML = (delta > 0 ? "+" : "") + delta.toFixed(1) + '<span class="unita"> hPa</span>';
+        dv.style.color = colore;
+        const giud = document.getElementById("deltaGiudizio");
+        giud.textContent = testo;
+        giud.style.color = colore;
+        document.getElementById("deltaBox").style.borderColor = colore;
+        stato.innerHTML =
+          'Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>' +
+          ' · agg. ' + mb.current.time.slice(11, 16) + infoBtn;
+      }).catch(() => {
+        stato.innerHTML = '⚠️ Differenza di pressione momentaneamente non disponibile.' + infoBtn;
+      });
+    }
+
+    /* ---------- Guida spot (popup) ----------
+       Fonte condizioni: surf-magazin.de (guida spot Istria) dove indicato. */
+    const GUIDE = {
+      savudrija: { nome: "Punta Salvore (Savudrija)", html:
+        "<p>Spot da <strong>Bora (NE)</strong>, in arrivo dalla zona di Portorose; funziona anche con i venti da sud. Ci si attrezza al riparo dalla Bora, ma il lancio è impegnativo: si scavalca un muretto e si attraversano una cinquantina di metri di bonaccia prima di entrare nel vento forte.</p>" +
+        "<p>Mare <strong>bump &amp; jump</strong>, da piccolo a moderato, che può farsi “da onda” quando la Bora rinforza. Ingresso e fondo rocciosi: serve attenzione. Livello <strong>intermedio–avanzato</strong>.</p>",
+        fonte: "surf-magazin.de · kite-and-windsurfing-guide.com" },
+      dajla: { nome: "Dajla", html:
+        "<p>Spot sulla costa occidentale dell'Istria, vicino a Cittanova (Novigrad). In estate lavora soprattutto con la <strong>termica (Maestrale, da O/SO nel pomeriggio)</strong>; con la <strong>Bora (NE)</strong> il vento arriva più irregolare.</p>" +
+        "<p>Mare in genere poco mosso, adatto anche a chi inizia nelle giornate di termica.</p>",
+        fonte: "nota generale (spot non presente nelle guide consultate)" },
+      preluka: { nome: "Preluka (Volosko)", html:
+        "<p>Spot del Quarnero, tra Fiume (Rijeka) e Abbazia (Opatija): non è Istria in senso stretto, ma è vicino. È uno spot da <strong>Bora (NE)</strong>, con vento forte e raffica e mare mosso o con onda quando rinforza.</p>" +
+        "<p>Più adatto a windsurfisti <strong>esperti</strong>.</p>",
+        fonte: "nota generale (spot non presente nelle guide consultate)" },
+      liznjan: { nome: "Ližnjan (Lisignano)", html:
+        "<p>Qui la <strong>Bora (NE)</strong> è la più forte e costante dell'Istria: anche un NE debole accelera fino a far planare, e con Bora sostenuta si forma un'onda che frange sul reef. C'è una zona di acqua piatta per il freestyle e onde per il bump &amp; jump.</p>" +
+        "<p>Attenzione al <strong>reef</strong> sopravento (mangia le pinne), agli scogli aguzzi e ai ricci di mare: meglio le scarpette. Livello <strong>intermedio–avanzato</strong>; un tempo segreto dei local, oggi può affollarsi. Ottimo per il windsurf da onda, adatto anche al kite freeride.</p>",
+        fonte: "surf-magazin.de · kite-and-windsurfing-guide.com" },
+      premantura: { nome: "Premantura (Stupice)", html:
+        "<p>Il cuore del windsurf istriano, sulla punta più a sud. Lavora con <strong>Bora (NE)</strong> onshore — condizioni sicure — e con <strong>Scirocco (SE)</strong> di lato, che alza onde vicino alle isole al largo. Il lancio più sicuro è al <strong>Camping Stupice</strong>.</p>" +
+        "<p>Acqua perlopiù liscia o con piccolo swell: buono anche per i <strong>principianti</strong> nelle giornate tranquille, mentre con Bora forte diventa terreno da esperti (in autunno ospita le gare di freestyle EFPT). Scogli aguzzi e ricci di mare: consigliate le scarpette. Ottimo per il windsurf, buono per il kite.</p>",
+        fonte: "surf-magazin.de · kite-and-windsurfing-guide.com" }
+    };
+    function apriGuida(prefix) {
+      const g = GUIDE[prefix];
+      if (!g) return;
+      document.getElementById("guidaTitolo").textContent = g.nome;
+      document.getElementById("guidaCorpo").innerHTML = g.html +
+        '<p class="guida-meta">Fonte: ' + g.fonte + '</p>';
+      document.getElementById("modalGuida").style.display = "block";
+    }
+    function chiudiGuida() { document.getElementById("modalGuida").style.display = "none"; }
+
+    // chiusura modali: click sullo sfondo o tasto Esc
+    document.querySelectorAll(".modal").forEach(m => {
+      m.addEventListener("click", e => { if (e.target === m) m.style.display = "none"; });
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
+    });
+
+    // dal menu "Spot Istria": apre il gruppo collassato
+    const navIstria = document.querySelector('nav a[href="#istria"]');
+    if (navIstria) navIstria.addEventListener("click", () => {
+      const d = document.getElementById("istria");
+      if (d) d.open = true;
+    });
+
+    /* ---------- Avvio ---------- */
+    function nascondiLoader() {
+      const l = document.getElementById("loader");
+      if (l) l.classList.add("nascondi");
+    }
+    document.getElementById("boraImg").src = urlBora();
+    document.getElementById("radarImg").src = urlRadar();
+    mostraAladin();
+    // l'overlay si dissolve quando i dati principali sono pronti
+    caricaDati().finally(nascondiLoader);
+    // safety: non lasciare mai l'utente bloccato dietro l'overlay
+    setTimeout(nascondiLoader, 8000);
+    caricaMare();
+    caricaDeltaBora();
+    // auto-refresh dati ogni 5 minuti
+    timerAuto = setInterval(() => { caricaDati(); caricaMare(); caricaDeltaBora(); }, 5 * 60 * 1000);
+  </script>
+
+  <div class="dona">
+    <p>Il progetto è gratuito ma ha qualche costo: se ti va, offrimi una birra 🍺</p>
+    <a class="dona-btn" href="https://revolut.me/albertjsz" target="_blank" rel="noopener">🍺 Offrimi una birra</a>
+    <p class="dona-nota">Scegli l'importo (es. 5€) · carta, Apple Pay o Google Pay</p>
+  </div>
+
+  <footer>
+    <p>
+      Pagina creata con lo scopo di pubblica utilità<br>
+      nel pieno spirito di condivisione surfista.<br><br>
+      Un grazie ad Alessio Vremec per avermi ispirato<br>
+      Per suggerimenti o migliorie contattare <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a><br>
+      Il mio sito: <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a><br><br>
+      Che SUFI!
+    </p>
+  </footer>
+
+  <!-- GoatCounter (statistiche anonime, senza cookie) -->
+  <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
