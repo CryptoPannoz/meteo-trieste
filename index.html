@@ -227,9 +227,14 @@
     .meter-range {
       position: absolute; top: 0; bottom: 0; left: 0; width: 0; pointer-events: none;
       background: rgba(31,45,61,.28);
-      border-left: 2px solid rgba(31,45,61,.65);
       border-right: 2px solid rgba(31,45,61,.8);
       transition: left .5s ease, width .5s ease, opacity .3s ease;
+    }
+    /* linea del vento medio: sempre visibile sulla barra (anche quando medio = raffica) */
+    .meter-mean-line {
+      position: absolute; top: 0; bottom: 0; width: 2px; pointer-events: none;
+      background: var(--testo); transform: translateX(-50%);
+      transition: left .5s ease, opacity .3s ease;
     }
     /* indicatore unico: freccia della direzione (reale) a lato, poi vento medio grande
        con la raffica come appendice bassa. Posizionato sul punto del medio nella scala. */
@@ -605,6 +610,7 @@
           <div style="flex:25;background:#3B6D11;"></div>
           <div style="flex:12.5;background:#E24B4A;"></div>
           <div class="meter-range" id="meterRange" style="left:0%;width:0%;opacity:0;"></div>
+          <div class="meter-mean-line" id="meterMeanLine" style="left:0%;opacity:0;"></div>
         </div>
         <div class="meter-over" id="meterOver" aria-hidden="true">» 40+</div>
         <div class="meter-ticks">
@@ -1110,6 +1116,7 @@
       const gapp  = document.getElementById("meterGust");        // appendice raffica (dentro il pointer)
       const gval  = document.getElementById("meterGustVal");
       const range = document.getElementById("meterRange");
+      const meanLine = document.getElementById("meterMeanLine"); // linea del vento medio (sempre visibile)
       const over  = document.getElementById("meterOver");        // indicatore "fuori scala" (>40 kt)
       if (!verd || !ptr || !val) return;
       const spegniRaffica = () => {
@@ -1125,6 +1132,7 @@
         val.textContent = "–";
         if (dirEl) dirEl.style.display = "none";
         if (over)  over.style.opacity = "0";
+        if (meanLine) meanLine.style.opacity = "0";
         spegniRaffica();
         return;
       }
@@ -1134,6 +1142,8 @@
       // così il blocco numeri resta sempre dentro i bordi, anche oltre i 40 kt
       ptr.style.transform = "translateX(-" + pa + "%)";
       ptr.style.opacity = "1";
+      // linea del vento medio sulla barra: sempre presente, anche se medio = raffica
+      if (meanLine) { meanLine.style.left = pa + "%"; meanLine.style.opacity = "1"; }
       val.textContent = num(kt, 1);
       // freccia della direzione reale (stessa convenzione del riquadro live: ↓ ruotato dei gradi)
       if (dirEl) {
