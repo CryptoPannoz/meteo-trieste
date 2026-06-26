@@ -16,6 +16,7 @@ var STATIONS = {
   monteGrisa:  { postaja: 'montegrisa' },
   muggia:      { postaja: 'muggia' },
   marinajulia: { id: 91, postaja: 'monfalcone4' },
+  zusterna:   { id: 147, postaja: 'kjdbum' },
   preluka:    { id: 149, postaja: 'preluka' },
   dajla:      { id: 39,  postaja: 'dajla' },
   liznjan:    { id: 74,  postaja: 'liznjan' },

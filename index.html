@@ -905,6 +905,28 @@
   <details class="gruppo-collapse" id="istria">
   <summary class="gruppo-sum">🏖️ Spot Istria</summary>
 
+  <div class="section" id="zusterna">
+    <h2>Žusterna – Koper</h2>
+    <div id="zusternaCards"></div>
+    <div class="trend" id="zusternaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoZusterna">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="zusternaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoZusterna"></p>
+    <div id="camZusternaWrap" data-yt="LD8GEJzTnCc" style="margin-top:.6rem;">
+      <button class="cam-play" onclick="caricaCamYoutube('camZusternaWrap')">▶ Avvia webcam live (KJD BUM · YouTube)</button>
+    </div>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://maps.app.goo.gl/9pY9H27cpYz2Y9ws6" target="_blank" rel="noopener">📍 Spot Position</a>
+      <a class="spot-btn" href="https://kjdbum.si/" target="_blank" rel="noopener">🏠 Club KJD BUM</a>
+      <button class="spot-btn" onclick="apriGuida('zusterna')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+
   <div class="section" id="savudrija">
     <h2>Punta Salvore (Savudrija)</h2>
     <div id="savudrijaCards"></div>
@@ -1005,8 +1027,9 @@
       muggia: "https://vetercek.com/danes/index.php?postaja=muggia",
       marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4"
     };
-    const SPOT_ISTRIA = ["savudrija", "dajla", "preluka", "liznjan", "premantura"];
+    const SPOT_ISTRIA = ["zusterna", "savudrija", "dajla", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
+      zusterna:   "https://vetercek.com/danes/index.php?id=147&postaja=kjdbum",
       preluka:    "https://vetercek.com/danes/index.php?id=149&postaja=preluka",
       dajla:      "https://vetercek.com/danes/index.php?id=39&postaja=dajla",
       liznjan:    "https://vetercek.com/danes/index.php?id=74&postaja=liznjan",
@@ -1589,6 +1612,17 @@
       wrap.innerHTML = '<iframe class="cam-video" title="Webcam Marina Monfalcone (Panomax 360°)" loading="lazy" allowfullscreen src="https://marinamonfalcone.panomax.com/"></iframe>';
     }
 
+    /* Webcam YouTube live (es. KJD BUM a Žusterna): iframe con autoplay muto, caricato solo quando serve */
+    function caricaCamYoutube(wrapId) {
+      const wrap = document.getElementById(wrapId);
+      if (!wrap || wrap.dataset.loaded) return;
+      wrap.dataset.loaded = "1";
+      const id = wrap.dataset.yt;
+      wrap.innerHTML = '<iframe class="cam-video" title="Webcam live (YouTube)" loading="lazy" allowfullscreen ' +
+        'allow="autoplay; encrypted-media; picture-in-picture" ' +
+        'src="https://www.youtube.com/embed/' + id + '?autoplay=1&mute=1&playsinline=1&rel=0"></iframe>';
+    }
+
 
     /* ---------- Modal modelli ---------- */
     function apriModal()  { document.getElementById("modal").style.display = "block"; }
@@ -1635,6 +1669,10 @@
     /* ---------- Guida spot (popup) ----------
        Fonte condizioni: surf-magazin.de (guida spot Istria) dove indicato. */
     const GUIDE = {
+      zusterna: { nome: "Žusterna – Koper", html:
+        "<p>Spot da <strong>Maestrale estivo</strong> (vento termico nel pomeriggio), molto interessante per <strong>wing</strong> e <strong>windsurf</strong>. Con <strong>12–16 nodi</strong> si plana bene con una wing da circa <strong>5&nbsp;m</strong> (foil).</p>" +
+        "<p>Il club è il <strong>KJD BUM</strong>, che ha due proprie zattere; si entra in acqua dalla <strong>spiaggetta a destra</strong>. La centralina è installata al club. <strong>Parcheggio a pagamento</strong> (~3&nbsp;€) vicino alla scuola.</p>",
+        fonte: 'indicazioni del club <a href="https://kjdbum.si/" target="_blank" rel="noopener">KJD BUM</a>' },
       savudrija: { nome: "Punta Salvore (Savudrija)", html:
         "<p>Spot da <strong>Bora (NE)</strong>, in arrivo dalla zona di Portorose; funziona anche con i venti da sud. Ci si attrezza al riparo dalla Bora, ma il lancio è impegnativo: si scavalca un muretto e si attraversano una cinquantina di metri di bonaccia prima di entrare nel vento forte.</p>" +
         "<p>Mare <strong>bump &amp; jump</strong>, da piccolo a moderato, che può farsi “da onda” quando la Bora rinforza. Ingresso e fondo rocciosi: serve attenzione. Livello <strong>intermedio–avanzato</strong>.</p>",
@@ -1701,6 +1739,20 @@
       obs.observe(wrap);
     }
 
+    /* Avvio automatico della webcam YouTube di Žusterna quando entra in vista
+       (lo spot Istria è collassato: parte quando l'utente apre il gruppo e scorre fin lì) */
+    function autoCamZusterna() {
+      const wrap = document.getElementById("camZusternaWrap");
+      if (!wrap) return;
+      if (!("IntersectionObserver" in window)) { caricaCamYoutube("camZusternaWrap"); return; }
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { obs.disconnect(); caricaCamYoutube("camZusternaWrap"); }
+        });
+      }, { rootMargin: "200px" });
+      obs.observe(wrap);
+    }
+
     // dal menu "Spot Istria": apre il gruppo collassato
     const navIstria = document.querySelector('nav a[href="#istria"]');
     if (navIstria) navIstria.addEventListener("click", () => {
@@ -1719,6 +1771,7 @@
     aggiornaWebcam();
     autoCamSvbg();
     autoCamMonfalcone();
+    autoCamZusterna();
     // l'overlay si dissolve quando i dati principali sono pronti
     caricaDati().finally(nascondiLoader);
     // safety: non lasciare mai l'utente bloccato dietro l'overlay
