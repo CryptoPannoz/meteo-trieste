@@ -1486,7 +1486,7 @@
           if (chart) chart.innerHTML = sparkline(valori, 320, 64, "#2f6fb0");
           if (tEl) tEl.textContent = tot.toLocaleString("it-IT") + " visite dall'inizio";
           const box = document.getElementById("viewsBox");
-          if (box) box.style.display = "";
+          if (box) box.style.display = "block";   // "" ricadrebbe sul CSS display:none
         })
         .catch(() => {});
     }
