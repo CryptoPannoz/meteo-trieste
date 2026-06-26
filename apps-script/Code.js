@@ -44,32 +44,34 @@ function fetchGoatViews() {
   if (cached) return JSON.parse(cached);
 
   var key = PropertiesService.getScriptProperties().getProperty('GC_API_KEY');
+  if (key) key = key.trim();
   if (!key) return { series: [], error: 'no_key' };
 
   var end = new Date();
-  var start = new Date(end.getTime() - 29 * 24 * 3600 * 1000); // 30 giorni
   function fmt(d) { return d.toISOString().slice(0, 10); }
-  var url = 'https://ventotrieste.goatcounter.com/api/v0/stats/total'
-          + '?start=' + fmt(start) + '&end=' + fmt(end) + '&daily=true';
-
-  try {
-    var resp = UrlFetchApp.fetch(url, {
-      headers: { Authorization: 'Bearer ' + key },
-      muteHttpExceptions: true
-    });
-    if (resp.getResponseCode() !== 200) {
-      return { series: [], error: 'http_' + resp.getResponseCode() };
-    }
-    var data = JSON.parse(resp.getContentText());
-    var series = (data.stats || []).map(function (s) {
-      return { d: s.day, n: s.daily || 0 };
-    });
-    var out = { series: series, total: (data.total != null ? data.total : null) };
-    cache.put('gc_views', JSON.stringify(out), 3 * 3600);
-    return out;
-  } catch (err) {
-    return { series: [], error: String(err) };
+  // GoatCounter dà 404 se lo start è troppo indietro (oltre il limite/retention).
+  // Provo range via via più stretti e tengo il primo che risponde 200: così parte
+  // "dall'inizio" entro il massimo consentito. Gli zeri iniziali li tolgo dopo.
+  var giorni = [365, 180, 120, 90, 45];
+  var data = null, lastErr = '';
+  for (var i = 0; i < giorni.length; i++) {
+    var start = new Date(end.getTime() - giorni[i] * 24 * 3600 * 1000);
+    var url = 'https://ventotrieste.goatcounter.com/api/v0/stats/total'
+            + '?start=' + fmt(start) + '&end=' + fmt(end);
+    try {
+      var resp = UrlFetchApp.fetch(url, { headers: { Authorization: 'Bearer ' + key }, muteHttpExceptions: true });
+      if (resp.getResponseCode() === 200) { data = JSON.parse(resp.getContentText()); break; }
+      lastErr = 'http_' + resp.getResponseCode();
+    } catch (err) { lastErr = String(err); }
   }
+  if (!data) return { series: [], error: lastErr || 'fail' };
+
+  var series = (data.stats || []).map(function (s) { return { d: s.day, n: s.daily || 0 }; });
+  while (series.length && series[0].n === 0) series.shift(); // zeri iniziali → parte dai dati reali
+  var somma = series.reduce(function (a, b) { return a + b.n; }, 0);
+  var out = { series: series, total: (data.total != null ? data.total : somma) };
+  cache.put('gc_views', JSON.stringify(out), 3 * 3600);
+  return out;
 }
 
 function doGet(e) {

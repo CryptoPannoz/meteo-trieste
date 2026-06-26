@@ -1484,7 +1484,7 @@
           const chart = document.getElementById("viewsChart");
           const tEl = document.getElementById("viewsTotale");
           if (chart) chart.innerHTML = sparkline(valori, 320, 64, "#2f6fb0");
-          if (tEl) tEl.textContent = tot.toLocaleString("it-IT") + " visite negli ultimi 30 giorni";
+          if (tEl) tEl.textContent = tot.toLocaleString("it-IT") + " visite dall'inizio";
           const box = document.getElementById("viewsBox");
           if (box) box.style.display = "";
         })
@@ -1852,7 +1852,7 @@
 
   <!-- Mini-grafico visite (GoatCounter) -->
   <div class="section" id="viewsBox">
-    <h2>📊 Visite · ultimi 30 giorni</h2>
+    <h2>📊 Visite</h2>
     <div id="viewsChart"></div>
     <p class="stato" id="viewsTotale"></p>
   </div>
