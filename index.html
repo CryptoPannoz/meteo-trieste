@@ -450,6 +450,16 @@
     #altre-pagine h2 { font-size: 1.05rem; margin: 0 0 1rem; }
     #altre-pagine .spot-azioni { justify-content: center; margin-top: 0; }
     #altre-pagine .dona-btn { margin-top: .2rem; }
+    /* Box mini-grafico visite: stessa larghezza dei box sopra, sparkline responsive */
+    #viewsBox {
+      max-width: 420px;
+      margin: 0 auto 1.5rem;
+      text-align: center;
+      display: none;
+    }
+    #viewsBox h2 { font-size: 1.05rem; margin: 0 0 .8rem; }
+    #viewsBox svg.spark { width: 100%; height: auto; max-width: 360px; vertical-align: middle; }
+    #viewsBox .stato { margin: .6rem 0 0; }
     footer {
       text-align: center;
       font-size: .9rem;
@@ -1461,6 +1471,26 @@
              '<polyline fill="none" stroke="' + colore + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(" ") + '"/>' +
              '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="3" fill="' + colore + '"/></svg>';
     }
+
+    /* Mini-grafico visite (GoatCounter via proxy ?views=1): sparkline ultimi 30 giorni.
+       Si mostra solo se arrivano dati validi (altrimenti il box resta nascosto). */
+    function caricaViews() {
+      fetch(PROXY + "?views=1&ts=" + Date.now())
+        .then(r => r.json())
+        .then(v => {
+          if (!v || !Array.isArray(v.series) || v.series.length < 2) return;
+          const valori = v.series.map(s => Number(s.n) || 0);
+          const tot = valori.reduce((a, b) => a + b, 0);
+          const chart = document.getElementById("viewsChart");
+          const tEl = document.getElementById("viewsTotale");
+          if (chart) chart.innerHTML = sparkline(valori, 320, 64, "#2f6fb0");
+          if (tEl) tEl.textContent = tot.toLocaleString("it-IT") + " visite negli ultimi 30 giorni";
+          const box = document.getElementById("viewsBox");
+          if (box) box.style.display = "";
+        })
+        .catch(() => {});
+    }
+
     function calcolaTrend(win) {        // win newest-first
       const kts = win.map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
       if (kts.length < 2) return null;
@@ -1797,6 +1827,7 @@
     setTimeout(nascondiLoader, 8000);
     caricaMare();
     caricaDeltaBora();
+    caricaViews();
     // auto-refresh dati ogni 5 minuti
     timerAuto = setInterval(() => { caricaDati(); caricaMare(); caricaDeltaBora(); }, 5 * 60 * 1000);
   </script>
@@ -1817,6 +1848,13 @@
     </div>
     <p class="stato" style="margin:.9rem 0 .6rem;">Hai uno spot con una centralina e vorresti la tua pagina dedicata? È gratis.</p>
     <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot gratuitamente</a>
+  </div>
+
+  <!-- Mini-grafico visite (GoatCounter) -->
+  <div class="section" id="viewsBox">
+    <h2>📊 Visite · ultimi 30 giorni</h2>
+    <div id="viewsChart"></div>
+    <p class="stato" id="viewsTotale"></p>
   </div>
 
   <footer>

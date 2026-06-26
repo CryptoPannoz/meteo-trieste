@@ -35,7 +35,50 @@ function stationUrl(s) {
   return 'https://vetercek.com/danes/index.php?' + q;
 }
 
-function doGet() {
+/* Serie giornaliera delle visite da GoatCounter (ultimi 30 giorni).
+   La API key sta nelle Script Properties (GC_API_KEY), mai nel repo.
+   Risultato in cache 3h per non chiamare l'API a ogni richiesta. */
+function fetchGoatViews() {
+  var cache = CacheService.getScriptCache();
+  var cached = cache.get('gc_views');
+  if (cached) return JSON.parse(cached);
+
+  var key = PropertiesService.getScriptProperties().getProperty('GC_API_KEY');
+  if (!key) return { series: [], error: 'no_key' };
+
+  var end = new Date();
+  var start = new Date(end.getTime() - 29 * 24 * 3600 * 1000); // 30 giorni
+  function fmt(d) { return d.toISOString().slice(0, 10); }
+  var url = 'https://ventotrieste.goatcounter.com/api/v0/stats/total'
+          + '?start=' + fmt(start) + '&end=' + fmt(end) + '&daily=true';
+
+  try {
+    var resp = UrlFetchApp.fetch(url, {
+      headers: { Authorization: 'Bearer ' + key },
+      muteHttpExceptions: true
+    });
+    if (resp.getResponseCode() !== 200) {
+      return { series: [], error: 'http_' + resp.getResponseCode() };
+    }
+    var data = JSON.parse(resp.getContentText());
+    var series = (data.stats || []).map(function (s) {
+      return { d: s.day, n: s.daily || 0 };
+    });
+    var out = { series: series, total: (data.total != null ? data.total : null) };
+    cache.put('gc_views', JSON.stringify(out), 3 * 3600);
+    return out;
+  } catch (err) {
+    return { series: [], error: String(err) };
+  }
+}
+
+function doGet(e) {
+  // Endpoint separato per il grafico visite (GoatCounter), cache 3h, key server-side.
+  if (e && e.parameter && e.parameter.views) {
+    return ContentService
+      .createTextOutput(JSON.stringify(fetchGoatViews()))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
   var out = {};
   var keys = Object.keys(STATIONS);
 
