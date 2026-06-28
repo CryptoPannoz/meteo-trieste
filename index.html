@@ -1815,10 +1815,20 @@
       const media = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
       const meta = Math.max(1, Math.floor(kts.length / 2));
       const delta = media(kts.slice(0, meta)) - media(kts.slice(-meta));
+      const serie = kts.slice().reverse(); // oldest -> newest, come la sparkline
+      const xMedia = (serie.length - 1) / 2;
+      const yMedia = media(serie);
+      const denom = serie.reduce((s, _, i) => s + Math.pow(i - xMedia, 2), 0) || 1;
+      const slope = serie.reduce((s, v, i) => s + (i - xMedia) * (v - yMedia), 0) / denom;
+      const slopeTot = slope * (serie.length - 1);
+      const pivot = Math.max(0, Math.floor(serie.length * 0.66));
+      const ultimoTratto = serie[serie.length - 1] - serie[pivot];
       const minuti = minutiTra(win[0].ora, win[win.length - 1].ora);
       const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " kt" + (minuti ? " in " + minuti + " min" : "");
-      if (delta >= 1.5)  return { stato: "in aumento", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
-      if (delta <= -1.5) return { stato: "in calo",    freccia: "↘", colore: "#b35c00", deltaTxt: txt };
+      const sale = delta >= 1.5 || (delta >= 0.7 && slopeTot >= 0.7 && ultimoTratto >= -0.3);
+      const cala = delta <= -1.5 || (delta <= -0.7 && slopeTot <= -0.7 && ultimoTratto <= 0.3);
+      if (sale) return { stato: "in aumento", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
+      if (cala) return { stato: "in calo",    freccia: "↘", colore: "#b35c00", deltaTxt: txt };
       return                { stato: "stabile",    freccia: "→", colore: "#5f5e5a", deltaTxt: txt };
     }
 
@@ -1845,7 +1855,7 @@
         trendEl.innerHTML =
           '<span class="trend-badge"><span class="frec" style="color:' + t.colore + '">' + t.freccia + '</span> ' + t.stato + '</span>' +
           '<span class="trend-delta">' + t.deltaTxt + '</span>' +
-          sparkline(serie, 150, 36, "#45566a");
+          sparkline(serie, 150, 36, t.colore);
       } else {
         trendEl.innerHTML = "";
       }
