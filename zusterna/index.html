@@ -221,41 +221,66 @@
     /* ---- Surfometro orizzontale ---- */
     .surf2-verdetto { text-align: center; font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.3rem; }
     .surf2-verdetto small { display: block; font-size: .85rem; font-weight: 500; color: var(--label); margin-top: .15rem; }
-    .meter { position: relative; padding-top: 46px; }
-    .meter-bar { position: relative; display: flex; height: 16px; border-radius: 8px; overflow: hidden; }
+    .meter {
+      position: relative;
+      padding: 50px .55rem 1.15rem;
+      margin-top: .4rem;
+      border: 1px solid rgba(216,222,216,.9);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.9), rgba(248,250,247,.72)),
+        radial-gradient(circle at 20% 0, rgba(207,246,75,.16), transparent 32%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    .meter-bar {
+      position: relative;
+      display: flex;
+      height: 20px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e7ebe5;
+      box-shadow: inset 0 1px 2px rgba(23,33,45,.14);
+    }
     /* fascia raffica: dal vento medio alla raffica, più è larga più lo spot è rafficato */
     .meter-range {
       position: absolute; top: 0; bottom: 0; left: 0; width: 0; pointer-events: none;
-      background: rgba(31,45,61,.28);
-      border-right: 2px solid rgba(31,45,61,.8);
+      background: linear-gradient(90deg, rgba(24,116,130,.28), rgba(24,116,130,.08));
+      border-left: 1px solid rgba(255,255,255,.62);
+      border-right: 3px solid rgba(24,116,130,.86);
       transition: left .5s ease, width .5s ease, opacity .3s ease;
     }
     /* linea del vento medio: sempre visibile sulla barra (anche quando medio = raffica) */
     .meter-mean-line {
-      position: absolute; top: 0; bottom: 0; width: 2px; pointer-events: none;
-      background: var(--testo); transform: translateX(-50%);
+      position: absolute; top: -3px; bottom: -3px; width: 3px; pointer-events: none;
+      background: #122034; border-radius: 999px; transform: translateX(-50%);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.55);
       transition: left .5s ease, opacity .3s ease;
     }
     /* indicatore unico: freccia della direzione (reale) a lato, poi vento medio grande
        con la raffica come appendice bassa. Posizionato sul punto del medio nella scala. */
     .meter-pointer {
-      position: absolute; top: 0; height: 42px;
-      display: flex; flex-direction: row; align-items: flex-end; gap: 5px;
+      position: absolute; top: .55rem; min-height: 34px;
+      display: flex; flex-direction: row; align-items: center; gap: 6px;
       line-height: 1; transition: left .5s ease, transform .5s ease, opacity .3s ease; z-index: 2;
+      padding: .36rem .5rem .34rem;
+      border: 1px solid rgba(23,33,45,.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 8px 18px rgba(23,33,45,.12), inset 0 1px 0 rgba(255,255,255,.9);
     }
     /* indicatore "fuori scala" (>40 kt): chevron rosso sull'estremità destra della barra */
     .meter-over {
-      position: absolute; top: 46px; right: 6px; height: 16px;
+      position: absolute; top: 50px; right: 1rem; height: 20px;
       display: flex; align-items: center; font-size: 12px; font-weight: 800; color: #fff;
       opacity: 0; transition: opacity .3s ease; pointer-events: none; z-index: 1;
     }
-    .meter-pointer .meter-dir { font-size: 17px; line-height: 1; color: var(--slate-2); transform-origin: center; display: inline-block; }
-    .meter-pointer .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 15px; color: var(--testo); }
+    .meter-pointer .meter-dir { font-size: 16px; line-height: 1; color: var(--teal); transform-origin: center; display: inline-block; }
+    .meter-pointer .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 16px; color: var(--ink); }
     /* raffica: a destra del medio (è sempre maggiore del TWS medio), più piccola e chiara */
-    .meter-pointer .meter-gust-app { font-size: 12px; font-weight: 700; color: var(--slate-2); font-variant-numeric: tabular-nums; white-space: nowrap; margin-bottom: 1px; }
-    .meter-ticks { position: relative; height: 15px; margin-top: 4px; font-size: 11px; color: var(--label); }
+    .meter-pointer .meter-gust-app { font-size: 12px; font-weight: 800; color: var(--slate-2); font-variant-numeric: tabular-nums; white-space: nowrap; margin-bottom: 1px; }
+    .meter-ticks { position: relative; height: 16px; margin-top: 5px; font-size: 11px; font-weight: 700; color: var(--label); }
     .meter-ticks span { position: absolute; transform: translateX(-50%); }
-    .meter-labels { display: flex; margin-top: 5px; font-size: 10.5px; text-align: center; color: var(--label); line-height: 1.2; }
+    .meter-labels { display: flex; margin-top: 3px; font-size: 10.5px; text-align: center; color: var(--label); line-height: 1.2; }
 
     /* ---- Tabella tendenza: dropdown chiuso, si apre al click ---- */
     details.dettaglio { margin-top: .6rem; }
@@ -656,13 +681,16 @@
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; }
       .quick-grid { grid-template-columns: 1fr; }
-      .topbar { align-items: flex-start; flex-direction: column; gap: .55rem; }
-      .topnav { width: 100%; }
+      .topbar { align-items: center; flex-direction: column; gap: .55rem; }
+      .brand { align-items: center; text-align: center; min-width: 0; }
+      .topnav { width: min(100%, 430px); justify-content: center; margin: 0 auto; }
     }
     @media (max-width: 560px) {
       body { padding: 0 .7rem 1.5rem; }
       .section { padding: .85rem; max-width: 100%; }
       .topbar { margin: 0 -.7rem; padding: .6rem .7rem; }
+      .topnav { gap: .22rem; padding: .22rem; }
+      .topnav a { padding: .48rem .62rem; font-size: .78rem; }
       .hero { margin-top: .75rem; gap: .75rem; max-width: 100%; }
       .hero h1 { font-size: 2.45rem; }
       .console-card,
