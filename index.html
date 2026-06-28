@@ -342,6 +342,8 @@
       background: linear-gradient(90deg, #f7fbfb 0%, #eef7f0 100%);
       border: 1px solid var(--line);
       border-radius: 12px;
+      min-width: 0;
+      overflow: hidden;
     }
     .trend-badge {
       font-weight: 800;
@@ -358,6 +360,7 @@
     .spark {
       vertical-align: middle;
       flex: 1 1 auto;
+      width: 100%;
       min-width: 92px;
       max-width: 190px;
       height: 42px;
@@ -742,6 +745,23 @@
       .console-card,
       .side-card { border-radius: 14px; padding: .9rem; }
       .console-card .surf2-verdetto { font-size: 2.45rem; }
+      .trend {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: .45rem .55rem;
+      }
+      .trend-delta {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .trend .spark {
+        grid-column: 1 / -1;
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+      }
       h1 { font-size: 1.25rem; }
 
       /* target di tocco ≥44px su tutto ciò che è cliccabile */

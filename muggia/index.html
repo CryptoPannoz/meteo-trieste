@@ -312,6 +312,8 @@
       gap: .6rem;
       flex-wrap: wrap;
       margin: .6rem 0 .2rem;
+      min-width: 0;
+      overflow: hidden;
     }
     .trend-badge {
       font-weight: 600;
@@ -324,7 +326,7 @@
     }
     .trend-badge .frec { font-weight: 800; }
     .trend-delta { font-size: .8rem; color: var(--label); }
-    .spark { vertical-align: middle; }
+    .spark { vertical-align: middle; width: 100%; min-width: 0; }
 
     /* ---- Tabella dettaglio ---- */
     table {
@@ -671,6 +673,7 @@
     .trend-delta { white-space: nowrap; }
     .spark {
       flex: 1 1 auto;
+      width: 100%;
       min-width: 92px;
       max-width: 190px;
       height: 42px;
@@ -701,6 +704,23 @@
       .dona,
       #altre-pagine,
       #viewsBox { max-width: 100%; }
+      .trend {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: .45rem .55rem;
+      }
+      .trend-delta {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .trend .spark {
+        grid-column: 1 / -1;
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+      }
       h1 { font-size: 1.25rem; }
 
       /* target di tocco ≥44px su tutto ciò che è cliccabile */
