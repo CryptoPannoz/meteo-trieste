@@ -32,14 +32,23 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
   <style>
     :root {
+      --ink: #17212d;
+      --paper: #f7f8f4;
+      --surface: #ffffff;
+      --surface-soft: #eef2ef;
+      --line: #d8ded8;
+      --sea: #0f6f7d;
+      --sea-dark: #0a4c59;
+      --signal: #d8ef64;
+      --coral: #e85b4f;
       --slate: #1f2d3d;
       --slate-2: #45566a;
-      --azzurro: #2f6fb0;
-      --azzurro-scuro: #245991;
-      --sfondo: #eef1f4;
-      --bordo: #dce1e7;
-      --testo: #16202b;
-      --label: #5c6675;
+      --azzurro: var(--sea);
+      --azzurro-scuro: var(--sea-dark);
+      --sfondo: var(--paper);
+      --bordo: var(--line);
+      --testo: var(--ink);
+      --label: #667268;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -133,21 +142,38 @@
     .gruppo-titolo:first-of-type { margin-top: .5rem; }
 
     /* gruppo collassabile (Spot Istria) */
-    .gruppo-collapse { margin-top: 1.75rem; scroll-margin-top: 100px; }
+    .gruppo-collapse { margin-top: 1.75rem; scroll-margin-top: 130px; }
     .gruppo-sum {
-      font-size: 1.15rem; font-weight: 700; color: var(--slate);
+      font-size: 1.15rem; font-weight: 800; color: var(--slate);
       text-transform: uppercase; letter-spacing: .04em;
-      padding-bottom: .4rem; margin-bottom: 1rem;
-      border-bottom: 2px solid var(--slate);
+      padding: .85rem 1rem; margin-bottom: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ffffff 0%, #e8f5f2 62%, #d8ef64 100%);
+      box-shadow: 0 16px 45px rgba(23,33,45,.07);
       cursor: pointer; list-style: none;
-      display: flex; justify-content: space-between; align-items: baseline;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem;
+    }
+    .gruppo-sum-main { display: flex; flex-direction: column; gap: .1rem; }
+    .gruppo-sum-main strong { font-size: 1.15rem; }
+    .gruppo-sum-main span {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--sea-dark);
+      text-transform: none;
+      letter-spacing: 0;
     }
     .gruppo-sum::-webkit-details-marker { display: none; }
     .gruppo-sum::after {
-      content: "▾ apri"; font-size: .8rem; font-weight: 500;
-      text-transform: none; letter-spacing: 0; color: var(--azzurro);
+      content: "apri spot ▾"; font-size: .82rem; font-weight: 800;
+      text-transform: none; letter-spacing: 0; color: var(--sea-dark);
+      background: rgba(255,255,255,.76);
+      border: 1px solid rgba(15,111,125,.16);
+      border-radius: 999px;
+      padding: .28rem .55rem;
     }
-    .gruppo-collapse[open] .gruppo-sum::after { content: "▴ chiudi"; }
+    .gruppo-collapse[open] .gruppo-sum::after { content: "chiudi ▴"; }
 
     /* ---- Mini-card dato (stile strumento) ---- */
     .statgrid {
@@ -285,21 +311,34 @@
       display: flex;
       align-items: center;
       gap: .6rem;
-      flex-wrap: wrap;
-      margin: .6rem 0 .2rem;
+      flex-wrap: nowrap;
+      margin: .7rem 0 .35rem;
+      padding: .5rem;
+      background: linear-gradient(90deg, #f7fbfb 0%, #eef7f0 100%);
+      border: 1px solid var(--line);
+      border-radius: 12px;
     }
     .trend-badge {
-      font-weight: 600;
+      font-weight: 800;
       padding: .25rem .7rem;
-      border-radius: 8px;
+      border-radius: 999px;
       font-size: .88rem;
-      background: #eef1f4;
+      background: #fff;
       color: var(--slate);
       border: 1px solid var(--bordo);
+      white-space: nowrap;
     }
     .trend-badge .frec { font-weight: 800; }
-    .trend-delta { font-size: .8rem; color: var(--label); }
-    .spark { vertical-align: middle; }
+    .trend-delta { font-size: .8rem; color: var(--label); white-space: nowrap; }
+    .spark {
+      vertical-align: middle;
+      flex: 1 1 auto;
+      min-width: 92px;
+      max-width: 190px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(15,111,125,.08), rgba(216,239,100,.16));
+    }
 
     /* ---- Tabella dettaglio ---- */
     table {
@@ -469,10 +508,212 @@
       line-height: 1.6;
     }
 
+    /* ============ Versione spot-first ============ */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      margin: 0 -1rem;
+      padding: .65rem 1rem;
+      background: rgba(247,248,244,.92);
+      backdrop-filter: blur(14px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      overflow: hidden;
+    }
+    .brand {
+      color: var(--ink);
+      text-decoration: none;
+      display: inline-flex;
+      flex-direction: column;
+      line-height: 1.05;
+      min-width: 150px;
+    }
+    .brand strong { font-size: 1rem; font-weight: 800; letter-spacing: 0; }
+    .brand span { font-size: .72rem; color: var(--label); margin-top: .15rem; }
+    .topnav {
+      display: flex;
+      gap: .45rem;
+      overflow-x: auto;
+      max-width: 100%;
+      padding-bottom: 1px;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(216,222,216,.85);
+      border-radius: 999px;
+      padding: .25rem;
+      box-shadow: 0 10px 28px rgba(23,33,45,.06);
+      scrollbar-width: none;
+    }
+    .topnav::-webkit-scrollbar { display: none; }
+    .topnav a,
+    .spot-pill {
+      flex: 0 0 auto;
+      color: var(--ink);
+      background: rgba(255,255,255,.86);
+      border: 1px solid transparent;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 800;
+      padding: .48rem .75rem;
+      white-space: nowrap;
+      box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    }
+    .topnav a:hover,
+    .spot-pill:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .hero {
+      max-width: 1160px;
+      margin: 1rem auto 1.2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, .8fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+    .hero-copy {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      padding: .4rem .15rem 0;
+    }
+    .eyebrow {
+      margin: 0 0 .25rem;
+      color: var(--sea-dark);
+      font-size: .78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .hero h1 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(2.1rem, 7vw, 5.8rem);
+      line-height: .9;
+      letter-spacing: 0;
+    }
+    .console-card,
+    .side-card,
+    .section {
+      box-shadow: 0 16px 45px rgba(23,33,45,.07);
+    }
+    .console-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1.2rem;
+      overflow: hidden;
+    }
+    .console-card .surf2-verdetto {
+      font-size: clamp(2.2rem, 8vw, 5.4rem);
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    .console-card .surf2-verdetto small { font-size: .9rem; max-width: 520px; }
+    .console-card h2,
+    .side-card h2 {
+      font-size: .85rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--label);
+      margin-bottom: .8rem;
+    }
+    .side-card {
+      background: #eaf3f4;
+      color: var(--ink);
+      border: 1px solid #c7dcdf;
+      border-radius: 18px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .side-card h2,
+    .side-card .stato,
+    .side-card .statbox .etichetta,
+    .side-card .statbox .sub,
+    .side-card .statbox .unita { color: #617078; }
+    .side-card .statbox {
+      background: rgba(255,255,255,.78);
+      border-color: #c3d3d6;
+      color: var(--ink);
+    }
+    .side-card .statbox .valore,
+    .side-card .tws-dir,
+    .side-card .tws-raffica b { color: var(--ink); }
+    .side-card a { color: var(--sea-dark); }
+    .spot-switcher {
+      display: grid;
+      gap: .45rem;
+    }
+    .spot-switcher .spot-pill {
+      text-align: center;
+      background: rgba(255,255,255,.8);
+      border-color: #c3d3d6;
+      color: var(--ink);
+    }
+    .spot-switcher .spot-pill.primary {
+      background: var(--signal);
+      color: #1a250a;
+      border-color: var(--signal);
+    }
+    .quick-grid {
+      max-width: 1160px;
+      width: 100%;
+      margin: 0 auto 1.1rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .quick-grid .section { margin: 0; min-width: 0; }
+    .section,
+    .dona,
+    #altre-pagine,
+    #viewsBox { max-width: 1160px; width: 100%; margin-left: auto; margin-right: auto; }
+    .section { border-radius: 14px; }
+    .legacy-nav { display: none; }
+    #bora #deltaBox {
+      background: #eaf6ff;
+      border-width: 2px;
+      box-shadow: inset 0 0 0 1px rgba(15,111,125,.12), 0 12px 30px rgba(15,111,125,.12);
+    }
+    #bora #deltaBox .etichetta { color: var(--sea-dark); }
+    #bora #deltaBox .valore { font-size: 1.85rem; color: var(--sea-dark); }
+    #bora #deltaBox .sub { font-size: .86rem; }
+    .aladin-status {
+      margin: .4rem 0 .2rem;
+      text-align: center;
+    }
+    .webcam-intestazione {
+      margin-bottom: .85rem;
+      padding-bottom: .65rem;
+      border-bottom: 1px solid var(--line);
+    }
+
     /* ============ Rifinitura mobile ============ */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-copy { align-items: flex-start; flex-direction: column; }
+      .quick-grid { grid-template-columns: 1fr; }
+      .topbar { align-items: flex-start; flex-direction: column; gap: .55rem; }
+      .topnav { width: 100%; }
+    }
     @media (max-width: 560px) {
       body { padding: 0 .7rem 1.5rem; }
-      .section { padding: .85rem; }
+      .section { padding: .85rem; max-width: 100%; }
+      .quick-grid,
+      .hero,
+      .dona,
+      #altre-pagine,
+      #viewsBox { max-width: 100%; }
+      .topbar { margin: 0 -.7rem; padding: .6rem .7rem; }
+      .hero { margin-top: .75rem; gap: .75rem; }
+      .hero h1 { font-size: 2.45rem; }
+      .console-card,
+      .side-card { border-radius: 14px; padding: .9rem; }
+      .console-card .surf2-verdetto { font-size: 2.45rem; }
       h1 { font-size: 1.25rem; }
 
       /* target di tocco ≥44px su tutto ciò che è cliccabile */
@@ -486,6 +727,7 @@
       }
       .aladin-controlli { justify-content: center; gap: 1rem; }
       .aladin-controlli button { min-width: 48px; min-height: 44px; font-size: 1.1rem; }
+      .webcam-intestazione button { width: 100%; }
 
       /* card piccole allineate: 3 per riga (es. Barcola temp/pressione/umidità) */
       .statgrid { grid-template-columns: repeat(3, 1fr); gap: .4rem; }
@@ -581,61 +823,82 @@
     <div class="loader-sub">dati live da centraline e boe</div>
   </div>
 
-  <h1>🏄‍♂️ Previsioni vento &amp; surf – Trieste</h1>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <strong>Vento Trieste</strong>
+      <span>surfometro live</span>
+    </a>
+    <nav class="topnav" aria-label="Sezioni della pagina">
+      <a href="#vento">Vento</a>
+      <a href="#previsioni">Previsioni</a>
+      <a href="#webcam">Webcam</a>
+      <a href="#istria" onclick="apriSpotIstria(event)">Spot</a>
+    </nav>
+  </header>
 
-  <nav aria-label="Sezioni della pagina">
-    <a href="#vento">🌬️ Vento attuale</a>
-    <a href="#previsioni">📅 Previsioni</a>
-    <a href="#webcam">📷 Webcam</a>
-    <a href="#istria">🏖️ Spot Istria</a>
-  </nav>
-
-  <div class="gruppo-titolo" id="vento">🌬️ Vento attuale</div>
-
-  <!-- STAZIONE BARCOLA (Windguru 5307) -->
-  <div class="section" id="barcolaLive">
-    <h2>Barcola – condizioni vento ora</h2>
-    <div id="barcolaStat">
-      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
-    </div>
-    <p class="stato" id="statoBarcola">
-      📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>
-    </p>
-  </div>
-
-  <!-- SURFOMETRO (scheda a parte) -->
-  <div class="section" id="surfometroCard">
-    <h2 id="surfTitolo">Surfometro – Barcola</h2>
-    <div class="surf2">
-      <div class="surf2-verdetto" id="verdettoBig">—</div>
-      <div class="meter">
-        <div class="meter-pointer" id="meterPointer" style="left:0%;opacity:0;">
-          <span class="meter-dir" id="meterDir" aria-hidden="true" style="display:none;">↓</span>
-          <span class="meter-val" id="meterVal">–</span>
-          <span class="meter-gust-app" id="meterGust" style="display:none;">&#8211;&#8201;<span id="meterGustVal">–</span></span>
-        </div>
-        <div class="meter-bar">
-          <div style="flex:30;background:#b9b8b2;"></div>
-          <div style="flex:15;background:#97C459;"></div>
-          <div style="flex:17.5;background:#639922;"></div>
-          <div style="flex:25;background:#3B6D11;"></div>
-          <div style="flex:12.5;background:#E24B4A;"></div>
-          <div class="meter-range" id="meterRange" style="left:0%;width:0%;opacity:0;"></div>
-          <div class="meter-mean-line" id="meterMeanLine" style="left:0%;opacity:0;"></div>
-        </div>
-        <div class="meter-over" id="meterOver" aria-hidden="true">» 40+</div>
-        <div class="meter-ticks">
-          <span style="left:30%;">12</span><span style="left:45%;">18</span><span style="left:62.5%;">25</span><span style="left:87.5%;">35</span>
-        </div>
-        <div class="meter-labels">
-          <div style="flex:30;">stà casa</div><div style="flex:15;">sufia</div><div style="flex:17.5;">sufia ben</div><div style="flex:25;">sufia sai ben</div><div style="flex:12.5;">cúci e boni</div>
+  <main>
+    <section class="hero" id="vento">
+      <div class="hero-copy">
+        <div>
+          <p class="eyebrow">Golfo di Trieste · live</p>
+          <h1>Surfare o lavorare?</h1>
         </div>
       </div>
-    </div>
-    <p class="stato" id="surfFonte"></p>
-  </div>
+
+      <!-- SURFOMETRO (scheda a parte) -->
+      <div class="console-card" id="surfometroCard">
+        <h2 id="surfTitolo">Surfometro – Barcola</h2>
+        <div class="surf2">
+          <div class="surf2-verdetto" id="verdettoBig">—</div>
+          <div class="meter">
+            <div class="meter-pointer" id="meterPointer" style="left:0%;opacity:0;">
+              <span class="meter-dir" id="meterDir" aria-hidden="true" style="display:none;">↓</span>
+              <span class="meter-val" id="meterVal">–</span>
+              <span class="meter-gust-app" id="meterGust" style="display:none;">&#8211;&#8201;<span id="meterGustVal">–</span></span>
+            </div>
+            <div class="meter-bar">
+              <div style="flex:30;background:#b9b8b2;"></div>
+              <div style="flex:15;background:#97C459;"></div>
+              <div style="flex:17.5;background:#639922;"></div>
+              <div style="flex:25;background:#3B6D11;"></div>
+              <div style="flex:12.5;background:#E24B4A;"></div>
+              <div class="meter-range" id="meterRange" style="left:0%;width:0%;opacity:0;"></div>
+              <div class="meter-mean-line" id="meterMeanLine" style="left:0%;opacity:0;"></div>
+            </div>
+            <div class="meter-over" id="meterOver" aria-hidden="true">» 40+</div>
+            <div class="meter-ticks">
+              <span style="left:30%;">12</span><span style="left:45%;">18</span><span style="left:62.5%;">25</span><span style="left:87.5%;">35</span>
+            </div>
+            <div class="meter-labels">
+              <div style="flex:30;">stà casa</div><div style="flex:15;">sufia</div><div style="flex:17.5;">sufia ben</div><div style="flex:25;">sufia sai ben</div><div style="flex:12.5;">cúci e boni</div>
+            </div>
+          </div>
+        </div>
+        <p class="stato" id="surfFonte"></p>
+      </div>
+
+      <!-- STAZIONE BARCOLA (Windguru 5307) -->
+      <aside class="side-card" id="barcolaLive">
+        <div>
+          <h2>Barcola ora</h2>
+          <div id="barcolaStat">
+            <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+          </div>
+          <p class="stato" id="statoBarcola">
+            <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru</a>
+          </p>
+        </div>
+        <div class="spot-switcher" aria-label="Pagine spot">
+          <a class="spot-pill primary" href="#vento">Trieste / Barcola</a>
+          <a class="spot-pill" href="#muggia">Muggia</a>
+          <a class="spot-pill" href="#zusterna">Žusterna</a>
+          <a class="spot-pill" href="#marinajulia">Marina Julia</a>
+        </div>
+      </aside>
+    </section>
 
   <!-- DATI CENTRALINE -->
+  <div class="quick-grid">
   <div class="section" id="grisa">
     <h2>Monte Grisa – dati in tempo reale</h2>
     <div id="grisaCards"></div>
@@ -682,6 +945,7 @@
       </table>
     </details>
     <p class="stato" id="statoMarinajulia"></p>
+  </div>
   </div>
 
   <!-- BOE OGS: MARE E ONDE -->
@@ -772,6 +1036,7 @@
       <span id="aladinPasso">1 / 23</span>
       <button id="aladinSucc" aria-label="Mappa successiva">▶</button>
     </div>
+    <p class="stato aladin-status" id="aladinAggiornamento"></p>
     <img id="aladinImg" alt="Mappa vento modello Aladin" loading="lazy"
          onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Mappa Aladin momentaneamente non disponibile.</p>'); this.style.display='none';" />
   </div>
@@ -929,7 +1194,12 @@
 
   <!-- SPOT ISTRIA (gruppo collassabile) -->
   <details class="gruppo-collapse" id="istria">
-  <summary class="gruppo-sum">🏖️ Spot Istria</summary>
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>🏖️ Spot Istria</strong>
+      <span>Žusterna, Salvore, Dajla, Preluka, Ližnjan e Premantura</span>
+    </span>
+  </summary>
 
   <div class="section" id="zusterna">
     <h2>Žusterna – Koper</h2>
@@ -1077,11 +1347,18 @@
       const nn = String(n).padStart(2, "0");
       return "https://meteo.arso.gov.si/uploads/probase/www/model/aladin/field/ad_vm-va10m_si-sw_" + nn + ".png?ts=" + Date.now();
     }
+    function testoAggiornamentoUtc(d) {
+      const loc = d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+      const utc = d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
+      return loc + " locali · " + utc + " UTC";
+    }
     function mostraAladin() {
       document.getElementById("aladinImg").src = urlAladin(passoAladin);
       document.getElementById("aladinPasso").textContent = passoAladin + " / " + PASSI_ALADIN;
       document.getElementById("aladinPrec").disabled = passoAladin <= 1;
       document.getElementById("aladinSucc").disabled = passoAladin >= PASSI_ALADIN;
+      const st = document.getElementById("aladinAggiornamento");
+      if (st) st.textContent = "Immagine ricaricata " + testoAggiornamentoUtc(new Date()) + " · fonte ARSO";
     }
     document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
     document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
@@ -1220,8 +1497,8 @@
         aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir);
         return;
       }
-      // Barcola offline → nascondi la scheda e passa a Monte Grisa
-      if (sez) sez.style.display = "none";
+      // Barcola offline → passa a Monte Grisa, mantenendo visibili le scorciatoie spot.
+      if (sez) sez.style.display = "";
       const gTws = grisaTws(data);
       if (gTws != null) {
         if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
@@ -1461,16 +1738,20 @@
       const n = valori.length;
       if (n < 2) return "";
       const min = Math.min(...valori), max = Math.max(...valori);
-      const range = (max - min) || 1, pad = 4;
+      const range = (max - min) || 1, pad = 6;
       const pts = valori.map((v, i) => {
         const x = pad + i * (w - 2 * pad) / (n - 1);
         const y = h - pad - (v - min) / range * (h - 2 * pad);
         return x.toFixed(1) + "," + y.toFixed(1);
       });
       const last = pts[n - 1].split(",");
+      const area = pts.join(" ") + " " + (w - pad) + "," + (h - pad) + " " + pad + "," + (h - pad);
+      const id = "grad" + Math.random().toString(36).slice(2);
       return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" aria-hidden="true">' +
-             '<polyline fill="none" stroke="' + colore + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(" ") + '"/>' +
-             '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="3" fill="' + colore + '"/></svg>';
+             '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + colore + '" stop-opacity=".28"/><stop offset="1" stop-color="' + colore + '" stop-opacity=".03"/></linearGradient></defs>' +
+             '<polygon fill="url(#' + id + ')" points="' + area + '"/>' +
+             '<polyline fill="none" stroke="' + colore + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(" ") + '"/>' +
+             '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="4.2" fill="#fff" stroke="' + colore + '" stroke-width="2.4"/></svg>';
     }
 
     /* Mini-grafico visite (GoatCounter via proxy ?views=1): sparkline dall'inizio +
@@ -1629,6 +1910,7 @@
       caricaMare();
       document.getElementById("boraImg").src = urlBora();
       document.getElementById("radarImg").src = urlRadar();
+      mostraAladin();
     });
 
     /* ---------- Webcam ---------- */
@@ -1811,12 +2093,26 @@
       obs.observe(wrap);
     }
 
-    // dal menu "Spot Istria": apre il gruppo collassato
-    const navIstria = document.querySelector('nav a[href="#istria"]');
-    if (navIstria) navIstria.addEventListener("click", () => {
+    // Dal menu "Spot": apre il gruppo e lo posiziona sotto la barra sticky.
+    window.apriSpotIstria = function (ev) {
+      if (ev) ev.preventDefault();
       const d = document.getElementById("istria");
-      if (d) d.open = true;
-    });
+      if (!d) return;
+      d.open = true;
+      history.replaceState(null, "", "#istria");
+      const vai = () => {
+        const topbar = document.querySelector(".topbar");
+        const target = d.querySelector("summary") || d;
+        const offset = (topbar ? topbar.getBoundingClientRect().height : 0) + 14;
+        const y = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: Math.max(0, y), behavior: "auto" });
+      };
+      requestAnimationFrame(vai);
+      setTimeout(vai, 120);
+    };
+    const navIstria = document.querySelector('.topnav a[href="#istria"]');
+    if (navIstria) navIstria.addEventListener("click", window.apriSpotIstria);
+    if (location.hash === "#istria") setTimeout(() => window.apriSpotIstria(), 250);
 
     /* ---------- Avvio ---------- */
     function nascondiLoader() {
@@ -1854,9 +2150,10 @@
       <a class="spot-btn" href="/">🏠 Trieste</a>
       <a class="spot-btn" href="/muggia/">📍 Muggia</a>
       <a class="spot-btn" href="/zusterna/">📍 Žusterna</a>
+      <a class="spot-btn" href="#marinajulia">📍 Marina Julia</a>
     </div>
-    <p class="stato" style="margin:.9rem 0 .6rem;">Hai uno spot con una centralina e vorresti la tua pagina dedicata? È gratis.</p>
-    <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot gratuitamente</a>
+    <p class="stato" style="margin:.9rem 0 .6rem;">Hai uno spot con una centralina e vorresti la tua pagina dedicata?</p>
+    <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot</a>
   </div>
 
   <!-- Mini-grafico visite (GoatCounter) -->
@@ -1866,6 +2163,8 @@
     <div id="viewsAsse"></div>
     <p class="stato" id="viewsTotale"></p>
   </div>
+
+  </main>
 
   <footer>
     <p>
