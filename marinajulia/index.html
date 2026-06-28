@@ -7,20 +7,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
-  <title>Vento Muggia – Surfometro, Bora e previsioni surf e windsurf</title>
-  <meta name="description" content="Vento in tempo reale a Muggia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Muggia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
+  <title>Vento Marina Julia – Surfometro, Bora e previsioni surf e windsurf</title>
+  <meta name="description" content="Vento in tempo reale a Marina Julia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Marina Julia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
   <meta name="keywords" content="vento Trieste, Bora Trieste, surf Trieste, windsurf Trieste, vento Barcola, previsioni vento Trieste, ALADIN Trieste, Monte Grisa, Muggia, vento Istria, kitesurf Trieste, golfo di Trieste" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="bebroggi" />
-  <link rel="canonical" href="https://ventotrieste.info/muggia/" />
+  <link rel="canonical" href="https://ventotrieste.info/marinajulia/" />
 
   <!-- Open Graph / anteprima social -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Vento Trieste" />
   <meta property="og:locale" content="it_IT" />
-  <meta property="og:title" content="Vento Muggia – Surfometro, Bora e previsioni surf e windsurf" />
-  <meta property="og:description" content="Vento in tempo reale a Muggia e nel golfo di Trieste: surfometro della centralina di Muggia, Bora, ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
-  <meta property="og:url" content="https://ventotrieste.info/muggia/" />
+  <meta property="og:title" content="Vento Marina Julia – Surfometro, Bora e previsioni surf e windsurf" />
+  <meta property="og:description" content="Vento in tempo reale a Marina Julia e nel golfo di Trieste: surfometro della centralina di Marina Julia, Bora, ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
+  <meta property="og:url" content="https://ventotrieste.info/marinajulia/" />
   <meta property="og:image" content="https://ventotrieste.info/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -784,16 +784,16 @@
     "@graph": [
       {
         "@type": "WebSite",
-        "@id": "https://ventotrieste.info/muggia/#website",
-        "url": "https://ventotrieste.info/muggia/",
-        "name": "Vento Muggia",
-        "description": "Vento in tempo reale a Muggia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Muggia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani.",
+        "@id": "https://ventotrieste.info/marinajulia/#website",
+        "url": "https://ventotrieste.info/marinajulia/",
+        "name": "Vento Marina Julia",
+        "description": "Vento in tempo reale a Marina Julia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Marina Julia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani.",
         "inLanguage": "it-IT"
       },
       {
         "@type": "WebApplication",
-        "name": "Vento Muggia – Surfometro",
-        "url": "https://ventotrieste.info/muggia/",
+        "name": "Vento Marina Julia – Surfometro",
+        "url": "https://ventotrieste.info/marinajulia/",
         "applicationCategory": "WeatherApplication",
         "operatingSystem": "Web",
         "browserRequirements": "Requires JavaScript",
@@ -844,13 +844,13 @@
   <main>
     <section class="hero" id="vento">
       <div class="hero-copy">
-        <p class="eyebrow">Muggia · live</p>
+        <p class="eyebrow">Marina Julia · live</p>
         <h1>Surfare o lavorare?</h1>
       </div>
 
       <!-- SURFOMETRO (scheda a parte) -->
       <div class="console-card" id="surfometroCard">
-        <h2 id="surfTitolo">Surfometro – Muggia</h2>
+        <h2 id="surfTitolo">Surfometro – Marina Julia</h2>
         <div class="surf2">
           <div class="surf2-verdetto" id="verdettoBig">—</div>
           <div class="meter">
@@ -881,25 +881,25 @@
       </div>
 
       <!-- DATI CENTRALINA PRINCIPALE -->
-      <aside class="side-card" id="muggia">
-        <h2>Muggia ora</h2>
-        <div id="muggiaCards"></div>
-        <div class="trend" id="muggiaTrend"></div>
+      <aside class="side-card" id="marinajulia">
+        <h2>Marina Julia ora</h2>
+        <div id="marinajuliaCards"></div>
+        <div class="trend" id="marinajuliaTrend"></div>
         <details class="dettaglio">
           <summary>Tabella dettaglio · ultimi 45 min</summary>
-          <table aria-describedby="statoMuggia">
+          <table aria-describedby="statoMarinajulia">
             <thead>
               <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
             </thead>
-            <tbody id="muggiaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+            <tbody id="marinajuliaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
           </table>
         </details>
-        <p class="stato" id="statoMuggia"></p>
+        <p class="stato" id="statoMarinajulia"></p>
         <div class="spot-switcher" aria-label="Pagine spot">
           <a class="spot-pill" href="/">Trieste / Barcola</a>
-          <a class="spot-pill primary" href="/muggia/">Muggia</a>
+          <a class="spot-pill" href="/muggia/">Muggia</a>
           <a class="spot-pill" href="/zusterna/">Žusterna</a>
-          <a class="spot-pill" href="/marinajulia/">Marina Julia</a>
+          <a class="spot-pill primary" href="/marinajulia/">Marina Julia</a>
         </div>
       </aside>
     </section>
@@ -907,20 +907,20 @@
   <!-- DATI CENTRALINE -->
   <div class="quick-grid">
 
-  <div class="section" id="marinajulia">
-    <h2>Marina Julia (Monfalcone) – dati in tempo reale</h2>
-    <div id="marinajuliaCards"></div>
-    <div class="trend" id="marinajuliaTrend"></div>
+  <div class="section" id="muggia">
+    <h2>Muggia – dati in tempo reale</h2>
+    <div id="muggiaCards"></div>
+    <div class="trend" id="muggiaTrend"></div>
     <details class="dettaglio">
       <summary>Tabella dettaglio · ultimi 45 min</summary>
-      <table aria-describedby="statoMarinajulia">
+      <table aria-describedby="statoMuggia">
         <thead>
           <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
         </thead>
-        <tbody id="marinajuliaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+        <tbody id="muggiaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
       </table>
     </details>
-    <p class="stato" id="statoMarinajulia"></p>
+    <p class="stato" id="statoMuggia"></p>
   </div>
 
   <div class="section" id="grisa">
@@ -1403,12 +1403,12 @@
       if (over) over.style.opacity = fuoriScala ? "1" : "0";
     }
 
-    /* ---- Surfometro basato sulla centralina di MUGGIA (variante Muggia del sito) ----
-       Il surfometro usa i dati live della stazione di Muggia (stesso flusso delle altre
-       centraline: array più recente in testa). Se Muggia non ha dati, mostra "non disponibili". */
-    function muggiaTws(data) {
-      let rows = (data && Array.isArray(data.muggia) && data.muggia.length)
-        ? data.muggia : cacheStazione["muggia"];
+    /* ---- Surfometro basato sulla centralina di Marina Julia ----
+       Il surfometro usa i dati live della stazione di Marina Julia (stesso flusso delle altre
+       centraline: array più recente in testa). Se Marina Julia non ha dati, mostra "non disponibili". */
+    function marinajuliaTws(data) {
+      let rows = (data && Array.isArray(data.marinajulia) && data.marinajulia.length)
+        ? data.marinajulia : cacheStazione["marinajulia"];
       if (!Array.isArray(rows) || !rows.length) return null;
       const avg = parseFloat(rows[0].kt);
       if (isNaN(avg)) return null;
@@ -1419,13 +1419,13 @@
     function aggiornaSurfometroAuto(data) {
       const titolo = document.getElementById("surfTitolo");
       const fonte  = document.getElementById("surfFonte");
-      if (titolo) titolo.textContent = "Surfometro – Muggia";
-      const m = muggiaTws(data);
+      if (titolo) titolo.textContent = "Surfometro – Marina Julia";
+      const m = marinajuliaTws(data);
       if (m != null) {
         if (fonte) fonte.textContent = "";
         aggiornaSurfometro(m.avg, m.gust, m.dir);
       } else {
-        if (fonte) fonte.textContent = "⚠️ Dati Muggia momentaneamente non disponibili.";
+        if (fonte) fonte.textContent = "⚠️ Dati Marina Julia momentaneamente non disponibili.";
         aggiornaSurfometro(null);
       }
     }
@@ -1778,7 +1778,7 @@
           renderOsmer([]);
           renderPiran(null);
           ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
-          aggiornaSurfometroAuto({ muggia: null });
+          aggiornaSurfometroAuto({ marinajulia: null });
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
         })
         .finally(() => { btn.disabled = false; });
