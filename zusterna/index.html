@@ -574,6 +574,11 @@
       padding: 1.2rem;
       overflow: hidden;
     }
+    /* vzhod/zahod sonca zgoraj desno v kartici surfometra */
+    #surfometroCard { position: relative; }
+    #surfometroCard h2 { padding-right: 6.5rem; }
+    .sun-times { position: absolute; top: 1.25rem; right: 1.2rem; font-size: .78rem; font-weight: 600; color: #6b7480; white-space: nowrap; }
+    @media (max-width: 480px) { #surfometroCard h2 { padding-right: 5.4rem; } .sun-times { font-size: .72rem; top: 1.3rem; right: 1rem; } }
     .console-card .surf2-verdetto {
       font-size: clamp(2.2rem, 8vw, 5.4rem);
       text-align: left;
@@ -848,6 +853,7 @@
 
       <!-- SURFOMETRO (scheda a parte) -->
       <div class="console-card" id="surfometroCard">
+        <span id="solare" class="sun-times" aria-label="vzhod in zahod sonca"></span>
         <h2 id="surfTitolo">Surfometer – Žusterna</h2>
         <div class="surf2">
           <div class="surf2-verdetto" id="verdettoBig">—</div>
@@ -1053,8 +1059,39 @@
 
   <!-- WINDY + WINDGURU -->
   <div class="section" id="windy">
-    <h2>Windy – GFS Trst</h2>
-    <iframe title="Karta vetra Windy" loading="lazy" src="https://embed.windy.com/embed2.html?lat=45.659&lon=13.745&detailLat=45.659&detailLon=13.745&width=100%&height=400&zoom=10&level=surface&overlay=wind&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=kt&metricTemp=°C&radarRange=-1" height="400" style="width:100%;"></iframe>
+    <h2>Windguru – WG Trst</h2>
+    <div style="margin-top: 1rem; overflow-x:auto;">
+      <!-- Windguru widget WG (model mix) -->
+      <script id="wg_fwdg_49156_3_wg">
+        (function (window, document) {
+          var loader = function () {
+            var arg = [
+              "s=49156",
+              "m=3",
+              "uid=wg_fwdg_49156_3_wg",
+              "wj=knots",
+              "tj=c",
+              "waj=m",
+              "tij=cm",
+              "odh=0",
+              "doh=24",
+              "fhours=240",
+              "hrsm=2",
+              "vt=forecasts",
+              "lng=it",
+              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
+            ];
+            var script = document.createElement("script");
+            var tag = document.getElementsByTagName("script")[0];
+            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
+            tag.parentNode.insertBefore(script, tag);
+          };
+          window.addEventListener
+            ? window.addEventListener("load", loader, false)
+            : window.attachEvent("onload", loader);
+        })(window, document);
+      </script>
+    </div>
 
     <h2 style="margin-top:1.5rem;">Windguru – ALADIN Trst</h2>
     <div style="margin-top: 1rem; overflow-x:auto;">
@@ -2047,5 +2084,25 @@
   <!-- GoatCounter (statistiche anonime, senza cookie) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
+  <!-- Vzhod/zahod sonca (SunCalc offline, Tržaški zaliv) -->
+  <script>
+    (function () {
+      var el = document.getElementById("solare"); if (!el) return;
+      var dayMs = 864e5, J1970 = 2440588, J2000 = 2451545, rad = Math.PI / 180, e = rad * 23.4397, J0 = 0.0009;
+      function tJ(d) { return d.valueOf() / dayMs - 0.5 + J1970; }
+      function fJ(j) { return new Date((j + 0.5 - J1970) * dayMs); }
+      var d = tJ(new Date()) - J2000, lw = rad * -13.77, phi = rad * 45.66;
+      var n = Math.round(d - J0 - lw / (2 * Math.PI)), ds = J0 + lw / (2 * Math.PI) + n;
+      var M = rad * (357.5291 + 0.98560028 * ds);
+      var L = M + rad * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M)) + rad * 102.9372 + Math.PI;
+      var dec = Math.asin(Math.sin(e) * Math.sin(L)), Jn = J2000 + ds + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+      var cw = (Math.sin(rad * -0.833) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec));
+      if (cw < -1 || cw > 1) return;
+      var w = Math.acos(cw);
+      var Jset = J2000 + (J0 + (w + lw) / (2 * Math.PI) + n) + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L), Jrise = Jn - (Jset - Jn);
+      var f = function (dt) { return dt.toLocaleTimeString("sl-SI", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" }); };
+      el.textContent = "☀ " + f(fJ(Jrise)) + " – " + f(fJ(Jset));
+    })();
+  </script>
 </body>
 </html>
