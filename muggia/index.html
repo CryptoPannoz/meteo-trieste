@@ -1071,6 +1071,40 @@
       </script>
     </div>
 
+    <h2 style="margin-top:1.5rem;">Windguru – ICON-2I Trieste</h2>
+    <div style="margin-top: 1rem; overflow-x:auto;">
+      <!-- Windguru widget ICON-2I -->
+      <script id="wg_fwdg_49156_104_icon">
+        (function (window, document) {
+          var loader = function () {
+            var arg = [
+              "s=49156",
+              "m=104",
+              "uid=wg_fwdg_49156_104_icon",
+              "wj=knots",
+              "tj=c",
+              "waj=m",
+              "tij=cm",
+              "odh=0",
+              "doh=24",
+              "fhours=240",
+              "hrsm=2",
+              "vt=forecasts",
+              "lng=it",
+              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
+            ];
+            var script = document.createElement("script");
+            var tag = document.getElementsByTagName("script")[0];
+            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
+            tag.parentNode.insertBefore(script, tag);
+          };
+          window.addEventListener
+            ? window.addEventListener("load", loader, false)
+            : window.attachEvent("onload", loader);
+        })(window, document);
+      </script>
+    </div>
+
     <div style="text-align:center; margin-top: 1.5rem;">
       <button onclick="apriModal()">ℹ️ Differenze tra i modelli meteo</button>
     </div>
@@ -1081,11 +1115,12 @@
     <div class="contenuto">
       <h3 id="modalTitolo">Modelli Meteo – Spiegazione</h3>
       <p>
-        • <strong>GFS</strong>: modello americano, buono per tendenze globali.<br>
-        • <strong>ICON</strong>: tedesco, buon dettaglio ma meno preciso sulla costa.<br>
-        • <strong>HARMONIE</strong>: ad alta risoluzione per l’Europa, ottimo per previsioni locali.<br>
-        • <strong>ALADIN</strong>: molto preciso sul Nord Adriatico.<br><br>
-        👉 Per Trieste, ALADIN è spesso il più affidabile.
+        • <strong>ALADIN 2.3 km</strong>: modello locale ad alta risoluzione, molto preciso sul Nord Adriatico e sulla Bora.<br>
+        • <strong>ICON-2I 2.2 km</strong>: modello italiano ad alta risoluzione, ottimo dettaglio sulla costa e sui fenomeni locali (brezze, raffiche).<br>
+        • <strong>ICON (globale)</strong>: modello tedesco globale, buon compromesso ma meno fine sotto costa.<br>
+        • <strong>GFS</strong>: modello globale americano (~13–27 km), utile per le tendenze a più giorni ma poco dettagliato.<br><br>
+        <strong>Cos'è ICON-2I?</strong> È la versione italiana ad alta risoluzione (2,2 km) del modello tedesco ICON, ottimizzata per l'Italia: si aggiorna spesso e coglie meglio brezze termiche e raffiche locali rispetto ai modelli globali.<br><br>
+        👉 Per il golfo di Trieste confronta <strong>ALADIN</strong> e <strong>ICON-2I</strong>: se concordano la previsione è più affidabile, se divergono c'è più incertezza.
       </p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="chiudiModal()">Chiudi</button>

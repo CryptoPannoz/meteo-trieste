@@ -1090,6 +1090,40 @@
       </script>
     </div>
 
+    <h2 style="margin-top:1.5rem;">Windguru – ICON-2I Trst</h2>
+    <div style="margin-top: 1rem; overflow-x:auto;">
+      <!-- Windguru widget ICON-2I -->
+      <script id="wg_fwdg_49156_104_icon">
+        (function (window, document) {
+          var loader = function () {
+            var arg = [
+              "s=49156",
+              "m=104",
+              "uid=wg_fwdg_49156_104_icon",
+              "wj=knots",
+              "tj=c",
+              "waj=m",
+              "tij=cm",
+              "odh=0",
+              "doh=24",
+              "fhours=240",
+              "hrsm=2",
+              "vt=forecasts",
+              "lng=it",
+              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
+            ];
+            var script = document.createElement("script");
+            var tag = document.getElementsByTagName("script")[0];
+            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
+            tag.parentNode.insertBefore(script, tag);
+          };
+          window.addEventListener
+            ? window.addEventListener("load", loader, false)
+            : window.attachEvent("onload", loader);
+        })(window, document);
+      </script>
+    </div>
+
     <div style="text-align:center; margin-top: 1.5rem;">
       <button onclick="apriModal()">ℹ️ Razlike med vremenskimi modeli</button>
     </div>
@@ -1100,11 +1134,12 @@
     <div class="contenuto">
       <h3 id="modalTitolo">Vremenski modeli – razlaga</h3>
       <p>
-        • <strong>GFS</strong>: ameriški model, dober za globalne trende.<br>
-        • <strong>ICON</strong>: nemški, dobro razčlenjen, a manj natančen ob obali.<br>
-        • <strong>HARMONIE</strong>: visoke ločljivosti za Evropo, odličen za lokalne napovedi.<br>
-        • <strong>ALADIN</strong>: zelo natančen za severni Jadran.<br><br>
-        👉 Za Trst je ALADIN pogosto najbolj zanesljiv.
+        • <strong>ALADIN 2.3 km</strong>: lokalni model visoke ločljivosti, zelo natančen za severni Jadran in burjo.<br>
+        • <strong>ICON-2I 2.2 km</strong>: italijanski model visoke ločljivosti, odlična razčlenjenost ob obali in pri lokalnih pojavih (termika, sunki).<br>
+        • <strong>ICON (globalni)</strong>: nemški globalni model, dober kompromis, a manj natančen ob obali.<br>
+        • <strong>GFS</strong>: ameriški globalni model (~13–27 km), uporaben za večdnevne trende, a manj podroben.<br><br>
+        <strong>Kaj je ICON-2I?</strong> Je italijanska različica visoke ločljivosti (2,2 km) nemškega modela ICON, prilagojena Italiji: pogosto se posodablja in bolje zazna termične vetrove ter lokalne sunke kot globalni modeli.<br><br>
+        👉 Za Tržaški zaliv primerjaj <strong>ALADIN</strong> in <strong>ICON-2I</strong>: če se ujemata, je napoved bolj zanesljiva, če se razhajata, je več negotovosti.
       </p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="chiudiModal()">Zapri</button>
