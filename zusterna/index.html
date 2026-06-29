@@ -836,6 +836,7 @@
       <a href="#vento">Veter</a>
       <a href="#previsioni">Napovedi</a>
       <a href="#istria" onclick="apriSpotIstria(event)">Spoti</a>
+      <a href="#" class="topnav-birra" onclick="apriBirra(event)" title="Plačaj mi pivo" aria-label="Plačaj mi pivo">🍺</a>
     </nav>
   </header>
 
@@ -1812,6 +1813,26 @@
     /* ---------- Modal modelli ---------- */
     function apriModal()  { document.getElementById("modal").style.display = "block"; }
     function chiudiModal(){ document.getElementById("modal").style.display = "none"; }
+    /* Meni za donacijo (plačaj pivo): Revolut / PayPal / Bitcoin */
+    function apriBirra(e) { if (e) e.preventDefault(); var m = document.getElementById("modalBirra"); if (m) m.style.display = "block"; }
+    function copiaBtc(e) {
+      if (e) e.preventDefault();
+      var addr = "bc1q6fk5n46wa4wq6wumc4nzjsu0pd7xnfumxay65m";
+      var l = document.getElementById("btcCopiaLabel");
+      function flash() {
+        if (!l) return;
+        if (!l.getAttribute("data-orig")) l.setAttribute("data-orig", l.textContent);
+        l.textContent = l.getAttribute("data-ok") || "OK";
+        setTimeout(function () { l.textContent = l.getAttribute("data-orig"); }, 1800);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(addr).then(flash).catch(function () {});
+      } else {
+        var t = document.createElement("textarea"); t.value = addr; document.body.appendChild(t); t.select();
+        try { document.execCommand("copy"); flash(); } catch (err) {}
+        document.body.removeChild(t);
+      }
+    }
     function apriGuidaBora(){ document.getElementById("modalGuidaBora").style.display = "block"; }
 
     /* ---------- Differenza pressione Trieste–Maribor (live, Open-Meteo MSLP) ----------
@@ -1938,9 +1959,27 @@
     timerAuto = setInterval(() => { caricaDati(); caricaMare(); caricaDeltaBora(); }, 5 * 60 * 1000);
   </script>
 
+  <!-- MODAL PLAČAJ PIVO: Revolut / PayPal / Bitcoin -->
+  <div id="modalBirra" class="modal" role="dialog" aria-modal="true" aria-labelledby="birraTitolo">
+    <div class="contenuto">
+      <h3 id="birraTitolo">🍺 Plačaj mi pivo</h3>
+      <p>Projekt je brezplačen, a ima nekaj stroškov: hvala za podporo! Izberi način:</p>
+      <div style="display:flex; gap:.6rem; flex-wrap:wrap; margin:.9rem 0;">
+        <a class="dona-btn" href="https://revolut.me/albertjsz" target="_blank" rel="noopener">Revolut</a>
+        <a class="dona-btn" href="https://paypal.me/bebroggi" target="_blank" rel="noopener">PayPal</a>
+      </div>
+      <p style="margin:.9rem 0 .3rem; font-weight:600;">₿ Bitcoin</p>
+      <p id="btcAddr" style="font-family:monospace; font-size:.82rem; word-break:break-all; background:#f5f5f5; border:1px solid #dce1e7; border-radius:8px; padding:.5rem .6rem; margin:.2rem 0 .6rem;">bc1q6fk5n46wa4wq6wumc4nzjsu0pd7xnfumxay65m</p>
+      <a class="dona-btn" href="#" onclick="copiaBtc(event)">📋 <span id="btcCopiaLabel" data-ok="Kopirano!">Kopiraj naslov</span></a>
+      <div style="text-align:right; margin-top:1rem;">
+        <button type="button" onclick="document.getElementById('modalBirra').style.display='none'">Zapri</button>
+      </div>
+    </div>
+  </div>
+
   <div class="dona">
     <p>Projekt je brezplačen, a ima nekaj stroškov: če želiš, mi plačaj pivo 🍺</p>
-    <a class="dona-btn" href="https://revolut.me/albertjsz" target="_blank" rel="noopener">🍺 Plačaj mi pivo</a>
+    <a class="dona-btn" href="#" onclick="apriBirra(event)">🍺 Plačaj mi pivo</a>
     <p class="dona-nota">Izberi znesek (npr. 5€) · kartica, Apple Pay ali Google Pay</p>
   </div>
 
