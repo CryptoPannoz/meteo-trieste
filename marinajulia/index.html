@@ -1795,7 +1795,7 @@
     function mostraNoData(prefix) {
       const cards = document.getElementById(prefix + "Cards");
       if (cards) cards.innerHTML = vetercekGiu
-        ? '<div class="pannello"><div class="tws-dir" style="color:#b35c00">vetercek.com offline</div>'
+        ? '<div class="pannello"><div class="tws-dir" style="color:#b35c00">Dati vetercek non raggiungibili</div>'
           + '<div style="font-size:.82rem;color:#7a5230;margin-top:6px;font-weight:600;line-height:1.4">⚠️ La fonte di questa centralina non risponde.<br>Il resto del sito (Barcola, previsioni, mare) funziona regolarmente.</div></div>'
         : '<div class="pannello"><div class="tws-dir">Dati non disponibili</div></div>';
       const tr = document.getElementById(prefix + "Trend");
@@ -1806,7 +1806,7 @@
         : '<tr><td colspan="5">Dati momentaneamente non disponibili</td></tr>';
       const st = document.getElementById("stato" + cap(prefix));
       const link = LINK_SPOT[prefix] || LINK_VETERCEK[prefix] || "https://vetercek.com";
-      if (st) st.innerHTML = (vetercekGiu ? '⚠️ <strong>vetercek.com è giù</strong> (non dipende dal nostro sito) · ' : '')
+      if (st) st.innerHTML = (vetercekGiu ? '⚠️ <strong>Dati vetercek non raggiungibili</strong> al momento · ' : '')
         + '<a href="' + link + '" target="_blank" rel="noopener">apri i dati live su vetercek.com</a>';
     }
 
@@ -1858,7 +1858,7 @@
           aggiornaSurfometroAuto(data);
           document.getElementById("ultimoAggiornamento").textContent =
             "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })
-            + (vetercekGiu ? " · ⚠️ vetercek.com offline (Monte Grisa / Muggia / Istria non disponibili)" : "");
+            + (vetercekGiu ? " · ⚠️ Dati vetercek non raggiungibili (Monte Grisa / Muggia / Istria non disponibili)" : "");
         })
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);

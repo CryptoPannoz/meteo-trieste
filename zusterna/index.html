@@ -1789,7 +1789,7 @@
     function mostraNoData(prefix) {
       const cards = document.getElementById(prefix + "Cards");
       if (cards) cards.innerHTML = vetercekGiu
-        ? '<div class="pannello"><div class="tws-dir" style="color:#b35c00">vetercek.com offline</div>'
+        ? '<div class="pannello"><div class="tws-dir" style="color:#b35c00">Podatki vetercek niso dosegljivi</div>'
           + '<div style="font-size:.82rem;color:#7a5230;margin-top:6px;font-weight:600;line-height:1.4">⚠️ Vir te postaje ne odgovarja.<br>Preostali del strani deluje normalno.</div></div>'
         : '<div class="pannello"><div class="tws-dir">Podatki niso na voljo</div></div>';
       const tr = document.getElementById(prefix + "Trend");

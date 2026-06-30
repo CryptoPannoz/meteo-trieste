@@ -38,7 +38,7 @@ var MAX_ROWS = 10;
 // da browser (es. Cloudflare Worker). Vedi VETERCEK_RELAY sotto.
 // Se impostato (URL di un relay tipo  https://xxx.workers.dev/?url= ), le richieste a
 // vetercek passano di lì; se vuoto, si tenta vetercek direttamente (oggi: bloccato).
-var VETERCEK_RELAY = '';
+var VETERCEK_RELAY = 'https://vetercek-relay.bebroggi.workers.dev/?url=';
 
 function stationUrl(s) {
   var q = (s.id ? 'id=' + s.id + '&' : '') + 'postaja=' + s.postaja;
