@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surf Trieste - Mockup mobile first</title>
+  <meta name="description" content="Mockup mobile-first per una nuova esperienza Surf Trieste." />
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #0d1418;
+      --muted: #66737c;
+      --paper: #f4f6f1;
+      --card: rgba(255,255,255,.82);
+      --glass: rgba(255,255,255,.62);
+      --line: rgba(13,20,24,.12);
+      --deep: #063c47;
+      --sea: #087f8f;
+      --aqua: #7bd8cc;
+      --lime: #d6f264;
+      --sun: #f4b95b;
+      --coral: #ef6958;
+      --shadow: 0 22px 54px rgba(10,31,38,.18);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, "Segoe UI", sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      font-feature-settings: "tnum" 1;
+      letter-spacing: 0;
+    }
+
+    a { color: inherit; }
+    button { font: inherit; }
+
+    .app-shell {
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, rgba(244,246,241,0) 0%, var(--paper) 92vh),
+        url("assets/golfo-trieste-hero.png") center top / cover no-repeat fixed;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: max(.7rem, env(safe-area-inset-top)) 1rem .65rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      background: rgba(244,246,241,.72);
+      border-bottom: 1px solid rgba(255,255,255,.45);
+      backdrop-filter: blur(24px) saturate(1.25);
+    }
+
+    .brand {
+      display: grid;
+      gap: .05rem;
+      text-decoration: none;
+      min-width: 0;
+    }
+
+    .brand strong {
+      font-size: .95rem;
+      line-height: 1.05;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 50%;
+      background: rgba(255,255,255,.72);
+      color: var(--ink);
+      display: inline-grid;
+      place-items: center;
+      box-shadow: 0 8px 20px rgba(13,20,24,.1);
+      cursor: pointer;
+    }
+
+    .nav-pills {
+      display: flex;
+      gap: .42rem;
+      overflow-x: auto;
+      padding: .9rem 1rem 0;
+      scrollbar-width: none;
+    }
+
+    .nav-pills::-webkit-scrollbar { display: none; }
+    .nav-pills a {
+      flex: 0 0 auto;
+      min-height: 38px;
+      padding: .58rem .82rem;
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 999px;
+      background: rgba(255,255,255,.66);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 26px rgba(13,20,24,.08);
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 750;
+    }
+
+    .hero {
+      min-height: calc(100svh - 69px);
+      padding: 1rem 1rem 1.2rem;
+      display: grid;
+      align-content: end;
+      gap: 1rem;
+    }
+
+    .hero-title {
+      max-width: 710px;
+      color: #fff;
+      text-shadow: 0 2px 22px rgba(0,0,0,.26);
+      padding-top: 18svh;
+    }
+
+    .hero-kicker {
+      margin: 0 0 .4rem;
+      font-size: .8rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(3.15rem, 17vw, 7.8rem);
+      line-height: .86;
+      font-weight: 900;
+    }
+
+    .hero-sub {
+      max-width: 32rem;
+      margin: .85rem 0 0;
+      font-size: 1rem;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+
+    .live-stack {
+      display: grid;
+      gap: .72rem;
+    }
+
+    .verdict-card {
+      position: relative;
+      overflow: hidden;
+      padding: 1rem;
+      border: 1px solid rgba(255,255,255,.58);
+      border-radius: 8px;
+      background: rgba(250,252,248,.78);
+      backdrop-filter: blur(28px) saturate(1.18);
+      box-shadow: var(--shadow);
+    }
+
+    .verdict-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(214,242,100,.38), rgba(123,216,204,.14) 46%, rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    .verdict-head,
+    .metric-strip,
+    .wind-scale,
+    .spot-grid {
+      position: relative;
+      z-index: 1;
+    }
+
+    .verdict-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-right: 4.9rem;
+    }
+
+    .label {
+      margin: 0 0 .24rem;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .verdict {
+      margin: 0;
+      font-size: clamp(2.55rem, 12vw, 4.8rem);
+      line-height: .88;
+      font-weight: 920;
+    }
+
+    .status-dot {
+      position: absolute;
+      top: .9rem;
+      right: .9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: .42rem;
+      min-height: 34px;
+      padding: .42rem .64rem;
+      border-radius: 999px;
+      background: #12311f;
+      color: #eaffb5;
+      font-size: .78rem;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .status-dot::before {
+      content: "";
+      width: .5rem;
+      height: .5rem;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 5px rgba(214,242,100,.24);
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr .9fr;
+      gap: .55rem;
+      margin-bottom: .95rem;
+    }
+
+    .metric {
+      min-width: 0;
+      min-height: 92px;
+      padding: .74rem;
+      border: 1px solid rgba(13,20,24,.09);
+      border-radius: 8px;
+      background: rgba(255,255,255,.62);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: clamp(1.65rem, 8vw, 3rem);
+      line-height: .95;
+      font-weight: 900;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: .28rem;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 720;
+      white-space: nowrap;
+    }
+
+    .wind-scale {
+      padding: .45rem .1rem .1rem;
+    }
+
+    .scale-track {
+      position: relative;
+      height: 16px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #aeb6ad 0 30%, #a2c957 30% 45%, #5d9b3b 45% 63%, #236d42 63% 88%, #ef6958 88% 100%);
+      box-shadow: inset 0 1px 2px rgba(0,0,0,.18);
+    }
+
+    .scale-track::after {
+      content: "";
+      position: absolute;
+      left: 52%;
+      top: -7px;
+      width: 4px;
+      height: 30px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 0 0 2px rgba(13,20,24,.75);
+    }
+
+    .scale-chip {
+      width: fit-content;
+      margin: .45rem 0 0 calc(52% - 2.4rem);
+      padding: .32rem .55rem;
+      border-radius: 999px;
+      background: #0d1418;
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 850;
+    }
+
+    .dock {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: .55rem;
+      padding: .6rem;
+      border: 1px solid rgba(255,255,255,.54);
+      border-radius: 8px;
+      background: rgba(255,255,255,.58);
+      backdrop-filter: blur(24px);
+      box-shadow: 0 16px 40px rgba(10,31,38,.13);
+    }
+
+    .dock button {
+      min-height: 58px;
+      border: 0;
+      border-radius: 8px;
+      background: rgba(255,255,255,.78);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      gap: .16rem;
+      cursor: pointer;
+    }
+
+    .dock svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .dock span {
+      font-size: .68rem;
+      font-weight: 760;
+    }
+
+    main.content {
+      padding: 1rem 1rem 2.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .section-title {
+      margin: .25rem 0 -.25rem;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .section-title a {
+      color: var(--sea);
+      text-decoration: none;
+      font-size: .86rem;
+      font-weight: 820;
+      white-space: nowrap;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      box-shadow: 0 14px 36px rgba(10,31,38,.08);
+      backdrop-filter: blur(20px);
+    }
+
+    .forecast-card {
+      padding: .85rem;
+      display: grid;
+      gap: .7rem;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .22rem;
+      padding: .22rem;
+      border-radius: 8px;
+      background: rgba(13,20,24,.07);
+    }
+
+    .segmented button {
+      min-height: 38px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 820;
+      cursor: pointer;
+    }
+
+    .segmented button.active {
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 2px 8px rgba(13,20,24,.12);
+    }
+
+    .hour-row {
+      display: grid;
+      grid-template-columns: 52px 1fr 48px;
+      gap: .7rem;
+      align-items: center;
+      padding: .62rem .2rem;
+      border-bottom: 1px solid rgba(13,20,24,.08);
+    }
+
+    .hour-row:last-child { border-bottom: 0; }
+    .time { color: var(--muted); font-size: .82rem; font-weight: 780; }
+    .bar { height: 10px; overflow: hidden; border-radius: 999px; background: rgba(13,20,24,.08); }
+    .bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--aqua), var(--lime)); }
+    .knots { text-align: right; font-size: .9rem; font-weight: 880; }
+
+    .spot-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: .65rem;
+    }
+
+    .spot-card {
+      padding: .85rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .spot-card h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 880;
+    }
+
+    .spot-card p {
+      margin: .22rem 0 0;
+      color: var(--muted);
+      font-size: .8rem;
+      font-weight: 650;
+    }
+
+    .spot-score {
+      min-width: 70px;
+      min-height: 58px;
+      padding: .48rem;
+      border-radius: 8px;
+      background: #0d1418;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .spot-score strong { font-size: 1.25rem; line-height: .9; }
+    .spot-score span { color: rgba(255,255,255,.7); font-size: .62rem; font-weight: 780; text-transform: uppercase; }
+
+    .camera-card {
+      min-height: 220px;
+      overflow: hidden;
+      position: relative;
+      background: url("assets/golfo-trieste-hero.png") center 64% / cover no-repeat;
+    }
+
+    .camera-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.62));
+    }
+
+    .camera-copy {
+      position: absolute;
+      z-index: 1;
+      left: .9rem;
+      right: .9rem;
+      bottom: .85rem;
+      color: #fff;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+
+    .camera-copy h3 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+
+    .camera-copy p {
+      margin: .24rem 0 0;
+      color: rgba(255,255,255,.78);
+      font-size: .82rem;
+      font-weight: 650;
+    }
+
+    .play {
+      flex: 0 0 auto;
+      width: 54px;
+      height: 54px;
+      border: 1px solid rgba(255,255,255,.4);
+      border-radius: 50%;
+      background: rgba(255,255,255,.82);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+    }
+
+    .map-card {
+      padding: 1rem;
+      min-height: 260px;
+      display: grid;
+      align-content: space-between;
+      gap: 1rem;
+      background:
+        radial-gradient(circle at 78% 14%, rgba(244,185,91,.36), transparent 24%),
+        linear-gradient(160deg, rgba(8,127,143,.16), rgba(255,255,255,.84) 46%),
+        var(--card);
+    }
+
+    .coast-map {
+      position: relative;
+      min-height: 168px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(145deg, #cde8df 0 48%, #0c7887 49% 100%);
+    }
+
+    .coast-map::before {
+      content: "";
+      position: absolute;
+      left: -18%;
+      top: 16%;
+      width: 72%;
+      height: 76%;
+      border-radius: 42% 58% 48% 52%;
+      background: #e7e1c8;
+      transform: rotate(-12deg);
+      box-shadow: 14px 18px 0 rgba(255,255,255,.28);
+    }
+
+    .wind-arrow {
+      position: absolute;
+      color: #fff;
+      font-size: 1.45rem;
+      font-weight: 900;
+      text-shadow: 0 2px 10px rgba(0,0,0,.28);
+    }
+
+    .wind-arrow.a { right: 22%; top: 28%; transform: rotate(42deg); }
+    .wind-arrow.b { right: 42%; top: 54%; transform: rotate(42deg); opacity: .82; }
+    .wind-arrow.c { right: 12%; top: 65%; transform: rotate(42deg); opacity: .66; }
+
+    .bottom-cta {
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+      padding: .65rem 1rem calc(.65rem + env(safe-area-inset-bottom));
+      background: rgba(244,246,241,.72);
+      backdrop-filter: blur(22px);
+      border-top: 1px solid rgba(13,20,24,.08);
+    }
+
+    .bottom-cta button {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 8px;
+      background: #0d1418;
+      color: #fff;
+      font-weight: 850;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(13,20,24,.22);
+    }
+
+    @media (min-width: 760px) {
+      .topbar,
+      .nav-pills,
+      .hero,
+      main.content,
+      .bottom-cta {
+        padding-left: max(2rem, calc((100vw - 1160px) / 2));
+        padding-right: max(2rem, calc((100vw - 1160px) / 2));
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
+        align-items: end;
+      }
+
+      .hero-title { padding-top: 0; }
+      .live-stack { align-self: end; }
+      main.content { grid-template-columns: 1fr 1fr; align-items: start; }
+      .section-title { grid-column: 1 / -1; }
+      .forecast-card { min-height: 413px; }
+      .spot-grid { grid-template-columns: 1fr 1fr; }
+      .camera-card { min-height: 413px; }
+      .bottom-cta { display: none; }
+    }
+
+    @media (min-width: 1080px) {
+      .forecast-card { grid-column: span 1; }
+      .map-card { min-height: 413px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="../">
+        <strong>Surf Trieste</strong>
+        <span>Barcola live</span>
+      </a>
+      <button class="icon-button" aria-label="Aggiorna dati">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M21 12a9 9 0 0 1-14.5 7.1" />
+          <path d="M3 12A9 9 0 0 1 17.5 4.9" />
+          <path d="M17 2v5h5" />
+          <path d="M7 22v-5H2" />
+        </svg>
+      </button>
+    </header>
+
+    <nav class="nav-pills" aria-label="Sezioni">
+      <a href="#ora">Ora</a>
+      <a href="#previsioni">Previsioni</a>
+      <a href="#spot">Spot</a>
+      <a href="#webcam">Webcam</a>
+      <a href="#mappa">Mappa vento</a>
+    </nav>
+
+    <section class="hero" id="ora">
+      <div class="hero-title">
+        <p class="hero-kicker">Golfo di Trieste</p>
+        <h1>Sufia<br>ben.</h1>
+        <p class="hero-sub">Un colpo d'occhio pulito: vento reale, raffica, direzione e fiducia della sessione.</p>
+      </div>
+
+      <div class="live-stack">
+        <article class="verdict-card" aria-label="Surfometro Barcola">
+          <div class="verdict-head">
+            <div>
+              <p class="label">Surfometro</p>
+              <p class="verdict">Planabile</p>
+            </div>
+            <span class="status-dot">Live</span>
+          </div>
+
+          <div class="metric-strip">
+            <div class="metric">
+              <p class="label">Medio</p>
+              <strong>21</strong>
+              <span>kt</span>
+            </div>
+            <div class="metric">
+              <p class="label">Raffica</p>
+              <strong>28</strong>
+              <span>kt</span>
+            </div>
+            <div class="metric">
+              <p class="label">Dir</p>
+              <strong>ENE</strong>
+              <span>68°</span>
+            </div>
+          </div>
+
+          <div class="wind-scale" aria-label="Scala vento">
+            <div class="scale-track"></div>
+            <div class="scale-chip">21 kt</div>
+          </div>
+        </article>
+
+        <div class="dock" aria-label="Azioni rapide">
+          <button type="button" title="Previsioni">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14h18" /><path d="M7 9h10" /><path d="M10 4h4" /><path d="M5 19h14" /></svg>
+            <span>Forecast</span>
+          </button>
+          <button type="button" title="Webcam">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v11H4z" /><path d="M9 7l1.4-2h3.2L15 7" /><circle cx="12" cy="12.5" r="3" /></svg>
+            <span>Cam</span>
+          </button>
+          <button type="button" title="Spot vicini">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.2 7-12a7 7 0 0 0-14 0c0 6.8 7 12 7 12z" /><circle cx="12" cy="9" r="2.5" /></svg>
+            <span>Spot</span>
+          </button>
+          <button type="button" title="Condividi">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" /><path d="M12 16V3" /><path d="M7 8l5-5 5 5" /></svg>
+            <span>Share</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <main class="content">
+    <div class="section-title" id="previsioni">
+      <h2>Prossime ore</h2>
+      <a href="#">ALADIN</a>
+    </div>
+
+    <section class="card forecast-card" aria-label="Previsioni vento">
+      <div class="segmented" aria-label="Giorno previsione">
+        <button class="active" type="button">Oggi</button>
+        <button type="button">Domani</button>
+        <button type="button">Weekend</button>
+      </div>
+
+      <div>
+        <div class="hour-row">
+          <span class="time">14:00</span>
+          <span class="bar"><i style="width:58%"></i></span>
+          <span class="knots">18 kt</span>
+        </div>
+        <div class="hour-row">
+          <span class="time">15:00</span>
+          <span class="bar"><i style="width:70%"></i></span>
+          <span class="knots">22 kt</span>
+        </div>
+        <div class="hour-row">
+          <span class="time">16:00</span>
+          <span class="bar"><i style="width:77%"></i></span>
+          <span class="knots">25 kt</span>
+        </div>
+        <div class="hour-row">
+          <span class="time">17:00</span>
+          <span class="bar"><i style="width:66%"></i></span>
+          <span class="knots">21 kt</span>
+        </div>
+        <div class="hour-row">
+          <span class="time">18:00</span>
+          <span class="bar"><i style="width:52%"></i></span>
+          <span class="knots">16 kt</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card camera-card" id="webcam" aria-label="Webcam Barcola">
+      <div class="camera-copy">
+        <div>
+          <h3>Barcola cam</h3>
+          <p>Controllo visivo immediato prima di partire.</p>
+        </div>
+        <span class="play" aria-hidden="true">▶</span>
+      </div>
+    </section>
+
+    <div class="section-title" id="spot">
+      <h2>Spot vicini</h2>
+      <a href="#">Tutti</a>
+    </div>
+
+    <section class="spot-grid" aria-label="Spot nel golfo">
+      <article class="card spot-card">
+        <div>
+          <h3>Muggia</h3>
+          <p>Più riparato, ottimo controllo raffica.</p>
+        </div>
+        <div class="spot-score"><strong>7.8</strong><span>score</span></div>
+      </article>
+      <article class="card spot-card">
+        <div>
+          <h3>Monte Grisa</h3>
+          <p>Sentinella Bora, dato alto e stabile.</p>
+        </div>
+        <div class="spot-score"><strong>8.4</strong><span>score</span></div>
+      </article>
+      <article class="card spot-card">
+        <div>
+          <h3>Žusterna</h3>
+          <p>Buona lettura per termico e wing.</p>
+        </div>
+        <div class="spot-score"><strong>6.9</strong><span>score</span></div>
+      </article>
+      <article class="card spot-card">
+        <div>
+          <h3>Marina Julia</h3>
+          <p>Da tenere d'occhio con nord-est.</p>
+        </div>
+        <div class="spot-score"><strong>7.1</strong><span>score</span></div>
+      </article>
+    </section>
+
+    <section class="card map-card" id="mappa" aria-label="Mappa vento del golfo">
+      <div>
+        <p class="label">Mappa vento</p>
+        <h2 style="margin:.15rem 0 0;font-size:1.6rem;line-height:1;font-weight:900;">Bora in ingresso</h2>
+      </div>
+      <div class="coast-map" aria-hidden="true">
+        <span class="wind-arrow a">→</span>
+        <span class="wind-arrow b">→</span>
+        <span class="wind-arrow c">→</span>
+      </div>
+    </section>
+  </main>
+
+  <div class="bottom-cta">
+    <button type="button">Apri session planner</button>
+  </div>
+</body>
+</html>

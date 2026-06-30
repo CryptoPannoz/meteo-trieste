@@ -3,3 +3,6 @@
 .DS_Store
 
 og-source.png
+
+# Config locale Claude Code (tooling personale)
+.claude/
