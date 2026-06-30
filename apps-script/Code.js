@@ -74,13 +74,28 @@ function fetchGoatViews() {
   return out;
 }
 
+function jsonOut(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function doGet(e) {
   // Endpoint separato per il grafico visite (GoatCounter), cache 3h, key server-side.
   if (e && e.parameter && e.parameter.views) {
-    return ContentService
-      .createTextOutput(JSON.stringify(fetchGoatViews()))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonOut(fetchGoatViews());
   }
+  // Qualsiasi imprevisto deve comunque restituire JSON: se doGet lancia, Apps Script
+  // risponde con una pagina HTML d'errore (HTTP 200) che il frontend non sa parsare,
+  // e l'intera pagina finisce in "Dati non disponibili".
+  try {
+    return jsonOut(buildData());
+  } catch (fatal) {
+    return jsonOut({ fatal: String(fatal), updated: new Date().toISOString() });
+  }
+}
+
+function buildData() {
   var out = {};
   var keys = Object.keys(STATIONS);
 
@@ -94,7 +109,7 @@ function doGet(e) {
   // ultima: boa Vida NIB (Pirano). nib.si invia una catena cert incompleta -> disattivo la validazione
   requests.push({ url: PIRAN_URL, muteHttpExceptions: true, followRedirects: true, validateHttpsCertificates: false });
 
-  var responses = UrlFetchApp.fetchAll(requests);
+  var responses = fetchAllResilient(requests);
 
   keys.forEach(function (k, i) {
     try {
@@ -129,9 +144,81 @@ function doGet(e) {
   }
 
   out.updated = new Date().toISOString();
-  return ContentService
-    .createTextOutput(JSON.stringify(out))
-    .setMimeType(ContentService.MimeType.JSON);
+  return out;
+}
+
+/* ---------- fetch resiliente -------------------------------------------------
+   UrlFetchApp.fetchAll è ATOMICA: se anche una sola URL è irraggiungibile a
+   livello di rete (DNS/connessione/timeout — NON un codice HTTP, quelli li
+   assorbe muteHttpExceptions) l'INTERO batch lancia eccezione. Senza protezione
+   una sola fonte morta (es. vetercek.com giù) annienta tutta la risposta,
+   comprese le fonti sane (Barcola/OSMER/boa). Qui isoliamo il guasto al singolo
+   host: le fonti sane rispondono comunque, solo quelle morte restano vuote. */
+function fetchAllResilient(requests) {
+  try {
+    return UrlFetchApp.fetchAll(requests);            // happy path: un'unica batch parallela
+  } catch (batchErr) {
+    var out = new Array(requests.length);
+    var badHost = hostFromMessage(String(batchErr));  // l'eccezione cita l'URL colpevole
+    var retry = [];
+    requests.forEach(function (req, i) {
+      if (badHost && hostOf(req.url) === badHost) out[i] = errorResponse(String(batchErr));
+      else retry.push(i);
+    });
+    if (retry.length === requests.length) {
+      // host non identificabile dal messaggio: degrado per gruppi-host (termina sempre)
+      return fetchByHostGroup(requests);
+    }
+    if (retry.length) {
+      try {
+        var res = UrlFetchApp.fetchAll(retry.map(function (i) { return requests[i]; }));
+        retry.forEach(function (i, j) { out[i] = res[j]; });
+      } catch (e2) {                                   // un secondo host è giù
+        var rest = fetchByHostGroup(retry.map(function (i) { return requests[i]; }));
+        retry.forEach(function (i, j) { out[i] = rest[j]; });
+      }
+    }
+    return out;
+  }
+}
+
+/* Ritenta ogni host in un batch separato: un host morto fallisce solo il proprio
+   gruppo, gli altri rispondono. Le URL di uno stesso host condividono la sorte
+   (se l'host è giù sono giù tutte), quindi un solo batch per host. */
+function fetchByHostGroup(requests) {
+  var out = new Array(requests.length), groups = {};
+  requests.forEach(function (req, i) {
+    var h = hostOf(req.url);
+    (groups[h] = groups[h] || []).push(i);
+  });
+  Object.keys(groups).forEach(function (h) {
+    var idx = groups[h];
+    try {
+      var res = UrlFetchApp.fetchAll(idx.map(function (i) { return requests[i]; }));
+      idx.forEach(function (i, j) { out[i] = res[j]; });
+    } catch (groupErr) {
+      idx.forEach(function (i) { out[i] = errorResponse(String(groupErr)); });
+    }
+  });
+  return out;
+}
+
+function hostOf(url) {
+  var m = String(url).match(/^https?:\/\/([^\/]+)/i);
+  return m ? m[1].toLowerCase() : String(url);
+}
+function hostFromMessage(msg) {
+  var m = msg.match(/https?:\/\/([^\/\s"')]+)/i);
+  return m ? m[1].toLowerCase() : null;
+}
+/* Risposta-fantoccio per una richiesta fallita: imita l'interfaccia di
+   HTTPResponse ma lancia se letta, così i try/catch a valle la trattano come le
+   altre fonti rotte (out[k] = [] + ...Error). */
+function errorResponse(msg) {
+  return {
+    getContentText: function () { throw new Error(msg); },
+    getResponseCode: function () { return 0; }
+  };
 }
 
 function parseStation(html, label) {

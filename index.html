@@ -1969,16 +1969,23 @@
       }
     }
 
+    let vetercekGiu = false;   // true quando il proxy segnala vetercek.com irraggiungibile (fonte esterna giù)
     function mostraNoData(prefix) {
       const cards = document.getElementById(prefix + "Cards");
-      if (cards) cards.innerHTML = '<div class="pannello"><div class="tws-dir">Dati non disponibili</div></div>';
+      if (cards) cards.innerHTML = vetercekGiu
+        ? '<div class="pannello"><div class="tws-dir" style="color:#b35c00">vetercek.com offline</div>'
+          + '<div style="font-size:.82rem;color:#7a5230;margin-top:6px;font-weight:600;line-height:1.4">⚠️ La fonte di questa centralina non risponde.<br>Il resto del sito (Barcola, previsioni, mare) funziona regolarmente.</div></div>'
+        : '<div class="pannello"><div class="tws-dir">Dati non disponibili</div></div>';
       const tr = document.getElementById(prefix + "Trend");
       if (tr) tr.innerHTML = "";
       const body = document.getElementById(prefix + "Body");
-      if (body) body.innerHTML = '<tr><td colspan="5">Dati momentaneamente non disponibili</td></tr>';
+      if (body) body.innerHTML = vetercekGiu
+        ? '<tr><td colspan="5">vetercek.com non risponde — centralina momentaneamente non disponibile</td></tr>'
+        : '<tr><td colspan="5">Dati momentaneamente non disponibili</td></tr>';
       const st = document.getElementById("stato" + cap(prefix));
       const link = LINK_SPOT[prefix] || LINK_VETERCEK[prefix] || "https://vetercek.com";
-      if (st) st.innerHTML = '<a href="' + link + '" target="_blank" rel="noopener">apri i dati live su vetercek.com</a>';
+      if (st) st.innerHTML = (vetercekGiu ? '⚠️ <strong>vetercek.com è giù</strong> (non dipende dal nostro sito) · ' : '')
+        + '<a href="' + link + '" target="_blank" rel="noopener">apri i dati live su vetercek.com</a>';
     }
 
     function cella(val, cls) {
@@ -2021,6 +2028,7 @@
         .then(data => {
           renderBarcola(data.barcola);
           renderOsmer(data.osmer);
+          vetercekGiu = ["monteGrisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
           renderStazione(data.monteGrisa, "grisa");
           renderStazione(data.muggia, "muggia");
           renderStazione(data.marinajulia, "marinajulia");
@@ -2028,13 +2036,15 @@
           renderPiran(data.piran);
           aggiornaSurfometroAuto(data);
           document.getElementById("ultimoAggiornamento").textContent =
-            "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+            "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })
+            + (vetercekGiu ? " · ⚠️ vetercek.com offline (Monte Grisa / Muggia / Istria non disponibili)" : "");
         })
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
           renderBarcola(null);
           renderOsmer([]);
           renderPiran(null);
+          vetercekGiu = false;   // qui non risponde il nostro servizio, non vetercek
           ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
           aggiornaSurfometroAuto({ barcola: null, monteGrisa: null });
           document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
