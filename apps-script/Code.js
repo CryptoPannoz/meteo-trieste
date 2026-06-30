@@ -29,10 +29,22 @@ var OSMER_URL = 'https://www.osmer.fvg.it/previsioni.php?ln=';
 // Boa oceanografica Vida (NIB, Pirano): pagina dati leggera (solo blocco <pre>)
 var PIRAN_URL = 'https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2?tmpl=component';
 var MAX_ROWS = 10;
+// NOTA (giu 2026): vetercek.com ha iniziato a bloccare le richieste senza User-Agent
+// da browser (la connessione resta appesa fino al timeout -> "Indirizzo non disponibile").
+// UrlFetchApp NON permette di sovrascrivere lo User-Agent: invia sempre il proprio
+// "Mozilla/5.0 (compatible; Google-Apps-Script; ...)" (verificato via postman-echo),
+// quindi NON serve impostare l'header User-Agent qui: viene ignorato. L'unico modo per
+// rileggere vetercek è instradare la richiesta attraverso un relay che imposti uno UA
+// da browser (es. Cloudflare Worker). Vedi VETERCEK_RELAY sotto.
+// Se impostato (URL di un relay tipo  https://xxx.workers.dev/?url= ), le richieste a
+// vetercek passano di lì; se vuoto, si tenta vetercek direttamente (oggi: bloccato).
+var VETERCEK_RELAY = '';
 
 function stationUrl(s) {
   var q = (s.id ? 'id=' + s.id + '&' : '') + 'postaja=' + s.postaja;
-  return 'https://vetercek.com/danes/index.php?' + q;
+  var target = 'https://vetercek.com/danes/index.php?' + q;
+  // Se è configurato un relay (che imposta uno UA da browser), passo di lì.
+  return VETERCEK_RELAY ? VETERCEK_RELAY + encodeURIComponent(target) : target;
 }
 
 /* Serie giornaliera delle visite da GoatCounter (ultimi 30 giorni).
