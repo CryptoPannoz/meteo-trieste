@@ -291,9 +291,15 @@
       display: flex; justify-content: space-between; align-items: center;
     }
     details.dettaglio > summary::-webkit-details-marker { display: none; }
-    details.dettaglio > summary::after { content: "▾"; color: var(--label); transition: transform .2s; }
+    details.dettaglio > summary::after {
+      content: "odpri ▾";
+      flex: 0 0 auto; margin-left: .6rem;
+      font-size: .74rem; font-weight: 700; color: var(--azzurro);
+      border: 1px solid currentColor; border-radius: 999px; padding: 2px 10px;
+    }
+    details.dettaglio > summary:hover { background: #f2f7fa; border-color: var(--azzurro); }
     details.dettaglio[open] > summary { border-radius: 8px 8px 0 0; border-bottom: 0; }
-    details.dettaglio[open] > summary::after { transform: rotate(180deg); }
+    details.dettaglio[open] > summary::after { content: "zapri ▴"; }
 
     /* ---- Bottoni spot (posizione + guida) ---- */
     .spot-azioni { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .8rem; }
@@ -327,6 +333,10 @@
     .trend-badge .frec { font-weight: 800; }
     .trend-delta { font-size: .8rem; color: var(--label); }
     .spark { vertical-align: middle; width: 100%; min-width: 0; }
+    /* sparkline trend con didascalia e scala min/max */
+    .spark-wrap { flex: 1 1 auto; min-width: 92px; max-width: 200px; display: flex; flex-direction: column; }
+    .spark-wrap .spark { max-width: none; height: 48px; }
+    .spark-cap { font-size: .62rem; color: var(--label); text-align: center; margin-top: 2px; white-space: nowrap; letter-spacing: .02em; }
 
     /* ---- Tabella dettaglio ---- */
     table {
@@ -435,16 +445,27 @@
       background: rgba(15,22,30,0.55);
       z-index: 1000;
       padding: 1rem;
+      overflow-y: auto;                    /* contenuti lunghi scorrono (mobile) */
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
     .modal .contenuto {
+      position: relative;
       background: white;
       max-width: 600px;
-      margin: 10vh auto 0;
+      margin: 6vh auto 6vh;
       padding: 22px;
       border-radius: 12px;
       line-height: 1.55;
     }
-    .modal .contenuto h3 { margin-top: 0; }
+    .modal .contenuto h3 { margin-top: 0; padding-right: 2.2rem; }
+    .modal-x {
+      position: absolute; top: 10px; right: 10px;
+      width: 34px; height: 34px; padding: 0;
+      border-radius: 50%; background: #eef1f4; color: var(--slate);
+      font-size: 1.05rem; line-height: 34px; text-align: center;
+    }
+    .modal-x:hover { background: var(--slate); color: #fff; }
     .guida-meta { font-size: .82rem; color: var(--label); margin: .4rem 0 0; }
     .dona {
       text-align: center;
@@ -1169,6 +1190,7 @@
   <!-- MODAL POPUP MODELLI -->
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Zapri" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="modalTitolo">Vremenski modeli – razlaga</h3>
       <p>
         • <strong>WG (model mix)</strong>: "pametno povprečje" Windguruja, ki združi več modelov v eno povzeto napoved.<br>
@@ -1190,6 +1212,7 @@
   <!-- MODAL POPUP DIFFERENZA PRESSIONE BORA -->
   <div id="modalDeltaBora" class="modal" role="dialog" aria-modal="true" aria-labelledby="deltaBoraTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Zapri" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="deltaBoraTitolo">Razlika tlaka in burja</h3>
       <p>Okvirček prikazuje <strong>razliko tlaka na morski gladini (MSLP)</strong>, izmerjeno <em>v tem trenutku</em> med Trstom in Mariborom (Slovenija):</p>
       <p style="text-align:center; margin:.6rem 0;"><strong>Δ = tlak Trst − tlak Maribor</strong></p>
@@ -1210,6 +1233,7 @@
   <!-- MODAL "COME SI LEGGE" – GRAFICO BORA -->
   <div id="modalGuidaBora" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaBoraTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Zapri" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="guidaBoraTitolo">Graf burje – kako brati</h3>
       <p>To je <strong>napoved burje</strong> za Tržaški zaliv v naslednjih dneh, ki jo pripravi profiwetter.ch na podlagi modela DWD.</p>
       <p>Temelji na <strong>razliki tlaka</strong> med slovenskim zaledjem (privetrna stran) in Jadranom: ko ima zaledje izrazito višji tlak od obale, zrak prečka Dinarsko gorstvo in se zruši na zaliv kot burja.</p>
@@ -1228,6 +1252,7 @@
   <!-- MODAL GUIDA SPOT -->
   <div id="modalGuida" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Zapri" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="guidaTitolo">Vodnik po spotu</h3>
       <div id="guidaCorpo"></div>
       <div style="text-align:right; margin-top:1rem;">
@@ -1704,7 +1729,7 @@
       const ref = rows[0].ora;
       return rows.filter(r => minutiTra(ref, r.ora) <= 45);
     }
-    function sparkline(valori, w, h, colore) {
+    function sparkline(valori, w, h, colore, opts) {
       const n = valori.length;
       if (n < 2) return "";
       const min = Math.min(...valori), max = Math.max(...valori);
@@ -1717,9 +1742,22 @@
       const last = pts[n - 1].split(",");
       const area = pts.join(" ") + " " + (w - pad) + "," + (h - pad) + " " + pad + "," + (h - pad);
       const id = "grad" + Math.random().toString(36).slice(2);
+      // scala opzionale: linee tratteggiate + etichette min/max (es. per il vento in kt)
+      let scala = "";
+      if (opts && opts.scala) {
+        const u = opts.unit || "";
+        const fmt = v => (range < 3 ? v.toFixed(1) : Math.round(v)) + u;
+        const halo = 'paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round"';
+        scala =
+          '<line x1="' + pad + '" y1="' + pad + '" x2="' + (w - pad) + '" y2="' + pad + '" stroke="#c3ccd4" stroke-width="1" stroke-dasharray="3 3"/>' +
+          '<line x1="' + pad + '" y1="' + (h - pad) + '" x2="' + (w - pad) + '" y2="' + (h - pad) + '" stroke="#c3ccd4" stroke-width="1" stroke-dasharray="3 3"/>' +
+          '<text x="' + (pad + 1) + '" y="' + (pad + 10) + '" font-size="10" font-weight="700" fill="#5b6470" ' + halo + '>' + fmt(max) + '</text>' +
+          '<text x="' + (pad + 1) + '" y="' + (h - pad - 3) + '" font-size="10" font-weight="700" fill="#5b6470" ' + halo + '>' + fmt(min) + '</text>';
+      }
       return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" aria-hidden="true">' +
              '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + colore + '" stop-opacity=".28"/><stop offset="1" stop-color="' + colore + '" stop-opacity=".03"/></linearGradient></defs>' +
              '<polygon fill="url(#' + id + ')" points="' + area + '"/>' +
+             scala +
              '<polyline fill="none" stroke="' + colore + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(" ") + '"/>' +
              '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="4.2" fill="#fff" stroke="' + colore + '" stroke-width="2.4"/></svg>';
     }
@@ -1769,7 +1807,10 @@
         trendEl.innerHTML =
           '<span class="trend-badge"><span class="frec" style="color:' + t.colore + '">' + t.freccia + '</span> ' + t.stato + '</span>' +
           '<span class="trend-delta">' + t.deltaTxt + '</span>' +
-          sparkline(serie, 150, 36, t.colore);
+          '<span class="spark-wrap">' +
+            sparkline(serie, 168, 48, t.colore, { scala: true, unit: "" }) +
+            '<span class="spark-cap">veter (vozli) · zadnjih 45 min</span>' +
+          '</span>';
       } else {
         trendEl.innerHTML = "";
       }
@@ -1833,35 +1874,83 @@
     }
 
     let timerAuto = null;
-    function caricaDati() {
-      const btn = document.getElementById("btnAggiorna");
-      btn.disabled = true;
+
+    /* Cache locale dell'ultimo payload valido: al riavvio la pagina si riempie
+       subito con gli ultimi dati mentre il proxy (Apps Script, lento a freddo)
+       risponde in background. */
+    const CACHE_DATI = "vt_dati_cache_zusterna";
+    function salvaCacheDati(data) {
+      try { localStorage.setItem(CACHE_DATI, JSON.stringify({ t: Date.now(), data: data })); } catch (e) {}
+    }
+    function leggiCacheDati(maxEtaMin) {
+      try {
+        const c = JSON.parse(localStorage.getItem(CACHE_DATI));
+        if (c && c.data && (Date.now() - c.t) <= maxEtaMin * 60000) return c;
+      } catch (e) {}
+      return null;
+    }
+
+    function renderDati(data) {
+      renderOsmer(data.osmer);
+      vetercekGiu = ["monteGrisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
+      renderStazione(data.monteGrisa, "grisa");
+      renderStazione(data.muggia, "muggia");
+      renderStazione(data.marinajulia, "marinajulia");
+      SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
+      renderPiran(data.piran);
+      aggiornaSurfometroAuto(data);
+    }
+
+    /* fetch con retry: il primo colpo su Apps Script a freddo può fallire o
+       impiegare troppo; ritentiamo prima di dichiarare errore. */
+    function fetchDati(tentativi) {
       return fetch(PROXY + "?ts=" + Date.now())
         .then(res => {
           if (!res.ok) throw new Error("HTTP " + res.status);
           return res.json();
         })
+        .catch(err => {
+          if (tentativi > 0) {
+            return new Promise(r => setTimeout(r, 2500)).then(() => fetchDati(tentativi - 1));
+          }
+          throw err;
+        });
+    }
+
+    let retryProgrammato = false;
+    function caricaDati() {
+      const btn = document.getElementById("btnAggiorna");
+      btn.disabled = true;
+      return fetchDati(2)
         .then(data => {
-          renderOsmer(data.osmer);
-          vetercekGiu = ["monteGrisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
-          renderStazione(data.monteGrisa, "grisa");
-          renderStazione(data.muggia, "muggia");
-          renderStazione(data.marinajulia, "marinajulia");
-          SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
-          renderPiran(data.piran);
-          aggiornaSurfometroAuto(data);
+          renderDati(data);
+          salvaCacheDati(data);
           document.getElementById("ultimoAggiornamento").textContent =
             "Zadnja posodobitev: " + new Date().toLocaleTimeString("sl-SI", { hour: "2-digit", minute: "2-digit" })
             + (vetercekGiu ? " · ⚠️ vetercek.com nedosegljiv (Monte Grisa / Milje / Istra niso na voljo)" : "");
         })
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
-          renderOsmer([]);
-          renderPiran(null);
-          vetercekGiu = false;   // tukaj ne odgovarja naša storitev, ne vetercek
-          ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
-          aggiornaSurfometroAuto({ zusterna: null });
-          document.getElementById("ultimoAggiornamento").textContent = "⚠️ Storitve s podatki ni mogoče doseči.";
+          const cache = leggiCacheDati(60);
+          if (cache) {
+            // il servizio non risponde ma abbiamo dati recenti: meglio quelli di una pagina vuota
+            renderDati(cache.data);
+            document.getElementById("ultimoAggiornamento").textContent =
+              "⚠️ Podatkovna storitev je počasna: prikazujem zadnje podatke ob " +
+              new Date(cache.t).toLocaleTimeString("sl-SI", { hour: "2-digit", minute: "2-digit" }) + ", kmalu poskusim znova…";
+          } else {
+            renderOsmer([]);
+            renderPiran(null);
+            vetercekGiu = false;   // tukaj ne odgovarja naša storitev, ne vetercek
+            ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
+            aggiornaSurfometroAuto({ zusterna: null });
+            document.getElementById("ultimoAggiornamento").textContent = "⚠️ Storitve s podatki ni mogoče doseči, kmalu poskusim znova…";
+          }
+          // nuovo tentativo automatico senza aspettare i 5 minuti dell'auto-refresh
+          if (!retryProgrammato) {
+            retryProgrammato = true;
+            setTimeout(() => { retryProgrammato = false; caricaDati(); }, 45000);
+          }
         })
         .finally(() => { btn.disabled = false; });
     }
@@ -2034,6 +2123,14 @@
     document.getElementById("radarImg").src = urlRadar();
     mostraAladin();
     autoCamZusterna();
+    // se c'è una cache recente, la pagina si riempie subito (il fetch live la rimpiazza appena arriva)
+    const cacheAvvio = leggiCacheDati(30);
+    if (cacheAvvio) {
+      renderDati(cacheAvvio.data);
+      document.getElementById("ultimoAggiornamento").textContent =
+        "Podatki ob " + new Date(cacheAvvio.t).toLocaleTimeString("sl-SI", { hour: "2-digit", minute: "2-digit" }) + " · posodabljanje v teku…";
+      nascondiLoader();
+    }
     // l'overlay si dissolve quando i dati principali sono pronti
     caricaDati().finally(nascondiLoader);
     // safety: non lasciare mai l'utente bloccato dietro l'overlay
@@ -2047,6 +2144,7 @@
   <!-- MODAL PLAČAJ PIVO: Revolut / PayPal / Bitcoin -->
   <div id="modalBirra" class="modal" role="dialog" aria-modal="true" aria-labelledby="birraTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Zapri" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="birraTitolo">🍺 Plačaj mi pivo</h3>
       <p>Projekt je brezplačen, a ima nekaj stroškov: hvala za podporo! Izberi način:</p>
       <div style="display:flex; gap:.6rem; flex-wrap:wrap; margin:.9rem 0;">
