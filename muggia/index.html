@@ -334,8 +334,8 @@
     .trend-delta { font-size: .8rem; color: var(--label); }
     .spark { vertical-align: middle; width: 100%; min-width: 0; }
     /* sparkline trend con didascalia e scala min/max */
-    .spark-wrap { flex: 1 1 auto; min-width: 92px; max-width: 200px; display: flex; flex-direction: column; }
-    .spark-wrap .spark { max-width: none; height: 48px; }
+    .spark-wrap { flex: 1 0 100%; width: 100%; max-width: none; min-width: 0; display: flex; flex-direction: column; }
+    .spark-wrap .spark { width: 100%; max-width: none; height: 48px; }
     .spark-cap { font-size: .62rem; color: var(--label); text-align: center; margin-top: 2px; white-space: nowrap; letter-spacing: .02em; }
 
     /* ---- Tabella dettaglio ---- */
@@ -684,7 +684,7 @@
     }
     .gruppo-collapse[open] .gruppo-sum::after { content: "chiudi ▴"; }
     .trend {
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       padding: .5rem;
       background: linear-gradient(90deg, #f7fbfb 0%, #eef7f0 100%);
       border: 1px solid var(--bordo);
@@ -730,22 +730,10 @@
       .dona,
       #altre-pagine,
       #viewsBox { max-width: 100%; }
-      .trend {
-        display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
-        align-items: center;
-        gap: .45rem .55rem;
-      }
       .trend-delta {
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
-      }
-      .trend .spark {
-        grid-column: 1 / -1;
-        width: 100%;
-        max-width: none;
-        min-width: 0;
       }
       h1 { font-size: 1.25rem; }
 

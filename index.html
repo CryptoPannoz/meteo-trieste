@@ -341,8 +341,8 @@
     .trend {
       display: flex;
       align-items: center;
-      gap: .6rem;
-      flex-wrap: nowrap;
+      gap: .5rem .6rem;
+      flex-wrap: wrap;
       margin: .7rem 0 .35rem;
       padding: .5rem;
       background: linear-gradient(90deg, #f7fbfb 0%, #eef7f0 100%);
@@ -373,9 +373,11 @@
       border-radius: 10px;
       background: linear-gradient(180deg, rgba(15,111,125,.08), rgba(216,239,100,.16));
     }
-    /* sparkline trend con didascalia e scala min/max */
-    .spark-wrap { flex: 1 1 auto; min-width: 92px; max-width: 200px; display: flex; flex-direction: column; }
-    .spark-wrap .spark { max-width: none; height: 48px; }
+    /* sparkline trend con didascalia e scala min/max: sempre su riga propria a
+       piena larghezza, così SVG e didascalia non vengono compressi/troncati nelle
+       card strette (griglia 2-3 colonne). */
+    .spark-wrap { flex: 1 0 100%; width: 100%; max-width: none; min-width: 0; display: flex; flex-direction: column; }
+    .spark-wrap .spark { width: 100%; max-width: none; height: 48px; }
     .spark-cap { font-size: .62rem; color: var(--label); text-align: center; margin-top: 2px; white-space: nowrap; letter-spacing: .02em; }
 
     /* ---- Tabella dettaglio ---- */
@@ -807,22 +809,10 @@
       .console-card,
       .side-card { border-radius: 14px; padding: .9rem; }
       .console-card .surf2-verdetto { font-size: 2.45rem; }
-      .trend {
-        display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
-        align-items: center;
-        gap: .45rem .55rem;
-      }
       .trend-delta {
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
-      }
-      .trend .spark {
-        grid-column: 1 / -1;
-        width: 100%;
-        max-width: none;
-        min-width: 0;
       }
       h1 { font-size: 1.25rem; }
 
