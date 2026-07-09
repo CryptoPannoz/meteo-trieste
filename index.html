@@ -317,9 +317,15 @@
       display: flex; justify-content: space-between; align-items: center;
     }
     details.dettaglio > summary::-webkit-details-marker { display: none; }
-    details.dettaglio > summary::after { content: "▾"; color: var(--label); transition: transform .2s; }
+    details.dettaglio > summary::after {
+      content: "apri ▾";
+      flex: 0 0 auto; margin-left: .6rem;
+      font-size: .74rem; font-weight: 700; color: var(--azzurro);
+      border: 1px solid currentColor; border-radius: 999px; padding: 2px 10px;
+    }
+    details.dettaglio > summary:hover { background: #f2f7fa; border-color: var(--azzurro); }
     details.dettaglio[open] > summary { border-radius: 8px 8px 0 0; border-bottom: 0; }
-    details.dettaglio[open] > summary::after { transform: rotate(180deg); }
+    details.dettaglio[open] > summary::after { content: "chiudi ▴"; }
 
     /* ---- Bottoni spot (posizione + guida) ---- */
     .spot-azioni { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .8rem; }
@@ -367,6 +373,10 @@
       border-radius: 10px;
       background: linear-gradient(180deg, rgba(15,111,125,.08), rgba(216,239,100,.16));
     }
+    /* sparkline trend con didascalia e scala min/max */
+    .spark-wrap { flex: 1 1 auto; min-width: 92px; max-width: 200px; display: flex; flex-direction: column; }
+    .spark-wrap .spark { max-width: none; height: 48px; }
+    .spark-cap { font-size: .62rem; color: var(--label); text-align: center; margin-top: 2px; white-space: nowrap; letter-spacing: .02em; }
 
     /* ---- Tabella dettaglio ---- */
     table {
@@ -475,16 +485,27 @@
       background: rgba(15,22,30,0.55);
       z-index: 1000;
       padding: 1rem;
+      overflow-y: auto;                    /* contenuti lunghi scorrono (mobile) */
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
     .modal .contenuto {
+      position: relative;
       background: white;
       max-width: 600px;
-      margin: 10vh auto 0;
+      margin: 6vh auto 6vh;
       padding: 22px;
       border-radius: 12px;
       line-height: 1.55;
     }
-    .modal .contenuto h3 { margin-top: 0; }
+    .modal .contenuto h3 { margin-top: 0; padding-right: 2.2rem; }
+    .modal-x {
+      position: absolute; top: 10px; right: 10px;
+      width: 34px; height: 34px; padding: 0;
+      border-radius: 50%; background: #eef1f4; color: var(--slate);
+      font-size: 1.05rem; line-height: 34px; text-align: center;
+    }
+    .modal-x:hover { background: var(--slate); color: #fff; }
     .guida-meta { font-size: .82rem; color: var(--label); margin: .4rem 0 0; }
     .dona {
       text-align: center;
@@ -528,6 +549,42 @@
     #viewsBox svg.spark { width: 100%; height: auto; max-width: 360px; vertical-align: middle; }
     #viewsAsse { display: flex; justify-content: space-between; max-width: 360px; margin: 2px auto 0; font-size: 11px; color: var(--label); }
     #viewsBox .stato { margin: .6rem 0 0; }
+    /* Log modifiche (commit GitHub, solo testo) */
+    #changelogBox { max-width: 420px; margin: 0 auto 1.5rem; }
+    #changelogBox h2 { font-size: 1.05rem; margin: 0 0 .6rem; text-align: center; }
+    .changelog { list-style: none; margin: 0; padding: 0; text-align: left; }
+    .changelog li {
+      display: flex; gap: .6rem; align-items: baseline;
+      padding: .45rem 0; border-bottom: 1px solid var(--bordo);
+      font-size: .86rem; line-height: 1.4;
+    }
+    .changelog li:last-child { border-bottom: 0; }
+    .changelog .cl-data {
+      flex: 0 0 auto; font-size: .7rem; font-weight: 600; color: var(--label);
+      background: #f6f8fa; border-radius: 4px; padding: 1px 6px;
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .changelog .cl-msg { color: var(--testo); }
+    #changelogBox .stato { text-align: center; margin-top: .5rem; }
+    /* solo le prime 2 voci visibili; il resto si apre col toggle */
+    .changelog li.cl-extra { display: none; }
+    #changelogBox.aperto .changelog li.cl-extra { display: flex; }
+    .cl-toggle {
+      display: block; margin: .6rem auto 0; padding: 2px 12px;
+      background: #fff; color: var(--azzurro); border: 1px solid currentColor;
+      border-radius: 999px; font-size: .74rem; font-weight: 700; font-family: inherit;
+    }
+    .cl-toggle:hover { background: #f2f7fa; }
+    /* modulo richieste (mailto precompilata) */
+    .cl-form { border-top: 1px solid var(--bordo); margin-top: 1.1rem; padding-top: 1rem; text-align: left; }
+    .cl-form h3 { font-size: .95rem; margin: 0 0 .6rem; text-align: center; }
+    .cl-form select, .cl-form textarea {
+      width: 100%; box-sizing: border-box; margin-bottom: .55rem;
+      border: 1px solid var(--bordo); border-radius: 8px; background: #fff;
+      font-family: inherit; font-size: .9rem; color: var(--testo); padding: 8px 10px;
+    }
+    .cl-form textarea { resize: vertical; min-height: 68px; }
+    .cl-form button[type="submit"] { display: block; margin: 0 auto; }
     footer {
       text-align: center;
       font-size: .9rem;
@@ -1208,6 +1265,7 @@
   <!-- MODAL POPUP MODELLI -->
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="modalTitolo">Modelli Meteo – Spiegazione</h3>
       <p>
         • <strong>WG (model mix)</strong>: la "media intelligente" di Windguru, che combina più modelli in un'unica previsione di sintesi.<br>
@@ -1229,6 +1287,7 @@
   <!-- MODAL POPUP DIFFERENZA PRESSIONE BORA -->
   <div id="modalDeltaBora" class="modal" role="dialog" aria-modal="true" aria-labelledby="deltaBoraTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="deltaBoraTitolo">Differenza di pressione e Bora</h3>
       <p>Il box mostra la <strong>differenza di pressione a livello del mare (MSLP)</strong> misurata <em>in questo momento</em> tra Trieste e Maribor (Slovenia):</p>
       <p style="text-align:center; margin:.6rem 0;"><strong>Δ = pressione Trieste − pressione Maribor</strong></p>
@@ -1249,6 +1308,7 @@
   <!-- MODAL "COME SI LEGGE" – GRAFICO BORA -->
   <div id="modalGuidaBora" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaBoraTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="guidaBoraTitolo">Grafico della Bora – come si legge</h3>
       <p>È la <strong>previsione della Bora</strong> per il Golfo di Trieste nei prossimi giorni, elaborata da profiwetter.ch sul modello DWD.</p>
       <p>Si basa sulla <strong>differenza di pressione</strong> tra l'entroterra sloveno (sopravento) e l'Adriatico: quando l'entroterra ha pressione nettamente più alta della costa, l'aria scavalca le Alpi Dinariche e precipita sul golfo come Bora.</p>
@@ -1267,6 +1327,7 @@
   <!-- MODAL GUIDA SPOT -->
   <div id="modalGuida" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="guidaTitolo">Guida spot</h3>
       <div id="guidaCorpo"></div>
       <div style="text-align:right; margin-top:1rem;">
@@ -1860,7 +1921,7 @@
       const ref = rows[0].ora;
       return rows.filter(r => minutiTra(ref, r.ora) <= 45);
     }
-    function sparkline(valori, w, h, colore) {
+    function sparkline(valori, w, h, colore, opts) {
       const n = valori.length;
       if (n < 2) return "";
       const min = Math.min(...valori), max = Math.max(...valori);
@@ -1873,9 +1934,22 @@
       const last = pts[n - 1].split(",");
       const area = pts.join(" ") + " " + (w - pad) + "," + (h - pad) + " " + pad + "," + (h - pad);
       const id = "grad" + Math.random().toString(36).slice(2);
+      // scala opzionale: linee tratteggiate + etichette min/max (es. per il vento in kt)
+      let scala = "";
+      if (opts && opts.scala) {
+        const u = opts.unit || "";
+        const fmt = v => (range < 3 ? v.toFixed(1) : Math.round(v)) + u;
+        const halo = 'paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round"';
+        scala =
+          '<line x1="' + pad + '" y1="' + pad + '" x2="' + (w - pad) + '" y2="' + pad + '" stroke="#c3ccd4" stroke-width="1" stroke-dasharray="3 3"/>' +
+          '<line x1="' + pad + '" y1="' + (h - pad) + '" x2="' + (w - pad) + '" y2="' + (h - pad) + '" stroke="#c3ccd4" stroke-width="1" stroke-dasharray="3 3"/>' +
+          '<text x="' + (pad + 1) + '" y="' + (pad + 10) + '" font-size="10" font-weight="700" fill="#5b6470" ' + halo + '>' + fmt(max) + '</text>' +
+          '<text x="' + (pad + 1) + '" y="' + (h - pad - 3) + '" font-size="10" font-weight="700" fill="#5b6470" ' + halo + '>' + fmt(min) + '</text>';
+      }
       return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" aria-hidden="true">' +
              '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + colore + '" stop-opacity=".28"/><stop offset="1" stop-color="' + colore + '" stop-opacity=".03"/></linearGradient></defs>' +
              '<polygon fill="url(#' + id + ')" points="' + area + '"/>' +
+             scala +
              '<polyline fill="none" stroke="' + colore + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(" ") + '"/>' +
              '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="4.2" fill="#fff" stroke="' + colore + '" stroke-width="2.4"/></svg>';
     }
@@ -1897,8 +1971,9 @@
           const chart = document.getElementById("viewsChart");
           const asse = document.getElementById("viewsAsse");
           const tEl = document.getElementById("viewsTotale");
-          if (chart) chart.innerHTML = sparkline(valori, 320, 64, "#2f6fb0");
+          if (chart) chart.innerHTML = sparkline(valori, 320, 64, "#2f6fb0", { scala: true, unit: "" });
           if (asse) asse.innerHTML = '<span>' + fmtDataBreve(v.series[0].d) + '</span>' +
+                                     '<span class="spark-cap">visite al giorno</span>' +
                                      '<span>' + fmtDataBreve(v.series[v.series.length - 1].d) + '</span>';
           if (tEl) tEl.textContent = Number(tot).toLocaleString("it-IT") + " visitatori dall'inizio";
           const box = document.getElementById("viewsBox");
@@ -1906,6 +1981,50 @@
         })
         .catch(() => {});
     }
+
+    /* Log modifiche: ultimi commit del repo GitHub, mostrati come semplice
+       elenco testuale (nessun link a GitHub). Il box compare solo se l'API risponde. */
+    function caricaChangelog() {
+      fetch("https://api.github.com/repos/CryptoPannoz/meteo-trieste/commits?per_page=10")
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(commits => {
+          if (!Array.isArray(commits)) return;
+          const voci = commits
+            .filter(c => c && c.commit && c.commit.message && !/^merge/i.test(c.commit.message))
+            .slice(0, 8)
+            .map((c, i) => {
+              const msg = escHtml(c.commit.message.split("\n")[0]);
+              const data = fmtDataBreve(String(c.commit.author.date).slice(0, 10));
+              return '<li' + (i >= 2 ? ' class="cl-extra"' : '') + '><span class="cl-data">' + data + '</span><span class="cl-msg">' + msg + '</span></li>';
+            });
+          if (!voci.length) return;
+          document.getElementById("changelogLista").innerHTML = voci.join("");
+          if (voci.length > 2) document.getElementById("clToggle").style.display = "block";
+          document.getElementById("changelogWrap").style.display = "block";
+        })
+        .catch(() => {});
+    }
+    function toggleChangelog() {
+      const box = document.getElementById("changelogBox");
+      const aperto = box.classList.toggle("aperto");
+      document.getElementById("clToggle").textContent = aperto ? "mostra meno ▴" : "mostra altre ▾";
+    }
+
+    /* Modulo richieste: compone una mail già pronta (il sito è statico, niente backend).
+       Il form sta più in basso nel DOM: agganciamo il listener a documento pronto. */
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("formRichiesta");
+      if (!form) return;
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const tipo = document.getElementById("reqTipo").value;
+        const msg = document.getElementById("reqMsg").value.trim();
+        if (!msg) return;
+        const oggetto = "[ventotrieste.info] " + tipo;
+        const corpo = msg + "\n\n—\nInviato dal modulo richieste di ventotrieste.info";
+        window.location.href = "mailto:bebroggi@gmail.com?subject=" + encodeURIComponent(oggetto) + "&body=" + encodeURIComponent(corpo);
+      });
+    });
 
     function calcolaTrend(win) {        // win newest-first
       const kts = win.map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
@@ -1953,7 +2072,10 @@
         trendEl.innerHTML =
           '<span class="trend-badge"><span class="frec" style="color:' + t.colore + '">' + t.freccia + '</span> ' + t.stato + '</span>' +
           '<span class="trend-delta">' + t.deltaTxt + '</span>' +
-          sparkline(serie, 150, 36, t.colore);
+          '<span class="spark-wrap">' +
+            sparkline(serie, 168, 48, t.colore, { scala: true, unit: "" }) +
+            '<span class="spark-cap">vento kt · ultimi 45 min</span>' +
+          '</span>';
       } else {
         trendEl.innerHTML = "";
       }
@@ -2017,37 +2139,85 @@
     }
 
     let timerAuto = null;
-    function caricaDati() {
-      const btn = document.getElementById("btnAggiorna");
-      btn.disabled = true;
+
+    /* Cache locale dell'ultimo payload valido: al riavvio la pagina si riempie
+       subito con gli ultimi dati mentre il proxy (Apps Script, lento a freddo)
+       risponde in background. */
+    const CACHE_DATI = "vt_dati_cache";
+    function salvaCacheDati(data) {
+      try { localStorage.setItem(CACHE_DATI, JSON.stringify({ t: Date.now(), data: data })); } catch (e) {}
+    }
+    function leggiCacheDati(maxEtaMin) {
+      try {
+        const c = JSON.parse(localStorage.getItem(CACHE_DATI));
+        if (c && c.data && (Date.now() - c.t) <= maxEtaMin * 60000) return c;
+      } catch (e) {}
+      return null;
+    }
+
+    function renderDati(data) {
+      renderBarcola(data.barcola);
+      renderOsmer(data.osmer);
+      vetercekGiu = ["monteGrisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
+      renderStazione(data.monteGrisa, "grisa");
+      renderStazione(data.muggia, "muggia");
+      renderStazione(data.marinajulia, "marinajulia");
+      SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
+      renderPiran(data.piran);
+      aggiornaSurfometroAuto(data);
+    }
+
+    /* fetch con retry: il primo colpo su Apps Script a freddo può fallire o
+       impiegare troppo; ritentiamo prima di dichiarare errore. */
+    function fetchDati(tentativi) {
       return fetch(PROXY + "?ts=" + Date.now())
         .then(res => {
           if (!res.ok) throw new Error("HTTP " + res.status);
           return res.json();
         })
+        .catch(err => {
+          if (tentativi > 0) {
+            return new Promise(r => setTimeout(r, 2500)).then(() => fetchDati(tentativi - 1));
+          }
+          throw err;
+        });
+    }
+
+    let retryProgrammato = false;
+    function caricaDati() {
+      const btn = document.getElementById("btnAggiorna");
+      btn.disabled = true;
+      return fetchDati(2)
         .then(data => {
-          renderBarcola(data.barcola);
-          renderOsmer(data.osmer);
-          vetercekGiu = ["monteGrisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
-          renderStazione(data.monteGrisa, "grisa");
-          renderStazione(data.muggia, "muggia");
-          renderStazione(data.marinajulia, "marinajulia");
-          SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
-          renderPiran(data.piran);
-          aggiornaSurfometroAuto(data);
+          renderDati(data);
+          salvaCacheDati(data);
           document.getElementById("ultimoAggiornamento").textContent =
             "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })
             + (vetercekGiu ? " · ⚠️ Dati vetercek non raggiungibili (Monte Grisa / Muggia / Istria non disponibili)" : "");
         })
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
-          renderBarcola(null);
-          renderOsmer([]);
-          renderPiran(null);
-          vetercekGiu = false;   // qui non risponde il nostro servizio, non vetercek
-          ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
-          aggiornaSurfometroAuto({ barcola: null, monteGrisa: null });
-          document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati.";
+          const cache = leggiCacheDati(60);
+          if (cache) {
+            // il servizio non risponde ma abbiamo dati recenti: meglio quelli di una pagina vuota
+            renderDati(cache.data);
+            document.getElementById("ultimoAggiornamento").textContent =
+              "⚠️ Servizio dati lento: mostro gli ultimi dati delle " +
+              new Date(cache.t).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) + ", riprovo tra poco…";
+          } else {
+            renderBarcola(null);
+            renderOsmer([]);
+            renderPiran(null);
+            vetercekGiu = false;   // qui non risponde il nostro servizio, non vetercek
+            ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
+            aggiornaSurfometroAuto({ barcola: null, monteGrisa: null });
+            document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati, riprovo tra poco…";
+          }
+          // nuovo tentativo automatico senza aspettare i 5 minuti dell'auto-refresh
+          if (!retryProgrammato) {
+            retryProgrammato = true;
+            setTimeout(() => { retryProgrammato = false; caricaDati(); }, 45000);
+          }
         })
         .finally(() => { btn.disabled = false; });
     }
@@ -2292,6 +2462,14 @@
     autoCamSvbg();
     autoCamMonfalcone();
     autoCamZusterna();
+    // se c'è una cache recente, la pagina si riempie subito (il fetch live la rimpiazza appena arriva)
+    const cacheAvvio = leggiCacheDati(30);
+    if (cacheAvvio) {
+      renderDati(cacheAvvio.data);
+      document.getElementById("ultimoAggiornamento").textContent =
+        "Dati delle " + new Date(cacheAvvio.t).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) + " · aggiornamento in corso…";
+      nascondiLoader();
+    }
     // l'overlay si dissolve quando i dati principali sono pronti
     caricaDati().finally(nascondiLoader);
     // safety: non lasciare mai l'utente bloccato dietro l'overlay
@@ -2299,6 +2477,7 @@
     caricaMare();
     caricaDeltaBora();
     caricaViews();
+    caricaChangelog();
     // auto-refresh dati ogni 5 minuti
     timerAuto = setInterval(() => { caricaDati(); caricaMare(); caricaDeltaBora(); }, 5 * 60 * 1000);
   </script>
@@ -2306,6 +2485,7 @@
   <!-- MODAL OFFRI UNA BIRRA: Revolut / PayPal / Bitcoin -->
   <div id="modalBirra" class="modal" role="dialog" aria-modal="true" aria-labelledby="birraTitolo">
     <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="birraTitolo">🍺 Offrimi una birra</h3>
       <p>Il progetto è gratuito ma ha qualche costo: grazie del supporto! Scegli come:</p>
       <div style="display:flex; gap:.6rem; flex-wrap:wrap; margin:.9rem 0;">
@@ -2346,6 +2526,32 @@
     <div id="viewsChart"></div>
     <div id="viewsAsse"></div>
     <p class="stato" id="viewsTotale"></p>
+  </div>
+
+  <!-- Log modifiche (dal registro sviluppo) + richieste -->
+  <div class="section" id="changelogBox">
+    <h2>🛠️ Ultime modifiche</h2>
+    <div id="changelogWrap" style="display:none">
+      <ul class="changelog" id="changelogLista"></ul>
+      <button type="button" class="cl-toggle" id="clToggle" style="display:none" onclick="toggleChangelog()">mostra altre ▾</button>
+      <p class="stato">Il sito è in continuo miglioramento: queste sono le novità più recenti.</p>
+    </div>
+    <div class="cl-form">
+      <h3>💬 Richiedi una modifica o integrazione</h3>
+      <form id="formRichiesta">
+        <select id="reqTipo" aria-label="Tipo di richiesta">
+          <option value="Modifica / miglioria">Modifica / miglioria</option>
+          <option value="Integrazione (fonte, webcam, spot)">Integrazione (fonte, webcam, spot)</option>
+          <option value="Segnalazione problema">Segnalazione problema</option>
+          <option value="Altro">Altro</option>
+        </select>
+        <textarea id="reqMsg" rows="3" required maxlength="1500"
+                  placeholder="Descrivi la modifica o l'integrazione che vorresti…"
+                  aria-label="Descrizione della richiesta"></textarea>
+        <button type="submit">📩 Invia richiesta</button>
+      </form>
+      <p class="stato">La richiesta si apre nella tua app di posta, già compilata: basta premere invia.</p>
+    </div>
   </div>
 
   </main>
