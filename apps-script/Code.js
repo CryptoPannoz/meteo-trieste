@@ -92,19 +92,53 @@ function jsonOut(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+// Cache condivisa del payload dati: tutti i visitatori vedono gli stessi dati, quindi
+// invece di rifare 13 UrlFetch per OGNI richiesta li facciamo UNA volta ogni DATI_CACHE_TTL
+// secondi e serviamo la copia a tutti. Senza questa cache il consumo cresce con
+// (visitatori × refresh) e satura la quota giornaliera UrlFetch di Apps Script (~20k/giorno),
+// col risultato "Servizio richiamato troppe volte in un giorno: urlfetch" e app ferma.
+var DATI_CACHE_KEY = 'dati_v1';
+var DATI_CACHE_TTL = 240;   // 4 min: i dati centralina cambiano lentamente, margine ampio sulla quota
+
 function doGet(e) {
   // Endpoint separato per il grafico visite (GoatCounter), cache 3h, key server-side.
   if (e && e.parameter && e.parameter.views) {
     return jsonOut(fetchGoatViews());
   }
+  var cache = CacheService.getScriptCache();
+  // ?fresh=1 forza il ricalcolo (debug/test), altrimenti serviamo dalla cache se presente.
+  if (!(e && e.parameter && e.parameter.fresh)) {
+    var hit = cache.get(DATI_CACHE_KEY);
+    if (hit) return ContentService.createTextOutput(hit).setMimeType(ContentService.MimeType.JSON);
+  }
   // Qualsiasi imprevisto deve comunque restituire JSON: se doGet lancia, Apps Script
   // risponde con una pagina HTML d'errore (HTTP 200) che il frontend non sa parsare,
   // e l'intera pagina finisce in "Dati non disponibili".
   try {
-    return jsonOut(buildData());
+    var data = buildData();
+    var json = JSON.stringify(data);
+    // Cache SOLO se abbiamo dati veri: un payload tutto-errori (es. quota esaurita) non va
+    // messo in cache, altrimenti continueremmo a servire errori anche dopo il reset quota.
+    if (datiValidi(data)) {
+      try { cache.put(DATI_CACHE_KEY, json, DATI_CACHE_TTL); } catch (ignore) {}
+    }
+    return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
   } catch (fatal) {
     return jsonOut({ fatal: String(fatal), updated: new Date().toISOString() });
   }
+}
+
+// true se il payload contiene almeno una fonte con dati reali (non tutto errori).
+function datiValidi(d) {
+  if (!d) return false;
+  if (d.barcola) return true;
+  var keys = Object.keys(STATIONS);
+  for (var i = 0; i < keys.length; i++) {
+    if (Array.isArray(d[keys[i]]) && d[keys[i]].length) return true;
+  }
+  if (d.osmer && d.osmer.length) return true;
+  if (d.piran) return true;
+  return false;
 }
 
 function buildData() {
@@ -170,6 +204,12 @@ function fetchAllResilient(requests) {
   try {
     return UrlFetchApp.fetchAll(requests);            // happy path: un'unica batch parallela
   } catch (batchErr) {
+    // Quota UrlFetch giornaliera esaurita: NON ha senso ritentare a gruppi (sono TUTTE
+    // bloccate) — ritenterebbe solo bruciando altri tentativi e allungando la risposta a
+    // ~50s. Fallisco tutto subito e in fretta; il reset quota (mezzanotte PT) ripristina.
+    if (/too many times|troppe volte/i.test(String(batchErr))) {
+      return requests.map(function () { return errorResponse(String(batchErr)); });
+    }
     var out = new Array(requests.length);
     var badHost = hostFromMessage(String(batchErr));  // l'eccezione cita l'URL colpevole
     var retry = [];

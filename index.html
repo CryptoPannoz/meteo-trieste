@@ -2157,17 +2157,26 @@
       aggiornaSurfometroAuto(data);
     }
 
-    /* fetch con retry: il primo colpo su Apps Script a freddo può fallire o
-       impiegare troppo; ritentiamo prima di dichiarare errore. */
+    /* fetch con timeout + retry: il primo colpo su Apps Script a freddo può fallire o
+       impiegare troppo. Il timeout (AbortController) evita che il browser resti appeso
+       per decine di secondi se il proxy è lento: meglio fallire in fretta e riprovare /
+       mostrare la cache. Un solo retry: più tentativi moltiplicherebbero il carico sul
+       proxy (e sulla quota UrlFetch di Apps Script). */
+    function fetchConTimeout(url, ms) {
+      if (!("AbortController" in window)) return fetch(url);
+      const ac = new AbortController();
+      const t = setTimeout(() => ac.abort(), ms);
+      return fetch(url, { signal: ac.signal }).finally(() => clearTimeout(t));
+    }
     function fetchDati(tentativi) {
-      return fetch(PROXY + "?ts=" + Date.now())
+      return fetchConTimeout(PROXY + "?ts=" + Date.now(), 15000)
         .then(res => {
           if (!res.ok) throw new Error("HTTP " + res.status);
           return res.json();
         })
         .catch(err => {
           if (tentativi > 0) {
-            return new Promise(r => setTimeout(r, 2500)).then(() => fetchDati(tentativi - 1));
+            return new Promise(r => setTimeout(r, 3000)).then(() => fetchDati(tentativi - 1));
           }
           throw err;
         });
@@ -2177,7 +2186,7 @@
     function caricaDati() {
       const btn = document.getElementById("btnAggiorna");
       btn.disabled = true;
-      return fetchDati(2)
+      return fetchDati(1)
         .then(data => {
           renderDati(data);
           salvaCacheDati(data);
