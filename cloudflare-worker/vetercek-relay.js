@@ -11,7 +11,14 @@
  * In Apps Script (Code.js) basta impostare:
  *   var VETERCEK_RELAY = 'https://<worker>.workers.dev/?url=';
  *
- * Sicurezza: accetta SOLO URL di vetercek.com (non è un proxy aperto).
+ * Secondo compito — ?rtspme=<camId> (es. la webcam Saturnia, id kyztSFeT):
+ * la pagina embed di rtsp.me contiene l'URL HLS firmato (hash + scadenza di
+ * qualche ora) ma non è leggibile dal browser (rtsp.me non manda CORS). Il
+ * worker la scarica, estrae l'm3u8 e risponde { "url": "…" }: il sito così
+ * monta un player HLS con autoplay invece dell'iframe col tasto play.
+ *
+ * Sicurezza: accetta SOLO URL di vetercek.com e id webcam rtsp.me (non è un
+ * proxy aperto).
  * Cache: 60s al bordo Cloudflare, così il traffico del sito non martella vetercek
  * (è proprio il picco di richieste ad aver probabilmente fatto scattare il blocco).
  */
@@ -31,7 +38,37 @@ export default {
       return new Response(null, { headers: CORS });
     }
 
-    const target = new URL(request.url).searchParams.get('url');
+    const params = new URL(request.url).searchParams;
+
+    // ?rtspme=<camId> → estrae l'URL HLS firmato dalla pagina embed di rtsp.me
+    const camId = params.get('rtspme');
+    if (camId) {
+      if (!/^[A-Za-z0-9_-]{4,16}$/.test(camId)) {
+        return new Response('Bad cam id', { status: 400, headers: CORS });
+      }
+      let embed;
+      try {
+        embed = await fetch('https://rtsp.me/embed/' + camId + '/', {
+          headers: { 'User-Agent': BROWSER_UA },
+          // il token firmato dura ore: 120s di cache al bordo bastano e avanzano
+          cf: { cacheTtl: 120, cacheEverything: true },
+        });
+      } catch (err) {
+        return new Response('Upstream error: ' + err, { status: 502, headers: CORS });
+      }
+      const html = await embed.text();
+      const m = html.match(new RegExp('https://[a-z0-9.-]+\\.rtsp\\.me/[A-Za-z0-9_-]+/\\d+/hls/' + camId + '\\.m3u8[^"\'\\s]*'));
+      return new Response(JSON.stringify({ url: m ? m[0] : null }), {
+        status: m ? 200 : 404,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'public, max-age=120',
+          ...CORS,
+        },
+      });
+    }
+
+    const target = params.get('url');
 
     // Solo vetercek.com: niente proxy aperto.
     if (!target || !/^https:\/\/(www\.)?vetercek\.com\//i.test(target)) {

@@ -1330,19 +1330,30 @@
 
   <!-- WEBCAM -->
   <div class="section" id="barcola">
-    <div class="webcam-intestazione">
-      <h2>Webcam Barcola</h2>
-      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+    <div id="camBarcolaBlock" data-cam-box>
+      <div class="webcam-intestazione">
+        <h2>Webcam Barcola</h2>
+        <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+      </div>
+      <a id="barcolaLink" href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank" rel="noopener">
+        <img class="webcam" data-src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" loading="lazy" />
+      </a>
     </div>
-    <a id="barcolaLink" href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank" rel="noopener">
-      <img class="webcam" data-src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" loading="lazy" />
-    </a>
 
-    <h2 style="margin-top:1.25rem;">Webcam Barcola – S.V.B.G.</h2>
-    <div id="camSvbgWrap">
-      <button class="cam-play" onclick="caricaCamSvbg()">▶ Avvia webcam live (Soc. Velica Barcola Grignano)</button>
+    <div id="camSvbgBlock">
+      <h2 style="margin-top:1.25rem;">Webcam Barcola – S.V.B.G.</h2>
+      <div id="camSvbgWrap">
+        <button class="cam-play" onclick="caricaCamSvbg()">▶ Avvia webcam live (Soc. Velica Barcola Grignano)</button>
+      </div>
+      <p class="stato">Fonte: <a href="https://www.svbg.it/" target="_blank" rel="noopener">svbg.it</a> · stream live (HLS)</p>
     </div>
-    <p class="stato">Fonte: <a href="https://www.svbg.it/" target="_blank" rel="noopener">svbg.it</a> · stream live (HLS)</p>
+  </div>
+
+  <!-- WEBCAM SATURNIA (Sacchetta): la sezione compare solo se lo stream rtsp.me è online -->
+  <div class="section" id="saturniaCam" style="display:none;">
+    <h2>Webcam Sacchetta – Canottieri Saturnia</h2>
+    <div id="camSaturniaWrap"></div>
+    <p class="stato">Fonte: <a href="https://www.canottierisaturniatrieste.com/webcam/" target="_blank" rel="noopener">canottierisaturniatrieste.com</a> · stream live (rtsp.me)</p>
   </div>
 
   <div class="section" id="grisaCam">
@@ -2235,14 +2246,29 @@
       });
     }
 
-    /* Webcam HLS incorporata: hls.js caricato solo al click (risparmia banda) */
-    function caricaCamHls(wrapId, src) {
+    /* Webcam statiche offline → il blocco sparisce (niente icona rotta) e
+       ricompare da solo alla prima immagine che torna a caricarsi. */
+    document.querySelectorAll("img.webcam").forEach(img => {
+      const blocco = img.closest("[data-cam-box], .section");
+      if (!blocco) return;
+      img.addEventListener("error", () => { blocco.style.display = "none"; });
+      img.addEventListener("load",  () => { blocco.style.display = ""; });
+    });
+
+    /* Webcam HLS incorporata: hls.js caricato solo al click (risparmia banda).
+       seOffline (opzionale): chiamata se lo stream non risponde (errore fatale HLS). */
+    function caricaCamHls(wrapId, src, seOffline) {
       const wrap = document.getElementById(wrapId);
+      const offline = () => { if (seOffline) seOffline(); };
       wrap.innerHTML = '<video class="cam-video" controls autoplay muted playsinline></video>';
       const video = wrap.querySelector("video");
+      video.addEventListener("error", offline);   // Safari nativo: stream irraggiungibile
+      // l'attributo autoplay da solo non basta ovunque: spinta esplicita (muto → consentita)
+      video.addEventListener("loadedmetadata", () => { video.play().catch(() => {}); });
       function avvia() {
         if (window.Hls && Hls.isSupported()) {
           const h = new Hls(); h.loadSource(src); h.attachMedia(video);
+          h.on(Hls.Events.ERROR, (ev, dati) => { if (dati && dati.fatal) { h.destroy(); offline(); } });
         } else { video.src = src; }
       }
       if (video.canPlayType("application/vnd.apple.mpegurl")) {
@@ -2257,7 +2283,53 @@
         document.head.appendChild(s);
       }
     }
-    function caricaCamSvbg() { caricaCamHls("camSvbgWrap", "https://webcam.svbg.it/webcam.m3u8"); }
+    function caricaCamSvbg() {
+      caricaCamHls("camSvbgWrap", "https://webcam.svbg.it/webcam.m3u8", () => {
+        const b = document.getElementById("camSvbgBlock");   // stream giù → blocco nascosto
+        if (b) b.style.display = "none";
+      });
+    }
+
+    /* Webcam Saturnia (Sacchetta, rtsp.me): la sezione compare solo se la cam è online.
+       rtsp.me espone /error/<id>.json (CORS aperto): code 0 = stream attivo, code 1 =
+       "start" (lo stream parte on-demand: stato normale a riposo); ogni altro codice è
+       un errore reale (cam offline, codec…). L'URL HLS è firmato con scadenza e non è
+       leggibile dal browser: lo fornisce il relay Cloudflare (?rtspme=) e si monta un
+       player con autoplay muto; se il relay non risponde si ripiega sull'iframe
+       ufficiale rtsp.me (tasto play). */
+    function caricaCamSaturnia() {
+      const sez  = document.getElementById("saturniaCam");
+      const wrap = document.getElementById("camSaturniaWrap");
+      if (!sez || !wrap) return;
+      const iframeSaturnia = () => {
+        wrap.innerHTML = '<iframe class="cam-video" title="Webcam Sacchetta (Canottieri Saturnia)" loading="lazy" allowfullscreen ' +
+          'allow="autoplay; encrypted-media; picture-in-picture" src="https://rtsp.me/embed/kyztSFeT/"></iframe>';
+      };
+      fetch("https://frn.rtsp.me/error/kyztSFeT.json", { cache: "no-store" })
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(j => {
+          const codice = j && j.error && j.error.code;
+          if (codice !== 0 && codice !== 1) return;           // offline → resta nascosta
+          sez.style.display = "";
+          const avvia = () => {
+            if (wrap.dataset.loaded) return;
+            wrap.dataset.loaded = "1";
+            fetch("https://vetercek-relay.bebroggi.workers.dev/?rtspme=kyztSFeT")
+              .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+              .then(rel => {
+                if (!rel || !rel.url) throw new Error("niente url");
+                caricaCamHls("camSaturniaWrap", rel.url, iframeSaturnia);
+              })
+              .catch(iframeSaturnia);
+          };
+          if (!("IntersectionObserver" in window)) { avvia(); return; }
+          const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { obs.disconnect(); avvia(); } });
+          }, { rootMargin: "200px" });
+          obs.observe(sez);
+        })
+        .catch(() => {});                                     // check fallito → resta nascosta
+    }
 
     /* Webcam Marina Monfalcone (Panomax 360°): iframe caricato solo quando serve */
     function caricaCamMonfalcone() {
@@ -2459,6 +2531,7 @@
     mostraAladin();
     aggiornaWebcam();
     autoCamSvbg();
+    caricaCamSaturnia();
     autoCamMonfalcone();
     autoCamZusterna();
     // se c'è una cache recente, la pagina si riempie subito (il fetch live la rimpiazza appena arriva)

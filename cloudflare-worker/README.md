@@ -3,6 +3,12 @@
 Ponte che permette al proxy Apps Script di rileggere **vetercek.com**, che blocca
 le richieste senza User-Agent da browser. Vedi il commento in `vetercek-relay.js`.
 
+Fa anche da estrattore per le **webcam rtsp.me** (es. Saturnia/Sacchetta):
+`/?rtspme=kyztSFeT` risponde `{ "url": "https://…m3u8…" }` con l'URL HLS firmato
+del momento, che il sito usa per un player con autoplay. Per aggiornarlo basta
+rideployare `vetercek-relay.js` (passo 4 qui sotto) sullo stesso worker: finché
+non lo fai, il sito ripiega da solo sull'iframe rtsp.me (tasto play).
+
 ## Deploy (dalla dashboard, ~5 minuti, senza CLI)
 
 1. Vai su <https://dash.cloudflare.com> → accedi o crea un account gratuito.
