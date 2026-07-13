@@ -2259,26 +2259,35 @@
        seOffline (opzionale): chiamata se lo stream non risponde (errore fatale HLS). */
     function caricaCamHls(wrapId, src, seOffline) {
       const wrap = document.getElementById(wrapId);
-      const offline = () => { if (seOffline) seOffline(); };
       wrap.innerHTML = '<video class="cam-video" controls autoplay muted playsinline></video>';
       const video = wrap.querySelector("video");
-      video.addEventListener("error", offline);   // Safari nativo: stream irraggiungibile
       // l'attributo autoplay da solo non basta ovunque: spinta esplicita (muto → consentita)
       video.addEventListener("loadedmetadata", () => { video.play().catch(() => {}); });
-      function avvia() {
-        if (window.Hls && Hls.isSupported()) {
+      /* Gli stream on-demand (es. rtsp.me) si accendono qualche secondo dopo la prima
+         richiesta: al primo errore si ritenta una volta, solo al secondo è "offline". */
+      let tentativi = 0;
+      const errore = () => {
+        if (++tentativi <= 1) { setTimeout(parti, 4000); return; }
+        if (seOffline) seOffline();
+      };
+      const usaNativo = !!video.canPlayType("application/vnd.apple.mpegurl");
+      video.addEventListener("error", () => { if (usaNativo) errore(); });  // Safari nativo
+      function parti() {
+        if (!usaNativo && window.Hls && Hls.isSupported()) {
           const h = new Hls(); h.loadSource(src); h.attachMedia(video);
-          h.on(Hls.Events.ERROR, (ev, dati) => { if (dati && dati.fatal) { h.destroy(); offline(); } });
-        } else { video.src = src; }
+          h.on(Hls.Events.ERROR, (ev, dati) => { if (dati && dati.fatal) { h.destroy(); errore(); } });
+        } else {
+          // suffisso anti-cache: risettare lo stesso identico URL non fa ripartire il caricamento
+          video.src = src + (src.indexOf("?") < 0 ? "?" : "&") + "r=" + tentativi;
+          video.load();
+        }
       }
-      if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = src;                       // Safari / iOS: HLS nativo
-      } else if (window.Hls) {
-        avvia();
+      if (usaNativo || window.Hls) {
+        parti();                             // Safari/iOS nativo, oppure hls.js già caricato
       } else {
         const s = document.createElement("script");
         s.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js";
-        s.onload = avvia;
+        s.onload = parti;
         s.onerror = () => { wrap.innerHTML = '<p class="stato">Webcam non disponibile al momento.</p>'; };
         document.head.appendChild(s);
       }
