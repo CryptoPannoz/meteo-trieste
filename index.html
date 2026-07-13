@@ -1351,23 +1351,9 @@
 
   <!-- WEBCAM SATURNIA (Sacchetta): la sezione compare solo se lo stream rtsp.me è online -->
   <div class="section" id="saturniaCam" style="display:none;">
-    <h2>Webcam Sacchetta – Canottieri Saturnia</h2>
+    <h2>Webcam – Canottieri Saturnia</h2>
     <div id="camSaturniaWrap"></div>
     <p class="stato">Fonte: <a href="https://www.canottierisaturniatrieste.com/webcam/" target="_blank" rel="noopener">canottierisaturniatrieste.com</a> · stream live (rtsp.me)</p>
-  </div>
-
-  <div class="section" id="grisaCam">
-    <h2>Webcam Monte Grisa Sud-Est</h2>
-    <a href="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" target="_blank" rel="noopener">
-      <img class="webcam" data-src="https://www.cisartrieste.it/meteo/grisa/cam1.jpg" alt="Webcam Monte Grisa Sud-Est" loading="lazy" />
-    </a>
-  </div>
-
-  <div class="section" id="grisaSudOvest">
-    <h2>Webcam Monte Grisa Sud-Ovest</h2>
-    <a href="https://www.cisartrieste.it/meteo/grisa/cam2.jpg" target="_blank" rel="noopener">
-      <img class="webcam" data-src="https://www.cisartrieste.it/meteo/grisa/cam2.jpg" alt="Webcam Monte Grisa Sud-Ovest" loading="lazy" />
-    </a>
   </div>
 
   <div class="section" id="monfalconeCam">
@@ -2311,7 +2297,7 @@
       const wrap = document.getElementById("camSaturniaWrap");
       if (!sez || !wrap) return;
       const iframeSaturnia = () => {
-        wrap.innerHTML = '<iframe class="cam-video" title="Webcam Sacchetta (Canottieri Saturnia)" loading="lazy" allowfullscreen ' +
+        wrap.innerHTML = '<iframe class="cam-video" title="Webcam Canottieri Saturnia" loading="lazy" allowfullscreen ' +
           'allow="autoplay; encrypted-media; picture-in-picture" src="https://rtsp.me/embed/kyztSFeT/"></iframe>';
       };
       fetch("https://frn.rtsp.me/error/kyztSFeT.json", { cache: "no-store" })
