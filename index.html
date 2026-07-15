@@ -927,6 +927,9 @@
     ]
   }
   </script>
+  <link rel="stylesheet" href="/station-chart.css" />
+  <link rel="stylesheet" href="/footer-widgets.css" />
+  <script src="/station-chart.js"></script>
 </head>
 <body>
 
@@ -2160,9 +2163,9 @@
           '<span class="trend-badge"><span class="frec" style="color:' + t.colore + '">' + t.freccia + '</span> ' + t.stato + '</span>' +
           '<span class="trend-delta">' + t.deltaTxt + '</span>' +
           '<span class="spark-wrap">' +
-            graficoVento(win, t.colore) +
+            stationChartHtml(win, t.colore, "it") +
           '</span>';
-        attivaGraficoVento(trendEl);
+        activateStationChart(trendEl);
       } else {
         trendEl.innerHTML = "";
       }
@@ -2680,8 +2683,6 @@
     setTimeout(nascondiLoader, 8000);
     caricaMare();
     caricaDeltaBora();
-    caricaViews();
-    caricaChangelog();
     // auto-refresh dati ogni 5 minuti
     timerAuto = setInterval(() => { caricaDati(); caricaMare(); caricaDeltaBora(); }, 5 * 60 * 1000);
   </script>
@@ -2705,12 +2706,6 @@
     </div>
   </div>
 
-  <div class="dona">
-    <p>Il progetto è gratuito ma ha qualche costo: se ti va, offrimi una birra 🍺</p>
-    <a class="dona-btn" href="#" onclick="apriBirra(event)">🍺 Offrimi una birra</a>
-    <p class="dona-nota">Scegli l'importo (es. 5€) · carta, Apple Pay o Google Pay</p>
-  </div>
-
   <!-- Pagine per spot + richiedi il tuo spot -->
   <div class="section" id="altre-pagine">
     <h2>🌐 Pagine per spot</h2>
@@ -2724,39 +2719,8 @@
     <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot</a>
   </div>
 
-  <!-- Mini-grafico visite (GoatCounter) -->
-  <div class="section" id="viewsBox">
-    <h2>📊 Visitatori</h2>
-    <div id="viewsChart"></div>
-    <div id="viewsAsse"></div>
-    <p class="stato" id="viewsTotale"></p>
-  </div>
-
-  <!-- Log modifiche (dal registro sviluppo) + richieste -->
-  <div class="section" id="changelogBox">
-    <h2>🛠️ Ultime modifiche</h2>
-    <div id="changelogWrap" style="display:none">
-      <ul class="changelog" id="changelogLista"></ul>
-      <button type="button" class="cl-toggle" id="clToggle" style="display:none" onclick="toggleChangelog()">mostra altre ▾</button>
-      <p class="stato">Il sito è in continuo miglioramento: queste sono le novità più recenti.</p>
-    </div>
-    <div class="cl-form">
-      <h3>💬 Richiedi una modifica o integrazione</h3>
-      <form id="formRichiesta">
-        <select id="reqTipo" aria-label="Tipo di richiesta">
-          <option value="Modifica / miglioria">Modifica / miglioria</option>
-          <option value="Integrazione (fonte, webcam, spot)">Integrazione (fonte, webcam, spot)</option>
-          <option value="Segnalazione problema">Segnalazione problema</option>
-          <option value="Altro">Altro</option>
-        </select>
-        <textarea id="reqMsg" rows="3" required maxlength="1500"
-                  placeholder="Descrivi la modifica o l'integrazione che vorresti…"
-                  aria-label="Descrizione della richiesta"></textarea>
-        <button type="submit">📩 Invia richiesta</button>
-      </form>
-      <p class="stato">La richiesta si apre nella tua app di posta, già compilata: basta premere invia.</p>
-    </div>
-  </div>
+  <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
+  <script src="/footer-widgets.js"></script>
 
   </main>
 

@@ -829,6 +829,9 @@
     ]
   }
   </script>
+  <link rel="stylesheet" href="/station-chart.css" />
+  <link rel="stylesheet" href="/footer-widgets.css" />
+  <script src="/station-chart.js"></script>
 </head>
 <body>
 
@@ -1765,8 +1768,8 @@
       const ultimoTratto = serie[serie.length - 1] - serie[pivot];
       const minuti = minutiTra(win[0].ora, win[win.length - 1].ora);
       const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " vozli" + (minuti ? " v " + minuti + " min" : "");
-      const sale = delta >= 1.5 || (delta >= 0.7 && slopeTot >= 0.7 && ultimoTratto >= -0.3);
-      const cala = delta <= -1.5 || (delta <= -0.7 && slopeTot <= -0.7 && ultimoTratto <= 0.3);
+      const sale = delta >= 0.7 && (slopeTot >= 0.35 || ultimoTratto >= 0.7);
+      const cala = delta <= -0.7 && (slopeTot <= -0.35 || ultimoTratto <= -0.7);
       if (sale) return { stato: "narašča", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
       if (cala) return { stato: "pada",    freccia: "↘", colore: "#b35c00", deltaTxt: txt };
       return                { stato: "stabilno", freccia: "→", colore: "#5f5e5a", deltaTxt: txt };
@@ -1791,14 +1794,13 @@
       const trendEl = document.getElementById(prefix + "Trend");
       const t = calcolaTrend(win);
       if (t) {
-        const serie = win.slice().reverse().map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
         trendEl.innerHTML =
           '<span class="trend-badge"><span class="frec" style="color:' + t.colore + '">' + t.freccia + '</span> ' + t.stato + '</span>' +
           '<span class="trend-delta">' + t.deltaTxt + '</span>' +
           '<span class="spark-wrap">' +
-            sparkline(serie, 168, 48, t.colore, { scala: true, unit: "" }) +
-            '<span class="spark-cap">veter (vozli) · zadnjih 45 min</span>' +
+            stationChartHtml(win, t.colore, "sl") +
           '</span>';
+        activateStationChart(trendEl);
       } else {
         trendEl.innerHTML = "";
       }
@@ -2148,12 +2150,6 @@
     </div>
   </div>
 
-  <div class="dona">
-    <p>Projekt je brezplačen, a ima nekaj stroškov: če želiš, mi plačaj pivo 🍺</p>
-    <a class="dona-btn" href="#" onclick="apriBirra(event)">🍺 Plačaj mi pivo</a>
-    <p class="dona-nota">Izberi znesek (npr. 5€) · kartica, Apple Pay ali Google Pay</p>
-  </div>
-
   <!-- Strani po spotih + dodaj svoj spot -->
   <div class="section" id="altre-pagine">
     <h2>🌐 Strani po spotih</h2>
@@ -2166,6 +2162,9 @@
     <p class="stato" style="margin:.9rem 0 .6rem;">Imate spot s postajo in želite svojo namensko stran?</p>
     <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Nov%20spot%20za%20ventotrieste.info&amp;body=Pozdravljeni%2C%20rad%20bi%20dodal%20svoj%20spot%20(ime%2C%20povezava%20do%20postaje%2C%20morebitna%20kamera)%3A%20">📩 Dodaj svoj spot</a>
   </div>
+
+  <div class="footer-widgets" id="footerWidgets" data-lang="sl"></div>
+  <script src="/footer-widgets.js"></script>
 
   </main>
 

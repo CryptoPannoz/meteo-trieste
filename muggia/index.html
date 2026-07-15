@@ -831,6 +831,9 @@
     ]
   }
   </script>
+  <link rel="stylesheet" href="/station-chart.css" />
+  <link rel="stylesheet" href="/footer-widgets.css" />
+  <script src="/station-chart.js"></script>
 </head>
 <body>
 
@@ -1771,8 +1774,8 @@
       const ultimoTratto = serie[serie.length - 1] - serie[pivot];
       const minuti = minutiTra(win[0].ora, win[win.length - 1].ora);
       const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " kt" + (minuti ? " in " + minuti + " min" : "");
-      const sale = delta >= 1.5 || (delta >= 0.7 && slopeTot >= 0.7 && ultimoTratto >= -0.3);
-      const cala = delta <= -1.5 || (delta <= -0.7 && slopeTot <= -0.7 && ultimoTratto <= 0.3);
+      const sale = delta >= 0.7 && (slopeTot >= 0.35 || ultimoTratto >= 0.7);
+      const cala = delta <= -0.7 && (slopeTot <= -0.35 || ultimoTratto <= -0.7);
       if (sale) return { stato: "in aumento", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
       if (cala) return { stato: "in calo",    freccia: "↘", colore: "#b35c00", deltaTxt: txt };
       return                { stato: "stabile",    freccia: "→", colore: "#5f5e5a", deltaTxt: txt };
@@ -1797,14 +1800,13 @@
       const trendEl = document.getElementById(prefix + "Trend");
       const t = calcolaTrend(win);
       if (t) {
-        const serie = win.slice().reverse().map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
         trendEl.innerHTML =
           '<span class="trend-badge"><span class="frec" style="color:' + t.colore + '">' + t.freccia + '</span> ' + t.stato + '</span>' +
           '<span class="trend-delta">' + t.deltaTxt + '</span>' +
           '<span class="spark-wrap">' +
-            sparkline(serie, 168, 48, t.colore, { scala: true, unit: "" }) +
-            '<span class="spark-cap">vento kt · ultimi 45 min</span>' +
+            stationChartHtml(win, t.colore, "it") +
           '</span>';
+        activateStationChart(trendEl);
       } else {
         trendEl.innerHTML = "";
       }
@@ -2153,12 +2155,6 @@
     </div>
   </div>
 
-  <div class="dona">
-    <p>Il progetto è gratuito ma ha qualche costo: se ti va, offrimi una birra 🍺</p>
-    <a class="dona-btn" href="#" onclick="apriBirra(event)">🍺 Offrimi una birra</a>
-    <p class="dona-nota">Scegli l'importo (es. 5€) · carta, Apple Pay o Google Pay</p>
-  </div>
-
   <!-- Pagine per spot + richiedi il tuo spot -->
   <div class="section" id="altre-pagine">
     <h2>🌐 Pagine per spot</h2>
@@ -2171,6 +2167,9 @@
     <p class="stato" style="margin:.9rem 0 .6rem;">Hai uno spot con una centralina e vorresti la tua pagina dedicata?</p>
     <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot</a>
   </div>
+
+  <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
+  <script src="/footer-widgets.js"></script>
 
   </main>
 
