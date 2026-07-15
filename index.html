@@ -363,22 +363,29 @@
     }
     .trend-badge .frec { font-weight: 800; }
     .trend-delta { font-size: .8rem; color: var(--label); white-space: nowrap; }
-    .spark {
-      vertical-align: middle;
-      flex: 1 1 auto;
-      width: 100%;
-      min-width: 92px;
-      max-width: 190px;
-      height: 42px;
-      border-radius: 10px;
-      background: linear-gradient(180deg, rgba(15,111,125,.08), rgba(216,239,100,.16));
+    /* Grafico vento a tutta larghezza. La scala parte sempre da zero: evita che
+       oscillazioni piccole sembrino crolli importanti come nella vecchia sparkline. */
+    .spark-wrap { flex: 1 0 100%; width: 100%; min-width: 0; }
+    .wind-chart { position: relative; width: 100%; min-width: 0; }
+    .wind-chart svg {
+      display: block; width: 100%; height: auto; min-height: 150px;
+      border-radius: 10px; background: rgba(255,255,255,.64);
+      touch-action: pan-y;
     }
-    /* sparkline trend con didascalia e scala min/max: sempre su riga propria a
-       piena larghezza, così SVG e didascalia non vengono compressi/troncati nelle
-       card strette (griglia 2-3 colonne). */
-    .spark-wrap { flex: 1 0 100%; width: 100%; max-width: none; min-width: 0; display: flex; flex-direction: column; }
-    .spark-wrap .spark { width: 100%; max-width: none; height: 48px; }
+    .wind-chart .chart-hit { cursor: crosshair; }
+    .chart-tip {
+      position: absolute; z-index: 2; left: 50%; top: 8px; transform: translateX(-50%);
+      display: none; pointer-events: none; padding: 5px 8px; border-radius: 7px;
+      background: rgba(31,42,55,.94); color: #fff; font-size: .68rem;
+      line-height: 1.35; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,.18);
+    }
+    .wind-chart.attivo .chart-tip { display: block; }
+    .chart-legend { display: flex; justify-content: center; gap: 1rem; margin-top: 3px; font-size: .66rem; color: var(--label); }
+    .chart-legend .key::before { content: ""; display: inline-block; width: 16px; height: 3px; margin: 0 5px 2px 0; border-radius: 2px; background: var(--c); }
     .spark-cap { font-size: .62rem; color: var(--label); text-align: center; margin-top: 2px; white-space: nowrap; letter-spacing: .02em; }
+    /* Il grafico interattivo sostituisce la vecchia tabella apribile. La tabella
+       resta nel DOM come fallback dei dati, ma non duplica più l'interfaccia. */
+    .trend + details.dettaglio { display: none; }
 
     /* ---- Tabella dettaglio ---- */
     table {
@@ -1963,6 +1970,72 @@
              '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="4.2" fill="#fff" stroke="' + colore + '" stroke-width="2.4"/></svg>';
     }
 
+    /* Grafico dettagliato delle centraline: vento + raffica, scala da zero,
+       orari reali e dettaglio di direzione accessibile al tocco/mouse. */
+    function graficoVento(rows, colore) {
+      const dati = rows.slice().reverse().map(r => ({
+        ora: r.ora || "–", dir: r.direzione || "–",
+        kt: parseFloat(r.kt), raffica: parseFloat(r.sunki)
+      })).filter(r => !isNaN(r.kt));
+      if (dati.length < 2) return "";
+      const w = 600, h = 190, sx = 42, dx = 14, sy = 16, base = 153;
+      const massimo = Math.max(...dati.map(r => isNaN(r.raffica) ? r.kt : Math.max(r.kt, r.raffica)));
+      const yMax = Math.max(10, Math.ceil((massimo * 1.12) / 5) * 5);
+      const x = i => sx + i * (w - sx - dx) / (dati.length - 1);
+      const y = v => base - Math.max(0, v) / yMax * (base - sy);
+      const punti = chiave => dati.map((r, i) => {
+        const v = isNaN(r[chiave]) ? r.kt : r[chiave];
+        return x(i).toFixed(1) + "," + y(v).toFixed(1);
+      }).join(" ");
+      const area = punti("kt") + " " + x(dati.length - 1).toFixed(1) + "," + base + " " + sx + "," + base;
+      const id = "vento" + Math.random().toString(36).slice(2);
+      const livelli = [yMax, yMax / 2, 0].map(v =>
+        '<line x1="' + sx + '" y1="' + y(v) + '" x2="' + (w - dx) + '" y2="' + y(v) + '" stroke="#cbd5dc" stroke-width="1" stroke-dasharray="4 5"/>' +
+        '<text x="' + (sx - 7) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="11" fill="#66717c">' + num(v, v % 1 ? 1 : 0) + '</text>'
+      ).join("");
+      const ore = dati.map((r, i) => '<text x="' + x(i) + '" y="174" text-anchor="middle" font-size="11" fill="#66717c">' + escHtml(r.ora) + '</text>').join("");
+      const hit = dati.map((r, i) => {
+        const raff = isNaN(r.raffica) ? "–" : num(r.raffica, 1);
+        const label = r.ora + " · " + r.dir + " · vento " + num(r.kt, 1) + " kt · raffica " + raff + " kt";
+        return '<circle class="chart-hit" tabindex="0" role="button" aria-label="' + escHtml(label) + '" data-i="' + i + '" data-ora="' + escHtml(r.ora) + '" data-dir="' + escHtml(r.dir) + '" data-kt="' + num(r.kt, 1) + '" data-raffica="' + raff + '" cx="' + x(i) + '" cy="' + y(r.kt) + '" r="17" fill="transparent"/>';
+      }).join("");
+      return '<div class="wind-chart" data-colore="' + colore + '">' +
+        '<div class="chart-tip" role="status"></div>' +
+        '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Andamento di vento e raffiche negli ultimi 45 minuti">' +
+          '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + colore + '" stop-opacity=".20"/><stop offset="1" stop-color="' + colore + '" stop-opacity=".02"/></linearGradient></defs>' +
+          livelli + '<text x="8" y="13" font-size="10" fill="#66717c">kt</text>' +
+          '<polygon fill="url(#' + id + ')" points="' + area + '"/>' +
+          '<polyline fill="none" stroke="#9ba5ad" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="round" points="' + punti("raffica") + '"/>' +
+          '<polyline fill="none" stroke="' + colore + '" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" points="' + punti("kt") + '"/>' +
+          ore +
+          '<g class="chart-cursore" visibility="hidden"><line y1="' + sy + '" y2="' + base + '" stroke="#243142" stroke-width="1" opacity=".35"/><circle r="5" fill="#fff" stroke="' + colore + '" stroke-width="3"/></g>' + hit +
+        '</svg>' +
+        '<div class="chart-legend"><span class="key" style="--c:' + colore + '">vento</span><span class="key" style="--c:#9ba5ad">raffica</span><span>tocca un punto per ora e direzione</span></div>' +
+      '</div>';
+    }
+
+    function attivaGraficoVento(contenitore) {
+      const chart = contenitore && contenitore.querySelector(".wind-chart");
+      if (!chart) return;
+      const tip = chart.querySelector(".chart-tip");
+      const cursore = chart.querySelector(".chart-cursore");
+      const mostra = punto => {
+        const cx = punto.getAttribute("cx"), cy = punto.getAttribute("cy");
+        cursore.setAttribute("visibility", "visible");
+        const linea = cursore.querySelector("line"), cerchio = cursore.querySelector("circle");
+        linea.setAttribute("x1", cx); linea.setAttribute("x2", cx);
+        cerchio.setAttribute("cx", cx); cerchio.setAttribute("cy", cy);
+        tip.innerHTML = '<strong>' + escHtml(punto.dataset.ora) + ' · ' + escHtml(punto.dataset.dir) + '</strong><br>vento ' + punto.dataset.kt + ' kt · raffica ' + punto.dataset.raffica + ' kt';
+        chart.classList.add("attivo");
+      };
+      chart.querySelectorAll(".chart-hit").forEach(p => {
+        p.addEventListener("pointerenter", () => mostra(p));
+        p.addEventListener("focus", () => mostra(p));
+        p.addEventListener("click", () => mostra(p));
+      });
+      chart.addEventListener("pointerleave", () => chart.classList.remove("attivo"));
+    }
+
     /* Mini-grafico visite (GoatCounter via proxy ?views=1): sparkline dall'inizio +
        barra date (primo → ultimo giorno). Il box compare quando i dati arrivano. */
     function fmtDataBreve(iso) {
@@ -2051,8 +2124,8 @@
       const ultimoTratto = serie[serie.length - 1] - serie[pivot];
       const minuti = minutiTra(win[0].ora, win[win.length - 1].ora);
       const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " kt" + (minuti ? " in " + minuti + " min" : "");
-      const sale = delta >= 1.5 || (delta >= 0.7 && slopeTot >= 0.7 && ultimoTratto >= -0.3);
-      const cala = delta <= -1.5 || (delta <= -0.7 && slopeTot <= -0.7 && ultimoTratto <= 0.3);
+      const sale = delta >= 0.7 && (slopeTot >= 0.35 || ultimoTratto >= 0.7);
+      const cala = delta <= -0.7 && (slopeTot <= -0.35 || ultimoTratto <= -0.7);
       if (sale) return { stato: "in aumento", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
       if (cala) return { stato: "in calo",    freccia: "↘", colore: "#b35c00", deltaTxt: txt };
       return                { stato: "stabile",    freccia: "→", colore: "#5f5e5a", deltaTxt: txt };
@@ -2077,14 +2150,13 @@
       const trendEl = document.getElementById(prefix + "Trend");
       const t = calcolaTrend(win);
       if (t) {
-        const serie = win.slice().reverse().map(r => parseFloat(r.kt)).filter(v => !isNaN(v));
         trendEl.innerHTML =
           '<span class="trend-badge"><span class="frec" style="color:' + t.colore + '">' + t.freccia + '</span> ' + t.stato + '</span>' +
           '<span class="trend-delta">' + t.deltaTxt + '</span>' +
           '<span class="spark-wrap">' +
-            sparkline(serie, 168, 48, t.colore, { scala: true, unit: "" }) +
-            '<span class="spark-cap">vento kt · ultimi 45 min</span>' +
+            graficoVento(win, t.colore) +
           '</span>';
+        attivaGraficoVento(trendEl);
       } else {
         trendEl.innerHTML = "";
       }
