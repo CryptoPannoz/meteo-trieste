@@ -1978,7 +1978,7 @@
         kt: parseFloat(r.kt), raffica: parseFloat(r.sunki)
       })).filter(r => !isNaN(r.kt));
       if (dati.length < 2) return "";
-      const w = 600, h = 190, sx = 42, dx = 14, sy = 16, base = 153;
+      const w = 600, h = 220, sx = 42, dx = 14, sy = 16, base = 153;
       const massimo = Math.max(...dati.map(r => isNaN(r.raffica) ? r.kt : Math.max(r.kt, r.raffica)));
       const yMax = Math.max(10, Math.ceil((massimo * 1.12) / 5) * 5);
       const x = i => sx + i * (w - sx - dx) / (dati.length - 1);
@@ -1993,7 +1993,13 @@
         '<line x1="' + sx + '" y1="' + y(v) + '" x2="' + (w - dx) + '" y2="' + y(v) + '" stroke="#cbd5dc" stroke-width="1" stroke-dasharray="4 5"/>' +
         '<text x="' + (sx - 7) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="11" fill="#66717c">' + num(v, v % 1 ? 1 : 0) + '</text>'
       ).join("");
-      const ore = dati.map((r, i) => '<text x="' + x(i) + '" y="174" text-anchor="middle" font-size="11" fill="#66717c">' + escHtml(r.ora) + '</text>').join("");
+      const asseX = dati.map((r, i) => {
+        const deg = cardinaleInGradi(r.dir);
+        const freccia = deg == null ? "" : '<text x="0" y="0" text-anchor="middle" font-size="16" font-weight="800" fill="#243142" transform="rotate(' + deg + ')">↓</text>';
+        return '<g transform="translate(' + x(i) + ',176)">' + freccia +
+          '<text x="0" y="18" text-anchor="middle" font-size="10" font-weight="700" fill="#243142">' + escHtml(r.dir) + '</text>' +
+          '<text x="0" y="36" text-anchor="middle" font-size="11" fill="#66717c">' + escHtml(r.ora) + '</text></g>';
+      }).join("");
       const hit = dati.map((r, i) => {
         const raff = isNaN(r.raffica) ? "–" : num(r.raffica, 1);
         const label = r.ora + " · " + r.dir + " · vento " + num(r.kt, 1) + " kt · raffica " + raff + " kt";
@@ -2007,10 +2013,10 @@
           '<polygon fill="url(#' + id + ')" points="' + area + '"/>' +
           '<polyline fill="none" stroke="#9ba5ad" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="round" points="' + punti("raffica") + '"/>' +
           '<polyline fill="none" stroke="' + colore + '" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" points="' + punti("kt") + '"/>' +
-          ore +
+          asseX +
           '<g class="chart-cursore" visibility="hidden"><line y1="' + sy + '" y2="' + base + '" stroke="#243142" stroke-width="1" opacity=".35"/><circle r="5" fill="#fff" stroke="' + colore + '" stroke-width="3"/></g>' + hit +
         '</svg>' +
-        '<div class="chart-legend"><span class="key" style="--c:' + colore + '">vento</span><span class="key" style="--c:#9ba5ad">raffica</span><span>tocca un punto per ora e direzione</span></div>' +
+        '<div class="chart-legend"><span class="key" style="--c:' + colore + '">vento</span><span class="key" style="--c:#9ba5ad">raffica</span><span>↓ direzione</span></div>' +
       '</div>';
     }
 
