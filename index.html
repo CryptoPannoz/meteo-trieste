@@ -443,6 +443,15 @@
     .aladin-controlli span { font-variant-numeric: tabular-nums; color: #444; }
 
     /* ---- Webcam ---- */
+    .webcam-luogo {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin: 1.4rem .15rem .35rem;
+      opacity: .85;
+    }
     .webcam-intestazione {
       display: flex;
       justify-content: space-between;
@@ -1328,7 +1337,8 @@
 
   <div class="gruppo-titolo" id="webcam">📷 Webcam</div>
 
-  <!-- WEBCAM -->
+  <!-- WEBCAM · BARCOLA / TRIESTE -->
+  <div class="webcam-luogo">📍 Barcola · Trieste</div>
   <div class="section" id="barcola">
     <div id="camBarcolaBlock" data-cam-box>
       <div class="webcam-intestazione">
@@ -1356,6 +1366,18 @@
     <p class="stato">Fonte: <a href="https://www.canottierisaturniatrieste.com/webcam/" target="_blank" rel="noopener">canottierisaturniatrieste.com</a> · stream live (rtsp.me)</p>
   </div>
 
+  <!-- WEBCAM · SISTIANA: HLS whatsupcams, nascosta se lo stream è offline -->
+  <div class="webcam-luogo">📍 Sistiana</div>
+  <div class="section" id="sistianaCam">
+    <h2>Webcam Baia di Sistiana</h2>
+    <div id="camSistianaWrap">
+      <button class="cam-play" onclick="caricaCamSistiana()">▶ Avvia webcam live (Baia di Sistiana)</button>
+    </div>
+    <p class="stato">Fonte: <a href="https://www.whatsupcams.com/it/webcams/italia/friuli-venezia-giulia-it/sistiana-it/webcam-sistiana/" target="_blank" rel="noopener">whatsupcams.com</a> · stream live (HLS)</p>
+  </div>
+
+  <!-- WEBCAM · MONFALCONE -->
+  <div class="webcam-luogo">📍 Monfalcone</div>
   <div class="section" id="monfalconeCam">
     <h2>Webcam Marina Monfalcone – panoramica 360°</h2>
     <div id="camMonfalconeWrap">
@@ -2285,6 +2307,29 @@
       });
     }
 
+    /* Webcam Sistiana (whatsupcams): l'host CDN può cambiare nel tempo, quindi l'URL
+       HLS corrente si chiede all'API JSONP di whatsupcams (nome callback fisso
+       "streamData", lo stesso usato dal loro player). Se l'API non risponde si tenta
+       l'ultimo URL noto. Stream offline → la sezione sparisce. */
+    function caricaCamSistiana() {
+      const wrap = document.getElementById("camSistianaWrap");
+      if (!wrap || wrap.dataset.loaded) return;
+      wrap.dataset.loaded = "1";
+      const nascondi = () => {
+        const sez = document.getElementById("sistianaCam");
+        if (sez) sez.style.display = "none";
+      };
+      window.streamData = (json) => {
+        caricaCamHls("camSistianaWrap", json && json.hls && json.hls.url
+          ? json.hls.url
+          : "https://cdn-008.whatsupcams.com/hls/it_sistiana01.m3u8", nascondi);
+      };
+      const s = document.createElement("script");
+      s.src = "https://www.whatsupcams.com/cdn-api/streams/it_sistiana01?jsonp=true";
+      s.onerror = () => window.streamData(null);
+      document.head.appendChild(s);
+    }
+
     /* Webcam Saturnia (Sacchetta, rtsp.me): la sezione compare solo se la cam è online.
        rtsp.me espone /error/<id>.json (CORS aperto): code 0 = stream attivo, code 1 =
        "start" (lo stream parte on-demand: stato normale a riposo); ogni altro codice è
@@ -2468,6 +2513,19 @@
       obs.observe(wrap);
     }
 
+    /* Avvio automatico della webcam di Sistiana quando entra in vista */
+    function autoCamSistiana() {
+      const wrap = document.getElementById("camSistianaWrap");
+      if (!wrap) return;
+      if (!("IntersectionObserver" in window)) { caricaCamSistiana(); return; }
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { obs.disconnect(); caricaCamSistiana(); }
+        });
+      }, { rootMargin: "200px" });
+      obs.observe(wrap);
+    }
+
     /* Avvio automatico della webcam Marina Monfalcone quando entra in vista */
     function autoCamMonfalcone() {
       const wrap = document.getElementById("camMonfalconeWrap");
@@ -2527,6 +2585,7 @@
     aggiornaWebcam();
     autoCamSvbg();
     caricaCamSaturnia();
+    autoCamSistiana();
     autoCamMonfalcone();
     autoCamZusterna();
     // se c'è una cache recente, la pagina si riempie subito (il fetch live la rimpiazza appena arriva)
