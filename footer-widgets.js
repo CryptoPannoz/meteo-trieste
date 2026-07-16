@@ -33,7 +33,13 @@
   fetch("https://api.github.com/repos/CryptoPannoz/meteo-trieste/commits?per_page=8").then(function (r) { return r.json(); }).then(function (items) {
     if (!Array.isArray(items)) return;
     var list = document.getElementById("footerChanges");
-    list.innerHTML = items.filter(function (c) { return c && c.commit && c.commit.message && !/^merge/i.test(c.commit.message); }).slice(0, 8).map(function (c, i) {
+    list.innerHTML = items.filter(function (c) {
+      if (!c || !c.commit || !c.commit.message) return false;
+      var message = c.commit.message.split("\n")[0];
+      return !/^merge/i.test(message) &&
+        !/\[skip changelog\]/i.test(message) &&
+        message !== "Aggiunti Marta Cardano e Sofia Kovaleva ai sostenitori";
+    }).slice(0, 8).map(function (c, i) {
       var d = new Date(c.commit.author.date).toLocaleDateString(sl ? "sl-SI" : "it-IT", { day: "2-digit", month: "short" });
       var msg = c.commit.message.split("\n")[0].replace(/[&<>"']/g, function (x) { return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[x]; });
       return '<li' + (i >= 2 ? ' class="extra"' : '') + '><time>' + d + '</time><span>' + msg + '</span></li>';
