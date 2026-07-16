@@ -3,7 +3,7 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { monteGrisa, muggia, preluka, dajla, liznjan, savudrija, barcola, updated }
+ * Endpoint: doGet -> { monteGrisa, muggia, grado, preluka, dajla, liznjan, savudrija, barcola, meteogrado, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
  * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
  *
@@ -16,6 +16,7 @@ var STATIONS = {
   monteGrisa:  { postaja: 'montegrisa' },
   muggia:      { postaja: 'muggia' },
   marinajulia: { id: 91, postaja: 'monfalcone4' },
+  grado:       { id: 24, postaja: 'grado' },
   zusterna:   { id: 147, postaja: 'kjdbum' },
   preluka:    { id: 149, postaja: 'preluka' },
   dajla:      { id: 39,  postaja: 'dajla' },
@@ -28,6 +29,8 @@ var BARCOLA_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data_current&i
 var OSMER_URL = 'https://www.osmer.fvg.it/previsioni.php?ln=';
 // Boa oceanografica Vida (NIB, Pirano): pagina dati leggera (solo blocco <pre>)
 var PIRAN_URL = 'https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2?tmpl=component';
+// Stazione meteo Grado (Kite Life FVG): temperatura aria/mare, pressione, umidità e marea
+var METEOGRADO_URL = 'https://meteogrado.kitelifefvg.it/';
 var MAX_ROWS = 10;
 // NOTA (giu 2026): vetercek.com ha iniziato a bloccare le richieste senza User-Agent
 // da browser (la connessione resta appesa fino al timeout -> "Indirizzo non disponibile").
@@ -152,8 +155,10 @@ function buildData() {
   requests.push({ url: BARCOLA_URL, headers: { Referer: 'https://www.windguru.cz/station/5307' }, muteHttpExceptions: true });
   // penultima+1: bollettino testuale OSMER FVG
   requests.push({ url: OSMER_URL, muteHttpExceptions: true, followRedirects: true });
-  // ultima: boa Vida NIB (Pirano). nib.si invia una catena cert incompleta -> disattivo la validazione
+  // penultima+2: boa Vida NIB (Pirano). nib.si invia una catena cert incompleta -> disattivo la validazione
   requests.push({ url: PIRAN_URL, muteHttpExceptions: true, followRedirects: true, validateHttpsCertificates: false });
+  // ultima: stazione meteo Grado (temperatura aria/mare, pressione, umidità, marea)
+  requests.push({ url: METEOGRADO_URL, muteHttpExceptions: true, followRedirects: true });
 
   var responses = fetchAllResilient(requests);
 
@@ -187,6 +192,13 @@ function buildData() {
   } catch (e) {
     out.piran = null;
     out.piranError = String(e);
+  }
+
+  try {
+    out.meteogrado = parseMeteoGrado(responses[keys.length + 3].getContentText());
+  } catch (e) {
+    out.meteogrado = null;
+    out.meteogradoError = String(e);
   }
 
   out.updated = new Date().toISOString();
@@ -342,6 +354,27 @@ function parsePiran(html) {
   };
   if (d.wind == null && d.airTemp == null && d.seaTemp == null) {
     throw new Error('Nessun dato boa NIB trovato');
+  }
+  return d;
+}
+
+/* Stazione meteo Grado (meteogrado.kitelifefvg.it): estrae i valori correnti dal
+   blocco "Grafici del giorno" (Aria/Mare in °C, pressione hPa, umidità %, marea cm).
+   Il °C e il % nella pagina sono entità HTML (&#176; e &#37;). */
+function parseMeteoGrado(html) {
+  function num(re) {
+    var m = html.match(re);
+    return m ? parseFloat(m[1].replace(',', '.')) : null;
+  }
+  var d = {
+    aria:      num(/Aria:\s*(-?[\d.,]+)\s*(?:&#176;|°)/i),
+    mare:      num(/Mare:\s*(-?[\d.,]+)\s*(?:&#176;|°)/i),
+    pressione: num(/PRESSIONE[\s\S]{0,300}?([\d.,]+)\s*hPa/i),
+    umidita:   num(/UMIDITA[\s\S]{0,300}?([\d.,]+)\s*(?:&#37;|%)/i),
+    marea:     num(/MAREA[\s\S]{0,300}?(-?[\d.,]+)\s*cm/i)
+  };
+  if (d.aria == null && d.pressione == null && d.marea == null) {
+    throw new Error('Nessun dato meteogrado trovato');
   }
   return d;
 }

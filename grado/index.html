@@ -7,20 +7,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
-  <title>Vento Marina Julia – Surfometro, Bora e previsioni surf e windsurf</title>
-  <meta name="description" content="Vento in tempo reale a Marina Julia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Marina Julia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
+  <title>Vento Grado – Surfometro, marea e previsioni kitesurf e windsurf</title>
+  <meta name="description" content="Vento a Grado in tempo reale per kitesurf, windsurf e wing: surfometro della centralina di Grado, temperatura aria e mare, pressione, umidità e marea, webcam, grafico della Bora e modello ALADIN." />
   <meta name="keywords" content="vento Trieste, Bora Trieste, surf Trieste, windsurf Trieste, vento Barcola, previsioni vento Trieste, ALADIN Trieste, Monte Grisa, Muggia, vento Istria, kitesurf Trieste, golfo di Trieste" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="bebroggi" />
-  <link rel="canonical" href="https://ventotrieste.info/marinajulia/" />
+  <link rel="canonical" href="https://ventotrieste.info/grado/" />
 
   <!-- Open Graph / anteprima social -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Vento Trieste" />
   <meta property="og:locale" content="it_IT" />
-  <meta property="og:title" content="Vento Marina Julia – Surfometro, Bora e previsioni surf e windsurf" />
-  <meta property="og:description" content="Vento in tempo reale a Marina Julia e nel golfo di Trieste: surfometro della centralina di Marina Julia, Bora, ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
-  <meta property="og:url" content="https://ventotrieste.info/marinajulia/" />
+  <meta property="og:title" content="Vento Grado – Surfometro, marea e previsioni kitesurf e windsurf" />
+  <meta property="og:description" content="Vento a Grado live: surfometro, temperatura aria e mare, pressione, umidità, marea, webcam, Bora e ALADIN." />
+  <meta property="og:url" content="https://ventotrieste.info/grado/" />
   <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
   <meta property="og:image:width" content="1080" />
   <meta property="og:image:height" content="719" />
@@ -798,16 +798,16 @@
     "@graph": [
       {
         "@type": "WebSite",
-        "@id": "https://ventotrieste.info/marinajulia/#website",
-        "url": "https://ventotrieste.info/marinajulia/",
-        "name": "Vento Marina Julia",
-        "description": "Vento in tempo reale a Marina Julia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Marina Julia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani.",
+        "@id": "https://ventotrieste.info/grado/#website",
+        "url": "https://ventotrieste.info/grado/",
+        "name": "Vento Grado",
+        "description": "Vento a Grado in tempo reale per kitesurf, windsurf e wing: surfometro della centralina di Grado, temperatura aria e mare, pressione, umidità e marea, webcam, grafico della Bora e modello ALADIN.",
         "inLanguage": "it-IT"
       },
       {
         "@type": "WebApplication",
-        "name": "Vento Marina Julia – Surfometro",
-        "url": "https://ventotrieste.info/marinajulia/",
+        "name": "Vento Grado – Surfometro",
+        "url": "https://ventotrieste.info/grado/",
         "applicationCategory": "WeatherApplication",
         "operatingSystem": "Web",
         "browserRequirements": "Requires JavaScript",
@@ -862,13 +862,13 @@
   <main>
     <section class="hero" id="vento">
       <div class="hero-copy">
-        <p class="eyebrow">Golfo di Trieste · Live</p>
+        <p class="eyebrow">Grado · Alto Adriatico · Live</p>
       </div>
 
       <!-- SURFOMETRO (scheda a parte) -->
       <div class="console-card" id="surfometroCard">
         <span id="solare" class="sun-times" aria-label="alba e tramonto"></span>
-        <h2 id="surfTitolo">Surfometro – Marina Julia</h2>
+        <h2 id="surfTitolo">Surfometro – Grado</h2>
         <div class="surf2">
           <div class="surf2-verdetto" id="verdettoBig">—</div>
           <div class="meter">
@@ -900,32 +900,69 @@
       </div>
 
       <!-- DATI CENTRALINA PRINCIPALE -->
-      <aside class="side-card" id="marinajulia">
-        <h2>Marina Julia ora</h2>
-        <div id="marinajuliaCards"></div>
-        <div class="trend" id="marinajuliaTrend"></div>
+      <aside class="side-card" id="grado">
+        <h2>Grado ora</h2>
+        <div id="gradoCards"></div>
+        <div class="trend" id="gradoTrend"></div>
         <details class="dettaglio">
           <summary>Tabella dettaglio · ultimi 45 min</summary>
-          <table aria-describedby="statoMarinajulia">
+          <table aria-describedby="statoGrado">
             <thead>
               <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
             </thead>
-            <tbody id="marinajuliaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+            <tbody id="gradoBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
           </table>
         </details>
-        <p class="stato" id="statoMarinajulia"></p>
+        <p class="stato" id="statoGrado"></p>
         <div class="spot-switcher" aria-label="Pagine spot">
           <a class="spot-pill" href="/">Trieste / Barcola</a>
           <a class="spot-pill" href="/muggia/">Muggia</a>
           <a class="spot-pill" href="/zusterna/">Žusterna</a>
-          <a class="spot-pill primary" href="/marinajulia/">Marina Julia</a>
-          <a class="spot-pill" href="/grado/">Grado</a>
+          <a class="spot-pill" href="/marinajulia/">Marina Julia</a>
+          <a class="spot-pill primary" href="/grado/">Grado</a>
         </div>
       </aside>
     </section>
 
+  <!-- METEO GRADO: temperatura aria/mare, pressione, umidità e marea (stazione Kite Life FVG) -->
+  <div class="section" id="meteogrado">
+    <h2>Meteo Grado – temperatura, pressione e marea</h2>
+    <div id="meteogradoStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoMeteogrado">Fonte: <a href="https://meteogrado.kitelifefvg.it/" target="_blank" rel="noopener">meteogrado.kitelifefvg.it</a> · Kite Life FVG</p>
+  </div>
+
+  <!-- WEBCAM · GRADO: immagine statica Kite Life FVG, se offline il blocco sparisce -->
+  <div class="section" id="gradoCam" data-cam-box>
+    <div class="webcam-intestazione">
+      <h2>Webcam Grado</h2>
+      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+    </div>
+    <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">
+      <img class="webcam" data-src="https://cam.kitelifefvg.it/webcam_grado.php" alt="Webcam Grado – spiaggia kite" loading="lazy" />
+    </a>
+    <p class="stato">Fonte: <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">cam.kitelifefvg.it</a> · Kite Life FVG</p>
+  </div>
+
   <!-- DATI CENTRALINE -->
   <div class="quick-grid">
+
+  <div class="section" id="marinajulia">
+    <h2>Marina Julia (Monfalcone) – dati in tempo reale</h2>
+    <div id="marinajuliaCards"></div>
+    <div class="trend" id="marinajuliaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoMarinajulia">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="marinajuliaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoMarinajulia"></p>
+  </div>
 
   <div class="section" id="muggia">
     <h2>Muggia – dati in tempo reale</h2>
@@ -1364,7 +1401,8 @@
     const LINK_VETERCEK = {
       grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
       muggia: "https://vetercek.com/danes/index.php?postaja=muggia",
-      marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4"
+      marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4",
+      grado: "https://vetercek.com/danes/index.php?id=24&postaja=grado"
     };
     const SPOT_ISTRIA = ["zusterna", "savudrija", "dajla", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
@@ -1498,12 +1536,12 @@
       if (over) over.style.opacity = fuoriScala ? "1" : "0";
     }
 
-    /* ---- Surfometro basato sulla centralina di Marina Julia ----
-       Il surfometro usa i dati live della stazione di Marina Julia (stesso flusso delle altre
-       centraline: array più recente in testa). Se Marina Julia non ha dati, mostra "non disponibili". */
-    function marinajuliaTws(data) {
-      let rows = (data && Array.isArray(data.marinajulia) && data.marinajulia.length)
-        ? data.marinajulia : cacheStazione["marinajulia"];
+    /* ---- Surfometro basato sulla centralina di Grado ----
+       Il surfometro usa i dati live della stazione di Grado (stesso flusso delle altre
+       centraline: array più recente in testa). Se Grado non ha dati, mostra "non disponibili". */
+    function gradoTws(data) {
+      let rows = (data && Array.isArray(data.grado) && data.grado.length)
+        ? data.grado : cacheStazione["grado"];
       if (!Array.isArray(rows) || !rows.length) return null;
       const avg = parseFloat(rows[0].kt);
       if (isNaN(avg)) return null;
@@ -1514,13 +1552,13 @@
     function aggiornaSurfometroAuto(data) {
       const titolo = document.getElementById("surfTitolo");
       const fonte  = document.getElementById("surfFonte");
-      if (titolo) titolo.textContent = "Surfometro – Marina Julia";
-      const m = marinajuliaTws(data);
+      if (titolo) titolo.textContent = "Surfometro – Grado";
+      const m = gradoTws(data);
       if (m != null) {
         if (fonte) fonte.textContent = "";
         aggiornaSurfometro(m.avg, m.gust, m.dir);
       } else {
-        if (fonte) fonte.textContent = "⚠️ Dati Marina Julia momentaneamente non disponibili.";
+        if (fonte) fonte.textContent = "⚠️ Dati Grado momentaneamente non disponibili.";
         aggiornaSurfometro(null);
       }
     }
@@ -1875,7 +1913,7 @@
     /* Cache locale dell'ultimo payload valido: al riavvio la pagina si riempie
        subito con gli ultimi dati mentre il proxy (Apps Script, lento a freddo)
        risponde in background. */
-    const CACHE_DATI = "vt_dati_cache_marinajulia";
+    const CACHE_DATI = "vt_dati_cache_grado";
     function salvaCacheDati(data) {
       try { localStorage.setItem(CACHE_DATI, JSON.stringify({ t: Date.now(), data: data })); } catch (e) {}
     }
@@ -1889,11 +1927,13 @@
 
     function renderDati(data) {
       renderOsmer(data.osmer);
-      vetercekGiu = ["monteGrisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
+      vetercekGiu = ["monteGrisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
       renderStazione(data.monteGrisa, "grisa");
       renderStazione(data.muggia, "muggia");
       renderStazione(data.marinajulia, "marinajulia");
+      renderStazione(data.grado, "grado");
       SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
+      renderMeteoGrado(data.meteogrado);
       renderPiran(data.piran);
       aggiornaSurfometroAuto(data);
     }
@@ -1939,8 +1979,9 @@
             renderOsmer([]);
             renderPiran(null);
             vetercekGiu = false;   // qui non risponde il nostro servizio, non vetercek
-            ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
-            aggiornaSurfometroAuto({ marinajulia: null });
+            ["grisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
+            renderMeteoGrado(null);
+            aggiornaSurfometroAuto({ grado: null });
             document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati, riprovo tra poco…";
           }
           // nuovo tentativo automatico senza aspettare i 5 minuti dell'auto-refresh
@@ -1980,6 +2021,39 @@
       }, { rootMargin: "200px" });
       obs.observe(wrap);
     }
+
+    /* ---------- Meteo Grado (temperatura aria/mare, pressione, umidità, marea) ---------- */
+    function renderMeteoGrado(m) {
+      const box = document.getElementById("meteogradoStat");
+      if (!box) return;
+      if (!m || (m.aria == null && m.pressione == null && m.marea == null)) {
+        box.innerHTML = '<div class="statbox"><span class="etichetta">Dati stazione</span><span class="valore">–</span><span class="sub">momentaneamente non disponibili</span></div>';
+        return;
+      }
+      const v = (x, dec) => (x != null && !isNaN(x)) ? Number(x).toFixed(dec) : "–";
+      box.innerHTML = '<div class="statgrid">' +
+        miniCard("🌡️ Aria", v(m.aria, 0), "°C") +
+        miniCard("🌊 Mare", v(m.mare, 0), "°C") +
+        miniCard("🔽 Pressione", v(m.pressione, 0), "hPa") +
+        miniCard("💧 Umidità", v(m.umidita, 0), "%") +
+        miniCard("🌊 Marea", v(m.marea, 0), "cm") +
+      '</div>';
+    }
+
+    /* ---------- Webcam statiche (Grado) ---------- */
+    function aggiornaWebcam() {
+      document.querySelectorAll("img.webcam").forEach(img => {
+        img.src = img.dataset.src + "?ts=" + Date.now();
+      });
+    }
+    /* Webcam statiche offline → il blocco sparisce (niente icona rotta) e
+       ricompare da solo alla prima immagine che torna a caricarsi. */
+    document.querySelectorAll("img.webcam").forEach(img => {
+      const blocco = img.closest("[data-cam-box], .section");
+      if (!blocco) return;
+      img.addEventListener("error", () => { blocco.style.display = "none"; });
+      img.addEventListener("load",  () => { blocco.style.display = ""; });
+    });
 
     /* ---------- Modal modelli ---------- */
     function apriModal()  { document.getElementById("modal").style.display = "block"; }
@@ -2119,6 +2193,7 @@
     document.getElementById("radarImg").src = urlRadar();
     mostraAladin();
     autoCamZusterna();
+    aggiornaWebcam();
     // se c'è una cache recente, la pagina si riempie subito (il fetch live la rimpiazza appena arriva)
     const cacheAvvio = leggiCacheDati(30);
     if (cacheAvvio) {
@@ -2170,26 +2245,23 @@
     <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot</a>
   </div>
 
-  <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js"></script>
-
   <footer class="site-credits">
-    <section class="seo-footer-copy" aria-labelledby="ventoMarinaJuliaSeo">
-      <span class="story-kicker">💨 Perché nasce questo progetto</span>
-      <h1 id="ventoMarinaJuliaSeo">Vento Marina Julia in tempo reale</h1>
-      <p>Una webapp veloce per leggere velocità, raffiche e direzione del vento a Marina Julia, con previsioni per il Golfo di Trieste, mare e webcam.</p>
-      <div class="origin-story">
-        <h2>Lo spirito di condivisione di Alessio Vremec</h2>
-        <p>Il progetto nasce anche dall’ispirazione del lavoro di Alessio Vremec, che ha reso facilmente consultabili le mappe del vento ALADIN per il Golfo di Trieste. Questa pagina porta avanti lo stesso spirito di pubblica utilità surfista, riunendo dati live e previsioni in un solo posto.</p>
-        <a class="story-link" href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">Scopri il progetto di Alessio: Vento Golfo di Trieste ↗</a>
-      </div>
+    <section class="seo-footer-copy" aria-labelledby="ventoGradoSeo">
+      <h1 id="ventoGradoSeo">Vento Grado in tempo reale</h1>
+      <p>Dati live di velocità, raffiche e direzione del vento a Grado, con temperatura di aria e mare, pressione, umidità e marea della stazione Kite Life FVG, previsioni, webcam e surfometro per kitesurf, windsurf e wing.</p>
     </section>
-    <p class="credits-meta">
-      Suggerimenti e migliorie: <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a> ·
-      <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a><br>
-      <span class="credits-signoff">Che SUFI!</span>
+    <p>
+      Pagina creata con lo scopo di pubblica utilità<br>
+      nel pieno spirito di condivisione surfista.<br><br>
+      Un grazie ad Alessio Vremec per avermi ispirato<br>
+      Per suggerimenti o migliorie contattare <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a><br>
+      Il mio sito: <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a><br><br>
+      Che SUFI!
     </p>
   </footer>
+
+  <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
+  <script src="/footer-widgets.js"></script>
 
   </main>
 

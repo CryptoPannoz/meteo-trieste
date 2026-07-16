@@ -973,6 +973,7 @@
           <a class="spot-pill" href="#muggia">Muggia</a>
           <a class="spot-pill" href="#zusterna">Žusterna</a>
           <a class="spot-pill" href="/marinajulia/">Marina Julia</a>
+          <a class="spot-pill" href="/grado/">Grado</a>
         </div>
       </aside>
     </section>
@@ -1025,6 +1026,25 @@
       </table>
     </details>
     <p class="stato" id="statoMarinajulia"></p>
+  </div>
+
+  <div class="section" id="grado">
+    <h2>Grado – dati in tempo reale</h2>
+    <div id="gradoCards"></div>
+    <div class="trend" id="gradoTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoGrado">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="gradoBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoGrado"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="/grado/">📍 Pagina Grado</a>
+    </div>
   </div>
   </div>
 
@@ -1355,6 +1375,19 @@
     <p class="stato">Fonte: <a href="https://marinamonfalcone.panomax.com/" target="_blank" rel="noopener">marinamonfalcone.panomax.com</a> · panorama live (Panomax)</p>
   </div>
 
+  <!-- WEBCAM · GRADO: immagine statica Kite Life FVG, se offline il blocco sparisce -->
+  <div class="webcam-luogo" id="gradoCamLuogo">📍 Grado</div>
+  <div class="section" id="gradoCam" data-cam-box data-cam-label="gradoCamLuogo">
+    <div class="webcam-intestazione">
+      <h2>Webcam Grado</h2>
+      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+    </div>
+    <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">
+      <img class="webcam" data-src="https://cam.kitelifefvg.it/webcam_grado.php" alt="Webcam Grado – spiaggia kite" loading="lazy" />
+    </a>
+    <p class="stato">Fonte: <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">cam.kitelifefvg.it</a> · Kite Life FVG</p>
+  </div>
+
   <!-- SPOT ISTRIA (gruppo collassabile) -->
   <details class="gruppo-collapse" id="istria">
   <summary class="gruppo-sum">
@@ -1484,7 +1517,8 @@
     const LINK_VETERCEK = {
       grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
       muggia: "https://vetercek.com/danes/index.php?postaja=muggia",
-      marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4"
+      marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4",
+      grado: "https://vetercek.com/danes/index.php?id=24&postaja=grado"
     };
     const SPOT_ISTRIA = ["zusterna", "savudrija", "dajla", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
@@ -2163,10 +2197,11 @@
     function renderDati(data) {
       renderBarcola(data.barcola);
       renderOsmer(data.osmer);
-      vetercekGiu = ["monteGrisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
+      vetercekGiu = ["monteGrisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
       renderStazione(data.monteGrisa, "grisa");
       renderStazione(data.muggia, "muggia");
       renderStazione(data.marinajulia, "marinajulia");
+      renderStazione(data.grado, "grado");
       SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
       renderPiran(data.piran);
       aggiornaSurfometroAuto(data);
@@ -2223,7 +2258,7 @@
             renderOsmer([]);
             renderPiran(null);
             vetercekGiu = false;   // qui non risponde il nostro servizio, non vetercek
-            ["grisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
+            ["grisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
             aggiornaSurfometroAuto({ barcola: null, monteGrisa: null });
             document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati, riprovo tra poco…";
           }
@@ -2251,12 +2286,14 @@
     }
 
     /* Webcam statiche offline → il blocco sparisce (niente icona rotta) e
-       ricompare da solo alla prima immagine che torna a caricarsi. */
+       ricompare da solo alla prima immagine che torna a caricarsi.
+       data-cam-label: id dell'etichetta 📍 esterna da nascondere insieme al blocco. */
     document.querySelectorAll("img.webcam").forEach(img => {
       const blocco = img.closest("[data-cam-box], .section");
       if (!blocco) return;
-      img.addEventListener("error", () => { blocco.style.display = "none"; });
-      img.addEventListener("load",  () => { blocco.style.display = ""; });
+      const label = blocco.dataset.camLabel ? document.getElementById(blocco.dataset.camLabel) : null;
+      img.addEventListener("error", () => { blocco.style.display = "none"; if (label) label.style.display = "none"; });
+      img.addEventListener("load",  () => { blocco.style.display = ""; if (label) label.style.display = ""; });
     });
 
     /* Webcam HLS incorporata: hls.js caricato solo al click (risparmia banda).
@@ -2629,6 +2666,7 @@
       <a class="spot-btn" href="/muggia/">📍 Muggia</a>
       <a class="spot-btn" href="/zusterna/">📍 Žusterna</a>
       <a class="spot-btn" href="/marinajulia/">📍 Marina Julia</a>
+      <a class="spot-btn" href="/grado/">📍 Grado</a>
     </div>
     <p class="stato" style="margin:.9rem 0 .6rem;">Hai uno spot con una centralina e vorresti la tua pagina dedicata?</p>
     <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot</a>
@@ -2641,7 +2679,7 @@
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
       <span class="story-kicker">💨 Perché nasce questo progetto</span>
       <h1 id="ventoTriesteSeo">Vento Trieste in tempo reale</h1>
-      <p>Una webapp veloce per leggere a colpo d’occhio velocità, raffiche e direzione del vento nel Golfo di Trieste, dalle centraline di Barcola, Monte Grisa, Muggia e Marina Julia.</p>
+      <p>Una webapp veloce per leggere a colpo d’occhio velocità, raffiche e direzione del vento nel Golfo di Trieste, dalle centraline di Barcola, Monte Grisa, Muggia, Marina Julia e Grado.</p>
       <h2>Vento a Trieste oggi: dati live e previsioni</h2>
       <p>Consulta il <a href="#bora">grafico della Bora</a>, il <a href="#aladin">modello ALADIN</a>, le condizioni del mare e le <a href="#webcam">webcam live</a> per windsurf, wingfoil, vela e attività in mare.</p>
       <div class="origin-story">
