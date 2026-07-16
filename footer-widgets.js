@@ -8,21 +8,23 @@
     more: "pokaži več ▾", less: "pokaži manj ▴", request: "Predlagaj spremembo ali dopolnitev",
     placeholder: "Opiši želeno spremembo ali dopolnitev…", send: "📩 Pošlji predlog",
     note: "Odpre se že pripravljeno sporočilo v tvojem e-poštnem programu.", beer: "Plačaj mi pivo",
-    beerText: "Projekt je brezplačen: če ti je uporaben, mi lahko plačaš pivo.", modify: "Sprememba / izboljšava",
+    beerText: "Projekt je brezplačen: če ti je uporaben, mi lahko plačaš pivo.", supporters: "Projekt so podprli", modify: "Sprememba / izboljšava",
     integrate: "Dopolnitev (vir, kamera, spot)", problem: "Prijava težave", other: "Drugo"
   } : {
     visitors: "Visitatori", since: "visitatori dall’inizio", changes: "Ultime modifiche",
     more: "mostra altre ▾", less: "mostra meno ▴", request: "Richiedi una modifica o integrazione",
     placeholder: "Descrivi la modifica o l’integrazione che vorresti…", send: "📩 Invia richiesta",
     note: "La richiesta si apre nella tua app di posta, già compilata: basta premere invia.", beer: "Offrimi una birra",
-    beerText: "Il progetto è gratuito: se ti è utile, puoi offrirmi una birra.", modify: "Modifica / miglioria",
+    beerText: "Il progetto è gratuito: se ti è utile, puoi offrirmi una birra.", supporters: "Hanno contribuito al progetto", modify: "Modifica / miglioria",
     integrate: "Integrazione (fonte, webcam, spot)", problem: "Segnalazione problema", other: "Altro"
   };
+  var supporters = ["Dario Stepcich", "Mattia Semeraro", "Zetko Ales", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Silvio Cosulich"];
+  var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
   root.innerHTML =
     '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' +
     '<section class="footer-widget compact" aria-labelledby="footerChangesTitle"><h2 id="footerChangesTitle">🛠️ ' + t.changes + '</h2><ul class="footer-changelog" id="footerChanges"></ul><button class="footer-more" id="footerMore" type="button" hidden>' + t.more + '</button></section>' +
     '<section class="footer-widget footer-request" aria-labelledby="footerRequestTitle"><h2 id="footerRequestTitle">💬 ' + t.request + '</h2><form id="footerRequestForm"><select id="footerRequestType"><option>' + t.modify + '</option><option>' + t.integrate + '</option><option>' + t.problem + '</option><option>' + t.other + '</option></select><textarea id="footerRequestText" required maxlength="1500" placeholder="' + t.placeholder + '"></textarea><button class="dona-btn" type="submit">' + t.send + '</button></form><p class="stato">' + t.note + '</p></section>' +
-    '<section class="footer-widget beer-widget" aria-labelledby="footerBeerTitle"><div class="beer-bounce" aria-hidden="true">🍺</div><h2 id="footerBeerTitle">' + t.beer + '</h2><p>' + t.beerText + '</p><a class="dona-btn" href="#" id="footerBeerButton">🍺 ' + t.beer + '</a></section>';
+    '<section class="footer-widget beer-widget" aria-labelledby="footerBeerTitle"><div class="beer-bounce" aria-hidden="true">🍺</div><h2 id="footerBeerTitle">' + t.beer + '</h2><p>' + t.beerText + '</p><a class="dona-btn" href="#" id="footerBeerButton">🍺 ' + t.beer + '</a><div class="supporters"><h3>' + t.supporters + '</h3><div class="supporters-marquee" tabindex="0" aria-label="' + t.supporters + ': ' + supporters.join(', ') + '"><div class="supporters-track"><div class="supporters-group">' + supporterNames + '</div><div class="supporters-group" aria-hidden="true">' + supporterNames + '</div></div></div></div></section>';
 
   fetch(proxy + "?views=1&ts=" + Date.now()).then(function (r) { return r.json(); }).then(function (v) {
     if (v && v.total != null) document.getElementById("footerVisitorTotal").textContent = Number(v.total).toLocaleString(sl ? "sl-SI" : "it-IT");
