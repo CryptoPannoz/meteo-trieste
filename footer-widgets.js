@@ -16,7 +16,7 @@
     beerText: "Il progetto è gratuito: se ti è utile, puoi offrirmi una birra.", supporters: "Hanno contribuito al progetto", modify: "Modifica / miglioria",
     integrate: "Integrazione (fonte, webcam, spot)", problem: "Segnalazione problema", other: "Altro"
   };
-  var supporters = ["Dario Stepcich", "Mattia Semeraro", "Zetko Ales", "Marta Cardano", "Sofia Kovaleva", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Silvio Cosulich", "sistiana89", "SurfTrieste.Shop"];
+  var supporters = ["Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Andrea Valente", "Simone Fratti", "Luca Dreos", "sistiana89", "SurfTrieste.Shop"];
   var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
   root.innerHTML =
     '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' +
