@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <title>Mappa vento live – Golfo di Trieste e Istria | Vento Trieste</title>
+  <meta name="description" content="Mappa del vento in tempo reale nel Golfo di Trieste e in Istria: direzione e intensità dalle centraline di Barcola, Monte Grisa, Muggia, Marina Julia, Grado, dalle boe Mambo e Vida e dagli spot istriani." />
+  <!-- Pagina sperimentale: noindex finché non viene pubblicata ufficialmente -->
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://ventotrieste.info/mappa/" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --slate: #1f2d3d;
+      --slate-2: #45566a;
+      --azzurro: #2f6fb0;
+      --sfondo: #eef1f4;
+      --bordo: #dce1e7;
+      --testo: #16202b;
+      --label: #5c6675;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0; padding: 0 1rem 2rem;
+      background: var(--sfondo); color: var(--testo);
+      -webkit-font-smoothing: antialiased; line-height: 1.5;
+      font-feature-settings: "tnum" 1;
+    }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 680px; margin: 0 auto; padding: .9rem 0 .6rem;
+    }
+    .brand { text-decoration: none; color: var(--slate); display: flex; flex-direction: column; line-height: 1.15; }
+    .brand strong { font-size: 1.05rem; font-weight: 800; }
+    .brand span { font-size: .72rem; color: var(--label); font-weight: 600; letter-spacing: .04em; }
+    .back { font-size: .82rem; font-weight: 600; color: var(--azzurro); text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    main { max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 1.25rem; font-weight: 800; margin: .4rem 0 .15rem; color: var(--slate); }
+    .sub { font-size: .84rem; color: var(--label); margin: 0 0 .9rem; }
+    .beta {
+      display: inline-block; font-size: .66rem; font-weight: 800; letter-spacing: .06em;
+      background: #fff3d6; color: #8a6100; border: 1px solid #eedaa2;
+      border-radius: 6px; padding: .1rem .45rem; vertical-align: 2px; margin-left: .4rem;
+    }
+    .mappa-card {
+      background: #fff; border: 1px solid var(--bordo); border-radius: 14px;
+      padding: .6rem; box-shadow: 0 1px 2px rgba(31,45,61,.05);
+    }
+    #mappa { display: block; width: 100%; height: auto; border-radius: 10px; }
+    .barra {
+      display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+      flex-wrap: wrap; margin: .55rem .2rem 0;
+    }
+    .stato { font-size: .76rem; color: var(--label); margin: 0; }
+    .btn-aggiorna {
+      font: inherit; font-size: .78rem; font-weight: 700; cursor: pointer;
+      background: var(--slate); color: #fff; border: 0; border-radius: 8px; padding: .38rem .8rem;
+    }
+    .btn-aggiorna:disabled { opacity: .55; cursor: default; }
+    .legenda {
+      display: flex; gap: .9rem; flex-wrap: wrap; align-items: center;
+      font-size: .74rem; color: var(--label); margin: .7rem .2rem 0;
+    }
+    .legenda span { display: inline-flex; align-items: center; gap: .32rem; font-weight: 600; }
+    .legenda i { width: 20px; height: 5px; border-radius: 3px; display: inline-block; }
+    .fonti { font-size: .72rem; color: var(--label); margin: 1rem .2rem 0; }
+    .fonti a { color: var(--azzurro); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <strong>Vento Trieste</strong>
+      <span>surfometro live</span>
+    </a>
+    <a class="back" href="/">← Torna al sito</a>
+  </header>
+
+  <main>
+    <h1>Mappa del vento in tempo reale<span class="beta">BETA</span></h1>
+    <p class="sub">Direzione e intensità dalle centraline del Golfo di Trieste e dell'Istria. La freccia indica dove va il vento; il colore l'intensità. Le centraline offline non vengono mostrate.</p>
+
+    <div class="mappa-card">
+      <svg id="mappa" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento nel Golfo di Trieste e in Istria"></svg>
+      <div class="barra">
+        <p class="stato" id="statoMappa">Carico i dati…</p>
+        <button class="btn-aggiorna" id="btnAggiorna" type="button">↻ Aggiorna</button>
+      </div>
+      <div class="legenda">
+        <span><i style="background:#8a94a0"></i> &lt;8 kt calmo</span>
+        <span><i style="background:#3b6d11"></i> 8–15 kt leggero</span>
+        <span><i style="background:#b35c00"></i> 15–25 kt buono</span>
+        <span><i style="background:#c20202"></i> &gt;25 kt forte</span>
+      </div>
+    </div>
+
+    <p class="fonti">Dati live: <a href="https://vetercek.com" target="_blank" rel="noopener">vetercek.com</a> · boa Mambo (OGS, via ERDDAP) · boa Vida (NIB, Pirano) · centralina Barcola. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Aggiornamento automatico ogni 5 minuti.</p>
+  </main>
+
+  <script src="/mappa-golfo.js"></script>
+  <script>
+    "use strict";
+    var PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
+
+    function caricaMappa(retry) {
+      var btn = document.getElementById("btnAggiorna");
+      var stato = document.getElementById("statoMappa");
+      btn.disabled = true;
+      fetch(PROXY + "?ts=" + Date.now())
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (data) {
+          MappaGolfo.render(data);
+          stato.textContent = "Aggiornato alle " +
+            new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+        })
+        .catch(function () {
+          if (retry) { setTimeout(function () { caricaMappa(false); }, 4000); return; }
+          stato.textContent = "⚠️ Servizio dati non raggiungibile, riprova tra poco.";
+        })
+        .finally(function () { btn.disabled = false; });
+    }
+
+    caricaMappa(true);
+    MappaGolfo.caricaMambo();
+    document.getElementById("btnAggiorna").addEventListener("click", function () { caricaMappa(false); });
+    setInterval(function () {
+      if (document.hidden) return;
+      caricaMappa(false);
+      MappaGolfo.caricaMambo();
+    }, 5 * 60 * 1000);
+  </script>
+</body>
+</html>

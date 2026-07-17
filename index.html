@@ -895,6 +895,7 @@
   <link rel="stylesheet" href="/station-chart.css" />
   <link rel="stylesheet" href="/footer-widgets.css" />
   <script src="/station-chart.js"></script>
+  <script src="/mappa-golfo.js" defer></script>
 </head>
 <body>
 
@@ -1070,6 +1071,19 @@
   <div class="section" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
     <button id="btnAggiorna">🔄 Aggiorna dati</button>
     <span class="stato" id="ultimoAggiornamento"></span>
+  </div>
+
+  <!-- MAPPA DEL VENTO (beta) -->
+  <div class="section" id="mappaVento">
+    <h2>Mappa del vento – Golfo e Istria <span style="display:inline-block;font-size:.62em;font-weight:800;letter-spacing:.06em;background:#fff3d6;color:#8a6100;border:1px solid #eedaa2;border-radius:6px;padding:.08em .45em;vertical-align:middle;margin-left:.35rem;">BETA</span></h2>
+    <svg id="mappaGolfo" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento nel Golfo di Trieste e in Istria" style="display:block;width:100%;height:auto;border-radius:8px;"></svg>
+    <div style="display:flex;gap:.9rem;flex-wrap:wrap;align-items:center;font-size:.74rem;color:#5c6675;font-weight:600;margin-top:.6rem;">
+      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#8a94a0;display:inline-block;"></i> &lt;8 kt</span>
+      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#3b6d11;display:inline-block;"></i> 8–15 kt</span>
+      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#b35c00;display:inline-block;"></i> 15–25 kt</span>
+      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#c20202;display:inline-block;"></i> &gt;25 kt</span>
+    </div>
+    <p class="stato">La freccia indica dove va il vento; il colore l'intensità. Le centraline offline non vengono mostrate. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
   </div>
 
   <div class="gruppo-titolo" id="previsioni">📅 Previsioni</div>
@@ -1664,6 +1678,14 @@
        dati arrivano assenti o piatti a 0.00 kt (medio e raffica entrambi a zero). Quando
        succede nascondiamo la scheda "Barcola – condizioni vento ora" e alimentiamo il
        surfometro con Monte Grisa, segnalandolo. Al ritorno di Barcola si ripristina. */
+    const BARCOLA_STALE_MIN = 45;   // dati più vecchi di così → centralina considerata ferma
+    function barcolaMinutiFa(b) {
+      if (!b || !b.datetime) return null;
+      // "2026-07-17 09:37:02 CEST" → minuti trascorsi (ora locale italiana)
+      const m = String(b.datetime).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+      if (!m) return null;
+      return (Date.now() - new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]).getTime()) / 60000;
+    }
     function barcolaTws(b) {
       if (!b) return null;
       const avg = parseFloat(b.wind_avg);   // robusto a numero o stringa (come grisaTws)
@@ -1672,6 +1694,9 @@
       if (isNaN(avg)) return null;
       // centralina disattivata: vento medio e raffica entrambi a zero → offline
       if (avg === 0 && (isNaN(max) || max === 0)) return null;
+      // centralina ferma: mostra ancora l'ultimo dato ma il surfometro passa a Monte Grisa
+      const min = barcolaMinutiFa(b);
+      if (min != null && min > BARCOLA_STALE_MIN) return null;
       return { avg: avg, gust: isNaN(max) ? null : max, dir: isNaN(dir) ? null : dir };
     }
     function grisaTws(data) {
@@ -1701,7 +1726,7 @@
       const gTws = grisaTws(data);
       if (gTws != null) {
         if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
-        if (fonte)  fonte.innerHTML = "⚠️ Barcola momentaneamente offline — surfometro calcolato sui dati di <strong>Monte Grisa</strong>.";
+        if (fonte)  fonte.innerHTML = "⚠️ Barcola offline o non aggiornata — surfometro calcolato sui dati di <strong>Monte Grisa</strong>.";
         aggiornaSurfometro(gTws.avg, gTws.gust, gTws.dir);
       } else {                                  // nemmeno Grisa disponibile
         if (titolo) titolo.textContent = "Surfometro – Barcola";
@@ -1754,8 +1779,11 @@
       box.innerHTML =
         ventoCardHtml(num(b.wind_avg, 1), num(b.wind_max, 1), dir, dirTxt) + boxes;
       const oraHm = b.datetime ? (b.datetime.split(" ")[1] || "").slice(0, 5) : "";
+      const ferma = (() => { const m = barcolaMinutiFa(b); return m != null && m > BARCOLA_STALE_MIN; })();
       document.getElementById("statoBarcola").innerHTML =
-        (oraHm ? "Rilevazione delle " + oraHm + " · " : "") +
+        (ferma
+          ? '⚠️ Centralina ferma' + (oraHm ? " alle " + oraHm : "") + ' — dati non aggiornati · '
+          : (oraHm ? "Rilevazione delle " + oraHm + " · " : "")) +
         '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
     }
 
@@ -1861,6 +1889,16 @@
           document.getElementById("mamboStat").innerHTML = html;
           document.getElementById("statoMambo").textContent = "Rilevazione " + quandoLocale((meteo || acqua).time);
           mamboOk = true;
+          if (meteo) {
+            // stessa rilevazione anche sulla mappa del vento (beta)
+            window.__mappaMambo = {
+              kt: meteo.WSPD * MS_IN_KT,
+              raffica: (meteo.GSPD != null) ? meteo.GSPD * MS_IN_KT : NaN,
+              deg: (typeof meteo.WDIR === "number") ? meteo.WDIR : null,
+              ora: oraLocale(meteo.time)
+            };
+            if (window.MappaGolfo) MappaGolfo.mambo(window.__mappaMambo);
+          }
         })
         .catch(err => {
           console.error("Errore boa MAMBO1:", err);
@@ -2205,6 +2243,9 @@
       SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
       renderPiran(data.piran);
       aggiornaSurfometroAuto(data);
+      // mappa del vento (beta): stesso payload, nessuna richiesta aggiuntiva
+      window.__mappaDati = data;
+      if (window.MappaGolfo) MappaGolfo.render(data);
     }
 
     /* fetch con timeout + retry: il primo colpo su Apps Script a freddo può fallire o
