@@ -1765,8 +1765,23 @@
 
     function renderBarcola(b) {
       const box = document.getElementById("barcolaStat");
-      if (!b) {
-        box.innerHTML = '<div class="pannello"><div class="tws-dir">Dati non disponibili</div></div>';
+      const stato = document.getElementById("statoBarcola");
+      const oraHm = (b && b.datetime) ? (b.datetime.split(" ")[1] || "").slice(0, 5) : "";
+      /* Barcola ferma / offline / piatta a 0.00: non mostriamo numeri fuorvianti.
+         Disattiviamo il display e lasciamo solo le scorciatoie spot; quando la
+         centralina torna a trasmettere il pannello riappare da solo. */
+      if (!barcolaTws(b)) {
+        box.innerHTML =
+          '<div class="pannello" style="padding:.9rem 0 .5rem;">' +
+            '<div style="font-size:1.8rem;line-height:1;">😴</div>' +
+            '<div style="font-weight:800;color:var(--slate);font-size:1.05rem;margin-top:.4rem;">Centralina in pausa</div>' +
+            '<div style="font-size:.82rem;color:var(--label);margin-top:.3rem;line-height:1.45;">' +
+              'Barcola non trasmette al momento' + (oraHm ? ' (ultimo dato alle ' + oraHm + ')' : '') +
+              '.<br>Scegli un altro spot qui sotto 👇' +
+            '</div>' +
+          '</div>';
+        if (stato) stato.innerHTML =
+          '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
         return;
       }
       const dir = (typeof b.wind_direction === "number") ? b.wind_direction : null;
@@ -1778,12 +1793,8 @@
       boxes += '</div>';
       box.innerHTML =
         ventoCardHtml(num(b.wind_avg, 1), num(b.wind_max, 1), dir, dirTxt) + boxes;
-      const oraHm = b.datetime ? (b.datetime.split(" ")[1] || "").slice(0, 5) : "";
-      const ferma = (() => { const m = barcolaMinutiFa(b); return m != null && m > BARCOLA_STALE_MIN; })();
-      document.getElementById("statoBarcola").innerHTML =
-        (ferma
-          ? '⚠️ Centralina ferma' + (oraHm ? " alle " + oraHm : "") + ' — dati non aggiornati · '
-          : (oraHm ? "Rilevazione delle " + oraHm + " · " : "")) +
+      if (stato) stato.innerHTML =
+        (oraHm ? "Rilevazione delle " + oraHm + " · " : "") +
         '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
     }
 
