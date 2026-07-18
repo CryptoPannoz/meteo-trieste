@@ -30,9 +30,9 @@
      sotto il blocco di Monte Grisa). */
   var STAZIONI = [
     { id: "grado",       nome: "Grado",        lon: 13.395, lat: 45.678, lato: "sopra"    },
-    { id: "marinajulia", nome: "Marina Julia", lon: 13.565, lat: 45.782, lato: "sopra"    },
+    { id: "marinajulia", nome: "Marina Julia", lon: 13.565, lat: 45.782, lato: "sinistra" },
     { id: "monteGrisa",  nome: "Monte Grisa",  lon: 13.757, lat: 45.712, lato: "destra"   },
-    { id: "barcola",     nome: "Barcola",      lon: 13.754, lat: 45.680, lato: "destra", dy: 10, tipo: "barcola" },
+    { id: "barcola",     nome: "Barcola",      lon: 13.754, lat: 45.680, lato: "destra", dy: 16, tipo: "barcola" },
     /* posizione reale 13.708/45.698 (largo di Barcola), mostrata in mezzo al
        golfo per non accavallarsi al gruppo Monte Grisa/Barcola */
     { id: "mambo",       nome: "Boa Mambo",    lon: 13.630, lat: 45.670, lato: "sopra",    tipo: "mambo" },
@@ -100,11 +100,14 @@
     var defs = el("defs");
     defs.innerHTML =
       '<linearGradient id="mgMare" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0" stop-color="#cfe3f2"/><stop offset="1" stop-color="#b9d4ea"/></linearGradient>';
+      '<stop offset="0" stop-color="#bfe1f7"/><stop offset="1" stop-color="#93c8ec"/></linearGradient>' +
+      '<filter id="mgOmbra" x="-60%" y="-60%" width="220%" height="220%">' +
+      '<feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-color="#1f2d3d" flood-opacity="0.28"/>' +
+      '</filter>';
     svg.appendChild(defs);
     svg.appendChild(el("rect", { x: 0, y: 0, width: 762, height: 1000, fill: "url(#mgMare)" }));
-    svg.appendChild(el("path", { d: TERRA, fill: "#f2efe9", stroke: "#a9bccb",
-      "stroke-width": 1.6, "stroke-linejoin": "round" }));
+    svg.appendChild(el("path", { d: TERRA, fill: "#f2f1ec", stroke: "#b7c6d3",
+      "stroke-width": 1.3, "stroke-linejoin": "round" }));
 
     svg.appendChild(el("text", { x: px(13.56), y: py(45.60), "font-size": 17, "font-style": "italic",
       fill: "#7ea3c0", "text-anchor": "middle", "font-weight": 600 }, "Golfo di Trieste"));
@@ -112,9 +115,9 @@
       fill: "#7ea3c0", "text-anchor": "middle", "font-weight": 600 }, "Kvarner"));
 
     CITTA.forEach(function (c) {
-      svg.appendChild(el("circle", { cx: px(c.lon), cy: py(c.lat), r: 3, fill: "#9aa6b2" }));
+      svg.appendChild(el("circle", { cx: px(c.lon), cy: py(c.lat), r: 2.6, fill: "#aeb9c4" }));
       svg.appendChild(el("text", { x: px(c.lon) + 7, y: py(c.lat) + 5, "font-size": 14,
-        fill: "#8a94a0", "font-weight": 600 }, c.nome));
+        fill: "#98a3af", "font-weight": 600 }, c.nome));
     });
 
     gStazioni = el("g", {});
@@ -123,19 +126,25 @@
     svg.appendChild(gMambo);
   }
 
-  /* etichetta compatta: nome sopra, "25-36 kt" sotto */
+  /* etichetta a "pill": nome sopra, "25-36 kt" sotto, su fondo bianco arrotondato */
   function etichetta(st, x, y, colore, testo) {
     var g = el("g", {});
-    var anchor = "start", ex = x + 36, ey = y + 2 + (st.dy || 0);
-    if (st.lato === "sinistra") { anchor = "end"; ex = x - 36; }
-    if (st.lato === "sopra")    { anchor = "middle"; ex = x; ey = y - 44; }
-    var halo = { "paint-order": "stroke", stroke: "#ffffff", "stroke-width": 4.5, "stroke-linejoin": "round" };
-    var nome = el("text", { x: ex, y: ey - 8, "font-size": 12.5, "font-weight": 600,
-      fill: "#5c6675", "text-anchor": anchor }, st.nome);
-    var val = el("text", { x: ex, y: ey + 9, "font-size": 16, "font-weight": 800,
-      fill: colore, "text-anchor": anchor }, testo);
-    for (var k in halo) { nome.setAttribute(k, halo[k]); val.setAttribute(k, halo[k]); }
-    g.appendChild(nome); g.appendChild(val);
+    var wNome = st.nome.length * 6.9;
+    var wVal  = testo.length * 8.6;
+    var boxW = Math.max(wNome, wVal, 34) + 16;
+    var boxH = 33, lato = st.lato || "destra";
+    var bx, by;
+    if (lato === "sinistra")   { bx = x - 15 - boxW; by = y - boxH / 2; }
+    else if (lato === "sopra") { bx = x - boxW / 2;  by = y - 13 - boxH; }
+    else                       { bx = x + 15;        by = y - boxH / 2; }
+    by += (st.dy || 0);
+    g.appendChild(el("rect", { x: bx, y: by, width: boxW, height: boxH, rx: 8, ry: 8,
+      fill: "rgba(255,255,255,0.94)", stroke: "rgba(31,45,61,0.10)", "stroke-width": 1 }));
+    var tx = bx + boxW / 2;
+    g.appendChild(el("text", { x: tx, y: by + 13, "font-size": 11.5, "font-weight": 600,
+      fill: "#5c6675", "text-anchor": "middle" }, st.nome));
+    g.appendChild(el("text", { x: tx, y: by + 27, "font-size": 15, "font-weight": 800,
+      fill: colore, "text-anchor": "middle" }, testo));
     return g;
   }
 
@@ -144,24 +153,30 @@
   function disegnaStazione(dest, st, v) {
     if (!v || isNaN(v.kt)) return;
     var x = px(st.lon), y = py(st.lat);
-    var g = el("g", {});
+    var g = el("g", { filter: "url(#mgOmbra)" });
     var colore = classeColore(v.kt);
-    var testo = Math.round(v.kt) + (isNaN(v.raffica) ? "" : "–" + Math.round(v.raffica)) + " kt";
+    var kt = Math.round(v.kt), gu = Math.round(v.raffica);
+    var testo = kt + (!isNaN(v.raffica) && gu > kt ? "–" + gu : "") + " kt";
     var titolo = st.nome + ": " + testo +
       (v.deg != null ? " da " + Math.round(v.deg) + "°" : "") +
       (v.ora ? " · agg. " + v.ora : "");
 
-    if (v.deg != null && v.kt >= 0.5) {
-      var L = 24 + Math.min(v.kt, 35) * 0.95;
-      var w = 4.5 + Math.min(v.kt, 35) * 0.09;
+    /* freccia: shaft sottile + punta a chevron, orientata dove VA il vento */
+    if (v.deg != null && v.kt >= 1) {
+      var k = Math.min(v.kt, 40);
+      var L = 20 + k * 0.72;
+      var sw = 2.4 + k * 0.045;
+      var hw = sw * 1.5 + 3.4;
       var freccia = el("g", { transform: "translate(" + x + " " + y + ") rotate(" + ((v.deg + 180) % 360) + ")" });
-      freccia.appendChild(el("line", { x1: 0, y1: L / 2, x2: 0, y2: -L / 2 + 9,
-        stroke: colore, "stroke-width": w, "stroke-linecap": "round", opacity: .92 }));
-      freccia.appendChild(el("path", { d: "M0," + (-L / 2 - 4) + " L" + (-w - 4.5) + "," + (-L / 2 + 12) +
-        " L" + (w + 4.5) + "," + (-L / 2 + 12) + " Z", fill: colore, opacity: .92 }));
+      freccia.appendChild(el("line", { x1: 0, y1: L / 2, x2: 0, y2: -L / 2 + 8,
+        stroke: colore, "stroke-width": sw, "stroke-linecap": "round" }));
+      freccia.appendChild(el("path", { d: "M0," + (-L / 2 - 2) +
+        " L" + (-hw) + "," + (-L / 2 + 9) +
+        " L0," + (-L / 2 + 5) +
+        " L" + hw + "," + (-L / 2 + 9) + " Z", fill: colore }));
       g.appendChild(freccia);
     }
-    g.appendChild(el("circle", { cx: x, cy: y, r: 4.5, fill: "#1f2d3d", stroke: "#fff", "stroke-width": 2 }));
+    g.appendChild(el("circle", { cx: x, cy: y, r: 3.1, fill: "#fff", stroke: colore, "stroke-width": 2 }));
     g.appendChild(etichetta(st, x, y, colore, testo));
     g.appendChild(el("title", {}, titolo));
     dest.appendChild(g);
