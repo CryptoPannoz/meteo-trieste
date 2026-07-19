@@ -1526,10 +1526,10 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="./station-chart.css?v=20260719-dark" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20260719-dark" />
-  <script src="./station-chart.js?v=20260719-dark"></script>
-  <script src="./mappa-golfo.js?v=20260719-dark" defer></script>
+  <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20260719-dark2" />
+  <script src="./station-chart.js?v=20260719-dark2"></script>
+  <script src="./mappa-golfo.js?v=20260719-dark2" defer></script>
 </head>
 <body>
 
@@ -2717,10 +2717,10 @@
           '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + colore + '" stop-opacity=".20"/><stop offset="1" stop-color="' + colore + '" stop-opacity=".02"/></linearGradient></defs>' +
           livelli + '<text x="8" y="13" font-size="10" fill="#98a4ad">kt</text>' +
           '<polygon fill="url(#' + id + ')" points="' + area + '"/>' +
-          '<polyline fill="none" stroke="#74808a" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="round" points="' + punti("raffica") + '"/>' +
-          '<polyline fill="none" stroke="' + colore + '" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" points="' + punti("kt") + '"/>' +
+          '<polyline fill="none" stroke="#74808a" stroke-width="3.6" stroke-dasharray="7 5" stroke-linejoin="round" stroke-linecap="round" points="' + punti("raffica") + '"/>' +
+          '<polyline fill="none" stroke="' + colore + '" stroke-width="5.2" stroke-linejoin="round" stroke-linecap="round" points="' + punti("kt") + '"/>' +
           asseX +
-          '<g class="chart-cursore" visibility="hidden"><line y1="' + sy + '" y2="' + base + '" stroke="#f0f43c" stroke-width="1" opacity=".45"/><circle r="5" fill="#0b1014" stroke="' + colore + '" stroke-width="3"/></g>' + hit +
+          '<g class="chart-cursore" visibility="hidden"><line y1="' + sy + '" y2="' + base + '" stroke="#f0f43c" stroke-width="1" opacity=".45"/><circle r="6" fill="#0b1014" stroke="' + colore + '" stroke-width="3.5"/></g>' + hit +
         '</svg>' +
         '<div class="chart-legend"><span class="key" style="--c:' + colore + '">vento</span><span class="key" style="--c:#74808a">raffica</span><span>freccia = verso del vento</span></div>' +
       '</div>';

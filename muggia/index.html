@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
   <title>Vento Muggia – Surfometro, Bora e previsioni surf e windsurf</title>
   <meta name="description" content="Vento in tempo reale a Muggia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Muggia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
@@ -831,9 +831,9 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="/station-chart.css" />
-  <link rel="stylesheet" href="/footer-widgets.css" />
-  <script src="/station-chart.js"></script>
+  <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260719-dark2" />
+  <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
 
@@ -873,7 +873,7 @@
           <div class="surf2-verdetto" id="verdettoBig">—</div>
           <div class="meter">
             <div class="meter-pointer" id="meterPointer" style="left:0%;opacity:0;">
-              <span class="meter-dir" id="meterDir" aria-hidden="true" style="display:none;">↓</span>
+              <svg class="meter-dir wind-arrow" id="meterDir" aria-hidden="true" viewBox="0 0 24 24" style="display:none;"><path d="M12 3v17m-6-6 6 6 6-6"/></svg>
               <span class="meter-val" id="meterVal">–</span>
               <span class="meter-gust-app" id="meterGust" style="display:none;">&#8211;&#8201;<span id="meterGustVal">–</span></span>
             </div>
@@ -1401,9 +1401,20 @@
 
     /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
     const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
+    const NOMI_VENTI = ["Tramontana","Bora","Levante","Scirocco","Ostro","Libeccio","Ponente","Maestrale"];
     function gradiInDirezione(deg) {
       if (typeof deg !== "number" || isNaN(deg)) return "–";
       return PUNTI_CARDINALI[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
+    }
+    function nomeVento(deg) {
+      if (typeof deg !== "number" || isNaN(deg)) return "";
+      const normalizzati = ((deg % 360) + 360) % 360;
+      return NOMI_VENTI[Math.round(normalizzati / 45) % 8];
+    }
+    function windArrowHtml(deg, colore) {
+      if (deg == null || isNaN(deg)) return "";
+      const stile = "--wind-deg:" + deg + "deg" + (colore ? ";color:" + colore : "");
+      return '<svg class="wind-arrow" aria-hidden="true" viewBox="0 0 24 24" style="' + stile + '"><path d="M12 3v17m-6-6 6 6 6-6"/></svg>';
     }
     function num(v, dec) {
       return (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec) : "–";
@@ -1481,7 +1492,12 @@
         }
       }
       const ver = verdetto(kt);
-      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>";
+      const ventoNome = nomeVento(dir);
+      const ventoBadge = ventoNome
+        ? '<span class="surf-wind-badge">' + windArrowHtml(dir, "") +
+          '<span>' + gradiInDirezione(dir) + ' · ' + ventoNome + '</span></span>'
+        : "";
+      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + ventoBadge;
       verd.style.color = ver.bg;
       // raffica: appendice numerica sotto il medio + fascia di range solo se sopra il medio
       if (gust != null && !isNaN(gust) && gust > kt + 0.1) {
@@ -1541,15 +1557,16 @@
       const twsStr = (tws != null && tws !== "") ? String(tws) : "–";
       const ghost = twsStr.replace(/[0-9]/g, "8");   // segmenti "spenti" allineati alla cifra
       const cTws = coloreIntensita(tws);
-      const arrow = (dirDeg != null)
-        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + dirDeg + 'deg)' + (cTws ? ';color:' + cTws : '') + '">↓</span> ' : "";
+      const arrow = windArrowHtml(dirDeg, cTws);
+      const vento = nomeVento(dirDeg);
       const gustStr = (gust != null && gust !== "") ? gust : "–";
       return '<div class="pannello">' +
         '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
           '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
         '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
-        '<div class="tws-dir">' + arrow + (dirTxt || "–") +
-          (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</div>' +
+        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + (dirTxt || "–") + '</span>' +
+          (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</span>' +
+          (vento ? '<span class="wind-name-badge">' + vento + '</span>' : '') + '</div>' +
       '</div>';
     }
 
@@ -1861,7 +1878,7 @@
         // direzione con freccia
         const deg = cardinaleInGradi(r.direzione);
         const tdDir = document.createElement("td");
-        tdDir.innerHTML = (deg != null ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "") + (r.direzione || "–");
+        tdDir.innerHTML = windArrowHtml(deg, "") + (r.direzione || "–");
         tr.appendChild(tdDir);
         tr.appendChild(cella(r.kt, classeVento(r.kt)));
         tr.appendChild(cella(r.sunki, classeVento(r.sunki)));
