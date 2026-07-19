@@ -300,7 +300,13 @@
       display: flex; align-items: center; font-size: 12px; font-weight: 800; color: #fff;
       opacity: 0; transition: opacity .3s ease; pointer-events: none; z-index: 1;
     }
-    .meter-pointer .meter-dir { font-size: 16px; line-height: 1; color: var(--teal); transform-origin: center; display: inline-block; }
+    .meter-pointer .meter-dir {
+      width: 18px;
+      height: 18px;
+      color: var(--teal);
+      transform-origin: center;
+      display: inline-block;
+    }
     .meter-pointer .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 16px; color: var(--ink); }
     /* raffica: a destra del medio (è sempre maggiore del TWS medio), più piccola e chiara */
     .meter-pointer .meter-gust-app { font-size: 12px; font-weight: 800; color: var(--slate-2); font-variant-numeric: tabular-nums; white-space: nowrap; margin-bottom: 1px; }
@@ -1057,6 +1063,11 @@
     .side-card .statbox .valore,
     .side-card .tws-dir,
     .side-card .tws-raffica b { color: #f7fbfc; }
+    .side-card .tws-hero,
+    .side-card .tws-hero .lcd-lit { color: #ffffff; }
+    .side-card .tws-hero .lcd-ghost { color: rgba(255,255,255,.12); }
+    .side-card .tws-hero .u,
+    .side-card .tws-raffica { color: #b7c5cb; }
     .side-card a { color: #ccebf0; }
     .side-card .spot-pill { background: #1c303c; border-color: #405663; color: #eef5f7; }
     .side-card .spot-pill.primary { background: var(--signal); border-color: var(--signal); color: #17220c; }
@@ -1094,7 +1105,97 @@
     .footer-widgets { max-width: 1160px; margin-left: auto; margin-right: auto; }
     .site-credits { max-width: 1160px; margin-left: auto; margin-right: auto; }
 
+    /* Dati e direzione: più leggibili, con freccia vettoriale e nome del vento. */
+    .console-card,
+    .side-card { padding: 1.25rem; }
+    .console-card .surf2-verdetto {
+      line-height: .98;
+      margin-bottom: 1.65rem;
+    }
+    .console-card .surf2-verdetto small {
+      max-width: 620px;
+      margin-top: .6rem;
+      color: #52636c;
+      font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.45;
+      letter-spacing: -.015em;
+    }
+    .tws-hero { color: var(--slate); }
+    .tws-hero .lcd-lit { color: var(--slate); }
+    .tws-hero .u { font-size: 1.05rem; }
+    .tws-raffica { margin-top: .45rem; font-size: .95rem; }
+    .tws-dir {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: .38rem;
+      margin-top: .8rem;
+      font-size: 1.65rem;
+      line-height: 1.2;
+    }
+    .wind-direction-main {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      white-space: nowrap;
+    }
+    .wind-arrow {
+      width: 1.75rem;
+      height: 1.75rem;
+      flex: 0 0 auto;
+      overflow: visible;
+      transform: rotate(var(--wind-deg, 0deg));
+      transform-origin: center;
+      color: var(--sea-dark);
+      stroke: currentColor;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    td .wind-arrow {
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-right: .22rem;
+      vertical-align: -.27rem;
+      color: var(--sea-dark);
+      stroke-width: 2.6;
+    }
+    .wind-name-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: .22rem .55rem;
+      border: 1px solid #c7d6da;
+      border-radius: 999px;
+      background: #e7eef0;
+      color: #263b46;
+      font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .035em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .side-card .wind-arrow { color: var(--signal) !important; }
+    .side-card .wind-name-badge {
+      border-color: var(--signal);
+      background: var(--signal);
+      color: #17220c;
+    }
+    .stato {
+      font-size: .86rem;
+      line-height: 1.55;
+    }
+    .statbox .sub { font-size: .78rem; line-height: 1.4; }
+    .section { padding: 1.1rem; margin-bottom: 1.1rem; }
+    .section h2 { line-height: 1.3; }
+
     @media (max-width: 560px) {
+      body { font-size: 17px; }
       .topbar {
         min-height: 58px;
         margin: 0 -.7rem;
@@ -1113,10 +1214,31 @@
       .gruppo-titolo { border-radius: 6px; font-size: 1.12rem; }
       .console-card,
       .side-card,
-      .section { border-radius: 8px; }
-      .section h2 { font-size: 1rem; }
-      .quick-grid { gap: .75rem; }
+      .section { border-radius: 8px; padding: 1rem; }
+      .console-card,
+      .side-card { padding: 1.05rem; }
+      .section h2 { font-size: 1.08rem; }
+      .quick-grid { gap: .95rem; }
       .statgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .statbox { padding: .68rem .55rem; }
+      .statbox .etichetta { font-size: .82rem; }
+      .statbox .valore { font-size: 1.5rem; }
+      .statbox .sub { font-size: .8rem; }
+      .console-card .surf2-verdetto {
+        font-size: 2.75rem;
+        line-height: .98;
+        margin-bottom: 1.55rem;
+      }
+      .console-card .surf2-verdetto small {
+        margin-top: .62rem;
+        font-size: .96rem;
+        line-height: 1.45;
+      }
+      .tws-hero { font-size: 3.7rem; }
+      .tws-raffica { font-size: 1rem; }
+      .tws-dir { gap: .42rem; margin-top: .9rem; font-size: 1.7rem; }
+      .wind-arrow { width: 1.9rem; height: 1.9rem; stroke-width: 2.6; }
+      .wind-name-badge { min-height: 30px; padding: .25rem .62rem; font-size: .76rem; }
     }
   </style>
 
@@ -1161,9 +1283,9 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="./station-chart.css" />
+  <link rel="stylesheet" href="./station-chart.css?v=20260719" />
   <link rel="stylesheet" href="./footer-widgets.css" />
-  <script src="./station-chart.js"></script>
+  <script src="./station-chart.js?v=20260719"></script>
   <script src="./mappa-golfo.js" defer></script>
 </head>
 <body>
@@ -1211,7 +1333,7 @@
           <div class="surf2-verdetto" id="verdettoBig">—</div>
           <div class="meter">
             <div class="meter-pointer" id="meterPointer" style="left:0%;opacity:0;">
-              <span class="meter-dir" id="meterDir" aria-hidden="true" style="display:none;">↓</span>
+              <svg class="meter-dir wind-arrow" id="meterDir" aria-hidden="true" viewBox="0 0 24 24" style="display:none;"><path d="M12 3v17m-6-6 6 6 6-6"/></svg>
               <span class="meter-val" id="meterVal">–</span>
               <span class="meter-gust-app" id="meterGust" style="display:none;">&#8211;&#8201;<span id="meterGustVal">–</span></span>
             </div>
@@ -1855,9 +1977,20 @@
 
     /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
     const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
+    const NOMI_VENTI = ["Tramontana","Bora","Levante","Scirocco","Ostro","Libeccio","Ponente","Maestrale"];
     function gradiInDirezione(deg) {
       if (typeof deg !== "number" || isNaN(deg)) return "–";
       return PUNTI_CARDINALI[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
+    }
+    function nomeVento(deg) {
+      if (typeof deg !== "number" || isNaN(deg)) return "";
+      const normalizzati = ((deg % 360) + 360) % 360;
+      return NOMI_VENTI[Math.round(normalizzati / 45) % 8];
+    }
+    function windArrowHtml(deg, colore) {
+      if (deg == null || isNaN(deg)) return "";
+      const stile = "--wind-deg:" + deg + "deg" + (colore ? ";color:" + colore : "");
+      return '<svg class="wind-arrow" aria-hidden="true" viewBox="0 0 24 24" style="' + stile + '"><path d="M12 3v17m-6-6 6 6 6-6"/></svg>';
     }
     function num(v, dec) {
       return (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec) : "–";
@@ -1925,7 +2058,7 @@
       // linea del vento medio sulla barra: sempre presente, anche se medio = raffica
       if (meanLine) { meanLine.style.left = pa + "%"; meanLine.style.opacity = "1"; }
       val.textContent = num(kt, 1);
-      // freccia della direzione reale (stessa convenzione del riquadro live: ↓ ruotato dei gradi)
+      // La freccia parte verso il basso e ruota secondo la provenienza: mostra dove va il vento.
       if (dirEl) {
         if (dir != null && !isNaN(dir)) {
           dirEl.style.transform = "rotate(" + dir + "deg)";
@@ -2030,15 +2163,16 @@
       const twsStr = (tws != null && tws !== "") ? String(tws) : "–";
       const ghost = twsStr.replace(/[0-9]/g, "8");   // segmenti "spenti" allineati alla cifra
       const cTws = coloreIntensita(tws);
-      const arrow = (dirDeg != null)
-        ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + dirDeg + 'deg)' + (cTws ? ';color:' + cTws : '') + '">↓</span> ' : "";
+      const arrow = windArrowHtml(dirDeg, cTws);
+      const vento = nomeVento(dirDeg);
       const gustStr = (gust != null && gust !== "") ? gust : "–";
       return '<div class="pannello">' +
         '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
           '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
         '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
-        '<div class="tws-dir">' + arrow + (dirTxt || "–") +
-          (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</div>' +
+        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + (dirTxt || "–") + '</span>' +
+          (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</span>' +
+          (vento ? '<span class="wind-name-badge">' + vento + '</span>' : '') + '</div>' +
       '</div>';
     }
 
@@ -2319,7 +2453,7 @@
       ).join("");
       const asseX = dati.map((r, i) => {
         const deg = cardinaleInGradi(r.dir);
-        const freccia = deg == null ? "" : '<text x="0" y="0" text-anchor="middle" font-size="16" font-weight="800" fill="#243142" transform="rotate(' + deg + ')">↓</text>';
+        const freccia = deg == null ? "" : '<g transform="rotate(' + deg + ')"><path d="M0 -8V7M-4 3L0 7L4 3" fill="none" stroke="#243142" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>';
         return '<g transform="translate(' + x(i) + ',176)">' + freccia +
           '<text x="0" y="18" text-anchor="middle" font-size="10" font-weight="700" fill="#243142">' + escHtml(r.dir) + '</text>' +
           '<text x="0" y="36" text-anchor="middle" font-size="11" fill="#66717c">' + escHtml(r.ora) + '</text></g>';
@@ -2340,7 +2474,7 @@
           asseX +
           '<g class="chart-cursore" visibility="hidden"><line y1="' + sy + '" y2="' + base + '" stroke="#243142" stroke-width="1" opacity=".35"/><circle r="5" fill="#fff" stroke="' + colore + '" stroke-width="3"/></g>' + hit +
         '</svg>' +
-        '<div class="chart-legend"><span class="key" style="--c:' + colore + '">vento</span><span class="key" style="--c:#9ba5ad">raffica</span><span>↓ direzione</span></div>' +
+        '<div class="chart-legend"><span class="key" style="--c:' + colore + '">vento</span><span class="key" style="--c:#9ba5ad">raffica</span><span>freccia = verso del vento</span></div>' +
       '</div>';
     }
 
@@ -2496,7 +2630,7 @@
         // direzione con freccia
         const deg = cardinaleInGradi(r.direzione);
         const tdDir = document.createElement("td");
-        tdDir.innerHTML = (deg != null ? '<span class="freccia" aria-hidden="true" style="transform:rotate(' + deg + 'deg)">↓</span> ' : "") + (r.direzione || "–");
+        tdDir.innerHTML = windArrowHtml(deg, "") + (r.direzione || "–");
         tr.appendChild(tdDir);
         tr.appendChild(cella(r.kt, classeVento(r.kt)));
         tr.appendChild(cella(r.sunki, classeVento(r.sunki)));
