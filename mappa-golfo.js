@@ -100,24 +100,24 @@
     var defs = el("defs");
     defs.innerHTML =
       '<linearGradient id="mgMare" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0" stop-color="#bfe1f7"/><stop offset="1" stop-color="#93c8ec"/></linearGradient>' +
+      '<stop offset="0" stop-color="#142630"/><stop offset="1" stop-color="#091117"/></linearGradient>' +
       '<filter id="mgOmbra" x="-60%" y="-60%" width="220%" height="220%">' +
       '<feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-color="#1f2d3d" flood-opacity="0.28"/>' +
       '</filter>';
     svg.appendChild(defs);
     svg.appendChild(el("rect", { x: 0, y: 0, width: 762, height: 1000, fill: "url(#mgMare)" }));
-    svg.appendChild(el("path", { d: TERRA, fill: "#f2f1ec", stroke: "#b7c6d3",
+    svg.appendChild(el("path", { d: TERRA, fill: "#171d21", stroke: "#46545e",
       "stroke-width": 1.3, "stroke-linejoin": "round" }));
 
     svg.appendChild(el("text", { x: px(13.56), y: py(45.60), "font-size": 17, "font-style": "italic",
-      fill: "#7ea3c0", "text-anchor": "middle", "font-weight": 600 }, "Golfo di Trieste"));
+      fill: "#577988", "text-anchor": "middle", "font-weight": 600 }, "Golfo di Trieste"));
     svg.appendChild(el("text", { x: px(14.22), y: py(44.92), "font-size": 17, "font-style": "italic",
-      fill: "#7ea3c0", "text-anchor": "middle", "font-weight": 600 }, "Kvarner"));
+      fill: "#577988", "text-anchor": "middle", "font-weight": 600 }, "Kvarner"));
 
     CITTA.forEach(function (c) {
-      svg.appendChild(el("circle", { cx: px(c.lon), cy: py(c.lat), r: 2.6, fill: "#aeb9c4" }));
+      svg.appendChild(el("circle", { cx: px(c.lon), cy: py(c.lat), r: 2.6, fill: "#6d7a83" }));
       svg.appendChild(el("text", { x: px(c.lon) + 7, y: py(c.lat) + 5, "font-size": 14,
-        fill: "#98a3af", "font-weight": 600 }, c.nome));
+        fill: "#87949d", "font-weight": 600 }, c.nome));
     });
 
     gStazioni = el("g", {});
@@ -139,10 +139,10 @@
     else                       { bx = x + 15;        by = y - boxH / 2; }
     by += (st.dy || 0);
     g.appendChild(el("rect", { x: bx, y: by, width: boxW, height: boxH, rx: 8, ry: 8,
-      fill: "rgba(255,255,255,0.94)", stroke: "rgba(31,45,61,0.10)", "stroke-width": 1 }));
+      fill: "rgba(9,13,16,0.94)", stroke: "rgba(240,244,60,0.20)", "stroke-width": 1 }));
     var tx = bx + boxW / 2;
     g.appendChild(el("text", { x: tx, y: by + 13, "font-size": 11.5, "font-weight": 600,
-      fill: "#5c6675", "text-anchor": "middle" }, st.nome));
+      fill: "#d5dce0", "text-anchor": "middle" }, st.nome));
     g.appendChild(el("text", { x: tx, y: by + 27, "font-size": 15, "font-weight": 800,
       fill: colore, "text-anchor": "middle" }, testo));
     return g;

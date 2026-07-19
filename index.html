@@ -1186,6 +1186,29 @@
       background: var(--signal);
       color: #17220c;
     }
+    .surf-wind-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .38rem;
+      min-height: 30px;
+      margin-top: .8rem;
+      padding: .28rem .68rem;
+      border-radius: 999px;
+      background: var(--signal);
+      color: #090b0d;
+      font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: .76rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: .045em;
+      text-transform: uppercase;
+    }
+    .surf-wind-badge .wind-arrow {
+      width: 1.05rem;
+      height: 1.05rem;
+      color: #090b0d;
+      stroke-width: 2.8;
+    }
     .stato {
       font-size: .86rem;
       line-height: 1.55;
@@ -1193,6 +1216,225 @@
     .statbox .sub { font-size: .78rem; line-height: 1.4; }
     .section { padding: 1.1rem; margin-bottom: 1.1rem; }
     .section h2 { line-height: 1.3; }
+
+    /* Preview dark: interfaccia notturna da strumento nautico, segnale giallo. */
+    :root {
+      color-scheme: dark;
+      --ink: #f4f7f8;
+      --paper: #07090c;
+      --surface: #10151a;
+      --surface-soft: #151b21;
+      --line: #2a343d;
+      --sea: #f0f43c;
+      --sea-dark: #f7f87a;
+      --signal: #f0f43c;
+      --coral: #ff665e;
+      --slate: #f4f7f8;
+      --slate-2: #b1bcc4;
+      --label: #98a4ad;
+      --teal: #f0f43c;
+    }
+    body {
+      background:
+        radial-gradient(circle at 50% -180px, rgba(240,244,60,.09), transparent 420px),
+        var(--paper);
+      color: var(--ink);
+    }
+    a { color: var(--signal); }
+    h1, h2, h3,
+    .section h2,
+    .section h3 { color: var(--ink); }
+    .section,
+    .console-card,
+    .side-card,
+    .dona,
+    #altre-pagine,
+    #viewsBox {
+      background: #10151a;
+      border-color: #2a343d;
+      color: var(--ink);
+      box-shadow: 0 8px 24px rgba(0,0,0,.26);
+    }
+    .console-card { border-top: 5px solid var(--signal); }
+    .console-card h2,
+    .side-card h2,
+    .side-card .stato,
+    .side-card .statbox .etichetta,
+    .side-card .statbox .sub,
+    .side-card .statbox .unita { color: var(--label); }
+    .console-card .surf2-verdetto { color: var(--ink); }
+    .console-card .surf2-verdetto small { color: #aeb8bf; }
+    .sun-times { color: #aab4bc; }
+    .tws-hero,
+    .tws-hero .lcd-lit,
+    .side-card .tws-hero,
+    .side-card .tws-hero .lcd-lit,
+    .tws-dir,
+    .tws-raffica b,
+    .statbox .valore { color: #ffffff; }
+    .lcd-ghost,
+    .side-card .tws-hero .lcd-ghost { color: rgba(255,255,255,.1); }
+    .wind-arrow,
+    td .wind-arrow,
+    .side-card .wind-arrow { color: var(--signal) !important; }
+    .wind-name-badge,
+    .side-card .wind-name-badge {
+      border-color: var(--signal);
+      background: var(--signal);
+      color: #090b0d;
+    }
+    .statbox,
+    .side-card .statbox {
+      background: #171d23;
+      border-color: #333e47;
+      color: var(--ink);
+    }
+    .meter {
+      border-color: #2d3740;
+      background:
+        linear-gradient(180deg, rgba(23,29,35,.98), rgba(10,13,16,.98)),
+        radial-gradient(circle at 20% 0, rgba(240,244,60,.09), transparent 36%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .meter-bar { background: #242b31; box-shadow: inset 0 1px 3px rgba(0,0,0,.65); }
+    .meter-pointer {
+      border-color: var(--signal);
+      background: var(--signal);
+      box-shadow: 0 7px 20px rgba(0,0,0,.34);
+    }
+    .meter-pointer .meter-val,
+    .meter-pointer .meter-gust-app { color: #090b0d; }
+    .meter-pointer .wind-arrow { color: #090b0d !important; }
+    .meter-range {
+      background: linear-gradient(90deg, rgba(240,244,60,.32), rgba(240,244,60,.08));
+      border-left-color: rgba(255,255,255,.45);
+      border-right-color: var(--signal);
+    }
+    .meter-mean-line { background: #060708; box-shadow: 0 0 0 3px rgba(240,244,60,.4); }
+    .trend {
+      background: linear-gradient(90deg, #141a20, #10151a);
+      border-color: #2d3740;
+    }
+    .trend-badge {
+      background: #1b2229;
+      color: var(--ink);
+      border-color: #3a454f;
+    }
+    details.dettaglio > summary,
+    .gruppo-sum,
+    .spot-btn,
+    .bd-info,
+    .cam-play,
+    .osmer-tab {
+      background: #171d23;
+      border-color: #333e47;
+      color: var(--ink);
+    }
+    details.dettaglio > summary:hover,
+    .spot-btn:hover,
+    .bd-info:hover,
+    .cam-play:hover,
+    .osmer-tab:hover,
+    .osmer-tab.attivo,
+    .osmer-tab.attivo:hover {
+      background: var(--signal);
+      border-color: var(--signal);
+      color: #090b0d;
+    }
+    .gruppo-sum { border-left-color: var(--signal); box-shadow: none; }
+    .gruppo-sum-main span { color: var(--signal); }
+    .gruppo-sum::after {
+      background: var(--signal);
+      border-color: var(--signal);
+      color: #090b0d;
+    }
+    table { border-color: #303a43; }
+    th { background: #171d23; color: var(--ink); }
+    th, td { border-bottom-color: #2a343d; }
+    tr.riga-recente td:first-child { background: #1b2229; }
+    td.vento-calmo { color: #a4afb7; }
+    td.vento-leggero { background: rgba(97,153,34,.18); color: #b9e579; }
+    td.vento-buono { background: rgba(179,92,0,.20); color: #ffbd69; }
+    td.vento-forte { background: rgba(194,2,2,.20); color: #ff7777; }
+    .ora-now { background: var(--signal); color: #090b0d; }
+    .modal { background: rgba(0,0,0,.78); }
+    .modal .contenuto,
+    .dona {
+      background: #11171c;
+      border-color: #303a43;
+      color: var(--ink);
+    }
+    .modal-x { background: #1d242b; color: var(--ink); }
+    .modal-x:hover { background: var(--signal); color: #090b0d; }
+    .dona p { color: var(--label); }
+    button,
+    .dona-btn {
+      background: #1a2128;
+      border-color: #3a454f;
+      color: var(--ink);
+    }
+    button:hover,
+    .dona-btn:hover {
+      background: var(--signal);
+      border-color: var(--signal);
+      color: #090b0d;
+    }
+    .spot-switcher .spot-pill {
+      background: #171d23;
+      border-color: #3a454f;
+      color: var(--ink);
+      box-shadow: none;
+    }
+    .spot-switcher .spot-pill:hover,
+    .spot-switcher .spot-pill.primary {
+      background: var(--signal);
+      border-color: var(--signal);
+      color: #090b0d;
+    }
+    #bora #deltaBox {
+      background: #131a20;
+      border-color: #414b33;
+      box-shadow: inset 0 0 0 1px rgba(240,244,60,.08);
+    }
+    #bora #deltaBox .etichetta,
+    #bora #deltaBox .valore { color: var(--signal); }
+    #mappaVento h2 > span {
+      background: var(--signal) !important;
+      border-color: var(--signal) !important;
+      color: #090b0d !important;
+    }
+    .errore { background: #251516; border-color: #633234; color: #ff9b9b; }
+    .webcam-luogo { color: var(--signal); }
+    .topbar {
+      background: rgba(5,7,9,.96);
+      border-bottom-color: rgba(240,244,60,.35);
+      box-shadow: 0 7px 24px rgba(0,0,0,.38);
+    }
+    .brand { color: #ffffff; }
+    .brand span,
+    .topbar-live { color: #abb5bc; }
+    .topbar-live::before { background: var(--signal); box-shadow: 0 0 0 3px rgba(240,244,60,.13); }
+    .menu-toggle {
+      background: #151b20;
+      border-color: #47513c;
+      color: var(--signal);
+    }
+    .menu-toggle:hover { color: #090b0d; }
+    .topnav { background: #0b0f13; border-color: #354047; }
+    .topnav a,
+    .topnav .topnav-birra { background: #151b21; border-color: #2f3942; color: var(--ink); }
+    .topnav a:hover { background: var(--signal); border-color: var(--signal); color: #090b0d; }
+    .gruppo-titolo {
+      background: #0e1317;
+      color: #ffffff;
+      border-left-color: var(--signal);
+    }
+    .section h2::before { background: var(--signal); }
+    #loader { background: var(--paper); }
+    .loader-spin .anello { border-color: #2a343d; border-top-color: var(--signal); }
+    .loader-txt { color: var(--ink); }
+    .aladin-controlli span,
+    footer { color: var(--label); }
 
     @media (max-width: 560px) {
       body { font-size: 17px; }
@@ -1239,6 +1481,7 @@
       .tws-dir { gap: .42rem; margin-top: .9rem; font-size: 1.7rem; }
       .wind-arrow { width: 1.9rem; height: 1.9rem; stroke-width: 2.6; }
       .wind-name-badge { min-height: 30px; padding: .25rem .62rem; font-size: .76rem; }
+      .surf-wind-badge { margin-top: .72rem; font-size: .76rem; }
     }
   </style>
 
@@ -1283,10 +1526,10 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="./station-chart.css?v=20260719" />
-  <link rel="stylesheet" href="./footer-widgets.css" />
-  <script src="./station-chart.js?v=20260719"></script>
-  <script src="./mappa-golfo.js" defer></script>
+  <link rel="stylesheet" href="./station-chart.css?v=20260719-dark" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20260719-dark" />
+  <script src="./station-chart.js?v=20260719-dark"></script>
+  <script src="./mappa-golfo.js?v=20260719-dark" defer></script>
 </head>
 <body>
 
@@ -2068,7 +2311,12 @@
         }
       }
       const ver = verdetto(kt);
-      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>";
+      const ventoNome = nomeVento(dir);
+      const ventoBadge = ventoNome
+        ? '<span class="surf-wind-badge">' + windArrowHtml(dir, "") +
+          '<span>' + gradiInDirezione(dir) + ' · ' + ventoNome + '</span></span>'
+        : "";
+      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + ventoBadge;
       verd.style.color = ver.bg;
       // raffica: appendice numerica sotto il medio + fascia di range solo se sopra il medio
       if (gust != null && !isNaN(gust) && gust > kt + 0.1) {
@@ -2448,15 +2696,15 @@
       const area = punti("kt") + " " + x(dati.length - 1).toFixed(1) + "," + base + " " + sx + "," + base;
       const id = "vento" + Math.random().toString(36).slice(2);
       const livelli = [yMax, yMax / 2, 0].map(v =>
-        '<line x1="' + sx + '" y1="' + y(v) + '" x2="' + (w - dx) + '" y2="' + y(v) + '" stroke="#cbd5dc" stroke-width="1" stroke-dasharray="4 5"/>' +
-        '<text x="' + (sx - 7) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="11" fill="#66717c">' + num(v, v % 1 ? 1 : 0) + '</text>'
+        '<line x1="' + sx + '" y1="' + y(v) + '" x2="' + (w - dx) + '" y2="' + y(v) + '" stroke="#35404a" stroke-width="1" stroke-dasharray="4 5"/>' +
+        '<text x="' + (sx - 7) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="11" fill="#98a4ad">' + num(v, v % 1 ? 1 : 0) + '</text>'
       ).join("");
       const asseX = dati.map((r, i) => {
         const deg = cardinaleInGradi(r.dir);
-        const freccia = deg == null ? "" : '<g transform="rotate(' + deg + ')"><path d="M0 -8V7M-4 3L0 7L4 3" fill="none" stroke="#243142" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>';
+        const freccia = deg == null ? "" : '<g transform="rotate(' + deg + ')"><path d="M0 -8V7M-4 3L0 7L4 3" fill="none" stroke="#f0f43c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>';
         return '<g transform="translate(' + x(i) + ',176)">' + freccia +
-          '<text x="0" y="18" text-anchor="middle" font-size="10" font-weight="700" fill="#243142">' + escHtml(r.dir) + '</text>' +
-          '<text x="0" y="36" text-anchor="middle" font-size="11" fill="#66717c">' + escHtml(r.ora) + '</text></g>';
+          '<text x="0" y="18" text-anchor="middle" font-size="10" font-weight="700" fill="#f4f7f8">' + escHtml(r.dir) + '</text>' +
+          '<text x="0" y="36" text-anchor="middle" font-size="11" fill="#98a4ad">' + escHtml(r.ora) + '</text></g>';
       }).join("");
       const hit = dati.map((r, i) => {
         const raff = isNaN(r.raffica) ? "–" : num(r.raffica, 1);
@@ -2467,14 +2715,14 @@
         '<div class="chart-tip" role="status"></div>' +
         '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="Andamento di vento e raffiche negli ultimi 45 minuti">' +
           '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + colore + '" stop-opacity=".20"/><stop offset="1" stop-color="' + colore + '" stop-opacity=".02"/></linearGradient></defs>' +
-          livelli + '<text x="8" y="13" font-size="10" fill="#66717c">kt</text>' +
+          livelli + '<text x="8" y="13" font-size="10" fill="#98a4ad">kt</text>' +
           '<polygon fill="url(#' + id + ')" points="' + area + '"/>' +
-          '<polyline fill="none" stroke="#9ba5ad" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="round" points="' + punti("raffica") + '"/>' +
+          '<polyline fill="none" stroke="#74808a" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="round" points="' + punti("raffica") + '"/>' +
           '<polyline fill="none" stroke="' + colore + '" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" points="' + punti("kt") + '"/>' +
           asseX +
-          '<g class="chart-cursore" visibility="hidden"><line y1="' + sy + '" y2="' + base + '" stroke="#243142" stroke-width="1" opacity=".35"/><circle r="5" fill="#fff" stroke="' + colore + '" stroke-width="3"/></g>' + hit +
+          '<g class="chart-cursore" visibility="hidden"><line y1="' + sy + '" y2="' + base + '" stroke="#f0f43c" stroke-width="1" opacity=".45"/><circle r="5" fill="#0b1014" stroke="' + colore + '" stroke-width="3"/></g>' + hit +
         '</svg>' +
-        '<div class="chart-legend"><span class="key" style="--c:' + colore + '">vento</span><span class="key" style="--c:#9ba5ad">raffica</span><span>freccia = verso del vento</span></div>' +
+        '<div class="chart-legend"><span class="key" style="--c:' + colore + '">vento</span><span class="key" style="--c:#74808a">raffica</span><span>freccia = verso del vento</span></div>' +
       '</div>';
     }
 
