@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
   <title>Vento Trieste in tempo reale – Bora, raffiche e previsioni</title>
   <meta name="description" content="Vento a Trieste in tempo reale: velocità, raffiche e direzione da Barcola, Monte Grisa e Muggia. Previsioni Bora, modello ALADIN, mare e webcam live." />
@@ -849,6 +849,275 @@
       .loader-spin .anello { animation-duration: 2.2s; }
       .loader-spin .surf { animation: none; }
     }
+
+    /* ============ Preview branch · Marine instrument UI ============ */
+    :root {
+      --ink: #12212c;
+      --paper: #edf1f2;
+      --surface: #ffffff;
+      --surface-soft: #e4eaec;
+      --line: #c8d2d6;
+      --sea: #087286;
+      --sea-dark: #075463;
+      --signal: #c8f05a;
+      --coral: #df584f;
+      --slate: #152733;
+      --slate-2: #405563;
+      --label: #63727a;
+    }
+    body {
+      font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        linear-gradient(180deg, rgba(8,114,134,.04), transparent 300px),
+        var(--paper);
+      color: var(--ink);
+    }
+    h1, h2, h3, .brand, button, .spot-btn, .dona-btn, summary {
+      font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .lcd,
+    .tws-hero,
+    .tws-dir,
+    .statbox .valore,
+    .surf2-verdetto,
+    .meter-pointer,
+    #aladinPasso,
+    .visitor-total {
+      font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+    .section,
+    .console-card,
+    .side-card,
+    .dona,
+    #altre-pagine,
+    #viewsBox,
+    .footer-widget {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 2px 7px rgba(18,33,44,.06);
+    }
+    .section { background: rgba(255,255,255,.94); }
+    .section h2,
+    .section h3 {
+      color: var(--slate);
+      letter-spacing: -.02em;
+    }
+    .section h2 {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+    }
+    .section h2::before {
+      content: "";
+      width: 4px;
+      height: 1.15em;
+      border-radius: 2px;
+      background: var(--sea);
+      flex: 0 0 auto;
+    }
+    .gruppo-titolo {
+      max-width: 1160px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: .7rem .85rem;
+      color: #f4f8f9;
+      background: var(--slate);
+      border: 0;
+      border-left: 5px solid var(--signal);
+      border-radius: 7px;
+      font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 150;
+      min-height: 62px;
+      margin: 0 -1rem;
+      padding: .65rem max(1rem, calc((100vw - 1160px) / 2));
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-between;
+      gap: 1rem;
+      overflow: visible;
+      background: rgba(18,33,44,.96);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 18px rgba(18,33,44,.14);
+    }
+    .brand {
+      min-width: 0;
+      align-items: flex-start !important;
+      text-align: left !important;
+      color: #f7fbfc;
+    }
+    .brand strong { font-size: 1.02rem; font-weight: 700; letter-spacing: -.02em; }
+    .brand span { color: #aebbc1; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; }
+    .topbar-actions { display: flex; align-items: center; gap: .55rem; }
+    .topbar-live {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      color: #d5e1e5;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .topbar-live::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--signal);
+      box-shadow: 0 0 0 3px rgba(200,240,90,.14);
+    }
+    .menu-toggle {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      padding: .55rem .8rem;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 7px;
+      background: #f5f9fa;
+      color: var(--slate);
+      font-size: .82rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .menu-toggle:hover { background: var(--signal); border-color: var(--signal); }
+    .menu-toggle-icon { font-size: 1rem; line-height: 1; }
+    .topnav {
+      position: absolute;
+      top: calc(100% + .45rem);
+      right: max(1rem, calc((100vw - 1160px) / 2));
+      width: min(420px, calc(100vw - 1.4rem));
+      max-width: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .4rem;
+      padding: .55rem;
+      overflow: visible;
+      border: 1px solid #344955;
+      border-radius: 10px;
+      background: #142631;
+      box-shadow: 0 18px 45px rgba(4,15,21,.28);
+    }
+    .topnav[hidden] { display: none !important; }
+    .topnav a {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: .65rem .75rem;
+      border: 1px solid #304550;
+      border-radius: 7px;
+      background: #1c303c;
+      color: #eef5f7;
+      box-shadow: none;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+    .topnav a:hover { background: var(--signal); color: #17220c; border-color: var(--signal); }
+    .topnav .topnav-birra { grid-column: 1 / -1; justify-content: center; background: #213844; }
+    .hero { margin-top: 1rem; }
+    .console-card {
+      border-top: 5px solid var(--sea);
+      border-radius: 10px;
+      box-shadow: 0 2px 7px rgba(18,33,44,.06);
+    }
+    .console-card h2,
+    .side-card h2 {
+      font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+    }
+    .console-card .surf2-verdetto { color: var(--slate); font-weight: 600; letter-spacing: -.025em; }
+    .side-card {
+      border: 1px solid #2e4652;
+      border-top: 5px solid var(--signal);
+      border-radius: 10px;
+      background: var(--slate);
+      color: #f3f8f9;
+      box-shadow: 0 2px 7px rgba(18,33,44,.10);
+    }
+    .side-card h2,
+    .side-card .stato,
+    .side-card .statbox .etichetta,
+    .side-card .statbox .sub,
+    .side-card .statbox .unita { color: #aebdc4; }
+    .side-card .statbox { background: #1c303c; border-color: #344c58; }
+    .side-card .statbox .valore,
+    .side-card .tws-dir,
+    .side-card .tws-raffica b { color: #f7fbfc; }
+    .side-card a { color: #ccebf0; }
+    .side-card .spot-pill { background: #1c303c; border-color: #405663; color: #eef5f7; }
+    .side-card .spot-pill.primary { background: var(--signal); border-color: var(--signal); color: #17220c; }
+    .statbox { border-radius: 7px; background: #f9fbfb; }
+    .statbox .etichetta {
+      font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+      font-size: .76rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+    }
+    .statbox .valore { font-weight: 600; letter-spacing: -.02em; }
+    .trend { border-radius: 7px; }
+    details.dettaglio > summary,
+    .gruppo-sum {
+      border-radius: 7px;
+      font-weight: 700;
+    }
+    .gruppo-sum {
+      background: #f7fafb;
+      border-left: 5px solid var(--sea);
+      box-shadow: 0 2px 7px rgba(18,33,44,.05);
+    }
+    button,
+    .spot-btn,
+    .dona-btn,
+    .osmer-tab {
+      border-radius: 7px;
+      font-weight: 700;
+    }
+    .dona-btn { background: var(--slate); }
+    .dona-btn:hover { background: var(--sea-dark); }
+    .modal .contenuto { border-radius: 10px; border-top: 5px solid var(--sea); }
+    #modalBirra .contenuto { border-top-color: var(--signal); }
+    #mappaGolfo { border-radius: 7px !important; }
+    .footer-widgets { max-width: 1160px; margin-left: auto; margin-right: auto; }
+    .site-credits { max-width: 1160px; margin-left: auto; margin-right: auto; }
+
+    @media (max-width: 560px) {
+      .topbar {
+        min-height: 58px;
+        margin: 0 -.7rem;
+        padding: .55rem .7rem;
+      }
+      .brand strong { font-size: .95rem; }
+      .brand span { font-size: .62rem; }
+      .topbar-live { display: none; }
+      .menu-toggle { min-height: 42px; padding: .5rem .7rem; }
+      .topnav {
+        right: .7rem;
+        width: calc(100vw - 1.4rem);
+        grid-template-columns: 1fr;
+      }
+      .topnav .topnav-birra { grid-column: auto; }
+      .gruppo-titolo { border-radius: 6px; font-size: 1.12rem; }
+      .console-card,
+      .side-card,
+      .section { border-radius: 8px; }
+      .section h2 { font-size: 1rem; }
+      .quick-grid { gap: .75rem; }
+      .statgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
   </style>
 
   <!-- Dati strutturati per Google (rich results) -->
@@ -892,10 +1161,10 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="/station-chart.css" />
-  <link rel="stylesheet" href="/footer-widgets.css" />
-  <script src="/station-chart.js"></script>
-  <script src="/mappa-golfo.js" defer></script>
+  <link rel="stylesheet" href="./station-chart.css" />
+  <link rel="stylesheet" href="./footer-widgets.css" />
+  <script src="./station-chart.js"></script>
+  <script src="./mappa-golfo.js" defer></script>
 </head>
 <body>
 
@@ -909,16 +1178,26 @@
   </div>
 
   <header class="topbar">
-    <a class="brand" href="/">
+    <a class="brand" href="./">
       <strong>Vento Trieste</strong>
-      <span>surfometro live</span>
+      <span>strumenti per il Golfo</span>
     </a>
-    <nav class="topnav" aria-label="Sezioni della pagina">
-      <a href="#vento">Vento</a>
+    <div class="topbar-actions">
+      <span class="topbar-live">Dati live</span>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
+        <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+        Menu
+      </button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" hidden>
+      <a href="#vento">Vento ora</a>
+      <a href="#grisa">Centraline</a>
+      <a href="#mare">Mare e onde</a>
+      <a href="#mappaVento">Mappa vento</a>
       <a href="#previsioni">Previsioni</a>
       <a href="#webcam">Webcam</a>
-      <a href="#istria" onclick="apriSpotIstria(event)">Spot</a>
-      <a href="#" class="topnav-birra" onclick="apriBirra(event)" title="Offrimi una birra" aria-label="Offrimi una birra">🍺</a>
+      <a href="#istria" onclick="apriSpotIstria(event)">Spot Istria</a>
+      <a href="#" class="topnav-birra" onclick="apriBirra(event)" aria-label="Offrimi una birra">🍺 Offrimi una birra</a>
     </nav>
   </header>
 
@@ -973,8 +1252,8 @@
           <a class="spot-pill primary" href="#vento">Trieste / Barcola</a>
           <a class="spot-pill" href="#muggia">Muggia</a>
           <a class="spot-pill" href="#zusterna">Žusterna</a>
-          <a class="spot-pill" href="/marinajulia/">Marina Julia</a>
-          <a class="spot-pill" href="/grado/">Grado</a>
+          <a class="spot-pill" href="./marinajulia/">Marina Julia</a>
+          <a class="spot-pill" href="./grado/">Grado</a>
         </div>
       </aside>
     </section>
@@ -1044,7 +1323,7 @@
     </details>
     <p class="stato" id="statoGrado"></p>
     <div class="spot-azioni">
-      <a class="spot-btn" href="/grado/">📍 Pagina Grado</a>
+      <a class="spot-btn" href="./grado/">📍 Pagina Grado</a>
     </div>
   </div>
   </div>
@@ -2659,6 +2938,32 @@
     if (navIstria) navIstria.addEventListener("click", window.apriSpotIstria);
     if (location.hash === "#istria") setTimeout(() => window.apriSpotIstria(), 250);
 
+    /* ---------- Menu principale collassabile ---------- */
+    const menuToggle = document.getElementById("menuToggle");
+    const topnav = document.getElementById("topnav");
+    function impostaMenu(aperto) {
+      if (!menuToggle || !topnav) return;
+      topnav.hidden = !aperto;
+      menuToggle.setAttribute("aria-expanded", String(aperto));
+      const icon = menuToggle.querySelector(".menu-toggle-icon");
+      if (icon) icon.textContent = aperto ? "✕" : "☰";
+    }
+    if (menuToggle && topnav) {
+      menuToggle.addEventListener("click", e => {
+        e.stopPropagation();
+        impostaMenu(topnav.hidden);
+      });
+      topnav.addEventListener("click", e => {
+        if (e.target.closest("a")) impostaMenu(false);
+      });
+      document.addEventListener("click", e => {
+        if (!e.target.closest(".topbar")) impostaMenu(false);
+      });
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape") impostaMenu(false);
+      });
+    }
+
     /* ---------- Avvio ---------- */
     function nascondiLoader() {
       const l = document.getElementById("loader");
@@ -2714,18 +3019,18 @@
   <div class="section" id="altre-pagine">
     <h2>🌐 Pagine per spot</h2>
     <div class="spot-azioni">
-      <a class="spot-btn" href="/">🏠 Trieste</a>
-      <a class="spot-btn" href="/muggia/">📍 Muggia</a>
-      <a class="spot-btn" href="/zusterna/">📍 Žusterna</a>
-      <a class="spot-btn" href="/marinajulia/">📍 Marina Julia</a>
-      <a class="spot-btn" href="/grado/">📍 Grado</a>
+      <a class="spot-btn" href="./">🏠 Trieste</a>
+      <a class="spot-btn" href="./muggia/">📍 Muggia</a>
+      <a class="spot-btn" href="./zusterna/">📍 Žusterna</a>
+      <a class="spot-btn" href="./marinajulia/">📍 Marina Julia</a>
+      <a class="spot-btn" href="./grado/">📍 Grado</a>
     </div>
     <p class="stato" style="margin:.9rem 0 .6rem;">Hai uno spot con una centralina e vorresti la tua pagina dedicata?</p>
     <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot</a>
   </div>
 
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js"></script>
+  <script src="./footer-widgets.js"></script>
 
   <footer class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
