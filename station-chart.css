@@ -1,9 +1,9 @@
 .spark-wrap { flex: 1 0 100%; width: 100%; min-width: 0; }
 .wind-chart { position: relative; width: 100%; min-width: 0; }
-.wind-chart svg { display: block; width: 100%; height: auto; min-height: 150px; border-radius: 10px; background: rgba(255,255,255,.64); touch-action: pan-y; }
+.wind-chart svg { display: block; width: 100%; height: auto; min-height: 150px; border-radius: 10px; background: #0b1014; touch-action: pan-y; }
 .wind-chart .chart-hit { cursor: crosshair; }
-.chart-tip { position: absolute; z-index: 2; left: 50%; top: 8px; transform: translateX(-50%); display: none; pointer-events: none; padding: 5px 8px; border-radius: 7px; background: rgba(31,42,55,.94); color: #fff; font-size: .68rem; line-height: 1.35; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.chart-tip { position: absolute; z-index: 2; left: 50%; top: 8px; transform: translateX(-50%); display: none; pointer-events: none; padding: 5px 8px; border: 1px solid #414a2d; border-radius: 7px; background: rgba(8,11,14,.96); color: #fff; font-size: .68rem; line-height: 1.35; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
 .wind-chart.attivo .chart-tip { display: block; }
-.chart-legend { display: flex; justify-content: center; gap: 1rem; margin-top: 3px; font-size: .66rem; color: var(--label); }
+.chart-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: .4rem 1rem; margin-top: 6px; font-size: .78rem; line-height: 1.4; color: var(--label); }
 .chart-legend .key::before { content: ""; display: inline-block; width: 16px; height: 3px; margin: 0 5px 2px 0; border-radius: 2px; background: var(--c); }
 .trend + details.dettaglio { display: none; }

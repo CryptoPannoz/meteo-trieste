@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <title>Mappa vento live – Golfo di Trieste e Istria | Vento Trieste</title>
   <meta name="description" content="Mappa del vento in tempo reale nel Golfo di Trieste e in Istria: direzione e intensità dalle centraline di Barcola, Monte Grisa, Muggia, Marina Julia, Grado, dalle boe Mambo e Vida e dagli spot istriani." />
   <!-- Pagina sperimentale: noindex finché non viene pubblicata ufficialmente -->
@@ -14,25 +14,28 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
   <style>
     :root {
-      --slate: #1f2d3d;
-      --slate-2: #45566a;
-      --azzurro: #2f6fb0;
-      --sfondo: #eef1f4;
-      --bordo: #dce1e7;
-      --testo: #16202b;
-      --label: #5c6675;
+      color-scheme: dark;
+      --slate: #f4f7f8;
+      --slate-2: #b1bcc4;
+      --azzurro: #f0f43c;
+      --sfondo: #07090c;
+      --bordo: #2a343d;
+      --testo: #f4f7f8;
+      --label: #98a4ad;
+      --signal: #f0f43c;
     }
     * { box-sizing: border-box; }
     body {
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0; padding: 0 1rem 2rem;
-      background: var(--sfondo); color: var(--testo);
+      background: radial-gradient(circle at 50% -180px, rgba(240,244,60,.09), transparent 420px), var(--sfondo); color: var(--testo);
       -webkit-font-smoothing: antialiased; line-height: 1.5;
       font-feature-settings: "tnum" 1;
     }
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
       max-width: 680px; margin: 0 auto; padding: .9rem 0 .6rem;
+      border-bottom: 1px solid rgba(240,244,60,.25);
     }
     .brand { text-decoration: none; color: var(--slate); display: flex; flex-direction: column; line-height: 1.15; }
     .brand strong { font-size: 1.05rem; font-weight: 800; }
@@ -44,12 +47,12 @@
     .sub { font-size: .84rem; color: var(--label); margin: 0 0 .9rem; }
     .beta {
       display: inline-block; font-size: .66rem; font-weight: 800; letter-spacing: .06em;
-      background: #fff3d6; color: #8a6100; border: 1px solid #eedaa2;
+      background: var(--signal); color: #090b0d; border: 1px solid var(--signal);
       border-radius: 6px; padding: .1rem .45rem; vertical-align: 2px; margin-left: .4rem;
     }
     .mappa-card {
-      background: #fff; border: 1px solid var(--bordo); border-radius: 14px;
-      padding: .6rem; box-shadow: 0 1px 2px rgba(31,45,61,.05);
+      background: #10151a; border: 1px solid var(--bordo); border-radius: 14px;
+      padding: .6rem; box-shadow: 0 8px 24px rgba(0,0,0,.26);
     }
     #mappa { display: block; width: 100%; height: auto; border-radius: 10px; }
     .barra {
@@ -59,7 +62,7 @@
     .stato { font-size: .76rem; color: var(--label); margin: 0; }
     .btn-aggiorna {
       font: inherit; font-size: .78rem; font-weight: 700; cursor: pointer;
-      background: var(--slate); color: #fff; border: 0; border-radius: 8px; padding: .38rem .8rem;
+      background: var(--signal); color: #090b0d; border: 0; border-radius: 8px; padding: .38rem .8rem;
     }
     .btn-aggiorna:disabled { opacity: .55; cursor: default; }
     .legenda {
@@ -102,7 +105,7 @@
     <p class="fonti">Dati live: <a href="https://vetercek.com" target="_blank" rel="noopener">vetercek.com</a> · boa Mambo (OGS, via ERDDAP) · boa Vida (NIB, Pirano) · centralina Barcola. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Aggiornamento automatico ogni 5 minuti.</p>
   </main>
 
-  <script src="/mappa-golfo.js"></script>
+  <script src="/mappa-golfo.js?v=20260719-dark2"></script>
   <script>
     "use strict";
     var PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
