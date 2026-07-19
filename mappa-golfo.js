@@ -100,7 +100,7 @@
     var defs = el("defs");
     defs.innerHTML =
       '<linearGradient id="mgMare" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0" stop-color="#142630"/><stop offset="1" stop-color="#091117"/></linearGradient>' +
+      '<stop offset="0" stop-color="#2c607a"/><stop offset="1" stop-color="#153b52"/></linearGradient>' +
       '<filter id="mgOmbra" x="-60%" y="-60%" width="220%" height="220%">' +
       '<feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-color="#1f2d3d" flood-opacity="0.28"/>' +
       '</filter>';
@@ -110,9 +110,9 @@
       "stroke-width": 1.3, "stroke-linejoin": "round" }));
 
     svg.appendChild(el("text", { x: px(13.56), y: py(45.60), "font-size": 17, "font-style": "italic",
-      fill: "#577988", "text-anchor": "middle", "font-weight": 600 }, "Golfo di Trieste"));
+      fill: "#8db8ca", "text-anchor": "middle", "font-weight": 600 }, "Golfo di Trieste"));
     svg.appendChild(el("text", { x: px(14.22), y: py(44.92), "font-size": 17, "font-style": "italic",
-      fill: "#577988", "text-anchor": "middle", "font-weight": 600 }, "Kvarner"));
+      fill: "#8db8ca", "text-anchor": "middle", "font-weight": 600 }, "Kvarner"));
 
     CITTA.forEach(function (c) {
       svg.appendChild(el("circle", { cx: px(c.lon), cy: py(c.lat), r: 2.6, fill: "#6d7a83" }));
