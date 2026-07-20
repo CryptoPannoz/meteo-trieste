@@ -1,4 +1,9 @@
-.footer-widgets { width: min(100%, 760px); margin: 1.4rem auto 2rem; }
+.site-footer {
+  width: min(100%, 1160px); margin: 2rem auto 0; padding: 1rem;
+  background: #0b0f13; border: 1px solid #2a343d; border-radius: 14px;
+  box-shadow: 0 12px 34px rgba(0,0,0,.3);
+}
+.footer-widgets { width: min(100%, 760px); margin: 0 auto 1rem; }
 .footer-widget {
   background: #10151a; border: 1px solid var(--bordo); border-radius: 14px;
   box-shadow: 0 8px 24px rgba(0,0,0,.26); padding: 1rem;
@@ -32,7 +37,7 @@
 .supporter-name::after { content: "🍺"; margin: 0 .8rem; font-size: .72rem; }
 @keyframes supporters-scroll { to { transform: translateX(-50%); } }
 .site-credits {
-  width: min(100%, 760px); margin: 1rem auto; padding: 1rem;
+  width: min(100%, 760px); margin: 1rem auto 0; padding: 1rem;
   background: #10151a; border: 1px solid var(--bordo); border-radius: 14px;
   box-shadow: 0 8px 24px rgba(0,0,0,.26); text-align: center;
   color: var(--label); font-size: .78rem; line-height: 1.6;

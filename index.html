@@ -1527,7 +1527,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20260720-layout1" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20260720-layout2" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20260720-degrees1" defer></script>
 </head>
@@ -1556,11 +1556,12 @@
     </div>
     <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" hidden>
       <a href="#vento">Vento ora</a>
-      <a href="#grisa">Centraline</a>
-      <a href="#mare">Mare e onde</a>
+      <a href="#centraline">Centraline</a>
+      <a href="#boe">Boe meteo</a>
       <a href="#mappaVento">Mappa vento</a>
       <a href="#previsioni">Previsioni</a>
       <a href="#webcam">Webcam</a>
+      <a href="#pagineSpot">Pagine spot</a>
       <a href="#istria" onclick="apriSpotIstria(event)">Spot Istria</a>
       <a href="#" class="topnav-birra" onclick="apriBirra(event)" aria-label="Offrimi una birra">🍺 Offrimi una birra</a>
     </nav>
@@ -1625,6 +1626,14 @@
     </section>
 
   <!-- DATI CENTRALINE -->
+  <details class="gruppo-collapse page-collapse" id="centraline">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>📡 Centraline</strong>
+      <span>Monte Grisa, Muggia, Marina Julia e Grado</span>
+    </span>
+  </summary>
+
   <div class="quick-grid">
   <div class="section" id="grisa">
     <h2>Monte Grisa – dati in tempo reale</h2>
@@ -1694,7 +1703,21 @@
   </div>
   </div>
 
+  <div class="section" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+    <button id="btnAggiorna">🔄 Aggiorna dati</button>
+    <span class="stato" id="ultimoAggiornamento"></span>
+  </div>
+  </details>
+
   <!-- BOE OGS: MARE E ONDE -->
+  <details class="gruppo-collapse page-collapse" id="boe">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>🌊 Boe meteorologiche</strong>
+      <span>Trieste MAMBO1 e Pirano Vida</span>
+    </span>
+  </summary>
+
   <div class="section" id="mare">
     <h2>Mare e onde – boe OGS</h2>
 
@@ -1712,14 +1735,18 @@
 
     <p class="stato">Fonti: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a> (boa Trieste, via ERDDAP) · <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB – boa Vida</a> (Pirano)</p>
   </div>
-
-  <div class="section" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
-    <button id="btnAggiorna">🔄 Aggiorna dati</button>
-    <span class="stato" id="ultimoAggiornamento"></span>
-  </div>
+  </details>
 
   <!-- MAPPA DEL VENTO (beta) -->
-  <div class="section" id="mappaVento">
+  <details class="gruppo-collapse page-collapse" id="mappaVento">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>🗺️ Mappa del vento</strong>
+      <span>Direzione e intensità nel Golfo e in Istria</span>
+    </span>
+  </summary>
+
+  <div class="section" id="mappaVentoContenuto">
     <h2>Mappa del vento – Golfo e Istria <span style="display:inline-block;font-size:.62em;font-weight:800;letter-spacing:.06em;background:#fff3d6;color:#8a6100;border:1px solid #eedaa2;border-radius:6px;padding:.08em .45em;vertical-align:middle;margin-left:.35rem;">BETA</span></h2>
     <svg id="mappaGolfo" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento nel Golfo di Trieste e in Istria" style="display:block;width:100%;height:auto;border-radius:8px;"></svg>
     <div style="display:flex;gap:.9rem;flex-wrap:wrap;align-items:center;font-size:.74rem;color:#5c6675;font-weight:600;margin-top:.6rem;">
@@ -1730,6 +1757,28 @@
     </div>
     <p class="stato">La freccia indica dove va il vento; il colore l'intensità. Le centraline offline non vengono mostrate. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
   </div>
+  </details>
+
+  <details class="gruppo-collapse page-collapse" id="pagineSpot">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>🌐 Pagine per spot</strong>
+      <span>Trieste, Muggia, Žusterna, Marina Julia e Grado</span>
+    </span>
+  </summary>
+
+  <div class="section" id="altre-pagine">
+    <div class="spot-azioni">
+      <a class="spot-btn" href="./">🏠 Trieste</a>
+      <a class="spot-btn" href="./muggia/">📍 Muggia</a>
+      <a class="spot-btn" href="./zusterna/">📍 Žusterna</a>
+      <a class="spot-btn" href="./marinajulia/">📍 Marina Julia</a>
+      <a class="spot-btn" href="./grado/">📍 Grado</a>
+    </div>
+    <p class="stato" style="margin:.9rem 0 .6rem;">Hai uno spot con una centralina e vorresti la tua pagina dedicata?</p>
+    <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot</a>
+  </div>
+  </details>
 
   <details class="gruppo-collapse page-collapse" id="previsioni">
   <summary class="gruppo-sum">
@@ -3363,6 +3412,28 @@
       });
     }
 
+    /* I link interni aprono automaticamente il gruppo compatto che contiene
+       la destinazione (es. Muggia, Bora o una webcam). */
+    function apriGruppiPer(target) {
+      let gruppo = target && target.closest ? target.closest("details") : null;
+      while (gruppo) {
+        gruppo.open = true;
+        gruppo = gruppo.parentElement ? gruppo.parentElement.closest("details") : null;
+      }
+    }
+    function apriGruppiDaHash() {
+      if (!location.hash || location.hash.length < 2) return;
+      apriGruppiPer(document.getElementById(decodeURIComponent(location.hash.slice(1))));
+    }
+    document.addEventListener("click", e => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      const id = link.getAttribute("href").slice(1);
+      if (id) apriGruppiPer(document.getElementById(id));
+    });
+    window.addEventListener("hashchange", apriGruppiDaHash);
+    apriGruppiDaHash();
+
     /* ---------- Avvio ---------- */
     function nascondiLoader() {
       const l = document.getElementById("loader");
@@ -3414,24 +3485,11 @@
     </div>
   </div>
 
-  <!-- Pagine per spot + richiedi il tuo spot -->
-  <div class="section" id="altre-pagine">
-    <h2>🌐 Pagine per spot</h2>
-    <div class="spot-azioni">
-      <a class="spot-btn" href="./">🏠 Trieste</a>
-      <a class="spot-btn" href="./muggia/">📍 Muggia</a>
-      <a class="spot-btn" href="./zusterna/">📍 Žusterna</a>
-      <a class="spot-btn" href="./marinajulia/">📍 Marina Julia</a>
-      <a class="spot-btn" href="./grado/">📍 Grado</a>
-    </div>
-    <p class="stato" style="margin:.9rem 0 .6rem;">Hai uno spot con una centralina e vorresti la tua pagina dedicata?</p>
-    <a class="dona-btn" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot</a>
-  </div>
-
+  <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
   <script src="./footer-widgets.js?v=20260720-contributors1"></script>
 
-  <footer class="site-credits">
+  <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
       <span class="story-kicker">💨 Perché nasce questo progetto</span>
       <h1 id="ventoTriesteSeo">Vento Trieste in tempo reale</h1>
@@ -3449,6 +3507,7 @@
       <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a><br>
       <span class="credits-signoff">Che SUFI!</span>
     </p>
+  </div>
   </footer>
 
   </main>
