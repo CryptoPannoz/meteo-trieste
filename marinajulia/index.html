@@ -832,7 +832,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260719-dark2" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260720-layout1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -984,7 +984,13 @@
     <span class="stato" id="ultimoAggiornamento"></span>
   </div>
 
-  <div class="gruppo-titolo" id="previsioni">📅 Previsioni</div>
+  <details class="gruppo-collapse page-collapse" id="previsioni">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>📅 Previsioni</strong>
+      <span>OSMER, radar, Bora, Aladin e Windguru</span>
+    </span>
+  </summary>
 
   <!-- BOLLETTINO OSMER -->
   <div class="section" id="osmer">
@@ -1160,6 +1166,8 @@
       <button onclick="apriModal()">ℹ️ Differenze tra i modelli meteo</button>
     </div>
   </div>
+
+  </details>
 
   <!-- MODAL POPUP MODELLI -->
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
@@ -1561,12 +1569,12 @@
       const vento = nomeVento(dirDeg);
       const gustStr = (gust != null && gust !== "") ? gust : "–";
       return '<div class="pannello">' +
-        '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
-          '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
-        '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
         '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + (dirTxt || "–") + '</span>' +
           (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</span>' +
           (vento ? '<span class="wind-name-badge">' + vento + '</span>' : '') + '</div>' +
+        '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
+          '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
+        '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
       '</div>';
     }
 
@@ -2188,7 +2196,7 @@
   </div>
 
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js"></script>
+  <script src="/footer-widgets.js?v=20260720-contributors1"></script>
 
   <footer class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoMarinaJuliaSeo">

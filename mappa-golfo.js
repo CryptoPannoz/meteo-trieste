@@ -156,8 +156,9 @@
     var g = el("g", { filter: "url(#mgOmbra)" });
     var colore = classeColore(v.kt);
     var kt = Math.round(v.kt), gu = Math.round(v.raffica);
-    var testo = kt + (!isNaN(v.raffica) && gu > kt ? "–" + gu : "") + " kt";
-    var titolo = st.nome + ": " + testo +
+    var intensita = kt + (!isNaN(v.raffica) && gu > kt ? "–" + gu : "") + " kt";
+    var testo = (v.deg != null ? Math.round(v.deg) + "° " : "") + intensita;
+    var titolo = st.nome + ": " + intensita +
       (v.deg != null ? " da " + Math.round(v.deg) + "°" : "") +
       (v.ora ? " · agg. " + v.ora : "");
 

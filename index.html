@@ -679,79 +679,11 @@
       padding: 1.2rem;
       overflow: hidden;
     }
+    /* alba/tramonto in alto a destra nella card surfometro */
     #surfometroCard { position: relative; }
-    .daylight-card {
-      grid-column: 2;
-      min-width: 0;
-      padding: 1.15rem;
-      overflow: hidden;
-      border: 1px solid #2a343d;
-      border-top: 5px solid var(--signal);
-      border-radius: 10px;
-      background: #10151a;
-      color: var(--ink);
-      box-shadow: 0 8px 24px rgba(0,0,0,.26);
-    }
-    .daylight-card h2 {
-      margin: 0 0 .75rem;
-      color: var(--label);
-      font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
-      font-size: .95rem;
-      font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-    }
-    .daylight-summary {
-      margin: 0;
-      color: #f4f7f8;
-      font-size: 1.05rem;
-      font-weight: 600;
-      letter-spacing: -.02em;
-    }
-    .daylight-summary strong { color: var(--signal); font-weight: 800; }
-    .daylight-arc {
-      display: block;
-      width: 100%;
-      height: auto;
-      margin: .35rem 0 -.25rem;
-      overflow: visible;
-    }
-    .daylight-track,
-    .daylight-progress {
-      fill: none;
-      stroke-width: 11;
-      stroke-linecap: round;
-    }
-    .daylight-track { stroke: #34404a; }
-    .daylight-progress { stroke: url(#daylightGradient); transition: stroke-dasharray .5s ease; }
-    .daylight-sun circle { fill: var(--signal); }
-    .daylight-sun line {
-      stroke: var(--signal);
-      stroke-width: 3;
-      stroke-linecap: round;
-    }
-    .daylight-times {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-    .daylight-time {
-      display: flex;
-      flex-direction: column;
-      color: #aeb8bf;
-      font-size: .82rem;
-      font-weight: 600;
-    }
-    .daylight-time:last-child { align-items: flex-end; text-align: right; }
-    .daylight-time strong {
-      color: #fff;
-      font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
-      font-size: 2rem;
-      font-weight: 600;
-      line-height: 1;
-      letter-spacing: .01em;
-    }
+    #surfometroCard h2 { padding-right: 6.5rem; }
+    .sun-times { position: absolute; top: 1.25rem; right: 1.2rem; font-size: .78rem; font-weight: 600; color: #6b7480; white-space: nowrap; }
+    @media (max-width: 480px) { #surfometroCard h2 { padding-right: 5.4rem; } .sun-times { font-size: .72rem; top: 1.3rem; right: 1rem; } }
     .console-card .surf2-verdetto {
       font-size: clamp(2.2rem, 8vw, 5.4rem);
       text-align: left;
@@ -841,7 +773,6 @@
     /* ============ Rifinitura mobile ============ */
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; }
-      .daylight-card { grid-column: 1; }
       .hero-copy { align-items: flex-start; flex-direction: column; }
       .quick-grid { grid-template-columns: 1fr; }
       .topbar { align-items: center; flex-direction: column; gap: .55rem; }
@@ -862,8 +793,7 @@
       .hero { margin-top: .75rem; gap: .75rem; }
       .hero h1 { font-size: 2.45rem; }
       .console-card,
-      .side-card,
-      .daylight-card { border-radius: 8px; padding: 1.05rem; }
+      .side-card { border-radius: 14px; padding: .9rem; }
       .console-card .surf2-verdetto { font-size: 2.45rem; }
       .trend-delta {
         min-width: 0;
@@ -1597,9 +1527,9 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20260719-dark2" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20260720-layout1" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
-  <script src="./mappa-golfo.js?v=20260719-sea2" defer></script>
+  <script src="./mappa-golfo.js?v=20260720-degrees1" defer></script>
 </head>
 <body>
 
@@ -1640,6 +1570,7 @@
     <section class="hero" id="vento">
       <!-- SURFOMETRO (scheda a parte) -->
       <div class="console-card" id="surfometroCard">
+        <span id="solare" class="sun-times" aria-label="alba e tramonto"></span>
         <h2 id="surfTitolo">Surfometro – Barcola</h2>
         <div class="surf2">
           <div class="surf2-verdetto" id="verdettoBig">—</div>
@@ -1691,35 +1622,6 @@
         </div>
       </aside>
 
-      <section class="daylight-card" id="astronomiaCard" aria-labelledby="astronomiaTitolo">
-        <h2 id="astronomiaTitolo">Astronomia</h2>
-        <p class="daylight-summary">Sole · <strong id="oreLuce">– ore di luce</strong></p>
-        <svg class="daylight-arc" viewBox="0 0 320 165" role="img" aria-label="Percorso del sole tra alba e tramonto">
-          <defs>
-            <linearGradient id="daylightGradient" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#ff9848" />
-              <stop offset="1" stop-color="#f0f43c" />
-            </linearGradient>
-          </defs>
-          <path class="daylight-track" d="M24 128 Q160 -58 296 128" pathLength="100" />
-          <path class="daylight-progress" id="daylightProgress" d="M24 128 Q160 -58 296 128" pathLength="100" stroke-dasharray="0 100" />
-          <g class="daylight-sun" id="daylightSun" transform="translate(24 128)">
-            <line x1="0" y1="-21" x2="0" y2="-15" />
-            <line x1="0" y1="15" x2="0" y2="21" />
-            <line x1="-21" y1="0" x2="-15" y2="0" />
-            <line x1="15" y1="0" x2="21" y2="0" />
-            <line x1="-15" y1="-15" x2="-11" y2="-11" />
-            <line x1="15" y1="-15" x2="11" y2="-11" />
-            <line x1="-15" y1="15" x2="-11" y2="11" />
-            <line x1="15" y1="15" x2="11" y2="11" />
-            <circle r="12" />
-          </g>
-        </svg>
-        <div class="daylight-times">
-          <span class="daylight-time"><strong id="albaOra">–</strong><span>Alba</span></span>
-          <span class="daylight-time"><strong id="tramontoOra">–</strong><span>Tramonto</span></span>
-        </div>
-      </section>
     </section>
 
   <!-- DATI CENTRALINE -->
@@ -1829,7 +1731,13 @@
     <p class="stato">La freccia indica dove va il vento; il colore l'intensità. Le centraline offline non vengono mostrate. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
   </div>
 
-  <div class="gruppo-titolo" id="previsioni">📅 Previsioni</div>
+  <details class="gruppo-collapse page-collapse" id="previsioni">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>📅 Previsioni</strong>
+      <span>OSMER, radar, Bora, Aladin e Windguru</span>
+    </span>
+  </summary>
 
   <!-- BOLLETTINO OSMER -->
   <div class="section" id="osmer">
@@ -2007,6 +1915,8 @@
     </div>
   </div>
 
+  </details>
+
   <!-- MODAL POPUP MODELLI -->
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
     <div class="contenuto">
@@ -2081,7 +1991,13 @@
     </div>
   </div>
 
-  <div class="gruppo-titolo" id="webcam">📷 Webcam</div>
+  <details class="gruppo-collapse page-collapse" id="webcam">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>📷 Webcam</strong>
+      <span>Barcola, Sistiana, Monfalcone e Grado</span>
+    </span>
+  </summary>
 
   <!-- WEBCAM · BARCOLA / TRIESTE -->
   <div class="webcam-luogo">📍 Barcola · Trieste</div>
@@ -2144,6 +2060,8 @@
     </a>
     <p class="stato">Fonte: <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">cam.kitelifefvg.it</a> · Kite Life FVG</p>
   </div>
+
+  </details>
 
   <!-- SPOT ISTRIA (gruppo collassabile) -->
   <details class="gruppo-collapse" id="istria">
@@ -2514,12 +2432,12 @@
       const vento = nomeVento(dirDeg);
       const gustStr = (gust != null && gust !== "") ? gust : "–";
       return '<div class="pannello">' +
-        '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
-          '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
-        '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
         '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + (dirTxt || "–") + '</span>' +
           (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</span>' +
           (vento ? '<span class="wind-name-badge">' + vento + '</span>' : '') + '</div>' +
+        '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
+          '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
+        '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
       '</div>';
     }
 
@@ -3511,7 +3429,7 @@
   </div>
 
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js"></script>
+  <script src="./footer-widgets.js?v=20260720-contributors1"></script>
 
   <footer class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
@@ -3538,10 +3456,10 @@
   <!-- GoatCounter (statistiche anonime, senza cookie) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
-  <!-- Ore di luce (calcolo solare offline, Golfo di Trieste) -->
+  <!-- Alba/tramonto (calcolo SunCalc offline, golfo di Trieste) -->
   <script>
     (function () {
-      var card = document.getElementById("astronomiaCard"); if (!card) return;
+      var el = document.getElementById("solare"); if (!el) return;
       var dayMs = 864e5, J1970 = 2440588, J2000 = 2451545, rad = Math.PI / 180, e = rad * 23.4397, J0 = 0.0009;
       function tJ(d) { return d.valueOf() / dayMs - 0.5 + J1970; }
       function fJ(j) { return new Date((j + 0.5 - J1970) * dayMs); }
@@ -3555,20 +3473,7 @@
       var w = Math.acos(cw);
       var Jset = J2000 + (J0 + (w + lw) / (2 * Math.PI) + n) + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L), Jrise = Jn - (Jset - Jn);
       var f = function (dt) { return dt.toLocaleTimeString("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" }); };
-      var alba = fJ(Jrise), tramonto = fJ(Jset), adesso = new Date();
-      var albaTxt = f(alba), tramontoTxt = f(tramonto);
-      var ore = Math.round((tramonto - alba) / 36e5);
-      document.getElementById("oreLuce").textContent = ore + " ore di luce";
-      document.getElementById("albaOra").textContent = albaTxt;
-      document.getElementById("tramontoOra").textContent = tramontoTxt;
-
-      var avanzamento = Math.max(0, Math.min(1, (adesso - alba) / (tramonto - alba)));
-      document.getElementById("daylightProgress").setAttribute("stroke-dasharray", (avanzamento * 100).toFixed(1) + " 100");
-      var u = 1 - avanzamento;
-      var x = u * u * 24 + 2 * u * avanzamento * 160 + avanzamento * avanzamento * 296;
-      var y = u * u * 128 + 2 * u * avanzamento * -58 + avanzamento * avanzamento * 128;
-      document.getElementById("daylightSun").setAttribute("transform", "translate(" + x.toFixed(1) + " " + y.toFixed(1) + ")");
-      card.setAttribute("aria-label", "Astronomia: " + ore + " ore di luce, alba " + albaTxt + ", tramonto " + tramontoTxt);
+      el.textContent = "☀ " + f(fJ(Jrise)) + " – " + f(fJ(Jset));
     })();
   </script>
 </body>
