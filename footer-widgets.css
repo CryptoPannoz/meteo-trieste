@@ -274,3 +274,17 @@ button:hover,
 footer { color: var(--label); }
 .errore { background: #251516; border-color: #633234; color: #ff9b9b; }
 #btcAddr { background: #171d23 !important; border-color: #333e47 !important; color: var(--ink) !important; }
+
+/* L'intestazione del gruppo aperto resta raggiungibile durante lo scroll.
+   L'offset viene aggiornato da footer-widgets.js in base all'altezza reale
+   della topbar, inclusi i layout mobile su due righe. */
+:root { --section-sticky-top: 78px; }
+.gruppo-collapse[open] > .gruppo-sum {
+  position: sticky;
+  top: var(--section-sticky-top);
+  z-index: 110;
+  background: rgba(23,29,35,.98);
+  box-shadow: 0 10px 26px rgba(0,0,0,.48), 0 0 0 1px rgba(240,244,60,.16);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}

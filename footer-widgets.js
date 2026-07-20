@@ -1,4 +1,66 @@
 (function () {
+  var doc = document.documentElement;
+  var topbar = document.querySelector(".topbar");
+
+  function aggiornaOffsetSezioni() {
+    var altezza = topbar ? Math.ceil(topbar.getBoundingClientRect().height) : 0;
+    doc.style.setProperty("--section-sticky-top", Math.max(8, altezza + 8) + "px");
+  }
+
+  aggiornaOffsetSezioni();
+  window.addEventListener("resize", aggiornaOffsetSezioni, { passive: true });
+  if (topbar && "ResizeObserver" in window) {
+    new ResizeObserver(aggiornaOffsetSezioni).observe(topbar);
+  }
+
+  document.querySelectorAll(".gruppo-collapse").forEach(function (gruppo) {
+    var titolo = gruppo.querySelector(".gruppo-sum");
+    if (!titolo) return;
+    titolo.addEventListener("click", function (evento) {
+      if (!gruppo.open) return;
+      var offset = parseFloat(getComputedStyle(doc).getPropertyValue("--section-sticky-top")) || 0;
+      var gruppoTop = gruppo.getBoundingClientRect().top;
+      var titoloTop = titolo.getBoundingClientRect().top;
+      var bloccatoInAlto = gruppoTop < offset && Math.abs(titoloTop - offset) < 3;
+      if (!bloccatoInAlto) return;
+
+      evento.preventDefault();
+      var destinazione = Math.max(0, window.scrollY + gruppoTop - offset);
+      var overflowAnchorPrecedente = doc.style.overflowAnchor;
+      function mantieniTitoloInVista() {
+        window.scrollTo({ top: destinazione, left: 0, behavior: "auto" });
+      }
+      function correggiPosizioneTitolo() {
+        var correzione = titolo.getBoundingClientRect().top - offset;
+        if (Math.abs(correzione) > 1) {
+          window.scrollBy({ top: correzione, left: 0, behavior: "auto" });
+        }
+      }
+      doc.style.overflowAnchor = "none";
+      mantieniTitoloInVista();
+      requestAnimationFrame(function () {
+        gruppo.open = false;
+        titolo.focus({ preventScroll: true });
+        mantieniTitoloInVista();
+        requestAnimationFrame(function () {
+          mantieniTitoloInVista();
+        });
+      });
+      setTimeout(mantieniTitoloInVista, 60);
+      setTimeout(function () {
+        mantieniTitoloInVista();
+        correggiPosizioneTitolo();
+      }, 180);
+      setTimeout(function () {
+        doc.style.overflowAnchor = overflowAnchorPrecedente;
+        requestAnimationFrame(correggiPosizioneTitolo);
+      }, 320);
+      setTimeout(correggiPosizioneTitolo, 460);
+    });
+  });
+})();
+
+(function () {
   var root = document.getElementById("footerWidgets");
   if (!root) return;
   var sl = root.dataset.lang === "sl";
