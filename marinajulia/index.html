@@ -832,7 +832,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260720-sticky7" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260722-meter2" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -872,11 +872,17 @@
         <div class="surf2">
           <div class="surf2-verdetto" id="verdettoBig">—</div>
           <div class="meter">
-            <div class="meter-pointer" id="meterPointer" style="left:0%;opacity:0;">
-              <svg class="meter-dir wind-arrow" id="meterDir" aria-hidden="true" viewBox="0 0 24 24" style="display:none;"><path d="M12 3v17m-6-6 6 6 6-6"/></svg>
-              <span class="meter-val" id="meterVal">–</span>
-              <span class="meter-gust-app" id="meterGust" style="display:none;">&#8211;&#8201;<span id="meterGustVal">–</span></span>
+            <div class="meter-pointer no-gust" id="meterPointer" style="opacity:0;" aria-live="polite">
+              <span class="meter-mean-readout">
+                <span class="meter-readout-label">Vento medio</span>
+                <span class="meter-readout-data"><svg class="meter-dir wind-arrow" id="meterDir" aria-hidden="true" viewBox="0 0 24 24" style="display:none;"><path d="M12 3v17m-6-6 6 6 6-6"/></svg><span class="meter-val" id="meterVal">–</span><span class="meter-unit">kt</span></span>
+              </span>
+              <span class="meter-gust-app" id="meterGust" style="display:none;">
+                <span class="meter-readout-label">Raffica</span>
+                <span class="meter-readout-data"><span class="meter-gust-value" id="meterGustVal">–</span><span class="meter-unit">kt</span></span>
+              </span>
             </div>
+            <div class="meter-over" id="meterOver" aria-hidden="true"></div>
             <div class="meter-bar">
               <div style="flex:20;background:#b9b8b2;"></div>
               <div style="flex:12.5;background:#79CFC8;"></div>
@@ -886,8 +892,8 @@
               <div style="flex:12.5;background:#E24B4A;"></div>
               <div class="meter-range" id="meterRange" style="left:0%;width:0%;opacity:0;"></div>
               <div class="meter-mean-line" id="meterMeanLine" style="left:0%;opacity:0;"></div>
+              <div class="meter-gust-line" id="meterGustLine" style="left:0%;opacity:0;"></div>
             </div>
-            <div class="meter-over" id="meterOver" aria-hidden="true">» 40+</div>
             <div class="meter-ticks">
               <span style="left:20%;">8</span><span style="left:32.5%;">13</span><span style="left:45%;">18</span><span style="left:62.5%;">25</span><span style="left:87.5%;">35</span>
             </div>
@@ -1448,11 +1454,12 @@
       return Object.assign({ i: i }, BANDE[i]);
     }
 
-    /* Surfometro orizzontale: indicatore unico del vento medio sulla scala 0–40 kt + verdetto.
-       La raffica (gust) è solo visiva: numero a destra del medio (come range) + fascia sulla
-       barra (più la fascia è larga, più lo spot è rafficato). Verdetto = solo medio. */
-    const SURF_SCALA = 40;                          // la scala copre 0–40 kt
-    function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_SCALA) / SURF_SCALA * 100; }
+    /* Surfometro: valori separati, marker unificato quando medio e raffica sono vicini,
+       soglia visiva a 35 kt. I valori reali restano sempre leggibili nei due riquadri. */
+    const SURF_SCALA = 40;
+    const SURF_LIMITE = 35;
+    const SURF_RAFFICA_VICINA = 1.5;
+    function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_LIMITE) / SURF_SCALA * 100; }
     function aggiornaSurfometro(kt, gust, dir) {
       const verd  = document.getElementById("verdettoBig");
       const ptr   = document.getElementById("meterPointer");
@@ -1462,30 +1469,29 @@
       const gval  = document.getElementById("meterGustVal");
       const range = document.getElementById("meterRange");
       const meanLine = document.getElementById("meterMeanLine"); // linea del vento medio (sempre visibile)
-      const over  = document.getElementById("meterOver");        // indicatore "fuori scala" (>40 kt)
+      const gustLine = document.getElementById("meterGustLine"); // marker separato della raffica
+      const bar = range ? range.parentElement : null;
+      const over  = document.getElementById("meterOver");        // indicatore oltre la soglia dei 35 kt
       if (!verd || !ptr || !val) return;
       const spegniRaffica = () => {
         if (gapp)  gapp.style.display = "none";
         if (range) range.style.opacity = "0";
+        if (gustLine) gustLine.style.opacity = "0";
+        if (bar) bar.classList.remove("gust-close");
+        ptr.classList.add("no-gust");
       };
       if (kt == null || isNaN(kt)) {
         verd.innerHTML = "—";
         verd.style.color = "var(--label)";
-        ptr.style.left = "0%";
-        ptr.style.transform = "translateX(0)";
         ptr.style.opacity = "0";
         val.textContent = "–";
         if (dirEl) dirEl.style.display = "none";
-        if (over)  over.style.opacity = "0";
+        if (over) { over.style.opacity = "0"; over.className = "meter-over"; over.setAttribute("aria-hidden", "true"); }
         if (meanLine) meanLine.style.opacity = "0";
         spegniRaffica();
         return;
       }
       const pa = posSurf(kt);
-      ptr.style.left = pa + "%";
-      // l'indicatore scorre con la posizione (0%→nessuno shift, 100%→tutto a sinistra)
-      // così il blocco numeri resta sempre dentro i bordi, anche oltre i 40 kt
-      ptr.style.transform = "translateX(-" + pa + "%)";
       ptr.style.opacity = "1";
       // linea del vento medio sulla barra: sempre presente, anche se medio = raffica
       if (meanLine) { meanLine.style.left = pa + "%"; meanLine.style.opacity = "1"; }
@@ -1507,19 +1513,33 @@
         : "";
       verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + ventoBadge;
       verd.style.color = ver.bg;
-      // raffica: appendice numerica sotto il medio + fascia di range solo se sopra il medio
-      if (gust != null && !isNaN(gust) && gust > kt + 0.1) {
+      const gustValida = gust != null && !isNaN(gust);
+      if (gustValida) {
         if (gapp) gapp.style.display = "";
         if (gval) gval.textContent = num(gust, 1);
+        ptr.classList.remove("no-gust");
         const pg = posSurf(gust);
-        const w = Math.max(pg - pa, 0);
-        if (range) { range.style.left = pa + "%"; range.style.width = w + "%"; range.style.opacity = (w >= 1) ? "1" : "0"; }
+        const w = Math.abs(pg - pa);
+        const markerVicini = Math.abs(gust - kt) <= SURF_RAFFICA_VICINA || w < 2.5;
+        if (bar) bar.classList.toggle("gust-close", markerVicini);
+        if (range) { range.style.left = Math.min(pa, pg) + "%"; range.style.width = w + "%"; range.style.opacity = (!markerVicini && w >= 1) ? "1" : "0"; }
+        if (gustLine) { gustLine.style.left = pg + "%"; gustLine.style.opacity = markerVicini ? "0" : "1"; }
       } else {
         spegniRaffica();
       }
-      // fuori scala: medio o raffica oltre 40 kt → la posizione è pinnata a destra, segnalalo
-      const fuoriScala = kt > SURF_SCALA || (gust != null && !isNaN(gust) && gust > SURF_SCALA);
-      if (over) over.style.opacity = fuoriScala ? "1" : "0";
+      const medioOltre = kt > SURF_LIMITE;
+      const rafficaOltre = gustValida && gust > SURF_LIMITE;
+      if (over) {
+        over.className = "meter-over";
+        over.classList.toggle("active", medioOltre || rafficaOltre);
+        over.classList.toggle("mean-over", medioOltre && !rafficaOltre);
+        over.classList.toggle("gust-over", rafficaOltre && !medioOltre);
+        over.classList.toggle("both-over", medioOltre && rafficaOltre);
+        over.textContent = medioOltre && rafficaOltre ? "Vento + raffica oltre 35 kt" :
+          (rafficaOltre ? "Raffica oltre 35 kt" : (medioOltre ? "Vento oltre 35 kt" : ""));
+        over.style.opacity = (medioOltre || rafficaOltre) ? "1" : "0";
+        over.setAttribute("aria-hidden", (medioOltre || rafficaOltre) ? "false" : "true");
+      }
     }
 
     /* ---- Surfometro basato sulla centralina di Marina Julia ----
