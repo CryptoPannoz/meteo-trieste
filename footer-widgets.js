@@ -1,5 +1,75 @@
 (function () {
   var doc = document.documentElement;
+  var toggle = document.getElementById("themeToggle");
+  var storageKey = "vento-trieste-theme";
+
+  function temaSalvato() {
+    try { return localStorage.getItem(storageKey); } catch (e) { return null; }
+  }
+
+  function salvaTema(tema) {
+    try { localStorage.setItem(storageKey, tema); } catch (e) {}
+  }
+
+  function aggiornaToggle(tema) {
+    if (!toggle) return;
+    var chiaro = tema === "light";
+    var labelChiaro = toggle.getAttribute("data-light-label") || "Chiaro";
+    var labelScuro = toggle.getAttribute("data-dark-label") || "Scuro";
+    var azione = chiaro ? labelScuro : labelChiaro;
+    var icon = toggle.querySelector(".theme-toggle-icon");
+    var label = toggle.querySelector(".theme-toggle-label");
+    toggle.setAttribute("aria-pressed", String(chiaro));
+    toggle.setAttribute("aria-label", azione);
+    toggle.setAttribute("title", azione);
+    if (icon) icon.textContent = chiaro ? "☾" : "☀";
+    if (label) label.textContent = azione;
+  }
+
+  var tema = temaSalvato();
+  if (tema !== "light" && tema !== "dark") tema = "dark";
+  doc.setAttribute("data-theme", tema);
+  aggiornaToggle(tema);
+
+  if (toggle) {
+    toggle.addEventListener("click", function () {
+      var prossimo = doc.getAttribute("data-theme") === "light" ? "dark" : "light";
+      doc.setAttribute("data-theme", prossimo);
+      salvaTema(prossimo);
+      aggiornaToggle(prossimo);
+    });
+  }
+})();
+
+(function () {
+  var menuToggle = document.getElementById("menuToggle");
+  var topnav = document.getElementById("topnav");
+  if (!menuToggle || !topnav) return;
+
+  function impostaMenu(aperto) {
+    topnav.hidden = !aperto;
+    menuToggle.setAttribute("aria-expanded", String(aperto));
+    var icon = menuToggle.querySelector(".menu-toggle-icon");
+    if (icon) icon.textContent = aperto ? "×" : "☰";
+  }
+
+  menuToggle.addEventListener("click", function (evento) {
+    evento.stopPropagation();
+    impostaMenu(topnav.hidden);
+  });
+  topnav.addEventListener("click", function (evento) {
+    if (evento.target.closest("a")) impostaMenu(false);
+  });
+  document.addEventListener("click", function (evento) {
+    if (!evento.target.closest(".topbar")) impostaMenu(false);
+  });
+  document.addEventListener("keydown", function (evento) {
+    if (evento.key === "Escape") impostaMenu(false);
+  });
+})();
+
+(function () {
+  var doc = document.documentElement;
   var topbar = document.querySelector(".topbar");
 
   function aggiornaOffsetSezioni() {

@@ -30,6 +30,7 @@
 
   <!-- Favicon 💨 (SVG inline, nessuna richiesta esterna) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
     :root {
       --ink: #17212d;
@@ -1527,7 +1528,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20260722-meter2" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20260722-theme1" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20260720-degrees1" defer></script>
 </head>
@@ -1549,6 +1550,10 @@
     </a>
     <div class="topbar-actions">
       <span class="topbar-live">Dati live</span>
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle-label">Chiaro</span>
+      </button>
       <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
         <span class="menu-toggle-icon" aria-hidden="true">☰</span>
         Menu
@@ -3387,32 +3392,6 @@
     if (navIstria) navIstria.addEventListener("click", window.apriSpotIstria);
     if (location.hash === "#istria") setTimeout(() => window.apriSpotIstria(), 250);
 
-    /* ---------- Menu principale collassabile ---------- */
-    const menuToggle = document.getElementById("menuToggle");
-    const topnav = document.getElementById("topnav");
-    function impostaMenu(aperto) {
-      if (!menuToggle || !topnav) return;
-      topnav.hidden = !aperto;
-      menuToggle.setAttribute("aria-expanded", String(aperto));
-      const icon = menuToggle.querySelector(".menu-toggle-icon");
-      if (icon) icon.textContent = aperto ? "✕" : "☰";
-    }
-    if (menuToggle && topnav) {
-      menuToggle.addEventListener("click", e => {
-        e.stopPropagation();
-        impostaMenu(topnav.hidden);
-      });
-      topnav.addEventListener("click", e => {
-        if (e.target.closest("a")) impostaMenu(false);
-      });
-      document.addEventListener("click", e => {
-        if (!e.target.closest(".topbar")) impostaMenu(false);
-      });
-      document.addEventListener("keydown", e => {
-        if (e.key === "Escape") impostaMenu(false);
-      });
-    }
-
     /* I link interni aprono automaticamente il gruppo compatto che contiene
        la destinazione (es. Muggia, Bora o una webcam). */
     function apriGruppiPer(target) {
@@ -3488,7 +3467,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20260720-sticky7"></script>
+  <script src="./footer-widgets.js?v=20260722-theme1"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
