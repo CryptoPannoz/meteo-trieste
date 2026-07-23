@@ -215,6 +215,11 @@
     .island-addr { font-size: .78rem; color: var(--label); margin: 1rem 0 0; }
     /* card link alle webcam (Panomax + Bibione) */
     .webcam-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .6rem; margin-top: .5rem; }
+    /* webcam Panomax embeddate (iframe live) */
+    .webcam-embeds { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: .5rem; }
+    .cam-embed { margin: 0; }
+    .cam-embed .cam-video { margin-top: 0; }
+    .cam-embed figcaption { font-size: .8rem; color: var(--label); text-align: center; margin-top: .35rem; }
     .webcam-card { display: flex; flex-direction: column; gap: .12rem; padding: .8rem .9rem; border: 1px solid var(--bordo); border-radius: 12px; background: var(--surface); text-decoration: none; transition: border-color .15s; }
     .webcam-card:hover { border-color: var(--azzurro); }
     .webcam-card .wc-emoji { font-size: 1.4rem; line-height: 1; }
@@ -996,11 +1001,15 @@
     <p class="stato" id="statoMeteogrado">Fonte: <a href="https://meteogrado.kitelifefvg.it/" target="_blank" rel="noopener">meteogrado.kitelifefvg.it</a> · Kite Life FVG</p>
   </div>
 
-  <!-- CENTRALINE VICINE: Marina Julia + Grado -->
-  <section class="section centraline-head" id="centraline">
-    <h2>Centraline vicine</h2>
-    <p class="stato" style="margin:.1rem 0 0;">Vento in tempo reale dalle centraline dell'Alto Adriatico intorno a Lignano. Il surfometro in alto usa la centralina di Lignano.</p>
-  </section>
+  <!-- CENTRALINE VICINE (collassabile, stesso schema di Previsioni / Vento Trieste) -->
+  <details class="gruppo-collapse page-collapse" id="centraline">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>📡 Centraline</strong>
+      <span>Marina Julia e Grado, in tempo reale</span>
+    </span>
+  </summary>
+  <p class="stato" style="margin:.6rem 0 .2rem;">Vento in tempo reale dalle centraline dell'Alto Adriatico intorno a Lignano. Il surfometro in alto usa la centralina di Lignano.</p>
   <div class="quick-grid">
 
   <div class="section" id="marinajulia">
@@ -1035,6 +1044,7 @@
     <p class="stato" id="statoGrado"></p>
   </div>
   </div>
+  </details>
 
   <!-- ONDE E MARE A LIGNANO: modello Open-Meteo + boe di riferimento (compatto) -->
   <section class="section" id="onde">
@@ -1088,7 +1098,7 @@
     <p class="stato">📝 <em>In attesa di conferma dal partner:</em> appena ISLAND Surf ci passa le indicazioni locali — soglie reali, vele consigliate, zone di lancio e particolarità dello spot — questa tabella diventa ufficiale.</p>
   </section>
 
-  <details class="gruppo-collapse page-collapse" id="webcam">
+  <details class="gruppo-collapse page-collapse" id="webcam" open>
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>📷 Webcam</strong>
@@ -1096,16 +1106,24 @@
     </span>
   </summary>
 
-  <!-- WEBCAM · Panomax (Lignano/Grado) + Bibione, come card-link -->
+  <!-- WEBCAM · Panomax live embeddate (iframe, autoplay nel sito) -->
   <div class="section">
     <h2>Webcam live</h2>
-    <div class="webcam-cards">
-      <a class="webcam-card" href="https://lignano.panomax.com/" target="_blank" rel="noopener"><span class="wc-emoji">🌊</span><span class="wc-t">Lignano — Panomax 360°</span><span class="wc-s">panorama live · Punta Faro</span></a>
-      <a class="webcam-card" href="https://lignanoit.panomax.com/" target="_blank" rel="noopener"><span class="wc-emoji">🏖️</span><span class="wc-t">Lignano — Terrazza a Mare</span><span class="wc-s">panorama live 360°</span></a>
-      <a class="webcam-card" href="https://grado.panomax.com/" target="_blank" rel="noopener"><span class="wc-emoji">🪁</span><span class="wc-t">Grado — Panomax 360°</span><span class="wc-s">panorama live</span></a>
-      <a class="webcam-card" href="https://www.bibione.com/en/exploring/city/webcam-bibione/" target="_blank" rel="noopener"><span class="wc-emoji">📷</span><span class="wc-t">Bibione</span><span class="wc-s">webcam spiaggia</span></a>
+    <div class="webcam-embeds">
+      <figure class="cam-embed">
+        <iframe class="cam-video" src="https://lignano.panomax.com/" title="Webcam live Lignano – Punta Faro (Panomax 360°)" loading="lazy" allowfullscreen></iframe>
+        <figcaption>Lignano — Punta Faro</figcaption>
+      </figure>
+      <figure class="cam-embed">
+        <iframe class="cam-video" src="https://lignanoit.panomax.com/" title="Webcam live Lignano – Terrazza a Mare (Panomax 360°)" loading="lazy" allowfullscreen></iframe>
+        <figcaption>Lignano — Terrazza a Mare</figcaption>
+      </figure>
+      <figure class="cam-embed">
+        <iframe class="cam-video" src="https://grado.panomax.com/" title="Webcam live Grado (Panomax 360°)" loading="lazy" allowfullscreen></iframe>
+        <figcaption>Grado — Panomax 360°</figcaption>
+      </figure>
     </div>
-    <p class="stato" style="margin-top:.7rem;">Panorami interattivi: si aprono in una nuova scheda. Sotto, l'immagine live della spiaggia kite di Grado.</p>
+    <p class="stato" style="margin-top:.7rem;">Webcam live Panomax 360° · anche la <a href="https://www.bibione.com/en/exploring/city/webcam-bibione/" target="_blank" rel="noopener">webcam di Bibione ↗</a>. Se un riquadro resta nero, aprilo <a href="https://lignano.panomax.com/" target="_blank" rel="noopener">nella pagina Panomax ↗</a>.</p>
   </div>
 
   <!-- WEBCAM · GRADO: immagine live Kite Life FVG, se offline il blocco sparisce -->
@@ -1202,16 +1220,16 @@
 
   <!-- WINDY + WINDGURU -->
   <div class="section" id="windy">
-    <h2>Windguru – WG Grado</h2>
+    <h2>Windguru – WG Lignano</h2>
     <div style="margin-top: 1rem; overflow-x:auto;">
       <!-- Windguru widget WG (model mix) -->
-      <script id="wg_fwdg_49154_3_wg">
+      <script id="wg_fwdg_405169_3_wg">
         (function (window, document) {
           var loader = function () {
             var arg = [
-              "s=49154",
+              "s=405169",
               "m=3",
-              "uid=wg_fwdg_49154_3_wg",
+              "uid=wg_fwdg_405169_3_wg",
               "wj=knots",
               "tj=c",
               "waj=m",
@@ -1236,16 +1254,16 @@
       </script>
     </div>
 
-    <h2 style="margin-top:1.5rem;">Windguru – ALADIN Grado</h2>
+    <h2 style="margin-top:1.5rem;">Windguru – ALADIN Lignano</h2>
     <div style="margin-top: 1rem; overflow-x:auto;">
       <!-- Windguru widget -->
-      <script id="wg_fwdg_49154_107_1753785367900">
+      <script id="wg_fwdg_405169_107_1753785367900">
         (function (window, document) {
           var loader = function () {
             var arg = [
-              "s=49154",
+              "s=405169",
               "m=107",
-              "uid=wg_fwdg_49154_107_1753785367900",
+              "uid=wg_fwdg_405169_107_1753785367900",
               "wj=knots",
               "tj=c",
               "waj=m",
@@ -1270,16 +1288,16 @@
       </script>
     </div>
 
-    <h2 style="margin-top:1.5rem;">Windguru – ICON-2I Grado</h2>
+    <h2 style="margin-top:1.5rem;">Windguru – ICON-2I Lignano</h2>
     <div style="margin-top: 1rem; overflow-x:auto;">
       <!-- Windguru widget ICON-2I -->
-      <script id="wg_fwdg_49154_104_icon">
+      <script id="wg_fwdg_405169_104_icon">
         (function (window, document) {
           var loader = function () {
             var arg = [
-              "s=49154",
+              "s=405169",
               "m=104",
-              "uid=wg_fwdg_49154_104_icon",
+              "uid=wg_fwdg_405169_104_icon",
               "wj=knots",
               "tj=c",
               "waj=m",
