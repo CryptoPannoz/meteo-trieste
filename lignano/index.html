@@ -220,6 +220,19 @@
     .webcam-card .wc-emoji { font-size: 1.4rem; line-height: 1; }
     .webcam-card .wc-t { font-weight: 700; color: var(--testo); font-size: .92rem; }
     .webcam-card .wc-s { font-size: .76rem; color: var(--label); }
+    /* Centraline vicine: intestazione compatta */
+    .centraline-head { padding-bottom: .35rem; }
+    /* Boe di riferimento affiancate (compatto) nella sezione Onde */
+    .boe-compact { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .8rem; }
+    .boa-mini h4 { margin: 0 0 .35rem; font-size: .88rem; color: var(--slate-2); }
+    /* Cosa si fa: bozza in attesa di approvazione ISLAND Surf (grigio chiaro) */
+    .cosa-pending-head { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: .3rem; }
+    .cosa-pending-head h2 { margin: 0; }
+    .pending-badge { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--sfondo); background: var(--label); padding: .2rem .6rem; border-radius: 999px; }
+    .cosa-pending-body { opacity: .5; filter: grayscale(.5); }
+    /* Logo partner ISLAND, adattato al tema (nero in chiaro, bianco in scuro) */
+    .island-logo { display: block; width: min(240px, 72%); height: auto; margin: 0 auto .2rem; filter: invert(1); }
+    :root[data-theme="light"] .island-logo { filter: none; }
 
     /* ---- Intestazione sezione con azione a destra (es. "come si legge") ---- */
     .sec-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; }
@@ -974,38 +987,6 @@
       </aside>
     </section>
 
-  <!-- COSA SI FA A LIGNANO: tabella standard (bozza), da personalizzare con ISLAND Surf Shop -->
-  <section class="section" id="cosa-si-fa">
-    <h2>Cosa si fa a Lignano</h2>
-    <p class="stato" style="margin:.1rem 0 .7rem;">Guida rapida <strong>vento → uscita</strong>. Le soglie e gli sport qui sotto sono una <strong>bozza standard</strong>: le tara <a href="#island-partner">ISLAND Surf Shop</a> sulla conoscenza dello spot — a Lignano, per esempio, con ~10 nodi si esce già col <strong>kite foil</strong>, cosa che altrove non si fa.</p>
-    <div style="overflow-x:auto;">
-      <table>
-        <thead>
-          <tr><th>Vento</th><th>Condizione</th><th>Cosa esce a Lignano</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><span class="cosa-kt" style="background:#888780;">&lt;&nbsp;8 kt</span></td><td>Piatto</td><td>SUP, foil pump, scuola principianti · mare da lago</td></tr>
-          <tr><td><span class="cosa-kt" style="background:#2AA198;">8–13 kt</span></td><td>Brezza</td><td><strong>Kite foil</strong> e wing foil: qui si esce già col foil · windsurf leggero</td></tr>
-          <tr><td><span class="cosa-kt" style="background:#6FA83C;">13–18 kt</span></td><td>Si plana</td><td>Windsurf, wing e kite 9–12 m: tutti in acqua</td></tr>
-          <tr><td><span class="cosa-kt" style="background:#4E8718;">18–25 kt</span></td><td>Vento pieno</td><td>Kite 7–9 m, windsurf 5.0–6.0 · planata piena</td></tr>
-          <tr><td><span class="cosa-kt" style="background:#2F5A0E;">25–35 kt</span></td><td>Sostenuto</td><td>Vele/kite piccoli (5–7 m), solo esperti · occhio alle raffiche di bora</td></tr>
-          <tr><td><span class="cosa-kt" style="background:#D63A3A;">&gt;&nbsp;35 kt</span></td><td>Troppo</td><td>Condizioni estreme: meglio restare a riva</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="stato">📝 <em>Tabella da completare con il partner:</em> ISLAND Surf ci passa le indicazioni locali — soglie reali, vele consigliate, zone di lancio e particolarità dello spot — e le pubblichiamo qui.</p>
-  </section>
-
-  <!-- ONDE A LIGNANO: modello marino Open-Meteo (altezza, periodo, direzione onda) -->
-  <section class="section" id="onde">
-    <h2>Onde a Lignano</h2>
-    <p class="stato" style="margin:.1rem 0 .7rem;">Stato del mare al largo di Lignano dal modello marino. L'Alto Adriatico è basso: l'onda cresce soprattutto con lo <strong>Scirocco (SE)</strong>, che ha tutto il mare davanti (fetch lungo), mentre con la <strong>Bora (NE)</strong> resta corta e ripida sottocosta.</p>
-    <div class="statgrid" id="ondeLignanoStat">
-      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
-    </div>
-    <p class="stato" id="statoOnde">Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · modello marino (onda totale, mare da vento e swell)</p>
-  </section>
-
   <!-- METEO GRADO: temperatura aria/mare, pressione, umidità e marea (stazione Kite Life FVG) -->
   <div class="section" id="meteogrado">
     <h2>Meteo Grado – temperatura, pressione e marea</h2>
@@ -1015,40 +996,11 @@
     <p class="stato" id="statoMeteogrado">Fonte: <a href="https://meteogrado.kitelifefvg.it/" target="_blank" rel="noopener">meteogrado.kitelifefvg.it</a> · Kite Life FVG</p>
   </div>
 
-  <details class="gruppo-collapse page-collapse" id="webcam">
-  <summary class="gruppo-sum">
-    <span class="gruppo-sum-main">
-      <strong>📷 Webcam</strong>
-      <span>Webcam live di Lignano, Grado e Bibione</span>
-    </span>
-  </summary>
-
-  <!-- WEBCAM · Panomax (Lignano/Grado) + Bibione, come card-link -->
-  <div class="section">
-    <h2>Webcam live</h2>
-    <div class="webcam-cards">
-      <a class="webcam-card" href="https://lignano.panomax.com/" target="_blank" rel="noopener"><span class="wc-emoji">🌊</span><span class="wc-t">Lignano — Panomax 360°</span><span class="wc-s">panorama live · Punta Faro</span></a>
-      <a class="webcam-card" href="https://lignanoit.panomax.com/" target="_blank" rel="noopener"><span class="wc-emoji">🏖️</span><span class="wc-t">Lignano — Terrazza a Mare</span><span class="wc-s">panorama live 360°</span></a>
-      <a class="webcam-card" href="https://grado.panomax.com/" target="_blank" rel="noopener"><span class="wc-emoji">🪁</span><span class="wc-t">Grado — Panomax 360°</span><span class="wc-s">panorama live</span></a>
-      <a class="webcam-card" href="https://www.bibione.com/en/exploring/city/webcam-bibione/" target="_blank" rel="noopener"><span class="wc-emoji">📷</span><span class="wc-t">Bibione</span><span class="wc-s">webcam spiaggia</span></a>
-    </div>
-    <p class="stato" style="margin-top:.7rem;">Panorami interattivi: si aprono in una nuova scheda. Sotto, l'immagine live della spiaggia kite di Grado.</p>
-  </div>
-
-  <!-- WEBCAM · GRADO: immagine live Kite Life FVG, se offline il blocco sparisce -->
-  <div class="section" id="gradoCam" data-cam-box>
-    <div class="webcam-intestazione">
-      <h2>Webcam Grado (live)</h2>
-      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
-    </div>
-    <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">
-      <img class="webcam" data-src="https://cam.kitelifefvg.it/webcam_grado.php" alt="Webcam Grado – spiaggia kite" loading="lazy" />
-    </a>
-    <p class="stato">Fonti: <a href="https://lignano.panomax.com/" target="_blank" rel="noopener">Panomax</a> · <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">cam.kitelifefvg.it</a> · Kite Life FVG</p>
-  </div>
-  </details>
-
-  <!-- DATI CENTRALINE -->
+  <!-- CENTRALINE VICINE: Marina Julia + Grado -->
+  <section class="section centraline-head" id="centraline">
+    <h2>Centraline vicine</h2>
+    <p class="stato" style="margin:.1rem 0 0;">Vento in tempo reale dalle centraline dell'Alto Adriatico intorno a Lignano. Il surfometro in alto usa la centralina di Lignano.</p>
+  </section>
   <div class="quick-grid">
 
   <div class="section" id="marinajulia">
@@ -1084,24 +1036,90 @@
   </div>
   </div>
 
-  <!-- BOE OGS: MARE E ONDE -->
-  <div class="section" id="mare">
-    <h2>Mare e onde – boe OGS</h2>
-
-    <h3 style="margin:.5rem 0 .25rem;">Boa Trieste (MAMBO1, largo di Barcola)</h3>
-    <div id="mamboStat">
+  <!-- ONDE E MARE A LIGNANO: modello Open-Meteo + boe di riferimento (compatto) -->
+  <section class="section" id="onde">
+    <h2>Onde e mare a Lignano</h2>
+    <p class="stato" style="margin:.1rem 0 .6rem;">Onda al largo di Lignano dal modello marino. L'Alto Adriatico è basso: l'onda cresce con lo <strong>Scirocco (SE)</strong> (fetch lungo), mentre con la <strong>Bora (NE)</strong> resta corta e ripida sottocosta.</p>
+    <div class="statgrid" id="ondeLignanoStat">
       <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
     </div>
-    <p class="stato" id="statoMambo"></p>
+    <p class="stato" id="statoOnde">Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · modello marino</p>
 
-    <h3 style="margin:1rem 0 .25rem;">Boa Pirano (Vida, NIB)</h3>
-    <div id="piranStat">
-      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    <h3 style="margin:1.1rem 0 .4rem;">Boe di riferimento</h3>
+    <div class="boe-compact">
+      <div class="boa-mini">
+        <h4>Boa Trieste — MAMBO1</h4>
+        <div id="mamboStat"><div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div></div>
+        <p class="stato" id="statoMambo"></p>
+      </div>
+      <div class="boa-mini">
+        <h4>Boa Pirano — Vida</h4>
+        <div id="piranStat"><div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div></div>
+        <p class="stato" id="statoPiran"></p>
+      </div>
     </div>
-    <p class="stato" id="statoPiran"></p>
+    <p class="stato">Boe: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS–NODC</a> (Trieste) · <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB</a> (Pirano) · boa <a href="https://www.mareografico.it/it/ultime-news.html" target="_blank" rel="noopener">RON Venezia</a> (Piattaforma Acqua Alta) al largo del Golfo.</p>
+  </section>
 
-    <p class="stato">Fonti: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a> (boa Trieste, via ERDDAP) · <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB – boa Vida</a> (Pirano)</p>
+  <!-- COSA SI FA A LIGNANO: bozza in attesa di approvazione ISLAND Surf Shop -->
+  <section class="section cosa-pending" id="cosa-si-fa">
+    <div class="cosa-pending-head">
+      <h2>Cosa si fa a Lignano</h2>
+      <span class="pending-badge">bozza · in attesa di approvazione di ISLAND Surf</span>
+    </div>
+    <div class="cosa-pending-body">
+      <p class="stato" style="margin:.1rem 0 .7rem;">Guida rapida <strong>vento → uscita</strong>. Le soglie e gli sport qui sotto sono una <strong>bozza standard</strong>: le tara <a href="#island-partner">ISLAND Surf Shop</a> sulla conoscenza dello spot — a Lignano, per esempio, con ~10 nodi si esce già col <strong>kite foil</strong>, cosa che altrove non si fa.</p>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr><th>Vento</th><th>Condizione</th><th>Cosa esce a Lignano</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="cosa-kt" style="background:#888780;">&lt;&nbsp;8 kt</span></td><td>Piatto</td><td>SUP, foil pump, scuola principianti · mare da lago</td></tr>
+            <tr><td><span class="cosa-kt" style="background:#2AA198;">8–13 kt</span></td><td>Brezza</td><td><strong>Kite foil</strong> e wing foil: qui si esce già col foil · windsurf leggero</td></tr>
+            <tr><td><span class="cosa-kt" style="background:#6FA83C;">13–18 kt</span></td><td>Si plana</td><td>Windsurf, wing e kite 9–12 m: tutti in acqua</td></tr>
+            <tr><td><span class="cosa-kt" style="background:#4E8718;">18–25 kt</span></td><td>Vento pieno</td><td>Kite 7–9 m, windsurf 5.0–6.0 · planata piena</td></tr>
+            <tr><td><span class="cosa-kt" style="background:#2F5A0E;">25–35 kt</span></td><td>Sostenuto</td><td>Vele/kite piccoli (5–7 m), solo esperti · occhio alle raffiche di bora</td></tr>
+            <tr><td><span class="cosa-kt" style="background:#D63A3A;">&gt;&nbsp;35 kt</span></td><td>Troppo</td><td>Condizioni estreme: meglio restare a riva</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="stato">📝 <em>In attesa di conferma dal partner:</em> appena ISLAND Surf ci passa le indicazioni locali — soglie reali, vele consigliate, zone di lancio e particolarità dello spot — questa tabella diventa ufficiale.</p>
+  </section>
+
+  <details class="gruppo-collapse page-collapse" id="webcam">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>📷 Webcam</strong>
+      <span>Webcam live di Lignano, Grado e Bibione</span>
+    </span>
+  </summary>
+
+  <!-- WEBCAM · Panomax (Lignano/Grado) + Bibione, come card-link -->
+  <div class="section">
+    <h2>Webcam live</h2>
+    <div class="webcam-cards">
+      <a class="webcam-card" href="https://lignano.panomax.com/" target="_blank" rel="noopener"><span class="wc-emoji">🌊</span><span class="wc-t">Lignano — Panomax 360°</span><span class="wc-s">panorama live · Punta Faro</span></a>
+      <a class="webcam-card" href="https://lignanoit.panomax.com/" target="_blank" rel="noopener"><span class="wc-emoji">🏖️</span><span class="wc-t">Lignano — Terrazza a Mare</span><span class="wc-s">panorama live 360°</span></a>
+      <a class="webcam-card" href="https://grado.panomax.com/" target="_blank" rel="noopener"><span class="wc-emoji">🪁</span><span class="wc-t">Grado — Panomax 360°</span><span class="wc-s">panorama live</span></a>
+      <a class="webcam-card" href="https://www.bibione.com/en/exploring/city/webcam-bibione/" target="_blank" rel="noopener"><span class="wc-emoji">📷</span><span class="wc-t">Bibione</span><span class="wc-s">webcam spiaggia</span></a>
+    </div>
+    <p class="stato" style="margin-top:.7rem;">Panorami interattivi: si aprono in una nuova scheda. Sotto, l'immagine live della spiaggia kite di Grado.</p>
   </div>
+
+  <!-- WEBCAM · GRADO: immagine live Kite Life FVG, se offline il blocco sparisce -->
+  <div class="section" id="gradoCam" data-cam-box>
+    <div class="webcam-intestazione">
+      <h2>Webcam Grado (live)</h2>
+      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+    </div>
+    <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">
+      <img class="webcam" data-src="https://cam.kitelifefvg.it/webcam_grado.php" alt="Webcam Grado – spiaggia kite" loading="lazy" />
+    </a>
+    <p class="stato">Fonti: <a href="https://lignano.panomax.com/" target="_blank" rel="noopener">Panomax</a> · <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">cam.kitelifefvg.it</a> · Kite Life FVG</p>
+  </div>
+  </details>
 
   <div class="section" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
     <button id="btnAggiorna">🔄 Aggiorna dati</button>
@@ -2287,7 +2305,7 @@
   <section id="island-partner" class="island-partner" aria-labelledby="islandTitolo">
     <span class="island-ribbon">Partner locale</span>
     <div class="island-brand">
-      <span class="island-wordmark">ISLAND</span>
+      <img class="island-logo" src="island-logo.png" alt="ISLAND Surf Shop" width="387" height="74" />
       <span class="island-sub">Surf Shop · Lignano Sabbiadoro</span>
     </div>
     <h2 id="islandTitolo" class="island-claim">La scuola storica di Lignano, sull'Isola delle Conchiglie</h2>
