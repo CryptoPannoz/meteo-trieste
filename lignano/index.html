@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
   <title>Vento Lignano – Surfometro, onde e previsioni per windsurf, kite e wing</title>
-  <meta name="description" content="Vento a Lignano, Grado e Bibione in tempo reale per windsurf, kitesurf e wing: surfometro della centralina di Lignano, raffiche e direzione, onde e mare, webcam live, grafico della Bora e modello ALADIN. In collaborazione con ISLAND Surf Shop." />
+  <meta name="description" content="Vento a Lignano, Grado e Bibione in tempo reale per windsurf, kitesurf e wing: surfometro della centralina di Lignano, raffiche e direzione, onde e mare, webcam live, grafico della Bora e mappe vento interattive (Windy, Ventusky). In collaborazione con ISLAND Surf Shop." />
   <meta name="keywords" content="vento Lignano, vento Grado, vento Bibione, surfometro Lignano, windsurf Lignano, kitesurf Lignano, wingfoil Lignano, onde Lignano, previsioni vento Lignano, ALADIN Alto Adriatico, Island Surf Lignano, meteo Lignano Sabbiadoro" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="bebroggi" />
@@ -19,7 +19,7 @@
   <meta property="og:site_name" content="Vento Trieste" />
   <meta property="og:locale" content="it_IT" />
   <meta property="og:title" content="Vento Lignano – Surfometro, onde e previsioni per windsurf, kite e wing" />
-  <meta property="og:description" content="Vento a Lignano, Grado e Bibione live: surfometro, raffiche, direzione, onde, webcam, Bora e ALADIN. In collaborazione con ISLAND Surf Shop." />
+  <meta property="og:description" content="Vento a Lignano, Grado e Bibione live: surfometro, raffiche, direzione, onde, webcam, Bora e mappe vento. In collaborazione con ISLAND Surf Shop." />
   <meta property="og:url" content="https://ventotrieste.info/lignano/" />
   <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
   <meta property="og:image:width" content="1080" />
@@ -220,6 +220,11 @@
     .cam-embed { margin: 0; }
     .cam-embed .cam-video { margin-top: 0; }
     .cam-embed figcaption { font-size: .8rem; color: var(--label); text-align: center; margin-top: .35rem; }
+    /* mappe vento interattive (Windy / Ventusky) */
+    .map-embed { margin: 0; }
+    .map-embed iframe { width: 100%; height: 460px; border: 0; border-radius: 12px; background: var(--surface); display: block; }
+    .map-embed figcaption { font-size: .8rem; color: var(--label); text-align: center; margin-top: .35rem; }
+    @media (max-width: 640px) { .map-embed iframe { height: 380px; } }
     .webcam-card { display: flex; flex-direction: column; gap: .12rem; padding: .8rem .9rem; border: 1px solid var(--bordo); border-radius: 12px; background: var(--surface); text-decoration: none; transition: border-color .15s; }
     .webcam-card:hover { border-color: var(--azzurro); }
     .webcam-card .wc-emoji { font-size: 1.4rem; line-height: 1; }
@@ -856,7 +861,7 @@
         "@id": "https://ventotrieste.info/lignano/#website",
         "url": "https://ventotrieste.info/lignano/",
         "name": "Vento Lignano",
-        "description": "Vento a Lignano, Grado e Bibione in tempo reale per windsurf, kitesurf e wing: surfometro della centralina di Lignano, raffiche e direzione, onde e mare, webcam live, grafico della Bora e modello ALADIN.",
+        "description": "Vento a Lignano, Grado e Bibione in tempo reale per windsurf, kitesurf e wing: surfometro della centralina di Lignano, raffiche e direzione, onde e mare, webcam live, grafico della Bora e mappe vento interattive (Windy, Ventusky).",
         "inLanguage": "it-IT"
       },
       {
@@ -1148,7 +1153,7 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>📅 Previsioni</strong>
-      <span>OSMER, radar, Bora, Aladin e Windguru</span>
+      <span>OSMER, radar, Bora, mappe vento e Windguru</span>
     </span>
   </summary>
 
@@ -1202,20 +1207,19 @@
     </div>
   </div>
 
-  <!-- MODELLO ALADIN -->
-  <div class="section" id="aladin">
-    <h2>Modello Aladin – vento golfo di Trieste</h2>
-    <p class="stato">
-      Previsioni a passi di 3 ore (fonte ARSO) – serie completa su
-      <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">kuguluff.altervista.org</a>
-    </p>
-    <div class="aladin-controlli">
-      <button id="aladinPrec" aria-label="Mappa precedente">◀</button>
-      <span id="aladinPasso">1 / 23</span>
-      <button id="aladinSucc" aria-label="Mappa successiva">▶</button>
-    </div>
-    <img id="aladinImg" alt="Mappa vento modello Aladin" loading="lazy"
-         onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Mappa Aladin momentaneamente non disponibile.</p>'); this.style.display='none';" />
+  <!-- MAPPE VENTO INTERATTIVE (Windy + Ventusky) — sostituiscono il vecchio viewer ALADIN -->
+  <div class="section" id="mappe-vento">
+    <h2>Mappe vento interattive</h2>
+    <p class="stato" style="margin:.1rem 0 .6rem;">Vento animato e previsto sull'Alto Adriatico: trascina, zooma e scorri le ore. Dal menu della mappa puoi cambiare modello, quota e unità.</p>
+    <figure class="map-embed">
+      <iframe title="Mappa vento Windy – Lignano e Alto Adriatico" loading="lazy" src="https://embed.windy.com/embed2.html?lat=45.68&lon=13.13&detailLat=45.68&detailLon=13.13&zoom=8&level=surface&overlay=wind&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=kt&metricTemp=%C2%B0C&radarRange=-1"></iframe>
+      <figcaption>Windy · vento a 10 m (nodi), centrato su Lignano</figcaption>
+    </figure>
+    <figure class="map-embed" style="margin-top:1rem;">
+      <iframe title="Mappa vento Ventusky – Lignano" loading="lazy" src="https://embed.ventusky.com/?p=45.68;13.13;8&l=wind-10m"></iframe>
+      <figcaption>Ventusky · vento a 10 m</figcaption>
+    </figure>
+    <p class="stato">Fonti: <a href="https://www.windy.com/?45.680,13.130,8" target="_blank" rel="noopener">Windy.com</a> · <a href="https://www.ventusky.com/?p=45.68;13.13;8&l=wind-10m" target="_blank" rel="noopener">Ventusky</a></p>
   </div>
 
   <!-- WINDY + WINDGURU -->
@@ -1432,20 +1436,6 @@
     function urlRadar() {
       return "https://meteo.arso.gov.si/uploads/probase/www/observ/radar/si0-rm-anim.gif?ts=" + Date.now();
     }
-    let passoAladin = 1;            // mappe 01..23, una ogni 3 ore
-    const PASSI_ALADIN = 23;
-    function urlAladin(n) {
-      const nn = String(n).padStart(2, "0");
-      return "https://meteo.arso.gov.si/uploads/probase/www/model/aladin/field/ad_vm-va10m_si-sw_" + nn + ".png?ts=" + Date.now();
-    }
-    function mostraAladin() {
-      document.getElementById("aladinImg").src = urlAladin(passoAladin);
-      document.getElementById("aladinPasso").textContent = passoAladin + " / " + PASSI_ALADIN;
-      document.getElementById("aladinPrec").disabled = passoAladin <= 1;
-      document.getElementById("aladinSucc").disabled = passoAladin >= PASSI_ALADIN;
-    }
-    document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
-    document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
 
     /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
     const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
@@ -2278,7 +2268,6 @@
     }
     document.getElementById("boraImg").src = urlBora();
     document.getElementById("radarImg").src = urlRadar();
-    mostraAladin();
     autoCamZusterna();
     aggiornaWebcam();
     // se c'è una cache recente, la pagina si riempie subito (il fetch live la rimpiazza appena arriva)
