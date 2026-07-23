@@ -918,7 +918,6 @@
     </div>
     <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" hidden>
       <a href="#vento">Vento ora</a>
-      <a href="#cosa-si-fa">Cosa si fa</a>
       <a href="#onde">Onde</a>
       <a href="#previsioni">Previsioni</a>
       <a href="#webcam">Webcam</a>
@@ -1074,33 +1073,6 @@
       </div>
     </div>
     <p class="stato">Boe: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS–NODC</a> (Trieste) · <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB</a> (Pirano) · boa <a href="https://www.mareografico.it/it/ultime-news.html" target="_blank" rel="noopener">RON Venezia</a> (Piattaforma Acqua Alta) al largo del Golfo.</p>
-  </section>
-
-  <!-- COSA SI FA A LIGNANO: bozza in attesa di approvazione ISLAND Surf Shop -->
-  <section class="section cosa-pending" id="cosa-si-fa">
-    <div class="cosa-pending-head">
-      <h2>Cosa si fa a Lignano</h2>
-      <span class="pending-badge">bozza · in attesa di approvazione di ISLAND Surf</span>
-    </div>
-    <div class="cosa-pending-body">
-      <p class="stato" style="margin:.1rem 0 .7rem;">Guida rapida <strong>vento → uscita</strong>. Le soglie e gli sport qui sotto sono una <strong>bozza standard</strong>: le tara <a href="#island-partner">ISLAND Surf Shop</a> sulla conoscenza dello spot — a Lignano, per esempio, con ~10 nodi si esce già col <strong>kite foil</strong>, cosa che altrove non si fa.</p>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr><th>Vento</th><th>Condizione</th><th>Cosa esce a Lignano</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><span class="cosa-kt" style="background:#888780;">&lt;&nbsp;8 kt</span></td><td>Piatto</td><td>SUP, foil pump, scuola principianti · mare da lago</td></tr>
-            <tr><td><span class="cosa-kt" style="background:#2AA198;">8–13 kt</span></td><td>Brezza</td><td><strong>Kite foil</strong> e wing foil: qui si esce già col foil · windsurf leggero</td></tr>
-            <tr><td><span class="cosa-kt" style="background:#6FA83C;">13–18 kt</span></td><td>Si plana</td><td>Windsurf, wing e kite 9–12 m: tutti in acqua</td></tr>
-            <tr><td><span class="cosa-kt" style="background:#4E8718;">18–25 kt</span></td><td>Vento pieno</td><td>Kite 7–9 m, windsurf 5.0–6.0 · planata piena</td></tr>
-            <tr><td><span class="cosa-kt" style="background:#2F5A0E;">25–35 kt</span></td><td>Sostenuto</td><td>Vele/kite piccoli (5–7 m), solo esperti · occhio alle raffiche di bora</td></tr>
-            <tr><td><span class="cosa-kt" style="background:#D63A3A;">&gt;&nbsp;35 kt</span></td><td>Troppo</td><td>Condizioni estreme: meglio restare a riva</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <p class="stato">📝 <em>In attesa di conferma dal partner:</em> appena ISLAND Surf ci passa le indicazioni locali — soglie reali, vele consigliate, zone di lancio e particolarità dello spot — questa tabella diventa ufficiale.</p>
   </section>
 
   <details class="gruppo-collapse page-collapse" id="webcam" open>
@@ -1348,9 +1320,8 @@
     function num(v, dec) {
       return (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec) : "–";
     }
-    /* Verdetti standard (in nodi/TWS). Scala neutra: le indicazioni per sport/vela
-       specifiche di Lignano stanno nella tabella "Cosa si fa a Lignano", tarata da
-       ISLAND Surf Shop. Le fasce e i colori combaciano con la scala del surfometro. */
+    /* Verdetti standard (in nodi/TWS). Scala neutra per lo spot di Lignano.
+       Le fasce e i colori combaciano con la scala del surfometro. */
     const BANDE = [
       { txt: "Piatto",       gloss: "vento troppo debole per uscire",            bg: "#888780" },
       { txt: "Brezza",       gloss: "foil e wing per i più leggeri",             bg: "#2AA198" },
