@@ -3,7 +3,7 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { monteGrisa, muggia, grado, preluka, dajla, liznjan, savudrija, barcola, meteogrado, updated }
+ * Endpoint: doGet -> { monteGrisa, muggia, grado, lignano, preluka, dajla, liznjan, savudrija, barcola, meteogrado, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
  * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
  *
@@ -17,6 +17,7 @@ var STATIONS = {
   muggia:      { postaja: 'muggia' },
   marinajulia: { id: 91, postaja: 'monfalcone4' },
   grado:       { id: 24, postaja: 'grado' },
+  lignano:     { postaja: 'lignano' },
   zusterna:   { id: 147, postaja: 'kjdbum' },
   preluka:    { id: 149, postaja: 'preluka' },
   dajla:      { id: 39,  postaja: 'dajla' },
