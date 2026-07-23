@@ -1153,7 +1153,7 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>📅 Previsioni</strong>
-      <span>OSMER, radar, Bora, mappe vento e Windguru</span>
+      <span>OSMER, radar, Bora e mappe vento interattive</span>
     </span>
   </summary>
 
@@ -1220,115 +1220,6 @@
       <figcaption>Ventusky · vento a 10 m</figcaption>
     </figure>
     <p class="stato">Fonti: <a href="https://www.windy.com/?45.680,13.130,8" target="_blank" rel="noopener">Windy.com</a> · <a href="https://www.ventusky.com/?p=45.68;13.13;8&l=wind-10m" target="_blank" rel="noopener">Ventusky</a></p>
-  </div>
-
-  <!-- WINDY + WINDGURU -->
-  <div class="section" id="windy">
-    <h2>Windguru – WG Lignano</h2>
-    <div style="margin-top: 1rem; overflow-x:auto;">
-      <!-- Windguru widget WG (model mix) -->
-      <script id="wg_fwdg_405169_3_wg">
-        (function (window, document) {
-          var loader = function () {
-            var arg = [
-              "s=405169",
-              "m=3",
-              "uid=wg_fwdg_405169_3_wg",
-              "wj=knots",
-              "tj=c",
-              "waj=m",
-              "tij=cm",
-              "odh=0",
-              "doh=24",
-              "fhours=240",
-              "hrsm=2",
-              "vt=forecasts",
-              "lng=it",
-              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
-            ];
-            var script = document.createElement("script");
-            var tag = document.getElementsByTagName("script")[0];
-            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
-            tag.parentNode.insertBefore(script, tag);
-          };
-          window.addEventListener
-            ? window.addEventListener("load", loader, false)
-            : window.attachEvent("onload", loader);
-        })(window, document);
-      </script>
-    </div>
-
-    <h2 style="margin-top:1.5rem;">Windguru – ALADIN Lignano</h2>
-    <div style="margin-top: 1rem; overflow-x:auto;">
-      <!-- Windguru widget -->
-      <script id="wg_fwdg_405169_107_1753785367900">
-        (function (window, document) {
-          var loader = function () {
-            var arg = [
-              "s=405169",
-              "m=107",
-              "uid=wg_fwdg_405169_107_1753785367900",
-              "wj=knots",
-              "tj=c",
-              "waj=m",
-              "tij=cm",
-              "odh=0",
-              "doh=24",
-              "fhours=240",
-              "hrsm=2",
-              "vt=forecasts",
-              "lng=it",
-              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
-            ];
-            var script = document.createElement("script");
-            var tag = document.getElementsByTagName("script")[0];
-            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
-            tag.parentNode.insertBefore(script, tag);
-          };
-          window.addEventListener
-            ? window.addEventListener("load", loader, false)
-            : window.attachEvent("onload", loader);
-        })(window, document);
-      </script>
-    </div>
-
-    <h2 style="margin-top:1.5rem;">Windguru – ICON-2I Lignano</h2>
-    <div style="margin-top: 1rem; overflow-x:auto;">
-      <!-- Windguru widget ICON-2I -->
-      <script id="wg_fwdg_405169_104_icon">
-        (function (window, document) {
-          var loader = function () {
-            var arg = [
-              "s=405169",
-              "m=104",
-              "uid=wg_fwdg_405169_104_icon",
-              "wj=knots",
-              "tj=c",
-              "waj=m",
-              "tij=cm",
-              "odh=0",
-              "doh=24",
-              "fhours=240",
-              "hrsm=2",
-              "vt=forecasts",
-              "lng=it",
-              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
-            ];
-            var script = document.createElement("script");
-            var tag = document.getElementsByTagName("script")[0];
-            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
-            tag.parentNode.insertBefore(script, tag);
-          };
-          window.addEventListener
-            ? window.addEventListener("load", loader, false)
-            : window.attachEvent("onload", loader);
-        })(window, document);
-      </script>
-    </div>
-
-    <div style="text-align:center; margin-top: 1.5rem;">
-      <button onclick="apriModal()">ℹ️ Differenze tra i modelli meteo</button>
-    </div>
   </div>
 
   </details>
