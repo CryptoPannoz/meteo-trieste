@@ -978,7 +978,7 @@
         <div id="lignanoCards"></div>
         <div class="trend" id="lignanoTrend"></div>
         <details class="dettaglio">
-          <summary>Tabella dettaglio · ultimi 45 min</summary>
+          <summary>Tabella dettaglio · ultime ore</summary>
           <table aria-describedby="statoLignano">
             <thead>
               <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
@@ -1013,7 +1013,7 @@
       <span>Marina Julia e Grado, in tempo reale</span>
     </span>
   </summary>
-  <p class="stato" style="margin:.6rem 0 .2rem;">Vento in tempo reale dalle centraline dell'Alto Adriatico intorno a Lignano. Il surfometro in alto usa la centralina di Lignano.</p>
+  <p class="stato" style="margin:.6rem 0 .2rem;">Vento in tempo reale dalle centraline dell'Alto Adriatico intorno a Lignano. Il surfometro in alto usa la stazione meteo sulla spiaggia di Lignano (dati: <a href="https://www.lignanosabbiadoro.com/meteo-lignano" target="_blank" rel="noopener">lignanosabbiadoro.com</a>).</p>
   <div class="quick-grid">
 
   <div class="section" id="marinajulia">
@@ -1429,11 +1429,20 @@
       }
     }
 
-    /* ---- Surfometro basato sulla centralina di Lignano ----
-       Il surfometro usa i dati live della stazione di Lignano (OSMER via vetercek, stesso
-       flusso delle altre centraline: array più recente in testa). Se Lignano non ha dati,
-       mostra "non disponibili". */
+    /* ---- Surfometro basato sulla stazione meteo della spiaggia di Lignano ----
+       Fonte primaria: stazione professionale di lignanosabbiadoro.com (payload
+       lignanoLive, quasi in tempo reale). Fallback: centralina OSMER via vetercek
+       (data.lignano, un dato all'ora). Se nessuna delle due ha dati, "non disponibili". */
+    const LIGNANO_LIVE_LINK = '<a href="https://www.lignanosabbiadoro.com/meteo-lignano" target="_blank" rel="noopener">lignanosabbiadoro.com</a>';
     function lignanoTws(data) {
+      const live = data && data.lignanoLive;
+      if (live && live.kt != null && !isNaN(parseFloat(live.kt))) {
+        const deg = (live.dirGradi != null && !isNaN(live.dirGradi))
+          ? live.dirGradi : cardinaleInGradi(live.direzione);
+        const g = parseFloat(live.sunki);
+        return { avg: parseFloat(live.kt), gust: isNaN(g) ? null : g,
+                 dir: (deg != null && !isNaN(deg)) ? deg : null, live: true, ora: live.ora || "" };
+      }
       let rows = (data && Array.isArray(data.lignano) && data.lignano.length)
         ? data.lignano : cacheStazione["lignano"];
       if (!Array.isArray(rows) || !rows.length) return null;
@@ -1441,7 +1450,8 @@
       if (isNaN(avg)) return null;
       const g = parseFloat(rows[0].sunki);
       const dir = cardinaleInGradi(rows[0].direzione);   // da cardinale (es. "O") a gradi
-      return { avg: avg, gust: isNaN(g) ? null : g, dir: (dir != null && !isNaN(dir)) ? dir : null };
+      return { avg: avg, gust: isNaN(g) ? null : g, dir: (dir != null && !isNaN(dir)) ? dir : null,
+               live: false, ora: rows[0].ora || "" };
     }
     function aggiornaSurfometroAuto(data) {
       const titolo = document.getElementById("surfTitolo");
@@ -1449,7 +1459,9 @@
       if (titolo) titolo.textContent = "Surfometro – Lignano";
       const m = lignanoTws(data);
       if (m != null) {
-        if (fonte) fonte.textContent = "";
+        if (fonte) fonte.innerHTML = m.live
+          ? "Dati: stazione meteo " + LIGNANO_LIVE_LINK + (m.ora ? " · agg. " + m.ora : "")
+          : "Dati: centralina OSMER Lignano via vetercek.com (dato orario" + (m.ora ? ", " + m.ora : "") + ")";
         aggiornaSurfometro(m.avg, m.gust, m.dir);
       } else {
         if (fonte) fonte.textContent = "⚠️ Dati Lignano momentaneamente non disponibili.";
@@ -1790,17 +1802,22 @@
       } else {
         trendEl.innerHTML = "";
       }
-      // --- tabella dettaglio (ultime ~45 min) ---
-      renderTabella(win, prefix + "Body");
+      // --- tabella dettaglio (ultime ~45 min; per le stazioni rade, es. Lignano
+      //     oraria, la finestra sarebbe quasi vuota: mostro le ultime righe) ---
+      renderTabella(win.length >= 4 ? win : rows.slice(0, 8), prefix + "Body");
       // --- nota stato ---
       const st = document.getElementById("stato" + cap(prefix));
       if (st) {
         const ora = r0.ora || "";
-        st.textContent = stale
+        st.innerHTML = stale
           ? "⚠️ Ultimo dato disponibile" + (ora ? " (" + ora + ")" : "") + ", in attesa di aggiornamento"
-          : "Fonte: vetercek.com · ultime ~45 min" + (ora ? " · agg. " + ora : "");
+          : "Fonte: " + (FONTE_STAZIONE[prefix] || "vetercek.com · ultime ~45 min") + (ora ? " · agg. " + ora : "");
       }
     }
+    /* fonti per la nota sotto la tabella; default: vetercek.com */
+    const FONTE_STAZIONE = {
+      lignano: 'stazione meteo <a href="https://www.lignanosabbiadoro.com/meteo-lignano" target="_blank" rel="noopener">lignanosabbiadoro.com</a> (live) + OSMER via vetercek.com (storico orario)'
+    };
 
     let vetercekGiu = false;   // true quando il proxy segnala vetercek.com irraggiungibile (fonte esterna giù)
     function mostraNoData(prefix) {
@@ -1866,10 +1883,25 @@
       return null;
     }
 
+    /* Riga "live" dalla stazione lignanosabbiadoro.com in testa allo storico orario
+       OSMER: stessa forma delle righe vetercek, così card/trend/tabella la mostrano
+       come dato più recente (stessa logica del feed API in Apps Script). */
+    function lignanoRowsLive(data) {
+      const rows = (data && Array.isArray(data.lignano)) ? data.lignano.slice() : [];
+      const live = data && data.lignanoLive;
+      if (live && live.kt != null) {
+        const r = { ora: live.ora || "", direzione: live.direzione || "-",
+                    kt: String(live.kt), sunki: live.sunki != null ? String(live.sunki) : "-",
+                    temp: live.aria != null ? String(live.aria) : "-" };
+        if (!rows.length || !rows[0].ora || r.ora > rows[0].ora) rows.unshift(r);
+      }
+      return rows;
+    }
+
     function renderDati(data) {
       renderOsmer(data.osmer);
       vetercekGiu = ["lignano", "grado", "marinajulia"].some(function (k) { return data[k + "Error"]; });
-      renderStazione(data.lignano, "lignano");
+      renderStazione(lignanoRowsLive(data), "lignano");
       renderStazione(data.grado, "grado");
       renderStazione(data.marinajulia, "marinajulia");
       renderMeteoGrado(data.meteogrado);
@@ -2215,6 +2247,7 @@
       </div>
     </section>
     <p class="credits-meta">
+      Dati live di Lignano: stazione meteo di <a href="https://www.lignanosabbiadoro.com/meteo-lignano" target="_blank" rel="noopener">lignanosabbiadoro.com</a> · storico orario OSMER via <a href="https://vetercek.com" target="_blank" rel="noopener">vetercek.com</a><br>
       Suggerimenti e migliorie: <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a> ·
       <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a><br>
       <span class="credits-signoff">Che SUFI!</span>

@@ -3,7 +3,7 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, preluka, dajla, liznjan, savudrija, barcola, meteogrado, gps, updated }
+ * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, lignanoLive, preluka, dajla, liznjan, savudrija, barcola, meteogrado, gps, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
  * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
  * gps: coordinate di ogni centralina (dal feed API, in parte stimate da vetercek)
@@ -41,6 +41,12 @@ var OSMER_URL = 'https://www.osmer.fvg.it/previsioni.php?ln=';
 var PIRAN_URL = 'https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2?tmpl=component';
 // Stazione meteo Grado (Kite Life FVG): temperatura aria/mare, pressione, umidità e marea
 var METEOGRADO_URL = 'https://meteogrado.kitelifefvg.it/';
+// Stazione meteo professionale sulla spiaggia di Lignano (lignanosabbiadoro.com):
+// vento quasi in tempo reale, molto più fresco della stazione OSMER via vetercek
+// che per Lignano pubblica un solo dato all'ora. Pagina pubblica, valori
+// renderizzati lato server nel blocco "Meteo Live". Il sito accetta lo UA di
+// Apps Script (verificato lug 2026), quindi niente relay.
+var LIGNANO_LIVE_URL = 'https://www.lignanosabbiadoro.com/meteo-lignano';
 var MAX_ROWS = 10;
 // NOTA (giu 2026): vetercek.com ha iniziato a bloccare le richieste senza User-Agent
 // da browser (la connessione resta appesa fino al timeout -> "Indirizzo non disponibile").
@@ -155,6 +161,7 @@ function datiValidi(d) {
   }
   if (d.osmer && d.osmer.length) return true;
   if (d.piran) return true;
+  if (d.lignanoLive) return true;
   return false;
 }
 
@@ -173,8 +180,10 @@ function buildData() {
   requests.push({ url: PIRAN_URL, muteHttpExceptions: true, followRedirects: true, validateHttpsCertificates: false });
   // penultima+3: stazione meteo Grado (temperatura aria/mare, pressione, umidità, marea)
   requests.push({ url: METEOGRADO_URL, muteHttpExceptions: true, followRedirects: true });
-  // ultima: feed API vetercek (dato corrente di tutte le stazioni + coordinate)
+  // penultima+4: feed API vetercek (dato corrente di tutte le stazioni + coordinate)
   requests.push({ url: VETERCEK_RELAY ? VETERCEK_RELAY + encodeURIComponent(VETERCEK_API) : VETERCEK_API, muteHttpExceptions: true, followRedirects: true });
+  // ultima: stazione meteo spiaggia Lignano (lignanosabbiadoro.com)
+  requests.push({ url: LIGNANO_LIVE_URL, muteHttpExceptions: true, followRedirects: true });
 
   var responses = fetchAllResilient(requests);
 
@@ -236,6 +245,13 @@ function buildData() {
   } catch (e) {
     out.meteogrado = null;
     out.meteogradoError = String(e);
+  }
+
+  try {
+    out.lignanoLive = parseLignanoLive(responses[keys.length + 5].getContentText());
+  } catch (e) {
+    out.lignanoLive = null;
+    out.lignanoLiveError = String(e);
   }
 
   out.updated = new Date().toISOString();
@@ -449,6 +465,45 @@ function parseMeteoGrado(html) {
   };
   if (d.aria == null && d.pressione == null && d.marea == null) {
     throw new Error('Nessun dato meteogrado trovato');
+  }
+  return d;
+}
+
+/* Stazione meteo spiaggia di Lignano (lignanosabbiadoro.com/meteo-lignano):
+   estrae il vento e i dati principali dal blocco "Meteo Live" (server-rendered).
+   In pagina la velocità nautica è già in kt; raffica e medie sono in km/h e le
+   convertiamo qui (÷1.852) così il frontend ragiona solo in nodi.
+   La pagina usa UTF-8 letterale ("Velocità", "°C"), teniamo comunque &deg; come
+   alternativa nei pattern per robustezza. */
+function parseLignanoLive(html) {
+  function num(re) {
+    var m = html.match(re);
+    return m ? parseFloat(String(m[1]).replace(',', '.')) : null;
+  }
+  function txt(re) {
+    var m = html.match(re);
+    return m ? m[1].replace(/\s+/g, ' ').trim() : null;
+  }
+  function kmhToKt(v) { return v == null ? null : Math.round(v / 1.852 * 10) / 10; }
+
+  var dirM = html.match(/Direzione:\s*<\/td>\s*<td>\s*<strong>\s*([\d.,]+)\s*(?:&deg;|°)\s*([A-Z]{1,3})/);
+  var d = {
+    // "Dati: 24 Luglio 2026 - 16:29:10" → ora HH:MM (ora locale della stazione)
+    ora:        txt(/Dati:\s*[\s\S]{0,60}?-\s*(\d{1,2}:\d{2}):\d{2}/),
+    kt:         num(/Velocit\S+ nautica:\s*<\/td>\s*<td>\s*<strong>\s*([\d.,]+)\s*Kts/i),
+    sunki:      kmhToKt(num(/Raffica:\s*<\/td>\s*<td>\s*<strong>\s*([\d.,]+)\s*Km\/h/i)),
+    direzione:  dirM ? dirM[2] : null,                    // cardinale, es. "N"
+    dirGradi:   dirM ? parseFloat(dirM[1]) : null,        // gradi precisi, es. 1
+    mediaKt:    kmhToKt(num(/Velocit\S+ media:\s*<\/td>\s*<td[^>]*>\s*([\d.,]+)\s*Km\/h/i)),
+    mediaOraKt: kmhToKt(num(/Velocit\S+ media oraria:\s*<\/td>\s*<td[^>]*>\s*([\d.,]+)\s*Km\/h/i)),
+    situazione: txt(/Situazione venti:\s*<\/td>\s*<td>\s*<strong>\s*([^<]+?)\s*<\/strong>/),
+    aria:       num(/Temperatura:\s*<\/td>\s*<td>\s*<strong>\s*(-?[\d.,]+)\s*(?:&deg;|°)C/),
+    mare:       num(/alt="Temperatura mare"[^>]*>\s*(-?[\d.,]+)\s*(?:&deg;|°)C/),
+    umidita:    num(/Umidit\S+:\s*<\/td>\s*<td>\s*([\d.,]+)\s*(?:&#37;|%)/),
+    pressione:  num(/Barometro:\s*<\/td>\s*<td>\s*([\d.,]+)\s*hPa/i)
+  };
+  if (d.kt == null && d.sunki == null) {
+    throw new Error('Nessun dato vento lignanosabbiadoro trovato');
   }
   return d;
 }

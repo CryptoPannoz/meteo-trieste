@@ -9,6 +9,9 @@ Web app che espone come JSON per `index.html`:
   coordinate delle stazioni, esposte nel payload come `gps`.
 - stazione **Terrapieno di Barcola** da Windguru (stazione 5307; l'API `iapi.php`
   accetta solo richieste con Referer windguru.cz, che il browser non può impostare)
+- stazione meteo **spiaggia di Lignano** da [lignanosabbiadoro.com/meteo-lignano](https://www.lignanosabbiadoro.com/meteo-lignano)
+  (payload `lignanoLive`: vento quasi in tempo reale in kt, direzione in gradi, temperatura
+  aria/mare, umidità, pressione — la stazione OSMER via vetercek per Lignano è solo oraria)
 
 - Script: https://script.google.com/d/1P_ijzBLUXFrW1xc_bZ0n9fEXjBQhYPh44_Z9xnzRf2FYsY4aSjVeZG2S/edit
 - Account: bebroggi@gmail.com
