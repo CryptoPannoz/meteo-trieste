@@ -996,13 +996,15 @@
       </aside>
     </section>
 
-  <!-- METEO GRADO: temperatura aria/mare, pressione, umidità e marea (stazione Kite Life FVG) -->
+  <!-- METEO LIGNANO: temperatura aria/mare, pressione e umidità dalla stazione della
+       spiaggia (lignanosabbiadoro.com); la marea arriva dal mareografo di Grado
+       (meteogrado.kitelifefvg.it), il più vicino con dato pubblico. -->
   <div class="section" id="meteogrado">
-    <h2>Meteo Grado – temperatura, pressione e marea</h2>
+    <h2>Meteo Lignano – temperatura, pressione e marea</h2>
     <div id="meteogradoStat">
       <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
     </div>
-    <p class="stato" id="statoMeteogrado">Fonte: <a href="https://meteogrado.kitelifefvg.it/" target="_blank" rel="noopener">meteogrado.kitelifefvg.it</a> · Kite Life FVG</p>
+    <p class="stato" id="statoMeteogrado">Fonte: stazione meteo <a href="https://www.lignanosabbiadoro.com/meteo-lignano" target="_blank" rel="noopener">lignanosabbiadoro.com</a> · marea: <a href="https://meteogrado.kitelifefvg.it/" target="_blank" rel="noopener">meteogrado.kitelifefvg.it</a> (Grado)</p>
   </div>
 
   <!-- CENTRALINE VICINE (collassabile, stesso schema di Previsioni / Vento Trieste) -->
@@ -1904,7 +1906,7 @@
       renderStazione(lignanoRowsLive(data), "lignano");
       renderStazione(data.grado, "grado");
       renderStazione(data.marinajulia, "marinajulia");
-      renderMeteoGrado(data.meteogrado);
+      renderMeteoLignano(data.lignanoLive, data.meteogrado);
       renderPiran(data.piran);
       aggiornaSurfometroAuto(data);
     }
@@ -1951,7 +1953,7 @@
             renderPiran(null);
             vetercekGiu = false;   // qui non risponde il nostro servizio, non vetercek
             ["lignano", "grado", "marinajulia"].forEach(sp => renderStazione(null, sp));
-            renderMeteoGrado(null);
+            renderMeteoLignano(null, null);
             aggiornaSurfometroAuto({ lignano: null });
             document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati, riprovo tra poco…";
           }
@@ -1993,21 +1995,28 @@
       obs.observe(wrap);
     }
 
-    /* ---------- Meteo Grado (temperatura aria/mare, pressione, umidità, marea) ---------- */
-    function renderMeteoGrado(m) {
+    /* ---------- Meteo Lignano (temperatura aria/mare, pressione, umidità, marea) ----------
+       Aria/mare/pressione/umidità dalla stazione della spiaggia di Lignano
+       (payload lignanoLive); se manca, ripiego sui valori di Grado (meteogrado).
+       La marea viene sempre dal mareografo di Grado: Lignano non la pubblica. */
+    function renderMeteoLignano(live, mg) {
       const box = document.getElementById("meteogradoStat");
       if (!box) return;
-      if (!m || (m.aria == null && m.pressione == null && m.marea == null)) {
+      const pick = k => (live && live[k] != null) ? live[k] : (mg ? mg[k] : null);
+      const aria = pick("aria"), mare = pick("mare"),
+            pressione = pick("pressione"), umidita = pick("umidita"),
+            marea = mg ? mg.marea : null;
+      if (aria == null && pressione == null && marea == null) {
         box.innerHTML = '<div class="statbox"><span class="etichetta">Dati stazione</span><span class="valore">–</span><span class="sub">momentaneamente non disponibili</span></div>';
         return;
       }
       const v = (x, dec) => (x != null && !isNaN(x)) ? Number(x).toFixed(dec) : "–";
       box.innerHTML = '<div class="statgrid">' +
-        miniCard("🌡️ Aria", v(m.aria, 0), "°C") +
-        miniCard("🌊 Mare", v(m.mare, 0), "°C") +
-        miniCard("🔽 Pressione", v(m.pressione, 0), "hPa") +
-        miniCard("💧 Umidità", v(m.umidita, 0), "%") +
-        miniCard("🌊 Marea", v(m.marea, 0), "cm") +
+        miniCard("🌡️ Aria", v(aria, 0), "°C") +
+        miniCard("🌊 Mare", v(mare, 0), "°C") +
+        miniCard("🔽 Pressione", v(pressione, 0), "hPa") +
+        miniCard("💧 Umidità", v(umidita, 0), "%") +
+        miniCard("🌊 Marea", v(marea, 0), "cm", "Grado") +
       '</div>';
     }
 
