@@ -18,8 +18,10 @@
  * restituisce la stazione sbagliata).
  */
 
+// lat/lon nella config = override delle coordinate del feed vetercek (che per
+// alcune stazioni sono stimate male, parole di Jaka stesso).
 var STATIONS = {
-  trieste:     { postaja: 'trst' },        // molo F.lli Bandiera (dati orari, via ARPA)
+  trieste:     { postaja: 'trst', lat: 45.636806, lon: 13.750556 }, // molo F.lli Bandiera (45°38'12.5"N 13°45'02.0"E)
   monteGrisa:  { postaja: 'montegrisa' },
   muggia:      { postaja: 'muggia' },
   marinajulia: { id: 91, postaja: 'monfalcone4' },
@@ -194,7 +196,8 @@ function buildData() {
       htmlErr = String(e);
     }
     var api = feed[STATIONS[k].postaja] || null;
-    if (api && api.lat) out.gps[k] = { lat: api.lat, lon: api.lon };
+    if (STATIONS[k].lat) out.gps[k] = { lat: STATIONS[k].lat, lon: STATIONS[k].lon };
+    else if (api && api.lat) out.gps[k] = { lat: api.lat, lon: api.lon };
     if (api && api.fresca) {
       if (!rows.length) rows = [api.row];                 // HTML rotto: almeno il dato corrente
       else if (api.row.ora > rows[0].ora) rows.unshift(api.row); // API più fresca: in testa
