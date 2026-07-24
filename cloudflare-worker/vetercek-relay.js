@@ -12,10 +12,16 @@
  *   var VETERCEK_RELAY = 'https://<worker>.workers.dev/?url=';
  *
  * Secondo compito — ?rtspme=<camId> (es. la webcam Saturnia, id kyztSFeT):
- * la pagina embed di rtsp.me contiene l'URL HLS firmato (hash + scadenza di
- * qualche ora) ma non è leggibile dal browser (rtsp.me non manda CORS). Il
- * worker la scarica, estrae l'm3u8 e risponde { "url": "…" }: il sito così
- * monta un player HLS con autoplay invece dell'iframe col tasto play.
+ * check di stato per le webcam rtsp.me. STORIA: fino a lug 2026 la pagina embed
+ * conteneva l'URL HLS firmato e il worker lo estraeva ({url:…}) per un player
+ * con autoplay. rtsp.me ha poi rifatto il player (SPA): l'HLS è ora firmato e
+ * LEGATO ALL'IP del richiedente (?ip=…), quindi un URL ottenuto dal worker non
+ * è riproducibile dal visitatore, e anche /error/<id>.json (il vecchio check di
+ * stato usato dal sito) non esiste più. Oggi questo endpoint interroga la nuova
+ * session API (richiede Referer rtsp.me; CORS chiuso per gli altri origin) e
+ * risponde { online, poster, url:null }: il sito, se online, monta l'iframe
+ * ufficiale rtsp.me (tasto play). "poster" è l'anteprima jpg firmata (non
+ * legata all'IP), usabile come immagine di attesa.
  *
  * Sicurezza: accetta SOLO URL di vetercek.com e id webcam rtsp.me (non è un
  * proxy aperto).
@@ -40,26 +46,43 @@ export default {
 
     const params = new URL(request.url).searchParams;
 
-    // ?rtspme=<camId> → estrae l'URL HLS firmato dalla pagina embed di rtsp.me
+    // ?rtspme=<camId> → stato webcam rtsp.me: { online, poster, url:null }
     const camId = params.get('rtspme');
     if (camId) {
       if (!/^[A-Za-z0-9_-]{4,16}$/.test(camId)) {
         return new Response('Bad cam id', { status: 400, headers: CORS });
       }
-      let embed;
+      const out = { online: false, poster: null, url: null }; // url: compat col vecchio formato
       try {
-        embed = await fetch('https://rtsp.me/embed/' + camId + '/', {
-          headers: { 'User-Agent': BROWSER_UA },
-          // il token firmato dura ore: 120s di cache al bordo bastano e avanzano
+        // 1) session API: risponde solo con Referer rtsp.me (da altri origin: forbidden_origin)
+        const sess = await fetch('https://rtsp.me/api/embed/' + camId + '/token/', {
+          headers: {
+            'User-Agent': BROWSER_UA,
+            'Referer': 'https://rtsp.me/embed/' + camId + '/',
+          },
           cf: { cacheTtl: 120, cacheEverything: true },
         });
+        if (sess.ok) {
+          const s = await sess.json().catch(() => null);
+          if (s && s.status === 'ok' && s.token) {
+            out.online = true;
+            // 2) token → poster (anteprima jpg firmata ma NON legata all'IP).
+            //    Best-effort: se fallisce, online resta true e il sito usa l'iframe.
+            try {
+              const st = await fetch((s.url || 'https://fn.rtsp.me') + '/token/' + s.token, {
+                headers: { 'User-Agent': BROWSER_UA },
+              });
+              if (st.ok) {
+                const j = await st.json().catch(() => null);
+                if (j && j.poster) out.poster = j.poster;
+              }
+            } catch (ignore) {}
+          }
+        }
       } catch (err) {
         return new Response('Upstream error: ' + err, { status: 502, headers: CORS });
       }
-      const html = await embed.text();
-      const m = html.match(new RegExp('https://[a-z0-9.-]+\\.rtsp\\.me/[A-Za-z0-9_-]+/\\d+/hls/' + camId + '\\.m3u8[^"\'\\s]*'));
-      return new Response(JSON.stringify({ url: m ? m[0] : null }), {
-        status: m ? 200 : 404,
+      return new Response(JSON.stringify(out), {
         headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'public, max-age=120',

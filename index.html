@@ -3189,12 +3189,11 @@
     }
 
     /* Webcam Saturnia (Sacchetta, rtsp.me): la sezione compare solo se la cam è online.
-       rtsp.me espone /error/<id>.json (CORS aperto): code 0 = stream attivo, code 1 =
-       "start" (lo stream parte on-demand: stato normale a riposo); ogni altro codice è
-       un errore reale (cam offline, codec…). L'URL HLS è firmato con scadenza e non è
-       leggibile dal browser: lo fornisce il relay Cloudflare (?rtspme=) e si monta un
-       player con autoplay muto; se il relay non risponde si ripiega sull'iframe
-       ufficiale rtsp.me (tasto play). */
+       Da lug 2026 rtsp.me ha rifatto il player: /error/<id>.json non esiste più e
+       l'URL HLS è firmato e LEGATO ALL'IP del visitatore, quindi niente più player
+       custom con autoplay. Il check di stato lo fa il relay Cloudflare (?rtspme=),
+       che interroga la nuova session API e risponde { online, poster }. Se online,
+       si monta l'iframe ufficiale rtsp.me (tasto play), lazy alla prima visibilità. */
     function caricaCamSaturnia() {
       const sez  = document.getElementById("saturniaCam");
       const wrap = document.getElementById("camSaturniaWrap");
@@ -3203,22 +3202,15 @@
         wrap.innerHTML = '<iframe class="cam-video" title="Webcam Canottieri Saturnia" loading="lazy" allowfullscreen ' +
           'allow="autoplay; encrypted-media; picture-in-picture" src="https://rtsp.me/embed/kyztSFeT/"></iframe>';
       };
-      fetch("https://frn.rtsp.me/error/kyztSFeT.json", { cache: "no-store" })
+      fetch("https://vetercek-relay.bebroggi.workers.dev/?rtspme=kyztSFeT")
         .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
         .then(j => {
-          const codice = j && j.error && j.error.code;
-          if (codice !== 0 && codice !== 1) return;           // offline → resta nascosta
+          if (!j || !j.online) return;                        // cam rimossa/disabilitata → resta nascosta
           sez.style.display = "";
           const avvia = () => {
             if (wrap.dataset.loaded) return;
             wrap.dataset.loaded = "1";
-            fetch("https://vetercek-relay.bebroggi.workers.dev/?rtspme=kyztSFeT")
-              .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-              .then(rel => {
-                if (!rel || !rel.url) throw new Error("niente url");
-                caricaCamHls("camSaturniaWrap", rel.url, iframeSaturnia);
-              })
-              .catch(iframeSaturnia);
+            iframeSaturnia();
           };
           if (!("IntersectionObserver" in window)) { avvia(); return; }
           const obs = new IntersectionObserver((entries) => {

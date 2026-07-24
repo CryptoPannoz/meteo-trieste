@@ -3,11 +3,13 @@
 Ponte che permette al proxy Apps Script di rileggere **vetercek.com**, che blocca
 le richieste senza User-Agent da browser. Vedi il commento in `vetercek-relay.js`.
 
-Fa anche da estrattore per le **webcam rtsp.me** (es. Saturnia/Sacchetta):
-`/?rtspme=kyztSFeT` risponde `{ "url": "https://…m3u8…" }` con l'URL HLS firmato
-del momento, che il sito usa per un player con autoplay. Per aggiornarlo basta
-rideployare `vetercek-relay.js` (passo 4 qui sotto) sullo stesso worker: finché
-non lo fai, il sito ripiega da solo sull'iframe rtsp.me (tasto play).
+Fa anche da check di stato per le **webcam rtsp.me** (es. Saturnia/Sacchetta):
+`/?rtspme=kyztSFeT` risponde `{ "online": true|false, "poster": "…jpg…", "url": null }`.
+(Fino a lug 2026 estraeva l'URL HLS per un player con autoplay; il nuovo player
+rtsp.me firma l'HLS legandolo all'IP del visitatore, quindi oggi il sito monta
+l'iframe ufficiale e usa questo endpoint solo per decidere se mostrare la sezione.)
+Per aggiornare il worker basta rideployare `vetercek-relay.js` (passo 4 qui sotto)
+sullo stesso worker.
 
 ## Deploy (dalla dashboard, ~5 minuti, senza CLI)
 
