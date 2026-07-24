@@ -3,9 +3,15 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { monteGrisa, muggia, grado, lignano, preluka, dajla, liznjan, savudrija, barcola, meteogrado, updated }
+ * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, preluka, dajla, liznjan, savudrija, barcola, meteogrado, gps, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
  * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
+ * gps: coordinate di ogni centralina (dal feed API, in parte stimate da vetercek)
+ *
+ * Dati correnti: feed JSON ufficiale di vetercek (VETERCEK_API, accordo con Jaka
+ * lug 2026 — MAI interrogare più spesso di ogni 5 minuti). Le pagine HTML /danes/
+ * restano SOLO per lo storico (tabella + trend); se il loro layout cambia, le card
+ * correnti sopravvivono col dato del feed.
  *
  * Le richieste vengono fatte in parallelo con UrlFetchApp.fetchAll.
  * Alcuni spot dell'Istria richiedono il parametro id (senza, vetercek
@@ -13,6 +19,7 @@
  */
 
 var STATIONS = {
+  trieste:     { postaja: 'trst' },        // molo F.lli Bandiera (dati orari, via ARPA)
   monteGrisa:  { postaja: 'montegrisa' },
   muggia:      { postaja: 'muggia' },
   marinajulia: { id: 91, postaja: 'monfalcone4' },
@@ -43,6 +50,10 @@ var MAX_ROWS = 10;
 // Se impostato (URL di un relay tipo  https://xxx.workers.dev/?url= ), le richieste a
 // vetercek passano di lì; se vuoto, si tenta vetercek direttamente (oggi: bloccato).
 var VETERCEK_RELAY = 'https://vetercek-relay.bebroggi.workers.dev/?url=';
+// Feed JSON ufficiale (lug 2026, ok di Jaka via email): ultimo rilevamento di TUTTE
+// le stazioni in una sola chiamata, con lat/lon. Nonostante il path "/xml/" risponde
+// JSON. Passa dal relay come le pagine danes (stesso UA da browser, cache 60s al bordo).
+var VETERCEK_API = 'https://vetercek.com/xml/podatki.php';
 
 function stationUrl(s) {
   var q = (s.id ? 'id=' + s.id + '&' : '') + 'postaja=' + s.postaja;
@@ -102,7 +113,7 @@ function jsonOut(obj) {
 // (visitatori × refresh) e satura la quota giornaliera UrlFetch di Apps Script (~20k/giorno),
 // col risultato "Servizio richiamato troppe volte in un giorno: urlfetch" e app ferma.
 var DATI_CACHE_KEY = 'dati_v1';
-var DATI_CACHE_TTL = 240;   // 4 min: i dati centralina cambiano lentamente, margine ampio sulla quota
+var DATI_CACHE_TTL = 300;   // 5 min: regola pattuita con Jaka (vetercek) — mai interrogare più spesso
 
 function doGet(e) {
   // Endpoint separato per il grafico visite (GoatCounter), cache 3h, key server-side.
@@ -158,18 +169,40 @@ function buildData() {
   requests.push({ url: OSMER_URL, muteHttpExceptions: true, followRedirects: true });
   // penultima+2: boa Vida NIB (Pirano). nib.si invia una catena cert incompleta -> disattivo la validazione
   requests.push({ url: PIRAN_URL, muteHttpExceptions: true, followRedirects: true, validateHttpsCertificates: false });
-  // ultima: stazione meteo Grado (temperatura aria/mare, pressione, umidità, marea)
+  // penultima+3: stazione meteo Grado (temperatura aria/mare, pressione, umidità, marea)
   requests.push({ url: METEOGRADO_URL, muteHttpExceptions: true, followRedirects: true });
+  // ultima: feed API vetercek (dato corrente di tutte le stazioni + coordinate)
+  requests.push({ url: VETERCEK_RELAY ? VETERCEK_RELAY + encodeURIComponent(VETERCEK_API) : VETERCEK_API, muteHttpExceptions: true, followRedirects: true });
 
   var responses = fetchAllResilient(requests);
 
+  // Feed API: fonte primaria per i valori correnti. Se non risponde, feed = {} e
+  // tutto degrada allo scraping HTML come prima.
+  var feed = {};
+  try {
+    feed = parseApiFeed(responses[keys.length + 4].getContentText());
+  } catch (e) {
+    out.apiError = String(e);
+  }
+
+  out.gps = {};
   keys.forEach(function (k, i) {
+    var rows = [], htmlErr = null;
     try {
-      out[k] = parseStation(responses[i].getContentText(), k);
+      rows = parseStation(responses[i].getContentText(), k);
     } catch (e) {
-      out[k] = [];
-      out[k + 'Error'] = String(e);
+      htmlErr = String(e);
     }
+    var api = feed[STATIONS[k].postaja] || null;
+    if (api && api.lat) out.gps[k] = { lat: api.lat, lon: api.lon };
+    if (api && api.fresca) {
+      if (!rows.length) rows = [api.row];                 // HTML rotto: almeno il dato corrente
+      else if (api.row.ora > rows[0].ora) rows.unshift(api.row); // API più fresca: in testa
+      if (rows.length > MAX_ROWS) rows = rows.slice(0, MAX_ROWS);
+    }
+    out[k] = rows;
+    if (!rows.length) out[k + 'Error'] = htmlErr || 'nessun dato (html+api)';
+    else if (htmlErr) out[k + 'HtmlError'] = htmlErr;     // correnti ok (API), storico assente
   });
 
   try {
@@ -284,6 +317,43 @@ function errorResponse(msg) {
     getContentText: function () { throw new Error(msg); },
     getResponseCode: function () { return 0; }
   };
+}
+
+/* Feed API vetercek (podatki.php): array JSON con l'ultimo rilevamento di ogni
+   stazione. Ritorna una mappa short -> { row, fresca, lat, lon } dove row ha lo
+   stesso formato delle righe HTML ({ ora, direzione, kt, sunki, temp }, unità già
+   in nodi — verificato identico alla tabella /danes/).
+   Insidie gestite: 'short' duplicato (es. seca2 compare due volte: tengo il
+   rilevamento più recente) e stazioni morte da anni ancora nel feed ('fresca'
+   = rilevamento di oggi o ieri, altrimenti il dato non va usato). */
+function parseApiFeed(text) {
+  var arr = JSON.parse(text);
+  if (!Array.isArray(arr) || !arr.length) throw new Error('feed API vuoto');
+  var oggi = Utilities.formatDate(new Date(), 'Europe/Rome', 'dd.MM.yyyy');
+  var ieri = Utilities.formatDate(new Date(Date.now() - 86400000), 'Europe/Rome', 'dd.MM.yyyy');
+  function chiaveTempo(s) { // dd.MM.yyyy HH:mm:ss -> stringa ordinabile
+    return String(s.datum || '').split('.').reverse().join('-') + ' ' + (s.cas || '');
+  }
+  var map = {}, tempi = {};
+  arr.forEach(function (s) {
+    if (!s || !s.short) return;
+    var t = chiaveTempo(s);
+    if (tempi[s.short] && tempi[s.short] >= t) return;
+    tempi[s.short] = t;
+    map[s.short] = {
+      fresca: s.datum === oggi || s.datum === ieri,
+      lat: parseFloat(s.lat) || 0,
+      lon: parseFloat(s.lon) || 0,
+      row: {
+        ora: String(s.cas || '').slice(0, 5),
+        direzione: s.smer || '-',
+        kt: s.veter != null ? String(s.veter) : '-',
+        sunki: s.sunki != null ? String(s.sunki) : '-',
+        temp: s.temperatura != null ? String(s.temperatura) : '-'
+      }
+    };
+  });
+  return map;
 }
 
 function parseStation(html, label) {

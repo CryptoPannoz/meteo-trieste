@@ -1640,11 +1640,27 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>📡 Centraline</strong>
-      <span>Monte Grisa, Muggia, Marina Julia e Grado</span>
+      <span>Trieste, Monte Grisa, Muggia, Marina Julia e Grado</span>
     </span>
   </summary>
 
   <div class="quick-grid">
+  <div class="section" id="trieste">
+    <h2>Trieste (porto) – dati in tempo reale</h2>
+    <div id="triesteCards"></div>
+    <div class="trend" id="triesteTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultime 6 ore</summary>
+      <table aria-describedby="statoTrieste">
+        <thead>
+          <tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr>
+        </thead>
+        <tbody id="triesteBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoTrieste"></p>
+  </div>
+
   <div class="section" id="grisa">
     <h2>Monte Grisa – dati in tempo reale</h2>
     <div id="grisaCards"></div>
@@ -2236,6 +2252,7 @@
     // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
     const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
     const LINK_VETERCEK = {
+      trieste: "https://vetercek.com/danes/index.php?postaja=trst",
       grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
       muggia: "https://vetercek.com/danes/index.php?postaja=muggia",
       marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4",
@@ -2718,10 +2735,10 @@
       if (d < 0) d += 1440;            // a cavallo della mezzanotte
       return d;
     }
-    function finestra45(rows) {        // rows newest-first → solo le ultime ~45 min
+    function finestra45(rows, maxMin) { // rows newest-first → solo le ultime ~45 min (o maxMin)
       if (!rows.length) return [];
       const ref = rows[0].ora;
-      return rows.filter(r => minutiTra(ref, r.ora) <= 45);
+      return rows.filter(r => minutiTra(ref, r.ora) <= (maxMin || 45));
     }
     function sparkline(valori, w, h, colore, opts) {
       const n = valori.length;
@@ -2871,7 +2888,8 @@
       const pivot = Math.max(0, Math.floor(serie.length * 0.66));
       const ultimoTratto = serie[serie.length - 1] - serie[pivot];
       const minuti = minutiTra(win[0].ora, win[win.length - 1].ora);
-      const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " kt" + (minuti ? " in " + minuti + " min" : "");
+      const durata = !minuti ? "" : (minuti >= 120 ? " in " + Math.round(minuti / 60) + " ore" : " in " + minuti + " min");
+      const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " kt" + durata;
       const sale = delta >= 0.7 && (slopeTot >= 0.35 || ultimoTratto >= 0.7);
       const cala = delta <= -0.7 && (slopeTot <= -0.35 || ultimoTratto <= -0.7);
       if (sale) return { stato: "in aumento", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
@@ -2879,8 +2897,18 @@
       return                { stato: "stabile",    freccia: "→", colore: "#5f5e5a", deltaTxt: txt };
     }
 
+    /* Link "posizione" su Google Maps: coordinate dal feed API vetercek (in parte
+       stimate dal gestore). Il payload usa la chiave backend (monteGrisa), la UI
+       il prefisso (grisa): qui si traduce. */
+    function gpsLinkHtml(prefix) {
+      const g = (window.__gps || {})[prefix === "grisa" ? "monteGrisa" : prefix];
+      if (!g || !g.lat) return "";
+      return ' · <a href="https://www.google.com/maps?q=' + g.lat + ',' + g.lon
+        + '" target="_blank" rel="noopener">📍 posizione stazione</a>';
+    }
+
     const cacheStazione = {};     // ultimi dati validi per stazione (se un refresh torna vuoto, li riusiamo)
-    function renderStazione(rows, prefix) {
+    function renderStazione(rows, prefix, winMin) {
       let stale = false;
       if (!Array.isArray(rows) || !rows.length) {
         if (cacheStazione[prefix]) { rows = cacheStazione[prefix]; stale = true; }
@@ -2888,7 +2916,7 @@
       } else {
         cacheStazione[prefix] = rows;
       }
-      const win = finestra45(rows);     // ultime ~45 min, la riga 0 è la più recente
+      const win = finestra45(rows, winMin); // ultime ~45 min (o winMin), la riga 0 è la più recente
       const r0 = rows[0];
       // --- card vento principale (TWS grande + TWD + raffica) ---
       const deg = cardinaleInGradi(r0.direzione);
@@ -2914,9 +2942,11 @@
       const st = document.getElementById("stato" + cap(prefix));
       if (st) {
         const ora = r0.ora || "";
-        st.textContent = stale
-          ? "⚠️ Ultimo dato disponibile" + (ora ? " (" + ora + ")" : "") + ", in attesa di aggiornamento"
-          : "Fonte: vetercek.com · ultime ~45 min" + (ora ? " · agg. " + ora : "");
+        const finestraTxt = (winMin && winMin >= 120) ? "ultime " + Math.round(winMin / 60) + " ore" : "ultime ~45 min";
+        st.innerHTML = (stale
+          ? "⚠️ Ultimo dato disponibile" + (ora ? " (" + escHtml(ora) + ")" : "") + ", in attesa di aggiornamento"
+          : "Fonte: vetercek.com · " + finestraTxt + (ora ? " · agg. " + escHtml(ora) : ""))
+          + gpsLinkHtml(prefix);
       }
     }
 
@@ -2987,7 +3017,9 @@
     function renderDati(data) {
       renderBarcola(data.barcola);
       renderOsmer(data.osmer);
-      vetercekGiu = ["monteGrisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
+      window.__gps = data.gps || {};   // coordinate centraline (dal feed API vetercek)
+      vetercekGiu = ["trieste", "monteGrisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
+      renderStazione(data.trieste, "trieste", 360);   // stazione oraria: finestra 6h, non 45 min
       renderStazione(data.monteGrisa, "grisa");
       renderStazione(data.muggia, "muggia");
       renderStazione(data.marinajulia, "marinajulia");
@@ -3051,7 +3083,7 @@
             renderOsmer([]);
             renderPiran(null);
             vetercekGiu = false;   // qui non risponde il nostro servizio, non vetercek
-            ["grisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
+            ["trieste", "grisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).forEach(sp => renderStazione(null, sp));
             aggiornaSurfometroAuto({ barcola: null, monteGrisa: null });
             document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati, riprovo tra poco…";
           }
