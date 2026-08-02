@@ -216,8 +216,6 @@
     .sec-head h2 { margin: 0; }
 
     /* ---- Box differenza pressione Bora (live) ---- */
-    .bora-delta { margin-top: 1.1rem; }
-    .bora-delta .bd-titolo { font-size: 1rem; margin: 0 0 .15rem; }
     #deltaBox { transition: border-color .2s; }
     #deltaBox .sub { font-weight: 600; }
     .bd-info {
@@ -723,21 +721,6 @@
     .side-card .tws-dir,
     .side-card .tws-raffica b { color: var(--ink); }
     .side-card a { color: var(--sea-dark); }
-    .spot-switcher {
-      display: grid;
-      gap: .45rem;
-    }
-    .spot-switcher .spot-pill {
-      text-align: center;
-      background: rgba(255,255,255,.8);
-      border-color: #c3d3d6;
-      color: var(--ink);
-    }
-    .spot-switcher .spot-pill.primary {
-      background: var(--signal);
-      color: #1a250a;
-      border-color: var(--signal);
-    }
     .quick-grid {
       max-width: 1160px;
       width: 100%;
@@ -753,14 +736,14 @@
     #viewsBox { max-width: 1160px; width: 100%; margin-left: auto; margin-right: auto; }
     .section { border-radius: 14px; }
     .legacy-nav { display: none; }
-    #bora #deltaBox {
+    #barcolaLive #deltaBox {
       background: #eaf6ff;
       border-width: 2px;
       box-shadow: inset 0 0 0 1px rgba(15,111,125,.12), 0 12px 30px rgba(15,111,125,.12);
     }
-    #bora #deltaBox .etichetta { color: var(--sea-dark); }
-    #bora #deltaBox .valore { font-size: 1.85rem; color: var(--sea-dark); }
-    #bora #deltaBox .sub { font-size: .86rem; }
+    #barcolaLive #deltaBox .etichetta { color: var(--sea-dark); }
+    #barcolaLive #deltaBox .valore { font-size: 1.85rem; color: var(--sea-dark); }
+    #barcolaLive #deltaBox .sub { font-size: .86rem; }
     .aladin-status {
       margin: .4rem 0 .2rem;
       text-align: center;
@@ -1070,8 +1053,6 @@
     .side-card .tws-hero .u,
     .side-card .tws-raffica { color: #b7c5cb; }
     .side-card a { color: #ccebf0; }
-    .side-card .spot-pill { background: #1c303c; border-color: #405663; color: #eef5f7; }
-    .side-card .spot-pill.primary { background: var(--signal); border-color: var(--signal); color: #17220c; }
     .statbox { border-radius: 7px; background: #f9fbfb; }
     .statbox .etichetta {
       font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
@@ -1380,25 +1361,13 @@
       border-color: var(--signal);
       color: #090b0d;
     }
-    .spot-switcher .spot-pill {
-      background: #171d23;
-      border-color: #3a454f;
-      color: var(--ink);
-      box-shadow: none;
-    }
-    .spot-switcher .spot-pill:hover,
-    .spot-switcher .spot-pill.primary {
-      background: var(--signal);
-      border-color: var(--signal);
-      color: #090b0d;
-    }
-    #bora #deltaBox {
+    #barcolaLive #deltaBox {
       background: #131a20;
       border-color: #414b33;
       box-shadow: inset 0 0 0 1px rgba(240,244,60,.08);
     }
-    #bora #deltaBox .etichetta,
-    #bora #deltaBox .valore { color: var(--signal); }
+    #barcolaLive #deltaBox .etichetta,
+    #barcolaLive #deltaBox .valore { color: var(--signal); }
     #mappaVento h2 > span {
       background: var(--signal) !important;
       border-color: var(--signal) !important;
@@ -1613,23 +1582,29 @@
         <p class="stato" id="surfFonte"></p>
       </div>
 
-      <!-- STAZIONE BARCOLA (Windguru 5307) -->
+      <!-- DIFFERENZA DI PRESSIONE TRIESTE–MARIBOR IN TEMPO REALE (MSLP) -->
       <aside class="side-card" id="barcolaLive">
         <div>
-          <h2>Barcola ora</h2>
-          <div id="barcolaStat">
-            <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+          <h2>Differenza di pressione ora</h2>
+          <div class="statgrid" id="deltaBoraGrid">
+            <div class="statbox">
+              <span class="etichetta">Maribor (SLO)</span>
+              <span class="valore" id="pMaribor">–<span class="unita"> hPa</span></span>
+            </div>
+            <div class="statbox">
+              <span class="etichetta">Trieste (ITA)</span>
+              <span class="valore" id="pTrieste">–<span class="unita"> hPa</span></span>
+            </div>
+            <div class="statbox" id="deltaBox">
+              <span class="etichetta">Δ Trieste − Maribor</span>
+              <span class="valore" id="pDelta">–<span class="unita"> hPa</span></span>
+              <span class="sub" id="deltaGiudizio"></span>
+            </div>
           </div>
-          <p class="stato" id="statoBarcola">
-            <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru</a>
+          <p class="stato" id="deltaBoraStato">
+            Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
+            · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>
           </p>
-        </div>
-        <div class="spot-switcher" aria-label="Pagine spot">
-          <a class="spot-pill primary" href="#vento">Trieste / Barcola</a>
-          <a class="spot-pill" href="#muggia">Muggia</a>
-          <a class="spot-pill" href="#zusterna">Žusterna</a>
-          <a class="spot-pill" href="./marinajulia/">Marina Julia</a>
-          <a class="spot-pill" href="./grado/">Grado</a>
         </div>
       </aside>
 
@@ -1817,30 +1792,6 @@
     <p class="stato">Fonte: <a href="https://profiwetter.ch" target="_blank" rel="noopener">profiwetter.ch</a></p>
     <img id="boraImg" alt="Diagramma previsione Bora" loading="lazy"
          onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Grafico Bora momentaneamente non disponibile.</p>'); this.style.display='none';" />
-
-    <!-- Differenza di pressione Trieste–Maribor in tempo reale (MSLP) -->
-    <div class="bora-delta">
-      <h3 class="bd-titolo">Differenza di pressione ora</h3>
-      <div class="statgrid" id="deltaBoraGrid">
-        <div class="statbox">
-          <span class="etichetta">Maribor (SLO)</span>
-          <span class="valore" id="pMaribor">–<span class="unita"> hPa</span></span>
-        </div>
-        <div class="statbox">
-          <span class="etichetta">Trieste (ITA)</span>
-          <span class="valore" id="pTrieste">–<span class="unita"> hPa</span></span>
-        </div>
-        <div class="statbox" id="deltaBox">
-          <span class="etichetta">Δ Trieste − Maribor</span>
-          <span class="valore" id="pDelta">–<span class="unita"> hPa</span></span>
-          <span class="sub" id="deltaGiudizio"></span>
-        </div>
-      </div>
-      <p class="stato" id="deltaBoraStato">
-        Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
-        · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>
-      </p>
-    </div>
   </div>
 
   <!-- MODELLO ALADIN -->
@@ -2015,7 +1966,7 @@
         • <strong>Δ ≤ −4 hPa</strong> → soglia di <strong>genesi</strong>: la Bora si innesca (consistente).<br>
         • <strong>Δ ≤ −8 hPa</strong> → Bora forte.
       </p>
-      <p class="guida-meta">Il grafico qui sopra mostra la differenza <em>prevista</em> per i prossimi 5 giorni (fonte DWD / profiwetter.ch); questo box invece usa la pressione <em>attuale</em>, normalizzata al livello del mare così che Maribor (262&nbsp;m) e Trieste siano confrontabili. Fonte dati live: Open-Meteo.</p>
+      <p class="guida-meta">Il <strong>Grafico della Bora</strong> (nella sezione Previsioni) mostra la differenza <em>prevista</em> per i prossimi 5 giorni (fonte DWD / profiwetter.ch); questo box invece usa la pressione <em>attuale</em>, normalizzata al livello del mare così che Maribor (262&nbsp;m) e Trieste siano confrontabili. Fonte dati live: Open-Meteo.</p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="document.getElementById('modalDeltaBora').style.display='none'">Chiudi</button>
       </div>
@@ -2034,7 +1985,7 @@
         • Più il <strong>gradiente è negativo</strong> (entroterra ≫ costa), più <strong>forte</strong> sarà la Bora prevista in quel momento.<br>
         • Tratti vicini allo zero = <strong>niente Bora</strong>.
       </p>
-      <p class="guida-meta">Questa è la <em>previsione</em> a più giorni. Per la situazione <em>in tempo reale</em> usa il box “Differenza di pressione ora” sotto al grafico. Fonte: profiwetter.ch (modello DWD).</p>
+      <p class="guida-meta">Questa è la <em>previsione</em> a più giorni. Per la situazione <em>in tempo reale</em> usa il box “Differenza di pressione ora” in cima alla pagina. Fonte: profiwetter.ch (modello DWD).</p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="document.getElementById('modalGuidaBora').style.display='none'">Chiudi</button>
       </div>
@@ -2467,19 +2418,16 @@
       return { avg: avg, gust: isNaN(g) ? null : g, dir: (dir != null && !isNaN(dir)) ? dir : null };
     }
     function aggiornaSurfometroAuto(data) {
-      const sez    = document.getElementById("barcolaLive");
       const titolo = document.getElementById("surfTitolo");
       const fonte  = document.getElementById("surfFonte");
       const bTws = barcolaTws(data && data.barcola);
       if (bTws != null) {                       // Barcola attiva → tutto normale
-        if (sez)    sez.style.display = "";
         if (titolo) titolo.textContent = "Surfometro – Barcola";
         if (fonte)  fonte.textContent = "";
         aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir);
         return;
       }
-      // Barcola offline → passa a Monte Grisa, mantenendo visibili le scorciatoie spot.
-      if (sez) sez.style.display = "";
+      // Barcola offline → passa a Monte Grisa
       const gTws = grisaTws(data);
       if (gTws != null) {
         if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
@@ -2519,41 +2467,6 @@
           '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
         '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
       '</div>';
-    }
-
-    function renderBarcola(b) {
-      const box = document.getElementById("barcolaStat");
-      const stato = document.getElementById("statoBarcola");
-      const oraHm = (b && b.datetime) ? (b.datetime.split(" ")[1] || "").slice(0, 5) : "";
-      /* Barcola ferma / offline / piatta a 0.00: non mostriamo numeri fuorvianti.
-         Disattiviamo il display e lasciamo solo le scorciatoie spot; quando la
-         centralina torna a trasmettere il pannello riappare da solo. */
-      if (!barcolaTws(b)) {
-        box.innerHTML =
-          '<div class="pannello" style="padding:.9rem 0 .5rem;">' +
-            '<div style="font-size:1.8rem;line-height:1;">😴</div>' +
-            '<div style="font-weight:800;color:var(--slate);font-size:1.05rem;margin-top:.4rem;">Centralina in pausa</div>' +
-            '<div style="font-size:.82rem;color:var(--label);margin-top:.3rem;line-height:1.45;">' +
-              'Barcola non trasmette al momento' + (oraHm ? ' (ultimo dato alle ' + oraHm + ')' : '') +
-              '.<br>Scegli un altro spot qui sotto 👇' +
-            '</div>' +
-          '</div>';
-        if (stato) stato.innerHTML =
-          '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
-        return;
-      }
-      const dir = (typeof b.wind_direction === "number") ? b.wind_direction : null;
-      const dirTxt = (dir != null) ? gradiInDirezione(dir) : "–";
-      let boxes = '<div class="statgrid" style="margin-top:.5rem;">';
-      if (b.temperature != null) boxes += miniCard("Aria", num(b.temperature, 1), "°C");
-      if (b.mslp != null)        boxes += miniCard("Pressione", num(b.mslp, 0), "hPa");
-      if (b.rh != null)          boxes += miniCard("Umidità", num(b.rh, 0), "%");
-      boxes += '</div>';
-      box.innerHTML =
-        ventoCardHtml(num(b.wind_avg, 1), num(b.wind_max, 1), dir, dirTxt) + boxes;
-      if (stato) stato.innerHTML =
-        (oraHm ? "Rilevazione delle " + oraHm + " · " : "") +
-        '📊 <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Stazione completa su Windguru (storico e grafici)</a>';
     }
 
     /* ---------- Bollettino OSMER FVG ---------- */
@@ -3015,7 +2928,6 @@
     }
 
     function renderDati(data) {
-      renderBarcola(data.barcola);
       renderOsmer(data.osmer);
       window.__gps = data.gps || {};   // coordinate centraline (dal feed API vetercek)
       vetercekGiu = ["trieste", "monteGrisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
@@ -3079,7 +2991,6 @@
               "⚠️ Servizio dati lento: mostro gli ultimi dati delle " +
               new Date(cache.t).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) + ", riprovo tra poco…";
           } else {
-            renderBarcola(null);
             renderOsmer([]);
             renderPiran(null);
             vetercekGiu = false;   // qui non risponde il nostro servizio, non vetercek
