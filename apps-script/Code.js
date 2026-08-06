@@ -136,7 +136,15 @@ function jsonOut(obj) {
 // il rollback si autoripara in 5 minuti.
 var DATI_CACHE_KEY = 'dati_v2';
 var DATI_TS_KEY    = 'dati_v2_ts';    // epoch ms dell'ultima ricostruzione riuscita
-var DATI_FRESCO_S  = 300;   // 5 min: regola pattuita con Jaka (vetercek) — mai interrogare più spesso
+// 6 min, non 5, DI PROPOSITO. Il trigger riscaldaCache rinfresca ogni 5 minuti: con la
+// soglia anche lei a 5 i due si rincorrono: la copia tocca i 299s un attimo prima che il
+// trigger scatti, e un visitatore capitato lì dentro la giudica scaduta e si rifà tutta
+// la ricostruzione — proprio ciò che il trigger serve a evitare (visto dal vivo, ago 2026:
+// cacheEtaSec 285 a 10s dal giro successivo). Con 360 il trigger arriva sempre primo e una
+// ricostruzione lato visitatore significa davvero "il trigger non ha girato".
+// Non viola l'accordo con Jaka (mai interrogare vetercek più spesso di 5 min): interroghiamo
+// MENO spesso, non di più — è il trigger, ogni 5 minuti esatti, a dettare il ritmo.
+var DATI_FRESCO_S  = 360;
 var DATI_CACHE_TTL = 21600; // 6h (massimo di CacheService): oltre i 5 min la copia è vecchia ma utile
 
 // Legge la copia in cache. Torna { json, eta } (eta = secondi dall'ultima ricostruzione)

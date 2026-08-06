@@ -4,7 +4,9 @@ Web app che espone come JSON per `index.html`:
 - centraline (**Trieste molo**, **Monte Grisa**, **Muggia**, Istria…) da [vetercek.com](https://vetercek.com)
   (le pagine vetercek non mandano header CORS, quindi il browser non può leggerle direttamente).
   Da lug 2026 i **valori correnti** arrivano dal feed API ufficiale `xml/podatki.php`
-  (accordo con Jaka: **mai più spesso di 5 min** → `DATI_FRESCO_S = 300`); le pagine
+  (accordo con Jaka: **mai più spesso di 5 min** → è il trigger `riscaldaCache`, ogni 5 min
+  esatti, a dettare il ritmo delle letture; `DATI_FRESCO_S = 360` è volutamente più larga,
+  vedi il commento nel codice); le pagine
   HTML `/danes/` servono solo per lo storico (tabella + trend). Il feed dà anche le
   coordinate delle stazioni, esposte nel payload come `gps`.
 - stazione **Terrapieno di Barcola** da Windguru (stazione 5307; l'API `iapi.php`
