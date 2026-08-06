@@ -116,39 +116,177 @@ function jsonOut(obj) {
 }
 
 // Cache condivisa del payload dati: tutti i visitatori vedono gli stessi dati, quindi
-// invece di rifare 13 UrlFetch per OGNI richiesta li facciamo UNA volta ogni DATI_CACHE_TTL
+// invece di rifare 13 UrlFetch per OGNI richiesta li facciamo UNA volta ogni DATI_FRESCO_S
 // secondi e serviamo la copia a tutti. Senza questa cache il consumo cresce con
 // (visitatori × refresh) e satura la quota giornaliera UrlFetch di Apps Script (~20k/giorno),
 // col risultato "Servizio richiamato troppe volte in un giorno: urlfetch" e app ferma.
-var DATI_CACHE_KEY = 'dati_v1';
-var DATI_CACHE_TTL = 300;   // 5 min: regola pattuita con Jaka (vetercek) — mai interrogare più spesso
+//
+// STALE-WHILE-REVALIDATE (ago 2026). Prima la copia veniva buttata via dopo 5 minuti:
+// scaduta la cache, il PRIMO visitatore utile pagava l'intera ricostruzione (~16s a
+// container caldo, ~26s a freddo) e spesso il suo browser mollava prima. Chi tornava
+// sul sito non se ne accorgeva (il frontend ridisegna subito dalla cache in
+// localStorage), chi arrivava da un browser nuovo vedeva "Dati non disponibili".
+// Ora la copia resta in cache 6 ore: dopo 5 minuti è "vecchia" ma NON viene buttata,
+// e chi arriva mentre un altro thread sta ricostruendo riceve subito quella invece di
+// accodarsi. Un solo thread alla volta ricostruisce (LockService).
+// Chiave nuova (v2) di proposito: le versioni precedenti leggono 'dati_v1' aspettandosi
+// un TTL di 5 minuti. Se si fa rollback a una di quelle, con la chiave condivisa si
+// ritroverebbero in mano la copia scritta qui con TTL 6h e servirebbero dati vecchi per
+// ore (successo davvero, ago 2026, durante un deploy sbagliato). Chiavi separate =
+// il rollback si autoripara in 5 minuti.
+var DATI_CACHE_KEY = 'dati_v2';
+var DATI_TS_KEY    = 'dati_v2_ts';    // epoch ms dell'ultima ricostruzione riuscita
+var DATI_FRESCO_S  = 300;   // 5 min: regola pattuita con Jaka (vetercek) — mai interrogare più spesso
+var DATI_CACHE_TTL = 21600; // 6h (massimo di CacheService): oltre i 5 min la copia è vecchia ma utile
+
+// Legge la copia in cache. Torna { json, eta } (eta = secondi dall'ultima ricostruzione)
+// oppure null se non c'è nulla. Senza timestamp la trattiamo come vecchissima.
+function leggiCacheDati(cache) {
+  var v = cache.getAll([DATI_CACHE_KEY, DATI_TS_KEY]);
+  var json = v[DATI_CACHE_KEY];
+  if (!json) return null;
+  return { json: json, eta: (Date.now() - Number(v[DATI_TS_KEY] || 0)) / 1000 };
+}
+
+// Ricostruisce il payload e lo mette in cache. Torna il JSON (anche se non cacheabile).
+function aggiornaCacheDati(cache) {
+  var data = buildData();
+  var json = JSON.stringify(data);
+  // Cache SOLO se abbiamo dati veri: un payload tutto-errori (es. quota esaurita) non va
+  // messo in cache, altrimenti continueremmo a servire errori anche dopo il reset quota
+  // — e soprattutto sovrascriveremmo una copia vecchia ma buona.
+  if (datiValidi(data)) {
+    var kv = {};
+    kv[DATI_CACHE_KEY] = json;
+    kv[DATI_TS_KEY] = String(Date.now());
+    try { cache.putAll(kv, DATI_CACHE_TTL); } catch (ignore) {}
+  }
+  return json;
+}
+
+function rawJson(json) {
+  return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+}
 
 function doGet(e) {
   // Endpoint separato per il grafico visite (GoatCounter), cache 3h, key server-side.
   if (e && e.parameter && e.parameter.views) {
     return jsonOut(fetchGoatViews());
   }
-  var cache = CacheService.getScriptCache();
-  // ?fresh=1 forza il ricalcolo (debug/test), altrimenti serviamo dalla cache se presente.
-  if (!(e && e.parameter && e.parameter.fresh)) {
-    var hit = cache.get(DATI_CACHE_KEY);
-    if (hit) return ContentService.createTextOutput(hit).setMimeType(ContentService.MimeType.JSON);
+  // ?diag=1 — stato del trigger di riscaldamento (tempo trigger consumato oggi).
+  if (e && e.parameter && e.parameter.diag) {
+    return jsonOut(statoRiscaldamento());
   }
+
+  var cache = CacheService.getScriptCache();
+  var forza = !!(e && e.parameter && e.parameter.fresh);   // ?fresh=1 forza il ricalcolo (debug/test)
+  var copia = leggiCacheDati(cache);
+  if (copia && !forza && copia.eta < DATI_FRESCO_S) return rawJson(copia.json);
+
+  // Dato assente o vecchio: va ricostruito, ma UNO alla volta. Chi ha già una copia
+  // in mano non aspetta il proprio turno: meglio un dato di qualche minuto fa, subito,
+  // che 16 secondi di clessidra. Chi non ha nulla (visitatore nuovo a cache fredda)
+  // si mette in coda: al massimo attende che l'altro finisca, poi trova la cache piena.
+  var lock = LockService.getScriptLock();
+  var mio = false;
+  try { mio = lock.tryLock(copia ? 0 : 20000); } catch (ignore) {}
+  if (!mio) {
+    if (copia) return rawJson(copia.json);
+    copia = leggiCacheDati(cache);   // l'altro thread potrebbe aver finito nel frattempo
+    return copia ? rawJson(copia.json)
+                 : jsonOut({ fatal: 'ricostruzione in corso, riprova', updated: new Date().toISOString() });
+  }
+
   // Qualsiasi imprevisto deve comunque restituire JSON: se doGet lancia, Apps Script
   // risponde con una pagina HTML d'errore (HTTP 200) che il frontend non sa parsare,
   // e l'intera pagina finisce in "Dati non disponibili".
   try {
-    var data = buildData();
-    var json = JSON.stringify(data);
-    // Cache SOLO se abbiamo dati veri: un payload tutto-errori (es. quota esaurita) non va
-    // messo in cache, altrimenti continueremmo a servire errori anche dopo il reset quota.
-    if (datiValidi(data)) {
-      try { cache.put(DATI_CACHE_KEY, json, DATI_CACHE_TTL); } catch (ignore) {}
-    }
-    return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+    // chi ha atteso il lock trova spesso la cache già rinfrescata da chi lo teneva
+    var ora = leggiCacheDati(cache);
+    if (ora && !forza && ora.eta < DATI_FRESCO_S) return rawJson(ora.json);
+    return rawJson(aggiornaCacheDati(cache));
   } catch (fatal) {
+    // ricostruzione fallita: se abbiamo una copia vecchia è comunque meglio di un errore
+    if (copia) return rawJson(copia.json);
     return jsonOut({ fatal: String(fatal), updated: new Date().toISOString() });
+  } finally {
+    try { lock.releaseLock(); } catch (ignore) {}
   }
+}
+
+/* ---------- riscaldamento della cache (trigger a tempo) ----------------------
+   Perché esiste: con la sola cache on-demand, ogni volta che la copia scadeva il
+   costo della ricostruzione ricadeva su un visitatore a caso. Questo trigger la
+   rinfresca da solo ogni 5 minuti, così la cache è sempre fresca E il container
+   Apps Script resta caldo (a freddo l'avvio da solo vale ~10-20s). Nessun
+   visitatore paga più la ricostruzione.
+
+   Installazione (UNA volta sola, dall'editor Apps Script → icona orologio
+   "Attivazioni" → Aggiungi attivazione):
+     funzione = riscaldaCache · origine = Basata sul tempo
+     tipo = Timer a minuti · intervallo = Ogni 5 minuti
+   NOTA: si installa a mano di proposito. Farlo da codice (ScriptApp.newTrigger)
+   richiederebbe lo scope script.scriptapp nel manifest, e finché l'utente che
+   pubblica non riautorizza la web app risponde "autorizzazione richiesta" —
+   cioè il sito resterebbe senza dati. Quattro click valgono meno di quel rischio.
+
+   Quota: un account consumer ha 90 min/giorno di runtime dei trigger. A 5 minuti
+   sono 288 esecuzioni: a ~16s l'una si arriverebbe a ~79 min, troppo vicino al
+   limite (e finita la quota i trigger si fermano per il resto della giornata,
+   proprio il guasto che vogliamo evitare). Perciò teniamo il conto del tempo
+   consumato: superato BUDGET_TRIGGER_MS il trigger salta un'esecuzione su due
+   (cache vecchia al massimo 10 min invece di restare scoperti fino a mezzanotte).
+   Il conto si azzera a mezzanotte del Pacifico, come le quote Google. */
+var WARM_PROP = 'warm_stat';               // { g, ms, n, salti, skip }
+var BUDGET_TRIGGER_MS = 60 * 60 * 1000;    // 60 min/giorno: margine sui 90 di quota
+
+function leggiWarmStat() {
+  var oggi = Utilities.formatDate(new Date(), 'America/Los_Angeles', 'yyyy-MM-dd');
+  var st = null;
+  try { st = JSON.parse(PropertiesService.getScriptProperties().getProperty(WARM_PROP)); } catch (e) {}
+  if (!st || st.g !== oggi) st = { g: oggi, ms: 0, n: 0, salti: 0, skip: false };
+  return st;
+}
+function salvaWarmStat(st) {
+  try { PropertiesService.getScriptProperties().setProperty(WARM_PROP, JSON.stringify(st)); } catch (e) {}
+}
+
+function riscaldaCache() {
+  var st = leggiWarmStat();
+  if (st.ms >= BUDGET_TRIGGER_MS) {          // budget quasi esaurito: una sì e una no
+    st.skip = !st.skip;
+    if (st.skip) { st.salti++; salvaWarmStat(st); return; }
+  }
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(0)) return;              // una richiesta live sta già ricostruendo
+  var t0 = Date.now();
+  try {
+    aggiornaCacheDati(CacheService.getScriptCache());
+  } catch (e) {
+    // il trigger non deve mai fallire rumorosamente: al peggio la cache resta vecchia
+    // e il primo visitatore la riceve comunque (stale-while-revalidate sopra).
+  } finally {
+    try { lock.releaseLock(); } catch (ignore) {}
+    st.ms += Date.now() - t0;
+    st.n++;
+    salvaWarmStat(st);
+  }
+}
+
+function statoRiscaldamento() {
+  var st = leggiWarmStat();
+  var cache = leggiCacheDati(CacheService.getScriptCache());
+  return {
+    giorno: st.g,
+    esecuzioni: st.n,
+    saltate: st.salti || 0,
+    minutiTrigger: Math.round(st.ms / 600) / 100,
+    budgetMinuti: BUDGET_TRIGGER_MS / 60000,
+    cacheEtaSec: cache ? Math.round(cache.eta) : null,
+    // niente ScriptApp qui (servirebbe uno scope in più): se il trigger gira,
+    // esecuzioni sale da solo. esecuzioni = 0 a giornata avviata = non installato.
+    triggerAttivo: st.n > 0
+  };
 }
 
 // true se il payload contiene almeno una fonte con dati reali (non tutto errori).

@@ -2947,8 +2947,15 @@
       const t = setTimeout(() => ac.abort(), ms);
       return fetch(url, { signal: ac.signal }).finally(() => clearTimeout(t));
     }
+    /* Timeout tarati sui tempi veri del proxy (misurati ago 2026): risposta da cache
+       ~1,5s, ricostruzione del payload ~16s, avvio a container freddo fino a ~26s.
+       Il vecchio timeout unico di 15s tagliava proprio il caso peggiore — e lo tagliava
+       a chi arrivava da un browser nuovo, senza cache in localStorage da mostrare al
+       suo posto: risultato "Dati non disponibili" alla prima visita. Primo tentativo
+       generoso (28s), retry corto (12s): a quel punto il container è caldo, se non
+       risponde è giù davvero e tanto vale passare alla cache. */
     function fetchDati(tentativi) {
-      return fetchConTimeout(PROXY + "?ts=" + Date.now(), 15000)
+      return fetchConTimeout(PROXY + "?ts=" + Date.now(), tentativi > 0 ? 28000 : 12000)
         .then(res => {
           if (!res.ok) throw new Error("HTTP " + res.status);
           return res.json();
@@ -2990,10 +2997,13 @@
             aggiornaSurfometroAuto({ barcola: null, monteGrisa: null });
             document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati, riprovo tra poco…";
           }
-          // nuovo tentativo automatico senza aspettare i 5 minuti dell'auto-refresh
+          // nuovo tentativo automatico senza aspettare i 5 minuti dell'auto-refresh.
+          // 12s (non 45): il caso tipico è il proxy che stava ricostruendo la cache,
+          // quindi tra pochi secondi la risposta c'è già. Chi arriva da un browser
+          // nuovo vede la pagina vuota per il tempo del ritentativo, non per un minuto.
           if (!retryProgrammato) {
             retryProgrammato = true;
-            setTimeout(() => { retryProgrammato = false; caricaDati(); }, 45000);
+            setTimeout(() => { retryProgrammato = false; caricaDati(); }, 12000);
           }
         })
         .finally(() => { btn.disabled = false; });
@@ -3370,6 +3380,10 @@
       document.getElementById("ultimoAggiornamento").textContent =
         "Dati delle " + new Date(cacheAvvio.t).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) + " · aggiornamento in corso…";
       nascondiLoader();
+    } else {
+      // browser nuovo, nessuna cache da mostrare: l'overlay sparisce dopo 8s ma i dati
+      // possono arrivare più tardi. Meglio dirlo che lasciare la pagina muta.
+      document.getElementById("ultimoAggiornamento").textContent = "Caricamento dati in corso…";
     }
     // l'overlay si dissolve quando i dati principali sono pronti
     caricaDati().finally(nascondiLoader);
