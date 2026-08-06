@@ -4,7 +4,7 @@ Web app che espone come JSON per `index.html`:
 - centraline (**Trieste molo**, **Monte Grisa**, **Muggia**, Istria…) da [vetercek.com](https://vetercek.com)
   (le pagine vetercek non mandano header CORS, quindi il browser non può leggerle direttamente).
   Da lug 2026 i **valori correnti** arrivano dal feed API ufficiale `xml/podatki.php`
-  (accordo con Jaka: **mai più spesso di 5 min** → `DATI_CACHE_TTL = 300`); le pagine
+  (accordo con Jaka: **mai più spesso di 5 min** → `DATI_FRESCO_S = 300`); le pagine
   HTML `/danes/` servono solo per lo storico (tabella + trend). Il feed dà anche le
   coordinate delle stazioni, esposte nel payload come `gps`.
 - stazione **Terrapieno di Barcola** da Windguru (stazione 5307; l'API `iapi.php`
@@ -19,12 +19,56 @@ Web app che espone come JSON per `index.html`:
 
 ## Modificare e rideployare
 
+⚠️ **Prima di pushare: `git pull`.** `clasp push` carica quello che c'è nella cartella
+locale, senza sapere nulla di git. Pushare da un checkout indietro rispetto a `origin/main`
+manda in produzione codice vecchio e cancella funzionalità (successo ago 2026: sparì
+`lignanoLive` dal payload). Per rimediare in fretta: `clasp deploy -i <ID> --versionNumber <N>`
+torna a una versione precedente **senza** ricaricare il codice.
+
 ```bash
-cx push            # carica il codice
-cx deploy -d "v2"  # crea un nuovo deployment versionato
+git pull                                            # SEMPRE per primo
+clasp push --force                                  # carica il codice su HEAD
+clasp deploy -i AKfycbxev3jcFdaC…UTPg -d "v36: …"   # pubblica sull'URL già in uso
 ```
 
-⚠️ Un nuovo deployment ha un **nuovo URL**: aggiornare la costante `PROXY` in `index.html`.
+Passando `-i / --deploymentId` del deployment esistente si crea una nuova **versione**
+sullo **stesso URL**: la costante `PROXY` in `index.html` non va toccata. Un `clasp deploy`
+*senza* `-i` crea invece un deployment nuovo con URL nuovo (da evitare).
+`clasp list-deployments` elenca gli ID.
+
+## Riscaldamento della cache (trigger — da installare a mano)
+
+Senza trigger, ogni volta che la copia in cache invecchia il costo della ricostruzione
+ricade su un visitatore a caso: fino a ~26s a container freddo. Chi torna sul sito non
+se ne accorge (il frontend ridisegna subito dalla cache in `localStorage`), chi arriva da
+un **browser nuovo** vede "Dati non disponibili".
+
+Installazione, una volta sola — editor Apps Script → icona ⏰ **Attivazioni** →
+**Aggiungi attivazione**:
+
+| campo | valore |
+|---|---|
+| Funzione | `riscaldaCache` |
+| Origine evento | Basata sul tempo |
+| Tipo di attivazione | Timer a minuti |
+| Intervallo | **Ogni 5 minuti** |
+
+Si installa a mano di proposito: farlo da codice (`ScriptApp.newTrigger`) richiederebbe
+lo scope `script.scriptapp` nel manifest, e finché l'utente che pubblica non riautorizza
+la web app risponde "autorizzazione richiesta" — cioè il sito resta senza dati.
+
+Il trigger ha un budget di 60 min/giorno (la quota consumer è 90): superato quello salta
+un'esecuzione su due invece di esaurirla e lasciare il sito scoperto fino a mezzanotte.
+
+Controllo: **`?diag=1`** sull'endpoint restituisce esecuzioni del giorno, minuti di
+trigger consumati ed età della cache in secondi.
+
+```json
+{ "giorno":"2026-08-06", "esecuzioni":112, "saltate":0,
+  "minutiTrigger":9.4, "budgetMinuti":60, "cacheEtaSec":47, "triggerAttivo":true }
+```
+
+`triggerAttivo: false` a giornata avviata = il trigger non è installato.
 
 ## Risposta JSON
 
