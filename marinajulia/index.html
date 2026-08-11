@@ -7,9 +7,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
-  <title>Vento Marina Julia – Surfometro, Bora e previsioni surf e windsurf</title>
-  <meta name="description" content="Vento in tempo reale a Marina Julia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Marina Julia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
-  <meta name="keywords" content="vento Trieste, Bora Trieste, surf Trieste, windsurf Trieste, vento Barcola, previsioni vento Trieste, ALADIN Trieste, Monte Grisa, Muggia, vento Istria, kitesurf Trieste, golfo di Trieste" />
+  <title>Vento Marina Julia – Surfometro, webcam e previsioni surf e windsurf</title>
+  <meta name="description" content="Vento in tempo reale a Marina Julia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Marina Julia, webcam del Comune di Monfalcone con anemometro, grafico della Bora, mappa del vento, modello ALADIN e spot istriani." />
+  <meta name="keywords" content="vento Marina Julia, webcam Marina Julia, anemometro Monfalcone, vento Monfalcone, Bora Trieste, kitesurf Marina Julia, windsurf Marina Julia, previsioni vento Trieste, ALADIN Trieste, mappa vento golfo di Trieste, vento Istria" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="bebroggi" />
   <link rel="canonical" href="https://ventotrieste.info/marinajulia/" />
@@ -18,8 +18,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Vento Trieste" />
   <meta property="og:locale" content="it_IT" />
-  <meta property="og:title" content="Vento Marina Julia – Surfometro, Bora e previsioni surf e windsurf" />
-  <meta property="og:description" content="Vento in tempo reale a Marina Julia e nel golfo di Trieste: surfometro della centralina di Marina Julia, Bora, ALADIN e dati live di Barcola, Monte Grisa e spot istriani." />
+  <meta property="og:title" content="Vento Marina Julia – Surfometro, webcam e previsioni surf e windsurf" />
+  <meta property="og:description" content="Vento in tempo reale a Marina Julia e nel golfo di Trieste: surfometro della centralina, webcam con anemometro del Comune di Monfalcone, Bora, mappa del vento e ALADIN." />
   <meta property="og:url" content="https://ventotrieste.info/marinajulia/" />
   <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
   <meta property="og:image:width" content="1080" />
@@ -401,7 +401,42 @@
     }
     .aladin-controlli span { font-variant-numeric: tabular-nums; color: #444; }
 
+    /* ---- Mappa del vento ---- */
+    #mappaGolfo { border-radius: 7px; }
+    #mappaVento h2 > span {
+      background: var(--signal) !important;
+      border-color: var(--signal) !important;
+      color: #090b0d !important;
+    }
+    :root[data-theme="light"] #mappaVento h2 > span {
+      background: #fff3d6 !important;
+      border-color: #eedaa2 !important;
+      color: #8a6100 !important;
+    }
+
+    /* ---- Anemometro del Comune di Monfalcone ----
+       Il Comune non pubblica i dati dell'anemometro in nessun formato leggibile:
+       velocità e direzione esistono solo "stampate" dentro il fotogramma della
+       webcam 1 (1200x380). Qui ritagliamo le due fasce dell'immagine — quella in
+       alto con data e ora (y 0-25) e quella in basso con la lettura (y 336-380) —
+       così il dato si legge al volo senza aprire la webcam. Un solo scaricamento:
+       le due <img> puntano allo stesso URL. */
+    .anemo-fascia { position: relative; width: 100%; overflow: hidden; background: #4a4d2e; }
+    .anemo-fascia img { position: absolute; left: 0; top: 0; width: 100%; height: auto; display: block; border-radius: 0; }
+    .anemo-fascia--alta  { aspect-ratio: 1200 / 25; border-radius: 6px 6px 0 0; }
+    .anemo-fascia--bassa { aspect-ratio: 1200 / 44; border-radius: 0 0 6px 6px; }
+    .anemo-fascia--bassa img { transform: translateY(-88.42%); }
+
     /* ---- Webcam ---- */
+    .webcam-luogo {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin: 1.4rem .15rem .35rem;
+      opacity: .85;
+    }
     .webcam-intestazione {
       display: flex;
       justify-content: space-between;
@@ -802,7 +837,7 @@
         "@id": "https://ventotrieste.info/marinajulia/#website",
         "url": "https://ventotrieste.info/marinajulia/",
         "name": "Vento Marina Julia",
-        "description": "Vento in tempo reale a Marina Julia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Marina Julia, grafico della Bora, modello ALADIN e dati live di Barcola, Monte Grisa e spot istriani.",
+        "description": "Vento in tempo reale a Marina Julia e nel golfo di Trieste per surf, windsurf e wing: surfometro della centralina di Marina Julia, webcam del Comune di Monfalcone con anemometro, grafico della Bora, mappa del vento, modello ALADIN e spot istriani.",
         "inLanguage": "it-IT"
       },
       {
@@ -835,6 +870,10 @@
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
   <link rel="stylesheet" href="/footer-widgets.css?v=20260722-theme1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
+  <!-- Mappa del vento: qui la vista è centrata su Marina Julia, quindi i punti
+       del lato Trieste (boa Mambo, Barcola, Muggia) e Žusterna non si disegnano. -->
+  <script>window.__mappaEscludi = ["mambo", "barcola", "muggia", "zusterna"];</script>
+  <script src="/mappa-golfo.js?v=20260811-escludi1" defer></script>
 </head>
 <body>
 
@@ -861,9 +900,9 @@
       <a href="#vento">Vento ora</a>
       <a href="/#centraline">Centraline</a>
       <a href="/#boe">Boe meteo</a>
-      <a href="/#mappaVento">Mappa vento</a>
+      <a href="#mappaVento">Mappa vento</a>
       <a href="#previsioni">Previsioni</a>
-      <a href="/#webcam">Webcam</a>
+      <a href="#webcam">Webcam</a>
       <a href="#istria" onclick="apriSpotIstria(event)">Spot Istria</a>
       <a href="#" class="topnav-birra" onclick="apriBirra(event)" aria-label="Offrimi una birra">🍺 Offrimi una birra</a>
     </nav>
@@ -913,6 +952,31 @@
           </div>
         </div>
         <p class="stato" id="surfFonte"></p>
+
+        <!-- Differenza di pressione Trieste–Maribor in tempo reale (MSLP), sotto
+             il surfometro come sulla home. Il grafico della Bora sta in Previsioni. -->
+        <div class="bora-delta">
+          <h3 class="bd-titolo">Differenza di pressione ora</h3>
+          <div class="statgrid" id="deltaBoraGrid">
+            <div class="statbox">
+              <span class="etichetta">Maribor (SLO)</span>
+              <span class="valore" id="pMaribor">–<span class="unita"> hPa</span></span>
+            </div>
+            <div class="statbox">
+              <span class="etichetta">Trieste (ITA)</span>
+              <span class="valore" id="pTrieste">–<span class="unita"> hPa</span></span>
+            </div>
+            <div class="statbox" id="deltaBox">
+              <span class="etichetta">Δ Trieste − Maribor</span>
+              <span class="valore" id="pDelta">–<span class="unita"> hPa</span></span>
+              <span class="sub" id="deltaGiudizio"></span>
+            </div>
+          </div>
+          <p class="stato" id="deltaBoraStato">
+            Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
+            · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>
+          </p>
+        </div>
       </div>
 
       <!-- DATI CENTRALINA PRINCIPALE -->
@@ -939,6 +1003,25 @@
         </div>
       </aside>
     </section>
+
+  <!-- ANEMOMETRO COMUNE DI MONFALCONE: fasce dati ritagliate dalla webcam 1 -->
+  <div class="section" id="anemoMj">
+    <div class="webcam-intestazione">
+      <h2>Anemometro sulla spiaggia – Comune di Monfalcone</h2>
+      <button onclick="aggiornaWebcam()">🔄 Aggiorna</button>
+    </div>
+    <div class="anemo-fascia anemo-fascia--alta">
+      <img class="webcam" src="https://anemometro.comune.monfalcone.go.it/monfalcone-cam-marinaJulia1.php"
+           data-src="https://anemometro.comune.monfalcone.go.it/monfalcone-cam-marinaJulia1.php"
+           alt="Data e ora della rilevazione dell'anemometro di Marina Julia" />
+    </div>
+    <div class="anemo-fascia anemo-fascia--bassa">
+      <img class="webcam" src="https://anemometro.comune.monfalcone.go.it/monfalcone-cam-marinaJulia1.php"
+           data-src="https://anemometro.comune.monfalcone.go.it/monfalcone-cam-marinaJulia1.php"
+           alt="Lettura dell'anemometro di Marina Julia: velocità in m/s e km/h e direzione" />
+    </div>
+    <p class="stato">Velocità e direzione misurate a bordo spiaggia dall'anemometro del <a href="https://anemometro.comune.monfalcone.go.it/" target="_blank" rel="noopener">Comune di Monfalcone</a>: è la fascia dati della <a href="#webcam">webcam Marina Julia 1</a>, ritagliata qui per leggerla al volo. Misura indipendente dalla centralina di Marina Julia · si aggiorna con il resto della pagina (ogni 5 min): l'ora dello scatto è nella riga in alto.</p>
+  </div>
 
   <!-- DATI CENTRALINE -->
   <div class="quick-grid">
@@ -1000,6 +1083,28 @@
     <span class="stato" id="ultimoAggiornamento"></span>
   </div>
 
+  <!-- MAPPA DEL VENTO (beta) -->
+  <details class="gruppo-collapse page-collapse" id="mappaVento">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>🗺️ Mappa del vento</strong>
+      <span>Direzione e intensità da Marina Julia all'Istria</span>
+    </span>
+  </summary>
+
+  <div class="section" id="mappaVentoContenuto">
+    <h2>Mappa del vento – Golfo e Istria <span style="display:inline-block;font-size:.62em;font-weight:800;letter-spacing:.06em;background:#fff3d6;color:#8a6100;border:1px solid #eedaa2;border-radius:6px;padding:.08em .45em;vertical-align:middle;margin-left:.35rem;">BETA</span></h2>
+    <svg id="mappaGolfo" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento nel Golfo di Trieste e in Istria" style="display:block;width:100%;height:auto;border-radius:8px;"></svg>
+    <div style="display:flex;gap:.9rem;flex-wrap:wrap;align-items:center;font-size:.74rem;color:#5c6675;font-weight:600;margin-top:.6rem;">
+      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#8a94a0;display:inline-block;"></i> &lt;8 kt</span>
+      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#3b6d11;display:inline-block;"></i> 8–15 kt</span>
+      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#b35c00;display:inline-block;"></i> 15–25 kt</span>
+      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#c20202;display:inline-block;"></i> &gt;25 kt</span>
+    </div>
+    <p class="stato">La freccia indica dove va il vento; il colore l'intensità. Le centraline offline non vengono mostrate. Su questa pagina la mappa è centrata sul lato Monfalcone–Grado: i punti di Trieste, Barcola, Muggia e Žusterna restano sulla <a href="/#mappaVento">mappa della home</a>. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
+  </div>
+  </details>
+
   <details class="gruppo-collapse page-collapse" id="previsioni">
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
@@ -1023,7 +1128,7 @@
     <p class="stato">Fonte: <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a> · animazione delle ultime ore</p>
   </div>
 
-  <!-- GRAFICO BORA -->
+  <!-- GRAFICO BORA (la differenza di pressione sta nell'hero, sotto il surfometro) -->
   <div class="section" id="bora">
     <div class="sec-head">
       <h2>Grafico della Bora</h2>
@@ -1032,30 +1137,6 @@
     <p class="stato">Fonte: <a href="https://profiwetter.ch" target="_blank" rel="noopener">profiwetter.ch</a></p>
     <img id="boraImg" alt="Diagramma previsione Bora" loading="lazy"
          onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Grafico Bora momentaneamente non disponibile.</p>'); this.style.display='none';" />
-
-    <!-- Differenza di pressione Trieste–Maribor in tempo reale (MSLP) -->
-    <div class="bora-delta">
-      <h3 class="bd-titolo">Differenza di pressione ora</h3>
-      <div class="statgrid" id="deltaBoraGrid">
-        <div class="statbox">
-          <span class="etichetta">Maribor (SLO)</span>
-          <span class="valore" id="pMaribor">–<span class="unita"> hPa</span></span>
-        </div>
-        <div class="statbox">
-          <span class="etichetta">Trieste (ITA)</span>
-          <span class="valore" id="pTrieste">–<span class="unita"> hPa</span></span>
-        </div>
-        <div class="statbox" id="deltaBox">
-          <span class="etichetta">Δ Trieste − Maribor</span>
-          <span class="valore" id="pDelta">–<span class="unita"> hPa</span></span>
-          <span class="sub" id="deltaGiudizio"></span>
-        </div>
-      </div>
-      <p class="stato" id="deltaBoraStato">
-        Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
-        · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>
-      </p>
-    </div>
   </div>
 
   <!-- MODELLO ALADIN -->
@@ -1259,6 +1340,43 @@
       </div>
     </div>
   </div>
+
+  <!-- WEBCAM MARINA JULIA (Comune di Monfalcone, segnalate da Kite Life FVG).
+       Immagini statiche rigenerate lato server: se una cam va offline il blocco
+       sparisce da solo (stessa logica della home). -->
+  <details class="gruppo-collapse page-collapse" id="webcam">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>📷 Webcam</strong>
+      <span>Le due cam del Comune di Monfalcone su Marina Julia</span>
+    </span>
+  </summary>
+
+  <div class="webcam-luogo" id="camMjLuogo">📍 Marina Julia · Monfalcone</div>
+
+  <div class="section" id="camMarinaJulia1" data-cam-box data-cam-label="camMjLuogo">
+    <div class="webcam-intestazione">
+      <h2>Webcam Marina Julia 1 – spiaggia e golfo</h2>
+      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+    </div>
+    <a href="https://anemometro.comune.monfalcone.go.it/" target="_blank" rel="noopener">
+      <img class="webcam" data-src="https://anemometro.comune.monfalcone.go.it/monfalcone-cam-marinaJulia1.php" alt="Webcam Marina Julia 1 (Monfalcone): spiaggia, golfo e lettura dell'anemometro comunale" loading="lazy" />
+    </a>
+    <p class="stato">È la cam con l'<strong>anemometro</strong>: nella fascia in basso l'immagine riporta velocità (m/s e km/h) e direzione misurate sul posto, insieme a data e ora dello scatto. Fonte: <a href="https://anemometro.comune.monfalcone.go.it/" target="_blank" rel="noopener">Comune di Monfalcone</a>.</p>
+  </div>
+
+  <div class="section" id="camMarinaJulia2" data-cam-box>
+    <div class="webcam-intestazione">
+      <h2>Webcam Marina Julia 2 – arenile</h2>
+      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+    </div>
+    <a href="https://anemometro.comune.monfalcone.go.it/" target="_blank" rel="noopener">
+      <img class="webcam" data-src="https://anemometro.comune.monfalcone.go.it/monfalcone-cam-marinaJulia2.php" alt="Webcam Marina Julia 2 (Monfalcone): arenile e riva" loading="lazy" />
+    </a>
+    <p class="stato">Fonte: <a href="https://anemometro.comune.monfalcone.go.it/" target="_blank" rel="noopener">Comune di Monfalcone</a> · segnalate da <a href="https://www.kitelifefvg.it/webcam/" target="_blank" rel="noopener">Kite Life FVG</a>.</p>
+  </div>
+
+  </details>
 
   <!-- SPOT ISTRIA (gruppo collassabile) -->
   <details class="gruppo-collapse" id="istria">
@@ -1952,6 +2070,9 @@
       SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
       renderPiran(data.piran);
       aggiornaSurfometroAuto(data);
+      // mappa del vento (beta): stesso payload, nessuna richiesta aggiuntiva
+      window.__mappaDati = data;
+      if (window.MappaGolfo) MappaGolfo.render(data);
     }
 
     /* fetch con retry: il primo colpo su Apps Script a freddo può fallire o
@@ -2012,7 +2133,41 @@
       caricaMare();
       document.getElementById("boraImg").src = urlBora();
       document.getElementById("radarImg").src = urlRadar();
+      aggiornaWebcam();
     });
+
+    /* ---------- Webcam statiche (Marina Julia, Comune di Monfalcone) ---------- */
+    function aggiornaWebcam() {
+      document.querySelectorAll("img.webcam").forEach(img => {
+        img.src = img.dataset.src + "?ts=" + Date.now();
+      });
+    }
+
+    /* Webcam statiche offline → il blocco sparisce (niente icona rotta) e
+       ricompare da solo alla prima immagine che torna a caricarsi.
+       data-cam-label: id dell'etichetta 📍 esterna da nascondere insieme al blocco. */
+    document.querySelectorAll("img.webcam").forEach(img => {
+      const blocco = img.closest("[data-cam-box], .section");
+      if (!blocco) return;
+      const label = blocco.dataset.camLabel ? document.getElementById(blocco.dataset.camLabel) : null;
+      img.addEventListener("error", () => { blocco.style.display = "none"; if (label) label.style.display = "none"; });
+      img.addEventListener("load",  () => { blocco.style.display = ""; if (label) label.style.display = ""; });
+    });
+
+    /* Le due cam intere pesano ~200 KB a colpo: si scaricano alla prima apertura
+       del gruppo Webcam, non al caricamento della pagina. Solo le immagini ancora
+       senza src, così non si riscarica il fotogramma già preso dalla fascia
+       dell'anemometro. */
+    (function () {
+      const grp = document.getElementById("webcam");
+      if (!grp) return;
+      const carica = () => {
+        if (!grp.open) return;
+        grp.querySelectorAll("img.webcam:not([src])").forEach(img => { img.src = img.dataset.src; });
+      };
+      grp.addEventListener("toggle", carica);
+      carica();
+    })();
 
     /* Webcam YouTube live (es. KJD BUM a Žusterna): iframe con autoplay muto, caricato solo quando serve */
     function caricaCamYoutube(wrapId) {
@@ -2190,7 +2345,11 @@
     caricaMare();
     caricaDeltaBora();
     // auto-refresh dati ogni 5 minuti
-    timerAuto = setInterval(() => { caricaDati(); caricaMare(); caricaDeltaBora(); }, 5 * 60 * 1000);
+    timerAuto = setInterval(() => {
+      caricaDati(); caricaMare(); caricaDeltaBora();
+      // la fascia dell'anemometro è un'immagine: si rinfresca solo se la scheda è in primo piano
+      if (document.visibilityState === "visible") aggiornaWebcam();
+    }, 5 * 60 * 1000);
   </script>
 
   <!-- MODAL OFFRI UNA BIRRA: Revolut / PayPal / Bitcoin -->

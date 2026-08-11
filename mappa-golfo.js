@@ -183,11 +183,21 @@
     dest.appendChild(g);
   }
 
+  /* window.__mappaEscludi = ["barcola", ...]: elenco di id da NON disegnare.
+     Serve alle pagine spot, che mostrano la stessa mappa centrata sul proprio
+     angolo di golfo senza i punti lontani (es. /marinajulia/ nasconde Trieste,
+     Barcola, Muggia e Zusterna). Assente sulla home: si disegna tutto. */
+  function escluso(st) {
+    var e = window.__mappaEscludi;
+    return !!(e && e.indexOf && e.indexOf(st.id) !== -1);
+  }
+
   function render(data) {
     if (!gStazioni || !data) return;
     gStazioni.innerHTML = "";
     STAZIONI.forEach(function (st) {
       if (st.tipo === "mambo") return;
+      if (escluso(st)) return;
       disegnaStazione(gStazioni, st, normalizza(st, data));
     });
   }
@@ -196,6 +206,7 @@
     if (!gMambo) return;
     gMambo.innerHTML = "";
     var st = STAZIONI.filter(function (s) { return s.tipo === "mambo"; })[0];
+    if (!st || escluso(st)) return;
     disegnaStazione(gMambo, st, v);
   }
 
