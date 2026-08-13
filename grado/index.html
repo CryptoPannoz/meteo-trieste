@@ -1292,7 +1292,11 @@
       <h3 id="deltaBoraTitolo">Differenza di pressione e Bora</h3>
       <p>Il box mostra la <strong>differenza di pressione a livello del mare (MSLP)</strong> misurata <em>in questo momento</em> tra Trieste e Maribor (Slovenia):</p>
       <p style="text-align:center; margin:.6rem 0;"><strong>Δ = pressione Trieste − pressione Maribor</strong></p>
-      <p id="deltaBoraLive" class="guida-meta" style="text-align:center;"></p>
+      <div class="statgrid" id="deltaBoraLive" style="grid-template-columns:repeat(2,1fr); margin:.6rem 0 .3rem;">
+        <div class="statbox"><span class="etichetta">Trieste (ITA)</span><span class="valore" id="dbLiveTs">–<span class="unita"> hPa</span></span></div>
+        <div class="statbox"><span class="etichetta">Maribor (SLO)</span><span class="valore" id="dbLiveMb">–<span class="unita"> hPa</span></span></div>
+      </div>
+      <p class="guida-meta" id="dbLiveDelta" style="text-align:center; margin:.2rem 0 .6rem;"></p>
       <p>Un valore <strong>negativo</strong> significa che a <strong>Maribor c'è più pressione che a Trieste</strong>: è la condizione che innesca la Bora in Adriatico. Più il valore è negativo, più forte sarà la Bora.</p>
       <p>Soglie indicative:</p>
       <p>
@@ -2239,9 +2243,11 @@
         const marker = document.getElementById("deltaMarker");
         marker.style.left = (Math.min(Math.max(-delta, 0), 12) / 12 * 100) + "%";
         marker.style.opacity = "1";
-        const live = document.getElementById("deltaBoraLive");
-        if (live) live.innerHTML = "<strong>In questo momento:</strong> Trieste " + pTs.toFixed(1)
-          + " hPa · Maribor " + pMb.toFixed(1) + " hPa · Δ = " + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa";
+        const liveTs = document.getElementById("dbLiveTs"), liveMb = document.getElementById("dbLiveMb");
+        if (liveTs) liveTs.innerHTML = pTs.toFixed(1) + '<span class="unita"> hPa</span>';
+        if (liveMb) liveMb.innerHTML = pMb.toFixed(1) + '<span class="unita"> hPa</span>';
+        const liveD = document.getElementById("dbLiveDelta");
+        if (liveD) liveD.innerHTML = "Δ = <strong>" + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa</strong> (Trieste − Maribor)";
         stato.innerHTML =
           'Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>' +
           ' · agg. ' + mb.current.time.slice(11, 16) + infoBtn;

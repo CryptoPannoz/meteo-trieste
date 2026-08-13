@@ -1264,7 +1264,11 @@
       <h3 id="deltaBoraTitolo">Razlika tlaka in burja</h3>
       <p>Okvirček prikazuje <strong>razliko tlaka na morski gladini (MSLP)</strong>, izmerjeno <em>v tem trenutku</em> med Trstom in Mariborom (Slovenija):</p>
       <p style="text-align:center; margin:.6rem 0;"><strong>Δ = tlak Trst − tlak Maribor</strong></p>
-      <p id="deltaBoraLive" class="guida-meta" style="text-align:center;"></p>
+      <div class="statgrid" id="deltaBoraLive" style="grid-template-columns:repeat(2,1fr); margin:.6rem 0 .3rem;">
+        <div class="statbox"><span class="etichetta">Trst (ITA)</span><span class="valore" id="dbLiveTs">–<span class="unita"> hPa</span></span></div>
+        <div class="statbox"><span class="etichetta">Maribor (SLO)</span><span class="valore" id="dbLiveMb">–<span class="unita"> hPa</span></span></div>
+      </div>
+      <p class="guida-meta" id="dbLiveDelta" style="text-align:center; margin:.2rem 0 .6rem;"></p>
       <p><strong>Negativna</strong> vrednost pomeni, da je <strong>v Mariboru več tlaka kot v Trstu</strong>: to je pogoj, ki sproži burjo na Jadranu. Bolj kot je vrednost negativna, močnejša bo burja.</p>
       <p>Okvirni pragovi:</p>
       <p>
@@ -2149,9 +2153,11 @@
         const marker = document.getElementById("deltaMarker");
         marker.style.left = (Math.min(Math.max(-delta, 0), 12) / 12 * 100) + "%";
         marker.style.opacity = "1";
-        const live = document.getElementById("deltaBoraLive");
-        if (live) live.innerHTML = "<strong>Trenutno:</strong> Trst " + pTs.toFixed(1)
-          + " hPa · Maribor " + pMb.toFixed(1) + " hPa · Δ = " + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa";
+        const liveTs = document.getElementById("dbLiveTs"), liveMb = document.getElementById("dbLiveMb");
+        if (liveTs) liveTs.innerHTML = pTs.toFixed(1) + '<span class="unita"> hPa</span>';
+        if (liveMb) liveMb.innerHTML = pMb.toFixed(1) + '<span class="unita"> hPa</span>';
+        const liveD = document.getElementById("dbLiveDelta");
+        if (liveD) liveD.innerHTML = "Δ = <strong>" + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa</strong> (Trst − Maribor)";
         stato.innerHTML =
           'Tlak na morski gladini (MSLP) · vir <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>' +
           ' · posod. ' + mb.current.time.slice(11, 16) + infoBtn;

@@ -281,6 +281,11 @@
     #surfometroCard.surf-offline .surf2-verdetto { font-size: 1.5rem; letter-spacing: .01em; }
     .surf-agg { display: block; margin-top: .1rem; }
     .surf-catena { font-size: .74rem; opacity: .72; margin-top: .15rem; }
+    /* nota fonti del surfometro: chiusa di default, il riassunto sta nel summary */
+    .surf-note { margin-top: .5rem; }
+    .surf-note summary { font-size: .8rem; font-weight: 600; color: var(--label); cursor: pointer; }
+    .surf-note summary:hover { color: var(--testo); }
+    .surf-note[open] summary { margin-bottom: .3rem; }
     .meter {
       position: relative;
       padding: 50px .55rem 1.15rem;
@@ -1614,8 +1619,11 @@
             </div>
           </div>
         </div>
-        <p class="stato" id="surfFonte"></p>
-        <p class="stato surf-catena">Fonti, in ordine: centralina <strong>Barcola</strong> → <strong>Monte Grisa</strong> (backup) → boa <strong>MAMBO1</strong> OGS (backup 2, oraria)</p>
+        <details class="surf-note">
+          <summary id="surfNoteSum">ℹ️ Fonte dati</summary>
+          <p class="stato" id="surfFonte"></p>
+          <p class="stato surf-catena">Fonti, in ordine: centralina <strong>Barcola</strong> → <strong>Monte Grisa</strong> (backup) → boa <strong>MAMBO1</strong> OGS (backup 2, oraria)</p>
+        </details>
       </div>
 
       <!-- SPINTA DELLA BORA: DIFFERENZA DI PRESSIONE TRIESTE–MARIBOR (MSLP), RESA LEGGIBILE.
@@ -1992,7 +2000,11 @@
       <h3 id="deltaBoraTitolo">Differenza di pressione e Bora</h3>
       <p>Il box mostra la <strong>differenza di pressione a livello del mare (MSLP)</strong> misurata <em>in questo momento</em> tra Trieste e Maribor (Slovenia):</p>
       <p style="text-align:center; margin:.6rem 0;"><strong>Δ = pressione Trieste − pressione Maribor</strong></p>
-      <p id="deltaBoraLive" class="guida-meta" style="text-align:center;"></p>
+      <div class="statgrid" id="deltaBoraLive" style="grid-template-columns:repeat(2,1fr); margin:.6rem 0 .3rem;">
+        <div class="statbox"><span class="etichetta">Trieste (ITA)</span><span class="valore" id="dbLiveTs">–<span class="unita"> hPa</span></span></div>
+        <div class="statbox"><span class="etichetta">Maribor (SLO)</span><span class="valore" id="dbLiveMb">–<span class="unita"> hPa</span></span></div>
+      </div>
+      <p class="guida-meta" id="dbLiveDelta" style="text-align:center; margin:.2rem 0 .6rem;"></p>
       <p>Un valore <strong>negativo</strong> significa che a <strong>Maribor c'è più pressione che a Trieste</strong>: è la condizione che innesca la Bora in Adriatico. Più il valore è negativo, più forte sarà la Bora.</p>
       <p>Soglie indicative:</p>
       <p>
@@ -2484,6 +2496,13 @@
       const dir = cardinaleInGradi(rows[0].direzione);   // da cardinale (es. "O") a gradi
       return { avg: avg, gust: isNaN(g) ? null : g, dir: (dir != null && !isNaN(dir)) ? dir : null, ts: eta ? eta.ts : null };
     }
+    /* Riassunto compatto per il summary del dropdown: "18:00 · 54 min fa" */
+    function oraBreve(ts) {
+      if (!(ts instanceof Date) || isNaN(ts.getTime())) return "";
+      const min = Math.round((Date.now() - ts.getTime()) / 60000);
+      return ts.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })
+        + (min > 0 ? " · " + (min === 1 ? "1 min fa" : min + " min fa") : " · adesso");
+    }
     /* Riga "ultimo aggiornamento" sotto il surfometro: ora, data e minuti trascorsi del
        rilevamento effettivamente mostrato (non dell'ultima chiamata al proxy). */
     function testoUltimoAgg(ts) {
@@ -2516,11 +2535,13 @@
     function aggiornaSurfometroAuto(data) {
       const titolo = document.getElementById("surfTitolo");
       const fonte  = document.getElementById("surfFonte");
+      const sum    = document.getElementById("surfNoteSum");
       const card   = document.getElementById("surfometroCard");
       const bTws = barcolaTws(data && data.barcola);
       if (bTws != null) {                       // Barcola attiva → tutto normale
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Barcola";
+        if (sum)    sum.textContent = "🕒 Fonte: Barcola" + (bTws.ts ? " · agg. " + oraBreve(bTws.ts) : "");
         if (fonte)  fonte.innerHTML = testoUltimoAgg(bTws.ts);
         aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir);
         return;
@@ -2530,6 +2551,7 @@
       if (gTws != null) {
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
+        if (sum)    sum.textContent = "⚠️ Backup: Monte Grisa" + (gTws.ts ? " · agg. " + oraBreve(gTws.ts) : "");
         if (fonte)  fonte.innerHTML = "⚠️ Barcola offline o non aggiornata — surfometro calcolato sui dati di <strong>Monte Grisa</strong>."
           + testoUltimoAgg(gTws.ts);
         aggiornaSurfometro(gTws.avg, gTws.gust, gTws.dir);
@@ -2540,6 +2562,7 @@
       if (mTws != null) {
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Boa Mambo";
+        if (sum)    sum.textContent = "⚠️ Backup 2: boa MAMBO1" + (mTws.ts ? " · agg. " + oraBreve(mTws.ts) : "");
         if (fonte)  fonte.innerHTML = "⚠️ Centraline di Barcola e Monte Grisa ferme — surfometro calcolato sulla boa <strong>MAMBO1</strong> (OGS), al largo di Barcola (<a href=\"https://maps.google.com/?q=45.698333,13.700000\" target=\"_blank\" rel=\"noopener\">📍 posizione</a>). La boa è oraria: meno reattiva delle centraline."
           + testoUltimoAgg(mTws.ts);
         aggiornaSurfometro(mTws.avg, mTws.gust, mTws.dir);
@@ -2547,6 +2570,7 @@
         const ultimo = ultimoDatoNoto(data);
         if (card)   card.classList.add("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – non disponibile";
+        if (sum)    sum.textContent = "⚠️ Offline — nessuna fonte aggiornata";
         if (fonte)  fonte.innerHTML = "⚠️ Centraline di <strong>Barcola</strong> e <strong>Monte Grisa</strong> e boa <strong>MAMBO1</strong> offline: nessun dato aggiornato, il surfometro riprende da solo appena una fonte torna in linea."
           + (ultimo ? '<span class="surf-agg">🕒 Ultimo dato ricevuto: ' + ultimo + '</span>' : "");
         aggiornaSurfometro(null, null, null, 'Offline<small>centraline non in linea</small>');
@@ -3404,9 +3428,11 @@
         document.getElementById("deltaGhost").textContent = abs.replace(/[0-9]/g, "8");
         document.getElementById("deltaLcd").textContent = abs;
         // i valori assoluti delle due pressioni vivono solo nel popup "come si legge"
-        const live = document.getElementById("deltaBoraLive");
-        if (live) live.innerHTML = "<strong>In questo momento:</strong> Trieste " + pTs.toFixed(1)
-          + " hPa · Maribor " + pMb.toFixed(1) + " hPa · Δ = " + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa";
+        const liveTs = document.getElementById("dbLiveTs"), liveMb = document.getElementById("dbLiveMb");
+        if (liveTs) liveTs.innerHTML = pTs.toFixed(1) + '<span class="unita"> hPa</span>';
+        if (liveMb) liveMb.innerHTML = pMb.toFixed(1) + '<span class="unita"> hPa</span>';
+        const liveD = document.getElementById("dbLiveDelta");
+        if (liveD) liveD.innerHTML = "Δ = <strong>" + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa</strong> (Trieste − Maribor)";
         stato.innerHTML =
           'Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>' +
           ' · agg. ' + mb.current.time.slice(11, 16) + infoBtn;
