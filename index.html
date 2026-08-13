@@ -223,7 +223,7 @@
     .bd-verdetto.assente { color: #5b6470; }
     .bd-verdetto.consistente { color: #e2680f; }
     .bd-verdetto.forte { color: #cf2e22; }
-    .bd-spiega { font-size: .8rem; color: var(--label); text-align: center; margin: .25rem 0 .75rem; line-height: 1.45; }
+    .bd-spiega { font-size: .8rem; color: var(--label); text-align: center; margin: .6rem 0 .2rem; line-height: 1.45; }
     .bd-bar {
       position: relative; display: flex; height: 14px; border-radius: 999px; overflow: hidden;
       background: #e7ebe5; box-shadow: inset 0 1px 2px rgba(23,33,45,.14);
@@ -236,7 +236,8 @@
     }
     .bd-labels { display: flex; font-size: .68rem; color: var(--label); font-weight: 700; margin-top: .3rem; text-align: center; }
     .bd-labels div { flex: 1; }
-    .bd-deltaval { text-align: center; font-size: .74rem; color: var(--label); margin: .45rem 0 .2rem; font-variant-numeric: tabular-nums; }
+    .tws-hero.bd-hero { font-size: 2.7rem; margin: .1rem 0 .8rem; }
+    .bd-hero .bd-sign { font-size: 2rem; font-weight: 800; }
     .bd-info {
       border: 1px solid var(--bordo); background: #fff; color: var(--azzurro);
       border-radius: 999px; padding: .12rem .55rem; font-size: .78rem;
@@ -1402,11 +1403,6 @@
       border-color: var(--signal);
       color: #090b0d;
     }
-    .bd-bar { background: #232b33; }
-    .bd-marker { background: #f0f43c; box-shadow: 0 0 0 3px rgba(9,13,16,.6); }
-    .bd-verdetto.assente { color: #9aa4ad; }
-    .bd-verdetto.consistente { color: #ff9d4d; }
-    .bd-verdetto.forte { color: #ff6a5e; }
     #mappaVento h2 > span {
       background: var(--signal) !important;
       border-color: var(--signal) !important;
@@ -1536,7 +1532,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20260813-bora1" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20260813-bora2" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20260813-paloma2" defer></script>
 </head>
@@ -1626,9 +1622,9 @@
            I valori assoluti delle due pressioni stanno nel popup "come si legge". -->
       <aside class="side-card" id="barcolaLive">
         <div>
-          <h2>Spinta della bora</h2>
+          <h2>Pressione di bora</h2>
           <div class="bd-verdetto" id="deltaVerdetto">–</div>
-          <p class="bd-spiega">La bora si accende quando oltre l'altipiano c'è più pressione che sul golfo: questa è la spinta <strong>in questo momento</strong>.</p>
+          <div class="tws-hero bd-hero"><span class="bd-sign" id="deltaSegno"></span><span class="lcd"><span class="lcd-ghost" id="deltaGhost">8.8</span><span class="lcd-lit" id="deltaLcd">–</span></span><span class="u">hPa</span></div>
           <div class="bd-meter">
             <div class="bd-bar">
               <div style="flex:1;background:#b9b8b2;"></div>
@@ -1638,7 +1634,7 @@
             </div>
             <div class="bd-labels"><div>assente</div><div>consistente</div><div>forte</div></div>
           </div>
-          <p class="bd-deltaval" id="deltaValore"></p>
+          <p class="bd-spiega">La bora si accende quando oltre l'altipiano c'è più pressione che sul golfo: questa è la spinta <strong>in questo momento</strong>.</p>
           <p class="stato" id="deltaBoraStato">
             Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
             · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>
@@ -3401,8 +3397,12 @@
         const marker = document.getElementById("deltaMarker");
         marker.style.left = (Math.min(Math.max(-delta, 0), 12) / 12 * 100) + "%";
         marker.style.opacity = "1";
-        document.getElementById("deltaValore").textContent =
-          "Differenza attuale: " + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa (Trieste − Maribor)";
+        // numero grande in stile LCD (come gli altri numeri del sito): il segno sta
+        // fuori dal display a 7 segmenti, che non ha il "+"
+        const abs = Math.abs(delta).toFixed(1);
+        document.getElementById("deltaSegno").textContent = delta < 0 ? "−" : "+";
+        document.getElementById("deltaGhost").textContent = abs.replace(/[0-9]/g, "8");
+        document.getElementById("deltaLcd").textContent = abs;
         // i valori assoluti delle due pressioni vivono solo nel popup "come si legge"
         const live = document.getElementById("deltaBoraLive");
         if (live) live.innerHTML = "<strong>In questo momento:</strong> Trieste " + pTs.toFixed(1)

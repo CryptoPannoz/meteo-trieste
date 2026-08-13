@@ -668,7 +668,13 @@ footer { color: var(--label); }
 :root[data-theme="light"] th,
 :root[data-theme="light"] td { border-bottom-color: #d7dfe2; }
 :root[data-theme="light"] tr.riga-recente td:first-child { background: #eef3f4; }
-/* spinta della bora: scala e verdetto in palette chiara */
+/* pressione di bora: base scura del sito (le pagine definiscono la base chiara inline) */
+.bd-bar { background: #232b33; }
+.bd-marker { background: #f0f43c; box-shadow: 0 0 0 3px rgba(9,13,16,.6); }
+.bd-verdetto.assente { color: #9aa4ad; }
+.bd-verdetto.consistente { color: #ff9d4d; }
+.bd-verdetto.forte { color: #ff6a5e; }
+/* pressione di bora: scala e verdetto in palette chiara */
 :root[data-theme="light"] .bd-bar { background: #e7ebe5; }
 :root[data-theme="light"] .bd-marker { background: #122034; box-shadow: 0 0 0 3px rgba(255,255,255,.55); }
 :root[data-theme="light"] .bd-verdetto.assente { color: #5b6470; }

@@ -192,8 +192,20 @@
     /* ---- Box differenza pressione Bora (live) ---- */
     .bora-delta { margin-top: 1.1rem; }
     .bora-delta .bd-titolo { font-size: 1rem; margin: 0 0 .15rem; }
-    #deltaBox { transition: border-color .2s; }
-    #deltaBox .sub { font-weight: 600; }
+    /* Pressione di bora: verdetto + numero LCD + scala a tre fasce (stile surfometro).
+       Palette scura e tema chiaro arrivano da footer-widgets.css. */
+    .bd-verdetto { text-align: center; font-size: 1.75rem; font-weight: 800; line-height: 1.15; margin: .35rem 0 .1rem; }
+    .bd-verdetto small { display: block; font-size: .84rem; font-weight: 600; color: var(--label); margin-top: .18rem; }
+    .bd-verdetto.assente { color: #5b6470; }
+    .bd-verdetto.consistente { color: #e2680f; }
+    .bd-verdetto.forte { color: #cf2e22; }
+    .tws-hero.bd-hero { font-size: 2.7rem; margin: .1rem 0 .8rem; }
+    .bd-hero .bd-sign { font-size: 2rem; font-weight: 800; }
+    .bd-spiega { font-size: .8rem; color: var(--label); text-align: center; margin: .6rem 0 .2rem; line-height: 1.45; }
+    .bd-bar { position: relative; display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: #e7ebe5; box-shadow: inset 0 1px 2px rgba(23,33,45,.14); }
+    .bd-marker { position: absolute; top: -3px; bottom: -3px; width: 3px; pointer-events: none; background: #122034; border-radius: 999px; transform: translateX(-50%); box-shadow: 0 0 0 3px rgba(255,255,255,.55); transition: left .5s ease, opacity .3s ease; }
+    .bd-labels { display: flex; font-size: .68rem; color: var(--label); font-weight: 700; margin-top: .3rem; text-align: center; }
+    .bd-labels div { flex: 1; }
     .bd-info {
       border: 1px solid var(--bordo); background: #fff; color: var(--azzurro);
       border-radius: 999px; padding: .12rem .55rem; font-size: .78rem;
@@ -853,7 +865,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260813-bora1" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260813-bora2" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -1075,22 +1087,19 @@
 
     <!-- Differenza di pressione Trieste–Maribor in tempo reale (MSLP) -->
     <div class="bora-delta">
-      <h3 class="bd-titolo">Trenutna razlika tlaka</h3>
-      <div class="statgrid" id="deltaBoraGrid">
-        <div class="statbox">
-          <span class="etichetta">Maribor (SLO)</span>
-          <span class="valore" id="pMaribor">–<span class="unita"> hPa</span></span>
+      <h3 class="bd-titolo">Tlak burje</h3>
+      <div class="bd-verdetto" id="deltaVerdetto">–</div>
+      <div class="tws-hero bd-hero"><span class="bd-sign" id="deltaSegno"></span><span class="lcd"><span class="lcd-ghost" id="deltaGhost">8.8</span><span class="lcd-lit" id="deltaLcd">–</span></span><span class="u">hPa</span></div>
+      <div class="bd-meter">
+        <div class="bd-bar">
+          <div style="flex:1;background:#b9b8b2;"></div>
+          <div style="flex:1;background:#e2680f;"></div>
+          <div style="flex:1;background:#cf2e22;"></div>
+          <div class="bd-marker" id="deltaMarker" style="left:0%;opacity:0;"></div>
         </div>
-        <div class="statbox">
-          <span class="etichetta">Trst (ITA)</span>
-          <span class="valore" id="pTrieste">–<span class="unita"> hPa</span></span>
-        </div>
-        <div class="statbox" id="deltaBox">
-          <span class="etichetta">Δ Trst − Maribor</span>
-          <span class="valore" id="pDelta">–<span class="unita"> hPa</span></span>
-          <span class="sub" id="deltaGiudizio"></span>
-        </div>
+        <div class="bd-labels"><div>ni burje</div><div>občutna</div><div>močna</div></div>
       </div>
+      <p class="bd-spiega">Burja se vklopi, ko je nad planoto višji tlak kot nad zalivom: to je potisk <strong>v tem trenutku</strong>.</p>
       <p class="stato" id="deltaBoraStato">
         Tlak na morski gladini (MSLP) · vir <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
         · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ kako brati</button>
@@ -1255,6 +1264,7 @@
       <h3 id="deltaBoraTitolo">Razlika tlaka in burja</h3>
       <p>Okvirček prikazuje <strong>razliko tlaka na morski gladini (MSLP)</strong>, izmerjeno <em>v tem trenutku</em> med Trstom in Mariborom (Slovenija):</p>
       <p style="text-align:center; margin:.6rem 0;"><strong>Δ = tlak Trst − tlak Maribor</strong></p>
+      <p id="deltaBoraLive" class="guida-meta" style="text-align:center;"></p>
       <p><strong>Negativna</strong> vrednost pomeni, da je <strong>v Mariboru več tlaka kot v Trstu</strong>: to je pogoj, ki sproži burjo na Jadranu. Bolj kot je vrednost negativna, močnejša bo burja.</p>
       <p>Okvirni pragovi:</p>
       <p>
@@ -2125,19 +2135,23 @@
       ]).then(([mb, ts]) => {
         const pMb = mb.current.pressure_msl, pTs = ts.current.pressure_msl;
         const delta = Math.round((pTs - pMb) * 10) / 10;
-        document.getElementById("pMaribor").innerHTML = pMb.toFixed(1) + '<span class="unita"> hPa</span>';
-        document.getElementById("pTrieste").innerHTML = pTs.toFixed(1) + '<span class="unita"> hPa</span>';
-        let testo, colore;
-        if (delta > -4)       { testo = "Burje ni";        colore = "#5b6470"; } // sopra −4 hPa: niente Bora
-        else if (delta > -8)  { testo = "Občutna burja";   colore = "#e2680f"; } // da −4 hPa la Bora si innesca
-        else                  { testo = "Močna burja";     colore = "#cf2e22"; }
-        const dv = document.getElementById("pDelta");
-        dv.innerHTML = (delta > 0 ? "+" : "") + delta.toFixed(1) + '<span class="unita"> hPa</span>';
-        dv.style.color = colore;
-        const giud = document.getElementById("deltaGiudizio");
-        giud.textContent = testo;
-        giud.style.color = colore;
-        document.getElementById("deltaBox").style.borderColor = colore;
+        let cls, testo, sub;
+        if (delta > -4)       { cls = "assente";     testo = "Burje ni";     sub = "tlak ne potiska s severovzhoda"; } // sopra −4 hPa: niente Bora
+        else if (delta > -8)  { cls = "consistente"; testo = "Občutna burja"; sub = "potisk nad pragom: burja se vklaplja ali prihaja"; } // da −4 hPa la Bora si innesca
+        else                  { cls = "forte";       testo = "Močna burja";       sub = "močan potisk: pričakuj močne sunke"; }
+        const verd = document.getElementById("deltaVerdetto");
+        verd.innerHTML = testo + "<small>" + sub + "</small>";
+        verd.className = "bd-verdetto " + cls;
+        const abs = Math.abs(delta).toFixed(1);
+        document.getElementById("deltaSegno").textContent = delta < 0 ? "−" : "+";
+        document.getElementById("deltaGhost").textContent = abs.replace(/[0-9]/g, "8");
+        document.getElementById("deltaLcd").textContent = abs;
+        const marker = document.getElementById("deltaMarker");
+        marker.style.left = (Math.min(Math.max(-delta, 0), 12) / 12 * 100) + "%";
+        marker.style.opacity = "1";
+        const live = document.getElementById("deltaBoraLive");
+        if (live) live.innerHTML = "<strong>Trenutno:</strong> Trst " + pTs.toFixed(1)
+          + " hPa · Maribor " + pMb.toFixed(1) + " hPa · Δ = " + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa";
         stato.innerHTML =
           'Tlak na morski gladini (MSLP) · vir <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>' +
           ' · posod. ' + mb.current.time.slice(11, 16) + infoBtn;
