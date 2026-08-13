@@ -36,6 +36,8 @@
     /* posizione reale 13.708/45.698 (largo di Barcola), mostrata in mezzo al
        golfo per non accavallarsi al gruppo Monte Grisa/Barcola */
     { id: "mambo",       nome: "Boa Mambo",    lon: 13.630, lat: 45.670, lato: "sopra",    tipo: "mambo" },
+    /* boa Paloma: rete Protezione Civile FVG, fetch autonomo (API aperta, vedi caricaPaloma) */
+    { id: "paloma",      nome: "Boa Paloma",   lon: 13.565, lat: 45.619, lato: "destra",   tipo: "paloma" },
     { id: "muggia",      nome: "Muggia",       lon: 13.768, lat: 45.602, lato: "destra"   },
     { id: "zusterna",    nome: "Zusterna",     lon: 13.712, lat: 45.543, lato: "destra"   },
     { id: "piran",       nome: "Boa Piran",    lon: 13.551, lat: 45.549, lato: "sinistra", tipo: "piran" },
@@ -109,7 +111,7 @@
     return n;
   }
 
-  var svg = null, gStazioni = null, gMambo = null;
+  var svg = null, gStazioni = null, gMambo = null, gPaloma = null;
 
   function disegnaBase() {
     var defs = el("defs");
@@ -137,8 +139,10 @@
 
     gStazioni = el("g", {});
     gMambo = el("g", {});
+    gPaloma = el("g", {});
     svg.appendChild(gStazioni);
     svg.appendChild(gMambo);
+    svg.appendChild(gPaloma);
   }
 
   /* etichetta a "pill": nome sopra, "25-36 kt" sotto, su fondo bianco arrotondato */
@@ -211,10 +215,11 @@
     if (!gStazioni || !data) return;
     gStazioni.innerHTML = "";
     STAZIONI.forEach(function (st) {
-      if (st.tipo === "mambo") return;
+      if (st.tipo === "mambo" || st.tipo === "paloma") return;   // gruppi propri, fetch a parte
       if (escluso(st)) return;
       disegnaStazione(gStazioni, st, normalizza(st, data));
     });
+    caricaPaloma();   // throttled: al massimo un fetch ogni 4 minuti
   }
 
   function mambo(v) {
@@ -223,6 +228,42 @@
     var st = STAZIONI.filter(function (s) { return s.tipo === "mambo"; })[0];
     if (!st || escluso(st)) return;
     disegnaStazione(gMambo, st, v);
+  }
+
+  /* Boa Paloma: rete idrometeo Protezione Civile FVG. API aperta (CORS *, IODL 2.0,
+     attribuzione ARPA OSMER), cadenza 15 min, "dt" in UTC. Fetch autonomo del modulo,
+     con throttle: render() gira anche ogni 5 minuti ma la boa si chiama al massimo
+     ogni 4, cosi' nessuna pagina ospite deve occuparsene. */
+  var palomaUltimoFetch = 0;
+  function paloma(v) {
+    if (!gPaloma) return;
+    gPaloma.innerHTML = "";
+    var st = STAZIONI.filter(function (s) { return s.tipo === "paloma"; })[0];
+    if (!st || escluso(st)) return;
+    disegnaStazione(gPaloma, st, v);
+  }
+  function caricaPaloma() {
+    if (Date.now() - palomaUltimoFetch < 4 * 60 * 1000) return;
+    palomaUltimoFetch = Date.now();
+    fetch("https://monitor.protezionecivile.fvg.it/api/stations/574/measures/latest")
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (j) {
+        var per = {}, dt = null;
+        (j.measures || []).forEach(function (m) {
+          per[m.sensor_id] = m.value;
+          if ([5, 6, 7].indexOf(m.sensor_id) !== -1 && (!dt || m.dt > dt)) dt = m.dt;
+        });
+        if (per[6] == null) { paloma(null); return; }
+        // dt UTC → eta' reale; oltre 45 min (3 cicli persi) il punto si spegne
+        var d = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(String(dt || "").trim())
+          ? new Date(String(dt).trim().replace(" ", "T") + "Z") : null;
+        if (!d || isNaN(d) || (Date.now() - d.getTime()) / 60000 > 45) { paloma(null); return; }
+        paloma({ kt: per[6] * MS_IN_KT,
+          raffica: (per[7] != null) ? per[7] * MS_IN_KT : NaN,
+          deg: (typeof per[5] === "number") ? per[5] : null,
+          ora: d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) });
+      })
+      .catch(function () {});   // boa non raggiungibile: punto spento
   }
 
   /* fetch autonomo della boa Mambo (per la pagina /mappa/; la home passa i suoi
@@ -256,9 +297,10 @@
     disegnaBase();
     if (window.__mappaDati) render(window.__mappaDati);
     if (window.__mappaMambo) mambo(window.__mappaMambo);
+    caricaPaloma();
   }
 
-  window.MappaGolfo = { init: init, render: render, mambo: mambo, caricaMambo: caricaMambo };
+  window.MappaGolfo = { init: init, render: render, mambo: mambo, caricaMambo: caricaMambo, caricaPaloma: caricaPaloma };
 
   /* auto-init: home (#mappaGolfo) o pagina dedicata (#mappa) */
   var target = document.getElementById("mappaGolfo") || document.getElementById("mappa");

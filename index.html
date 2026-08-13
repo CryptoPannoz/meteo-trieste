@@ -260,6 +260,7 @@
     #surfometroCard.surf-offline .meter-labels { filter: grayscale(1); opacity: .42; }
     #surfometroCard.surf-offline .surf2-verdetto { font-size: 1.5rem; letter-spacing: .01em; }
     .surf-agg { display: block; margin-top: .1rem; }
+    .surf-catena { font-size: .74rem; opacity: .72; margin-top: .15rem; }
     .meter {
       position: relative;
       padding: 50px .55rem 1.15rem;
@@ -1527,7 +1528,7 @@
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
   <link rel="stylesheet" href="./footer-widgets.css?v=20260813-loader1" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
-  <script src="./mappa-golfo.js?v=20260813-stale1" defer></script>
+  <script src="./mappa-golfo.js?v=20260813-paloma1" defer></script>
 </head>
 <body>
 
@@ -1608,6 +1609,7 @@
           </div>
         </div>
         <p class="stato" id="surfFonte"></p>
+        <p class="stato surf-catena">Fonti, in ordine: centralina <strong>Barcola</strong> → <strong>Monte Grisa</strong> (backup) → boa <strong>MAMBO1</strong> OGS (backup 2, oraria)</p>
       </div>
 
       <!-- DIFFERENZA DI PRESSIONE TRIESTE–MARIBOR IN TEMPO REALE (MSLP) -->
@@ -1743,7 +1745,7 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>🌊 Boe meteorologiche</strong>
-      <span>Trieste MAMBO1 e Pirano Vida</span>
+      <span>Trieste MAMBO1, Paloma e Pirano Vida</span>
     </span>
   </summary>
 
@@ -1756,6 +1758,13 @@
     </div>
     <p class="stato" id="statoMambo"></p>
     <p class="stato">Fonte: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a> (via ERDDAP) · <a href="https://maps.google.com/?q=45.698333,13.700000" target="_blank" rel="noopener">📍 Posizione esatta</a> (45°41′54″ N, 13°42′00″ E)</p>
+
+    <h3 style="margin:1rem 0 .25rem;">Boa Paloma (centro golfo)</h3>
+    <div id="palomaStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoPaloma"></p>
+    <p class="stato">Fonte: <a href="https://monitor.protezionecivile.fvg.it" target="_blank" rel="noopener">Protezione Civile FVG</a> / ARPA OSMER (dati IODL 2.0) · <a href="https://maps.google.com/?q=45.618580,13.565300" target="_blank" rel="noopener">📍 Posizione esatta</a> (45°37′07″ N, 13°33′55″ E)</p>
 
     <h3 style="margin:1rem 0 .25rem;">Boa Pirano (Vida, NIB)</h3>
     <div id="piranStat">
@@ -2488,6 +2497,17 @@
       if (Array.isArray(rows) && rows.length && rows[0].ora) return "Monte Grisa ore " + escHtml(rows[0].ora);
       return "";
     }
+    /* Terzo fallback: boa MAMBO1 (OGS), al largo di Barcola. È oraria e pubblica con
+       ritardo, quindi la soglia è più larga delle centraline: 150 min = due cicli persi.
+       Il dato arriva da caricaMambo (fetch ERDDAP separato dal proxy), che dopo ogni
+       aggiornamento rilancia aggiornaSurfometroAuto. */
+    const MAMBO_STALE_MIN = 150;
+    function mamboTws() {
+      const m = window.__mamboSurf;
+      if (!m || m.avg == null || isNaN(m.avg)) return null;
+      if (!(m.ts instanceof Date) || isNaN(m.ts) || (Date.now() - m.ts.getTime()) / 60000 > MAMBO_STALE_MIN) return null;
+      return m;
+    }
     function aggiornaSurfometroAuto(data) {
       const titolo = document.getElementById("surfTitolo");
       const fonte  = document.getElementById("surfFonte");
@@ -2508,11 +2528,21 @@
         if (fonte)  fonte.innerHTML = "⚠️ Barcola offline o non aggiornata — surfometro calcolato sui dati di <strong>Monte Grisa</strong>."
           + testoUltimoAgg(gTws.ts);
         aggiornaSurfometro(gTws.avg, gTws.gust, gTws.dir);
-      } else {                                  // nessuna centralina aggiornata → offline
+        return;
+      }
+      // anche Monte Grisa ferma → boa MAMBO1 (terzo e ultimo backup)
+      const mTws = mamboTws();
+      if (mTws != null) {
+        if (card)   card.classList.remove("surf-offline");
+        if (titolo) titolo.textContent = "Surfometro – Boa Mambo";
+        if (fonte)  fonte.innerHTML = "⚠️ Centraline di Barcola e Monte Grisa ferme — surfometro calcolato sulla boa <strong>MAMBO1</strong> (OGS), al largo di Barcola. La boa è oraria: meno reattiva delle centraline."
+          + testoUltimoAgg(mTws.ts);
+        aggiornaSurfometro(mTws.avg, mTws.gust, mTws.dir);
+      } else {                                  // nessuna fonte aggiornata → offline
         const ultimo = ultimoDatoNoto(data);
         if (card)   card.classList.add("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – non disponibile";
-        if (fonte)  fonte.innerHTML = "⚠️ Centraline di <strong>Barcola</strong> e <strong>Monte Grisa</strong> offline: nessun dato aggiornato, il surfometro riprende da solo appena tornano in linea."
+        if (fonte)  fonte.innerHTML = "⚠️ Centraline di <strong>Barcola</strong> e <strong>Monte Grisa</strong> e boa <strong>MAMBO1</strong> offline: nessun dato aggiornato, il surfometro riprende da solo appena una fonte torna in linea."
           + (ultimo ? '<span class="surf-agg">🕒 Ultimo dato ricevuto: ' + ultimo + '</span>' : "");
         aggiornaSurfometro(null, null, null, 'Offline<small>centraline non in linea</small>');
       }
@@ -2658,12 +2688,64 @@
               ora: oraLocale(meteo.time)
             };
             if (window.MappaGolfo) MappaGolfo.mambo(window.__mappaMambo);
+            // ... e a disposizione del surfometro come terzo fallback (dopo Barcola e
+            // Monte Grisa): il rilancio aggiorna la scheda se era rimasta offline
+            window.__mamboSurf = {
+              avg: meteo.WSPD * MS_IN_KT,
+              gust: (meteo.GSPD != null) ? meteo.GSPD * MS_IN_KT : null,
+              dir: (typeof meteo.WDIR === "number") ? meteo.WDIR : null,
+              ts: new Date(meteo.time)
+            };
+            aggiornaSurfometroAuto(ultimoPayload || {});
           }
         })
         .catch(err => {
           console.error("Errore boa MAMBO1:", err);
           // se la card mostrava già dei dati, li lascio: meglio un dato vecchio che "non disponibili"
           if (!mamboOk) statErrore("mamboStat", "statoMambo");
+        });
+    }
+
+    /* Boa Paloma (centro golfo): rete idrometeo della Protezione Civile FVG, API aperta
+       (CORS *, licenza IODL 2.0, attribuzione ARPA OSMER) chiamata direttamente dal
+       browser — niente proxy. Cadenza 15 min, timestamp "dt" in UTC.
+       Sensori: 5 = direzione (°N), 6 = vento medio (m/s), 7 = raffica (m/s), 2 = aria. */
+    const PALOMA_API = "https://monitor.protezionecivile.fvg.it/api/stations/574/measures/latest";
+    let palomaOk = false;
+    function isoDaDtPC(dt) {            // "2026-08-13 16:00:00" (UTC) → ISO
+      const s = String(dt || "").trim();
+      return /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(s) ? s.replace(" ", "T") + "Z" : null;
+    }
+    function caricaPaloma() {
+      fetch(PALOMA_API)
+        .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+        .then(j => {
+          const per = {};
+          let dt = null;
+          (j.measures || []).forEach(m => {
+            per[m.sensor_id] = m.value;
+            if ([5, 6, 7].indexOf(m.sensor_id) >= 0 && (!dt || m.dt > dt)) dt = m.dt;
+          });
+          const vv = per[6], vmax = per[7], dv = per[5], aria = per[2];
+          if (vv == null && aria == null) throw new Error("nessun dato utile");
+          let html = "";
+          if (vv != null) {
+            const deg = (typeof dv === "number") ? dv : null;
+            html += ventoCardHtml(num(vv * MS_IN_KT, 1),
+                                  (vmax != null) ? num(vmax * MS_IN_KT, 1) : "–",
+                                  deg, (deg != null ? gradiInDirezione(deg) : "–"));
+          }
+          if (aria != null) {
+            html += '<div class="statgrid" style="margin-top:.5rem;">' + miniCard("Aria", num(aria, 1), "°C") + '</div>';
+          }
+          document.getElementById("palomaStat").innerHTML = html;
+          const iso = isoDaDtPC(dt);
+          document.getElementById("statoPaloma").textContent = iso ? "Rilevazione " + quandoLocale(iso) : "";
+          palomaOk = true;
+        })
+        .catch(err => {
+          console.error("Errore boa Paloma:", err);
+          if (!palomaOk) statErrore("palomaStat", "statoPaloma");
         });
     }
 
@@ -2692,7 +2774,7 @@
       stato.textContent = (t ? "Rilevazione " + t + " (ora locale)" : "Fonte NIB – boa Vida");
     }
 
-    function caricaMare() { caricaMambo(); }
+    function caricaMare() { caricaMambo(); caricaPaloma(); }
 
     /* ---------- Tabelle centraline ---------- */
     function classeVento(kt) {
