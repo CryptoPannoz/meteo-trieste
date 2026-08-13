@@ -1956,6 +1956,8 @@
     }
 
     let timerAuto = null;
+    let ultimoPayload = null;   // ultimo payload disegnato: ridisegno istantaneo al rientro
+    let ultimoFetchOk = 0;      // quando l'ultima risposta buona del proxy e' arrivata
 
     /* Cache locale dell'ultimo payload valido: al riavvio la pagina si riempie
        subito con gli ultimi dati mentre il proxy (Apps Script, lento a freddo)
@@ -1973,6 +1975,7 @@
     }
 
     function renderDati(data) {
+      ultimoPayload = data;
       renderOsmer(data.osmer);
       vetercekGiu = ["monteGrisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
       renderStazione(data.monteGrisa, "grisa");
@@ -2005,6 +2008,7 @@
       btn.disabled = true;
       return fetchDati(2)
         .then(data => {
+          ultimoFetchOk = Date.now();
           renderDati(data);
           salvaCacheDati(data);
           document.getElementById("ultimoAggiornamento").textContent =
@@ -2013,7 +2017,7 @@
         })
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);
-          const cache = leggiCacheDati(60);
+          const cache = leggiCacheDati(12 * 60);
           if (cache) {
             // il servizio non risponde ma abbiamo dati recenti: meglio quelli di una pagina vuota
             renderDati(cache.data);
@@ -2206,7 +2210,7 @@
     mostraAladin();
     autoCamZusterna();
     // se c'è una cache recente, la pagina si riempie subito (il fetch live la rimpiazza appena arriva)
-    const cacheAvvio = leggiCacheDati(30);
+    const cacheAvvio = leggiCacheDati(12 * 60);   // anche vecchia: surfometro e centraline marcano da soli i dati fermi
     if (cacheAvvio) {
       renderDati(cacheAvvio.data);
       document.getElementById("ultimoAggiornamento").textContent =
@@ -2220,7 +2224,18 @@
     caricaMare();
     caricaDeltaBora();
     // auto-refresh dati ogni 5 minuti
-    timerAuto = setInterval(() => { caricaDati(); caricaMare(); caricaDeltaBora(); }, 5 * 60 * 1000);
+    function refreshPeriodico() { caricaDati(); caricaMare(); caricaDeltaBora(); }
+    timerAuto = setInterval(() => { if (!document.hidden) refreshPeriodico(); }, 5 * 60 * 1000);
+    /* Tab riaperta dopo un po' (telefono in tasca, browser rimasto in background):
+       prima si ridisegna subito con i dati gia' in mano — le eta' si ricalcolano e cio'
+       che e' fermo si marca da solo, niente trattino in attesa del proxy — poi si chiede
+       il dato fresco se l'ultimo fetch buono e' vecchio. Le tab in background invece non
+       chiamano piu' il proxy ogni 5 minuti: meno carico sul server. */
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) return;
+      if (ultimoPayload) renderDati(ultimoPayload);
+      if (Date.now() - ultimoFetchOk > 2 * 60 * 1000) refreshPeriodico();
+    });
   </script>
 
   <!-- MODAL PLAČAJ PIVO: Revolut / PayPal / Bitcoin -->
