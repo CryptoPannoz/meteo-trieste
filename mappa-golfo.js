@@ -56,6 +56,17 @@
     return "#c20202";
   }
 
+  /* minuti trascorsi da un orario "HH:MM" (senza data): un orario nel futuro è di ieri.
+     Ritorna 0 se l'orario manca o è illeggibile, così non si spegne nulla per sbaglio. */
+  function etaMinuti(ora) {
+    var m = String(ora || "").match(/^(\d{1,2}):(\d{2})/);
+    if (!m) return 0;
+    var adesso = new Date();
+    var eta = (adesso - new Date(adesso.getFullYear(), adesso.getMonth(), adesso.getDate(), +m[1], +m[2])) / 60000;
+    if (eta < -5) eta += 1440;
+    return Math.max(eta, 0);
+  }
+
   /* dati normalizzati { kt, raffica, deg, ora } oppure null (centralina offline) */
   function normalizza(st, data) {
     var d = data[st.id];
@@ -82,6 +93,10 @@
     }
     if (!Array.isArray(d) || !d.length) return null;
     var r0 = d[0];
+    /* stessa regola di Barcola: le righe vetercek portano solo "HH:MM" e restano in
+       tabella anche a centralina spenta. Oltre 45 minuti -> punto spento, non un
+       vento vecchio disegnato come se fosse quello di adesso */
+    if (etaMinuti(r0.ora) > 45) return null;
     var deg = GRADI_CARDINALE[(r0.direzione || "").toUpperCase().trim()];
     return { kt: parseFloat(r0.kt), raffica: parseFloat(r0.sunki),
       deg: (deg === undefined) ? null : deg, ora: r0.ora || "" };

@@ -218,6 +218,14 @@
     .tws-dir { font-size: 1.55rem; font-weight: 800; color: var(--testo); margin-top: .55rem; line-height: 1.1; }
     .tws-dir .deg { font-size: 1rem; font-weight: 600; color: var(--label); }
     .tws-dir .freccia { font-size: 1.4rem; vertical-align: -1px; }
+    /* Centralina ferma: il valore resta leggibile (è storia) ma spento, con avviso sopra */
+    .dato-vecchio {
+      margin: 0 0 .55rem; padding: .4rem .6rem;
+      border: 1px solid rgba(255,189,105,.34); border-radius: 10px;
+      background: rgba(179,92,0,.18); color: #ffbd69;
+      font-size: .78rem; font-weight: 700; line-height: 1.4; text-align: center;
+    }
+    .stazione-stale .pannello { opacity: .5; filter: grayscale(.8); }
 
     /* ---- Surfometro orizzontale ---- */
     .surf2-verdetto { text-align: center; font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.3rem; }
@@ -833,7 +841,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260722-theme1" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260813-stale1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -1839,6 +1847,23 @@
     }
 
     const cacheStazione = {};     // ultimi dati validi per stazione (se un refresh torna vuoto, li riusiamo)
+    /* Età di un orario "HH:MM": le righe vetercek non portano la data, quindi l'età si
+       calcola su adesso e un orario nel futuro appartiene al giorno prima. */
+    function etaOraHHMM(ora) {
+      const m = String(ora || "").match(/^(\d{1,2}):(\d{2})/);
+      if (!m) return null;
+      const adesso = new Date();
+      const ts = new Date(adesso.getFullYear(), adesso.getMonth(), adesso.getDate(), +m[1], +m[2]);
+      let min = (adesso - ts) / 60000;
+      if (min < -5) { ts.setDate(ts.getDate() - 1); min += 1440; }
+      return { min: Math.max(min, 0), ts: ts };
+    }
+    /* Oltre l'ora si dice "oltre N ore": senza data nel dato, N è un minimo. */
+    function etaTesto(min) {
+      if (min < 60) return Math.round(min) + " min fa";
+      const ore = Math.floor(min / 60);
+      return "oltre " + ore + (ore === 1 ? " ora fa" : " ore fa");
+    }
     function renderStazione(rows, prefix) {
       let stale = false;
       if (!Array.isArray(rows) || !rows.length) {
@@ -1849,10 +1874,19 @@
       }
       const win = finestra45(rows);     // ultime ~45 min, la riga 0 è la più recente
       const r0 = rows[0];
+      /* Centralina ferma: vetercek lascia in tabella l'ultimo rilevamento anche per
+         giorni. Senza avviso quel numero sembra il vento di adesso. */
+      const staleMin = 45;
+      const eta = etaOraHHMM(r0.ora);
+      const vecchio = !!(eta && eta.min > staleMin);
       // --- card vento principale (TWS grande + TWD + raffica) ---
       const deg = cardinaleInGradi(r0.direzione);
       const dirTxt = (deg != null) ? gradiInDirezione(deg) : (r0.direzione || "–");
-      document.getElementById(prefix + "Cards").innerHTML = ventoCardHtml(r0.kt, r0.sunki, deg, dirTxt);
+      const cards = document.getElementById(prefix + "Cards");
+      cards.classList.toggle("stazione-stale", vecchio);
+      cards.innerHTML = (vecchio ? '<p class="dato-vecchio">⚠️ Centralina ferma — dato non aggiornato'
+          + (r0.ora ? ' (ultimo rilevamento alle ' + escHtml(r0.ora) + ', ' + etaTesto(eta.min) + ')' : '')
+          + '</p>' : "") + ventoCardHtml(r0.kt, r0.sunki, deg, dirTxt);
       // --- badge trend + sparkline ---
       const trendEl = document.getElementById(prefix + "Trend");
       const t = calcolaTrend(win);
@@ -1873,7 +1907,9 @@
       const st = document.getElementById("stato" + cap(prefix));
       if (st) {
         const ora = r0.ora || "";
-        st.textContent = stale
+        st.textContent = vecchio
+          ? "⚠️ Centralina non in linea: l'ultimo dato è delle " + ora + " (" + etaTesto(eta.min) + "), non rappresenta il vento attuale"
+          : stale
           ? "⚠️ Ultimo dato disponibile" + (ora ? " (" + ora + ")" : "") + ", in attesa di aggiornamento"
           : "Fonte: vetercek.com · ultime ~45 min" + (ora ? " · agg. " + ora : "");
       }

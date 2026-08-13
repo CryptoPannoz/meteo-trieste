@@ -668,6 +668,12 @@ footer { color: var(--label); }
 :root[data-theme="light"] th,
 :root[data-theme="light"] td { border-bottom-color: #d7dfe2; }
 :root[data-theme="light"] tr.riga-recente td:first-child { background: #eef3f4; }
+/* avviso "centralina ferma" sopra il pannello vento: ambra leggibile su fondo chiaro */
+:root[data-theme="light"] .dato-vecchio {
+  background: rgba(179,92,0,.10);
+  border-color: rgba(179,92,0,.32);
+  color: #8a4b06;
+}
 :root[data-theme="light"] .modal { background: rgba(18,31,39,.62); }
 :root[data-theme="light"] .modal .contenuto,
 :root[data-theme="light"] .dona { background: #fff; border-color: var(--line); color: var(--ink); }
