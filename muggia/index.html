@@ -776,27 +776,41 @@
       transition: opacity .5s ease;
     }
     #loader.nascondi { opacity: 0; pointer-events: none; }
-    .loader-spin { position: relative; width: 96px; height: 96px; }
-    .loader-spin .anello {
-      position: absolute; inset: 0;
-      border: 5px solid var(--bordo); border-top-color: var(--azzurro);
-      border-radius: 50%; animation: loader-gira .9s linear infinite;
+    /* Barra di caricamento in stile surfometro: il "vento" accelera lungo la scala
+       (bavisela -> buriana) e riparte, come una raffica che monta. Indeterminata di
+       proposito: la fetch non espone un progresso vero. Se clip-path non e' animabile
+       (browser vecchi) resta la scala colorata piena: comunque leggibile. */
+    .loader-meter { position: relative; width: min(300px, 74vw); padding-top: 2.5rem; }
+    .loader-meter .surf {
+      position: absolute; top: 0; left: 0; font-size: 2rem; line-height: 1;
+      animation: loader-vento-surf 2.4s cubic-bezier(.5,.15,.75,.55) infinite;
     }
-    .loader-spin .surf {
+    .loader-bar-track {
+      position: relative; height: 14px; border-radius: 999px; overflow: hidden;
+      background: var(--bordo); box-shadow: inset 0 1px 2px rgba(23,33,45,.14);
+    }
+    .loader-bar-fill {
       position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.4rem; animation: loader-onda 1.6s ease-in-out infinite;
+      /* le sei fasce del surfometro, stesse proporzioni della scala vera */
+      background: linear-gradient(90deg,
+        #b9b8b2 0 20%, #79CFC8 20% 32.5%, #97C459 32.5% 45%,
+        #639922 45% 62.5%, #3B6D11 62.5% 87.5%, #E24B4A 87.5% 100%);
+      clip-path: inset(0 100% 0 0);
+      animation: loader-vento 2.4s cubic-bezier(.5,.15,.75,.55) infinite;
     }
     .loader-txt { font-weight: 600; color: var(--slate); font-size: 1.02rem; }
     .loader-sub { color: var(--label); font-size: .85rem; margin-top: -.6rem; }
-    @keyframes loader-gira { to { transform: rotate(360deg); } }
-    @keyframes loader-onda {
-      0%, 100% { transform: translateY(3px) rotate(-8deg); }
-      50%      { transform: translateY(-4px) rotate(8deg); }
+    @keyframes loader-vento {
+      0%        { clip-path: inset(0 100% 0 0); }
+      86%, 100% { clip-path: inset(0 0 0 0); }
+    }
+    @keyframes loader-vento-surf {
+      0%        { left: 0%;   transform: translateX(-30%) rotate(-7deg); }
+      43%       { transform: translateX(-50%) rotate(7deg); }
+      86%, 100% { left: 100%; transform: translateX(-70%) rotate(-7deg); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .loader-spin .anello { animation-duration: 2.2s; }
-      .loader-spin .surf { animation: none; }
+      .loader-meter .surf, .loader-bar-fill { animation-duration: 5s; }
     }
   </style>
 
@@ -841,15 +855,15 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260813-stale1" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260813-loader1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
 
   <div id="loader" role="status" aria-live="polite" aria-label="Caricamento dati in corso">
-    <div class="loader-spin">
-      <div class="anello"></div>
-      <div class="surf">🏄‍♂️</div>
+    <div class="loader-meter" aria-hidden="true">
+      <span class="surf">🏄‍♂️</span>
+      <div class="loader-bar-track"><div class="loader-bar-fill"></div></div>
     </div>
     <div class="loader-txt">Carico vento e onde…</div>
     <div class="loader-sub">dati live da centraline e boe</div>

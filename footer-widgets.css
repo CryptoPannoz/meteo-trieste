@@ -417,7 +417,7 @@ button:hover,
 .webcam-luogo { color: var(--signal); }
 .gruppo-titolo { background: #0e1317; color: #fff; border-left-color: var(--signal); }
 #loader { background: var(--paper); }
-.loader-spin .anello { border-color: #2a343d; border-top-color: var(--signal); }
+.loader-bar-track { background: #232b33; }
 .loader-txt { color: var(--ink); }
 .aladin-controlli span,
 footer { color: var(--label); }
@@ -719,7 +719,7 @@ footer { color: var(--label); }
   box-shadow: 0 10px 26px rgba(22,35,44,.16), 0 0 0 1px rgba(23,111,128,.12);
 }
 :root[data-theme="light"] #loader { background: var(--paper); }
-:root[data-theme="light"] .loader-spin .anello { border-color: #cad4d8; border-top-color: var(--sea); }
+:root[data-theme="light"] .loader-bar-track { background: #d5dde0; }
 :root[data-theme="light"] .loader-txt { color: var(--ink); }
 :root[data-theme="light"] .site-footer { background: #e3eaec; border-color: var(--line); box-shadow: 0 12px 34px rgba(22,35,44,.1); }
 :root[data-theme="light"] .footer-request select,
