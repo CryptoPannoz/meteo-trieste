@@ -216,8 +216,27 @@
     .sec-head h2 { margin: 0; }
 
     /* ---- Box differenza pressione Bora (live) ---- */
-    #deltaBox { transition: border-color .2s; }
-    #deltaBox .sub { font-weight: 600; }
+    /* Spinta della bora: verdetto grande + scala a tre fasce, stessa lingua visiva
+       del surfometro. I numeri tecnici (pressioni assolute) vivono nel popup. */
+    .bd-verdetto { text-align: center; font-size: 1.75rem; font-weight: 800; line-height: 1.15; margin: .35rem 0 .15rem; }
+    .bd-verdetto small { display: block; font-size: .84rem; font-weight: 600; color: var(--label); margin-top: .18rem; }
+    .bd-verdetto.assente { color: #5b6470; }
+    .bd-verdetto.consistente { color: #e2680f; }
+    .bd-verdetto.forte { color: #cf2e22; }
+    .bd-spiega { font-size: .8rem; color: var(--label); text-align: center; margin: .25rem 0 .75rem; line-height: 1.45; }
+    .bd-bar {
+      position: relative; display: flex; height: 14px; border-radius: 999px; overflow: hidden;
+      background: #e7ebe5; box-shadow: inset 0 1px 2px rgba(23,33,45,.14);
+    }
+    .bd-marker {
+      position: absolute; top: -3px; bottom: -3px; width: 3px; pointer-events: none;
+      background: #122034; border-radius: 999px; transform: translateX(-50%);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.55);
+      transition: left .5s ease, opacity .3s ease;
+    }
+    .bd-labels { display: flex; font-size: .68rem; color: var(--label); font-weight: 700; margin-top: .3rem; text-align: center; }
+    .bd-labels div { flex: 1; }
+    .bd-deltaval { text-align: center; font-size: .74rem; color: var(--label); margin: .45rem 0 .2rem; font-variant-numeric: tabular-nums; }
     .bd-info {
       border: 1px solid var(--bordo); background: #fff; color: var(--azzurro);
       border-radius: 999px; padding: .12rem .55rem; font-size: .78rem;
@@ -751,14 +770,7 @@
     #viewsBox { max-width: 1160px; width: 100%; margin-left: auto; margin-right: auto; }
     .section { border-radius: 14px; }
     .legacy-nav { display: none; }
-    #barcolaLive #deltaBox {
-      background: #eaf6ff;
-      border-width: 2px;
-      box-shadow: inset 0 0 0 1px rgba(15,111,125,.12), 0 12px 30px rgba(15,111,125,.12);
-    }
-    #barcolaLive #deltaBox .etichetta { color: var(--sea-dark); }
-    #barcolaLive #deltaBox .valore { font-size: 1.85rem; color: var(--sea-dark); }
-    #barcolaLive #deltaBox .sub { font-size: .86rem; }
+    #barcolaLive .bd-verdetto { font-size: 2.05rem; }
     .aladin-status {
       margin: .4rem 0 .2rem;
       text-align: center;
@@ -1390,13 +1402,11 @@
       border-color: var(--signal);
       color: #090b0d;
     }
-    #barcolaLive #deltaBox {
-      background: #131a20;
-      border-color: #414b33;
-      box-shadow: inset 0 0 0 1px rgba(240,244,60,.08);
-    }
-    #barcolaLive #deltaBox .etichetta,
-    #barcolaLive #deltaBox .valore { color: var(--signal); }
+    .bd-bar { background: #232b33; }
+    .bd-marker { background: #f0f43c; box-shadow: 0 0 0 3px rgba(9,13,16,.6); }
+    .bd-verdetto.assente { color: #9aa4ad; }
+    .bd-verdetto.consistente { color: #ff9d4d; }
+    .bd-verdetto.forte { color: #ff6a5e; }
     #mappaVento h2 > span {
       background: var(--signal) !important;
       border-color: var(--signal) !important;
@@ -1526,9 +1536,9 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20260813-loader1" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20260813-bora1" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
-  <script src="./mappa-golfo.js?v=20260813-paloma1" defer></script>
+  <script src="./mappa-golfo.js?v=20260813-paloma2" defer></script>
 </head>
 <body>
 
@@ -1612,25 +1622,23 @@
         <p class="stato surf-catena">Fonti, in ordine: centralina <strong>Barcola</strong> → <strong>Monte Grisa</strong> (backup) → boa <strong>MAMBO1</strong> OGS (backup 2, oraria)</p>
       </div>
 
-      <!-- DIFFERENZA DI PRESSIONE TRIESTE–MARIBOR IN TEMPO REALE (MSLP) -->
+      <!-- SPINTA DELLA BORA: DIFFERENZA DI PRESSIONE TRIESTE–MARIBOR (MSLP), RESA LEGGIBILE.
+           I valori assoluti delle due pressioni stanno nel popup "come si legge". -->
       <aside class="side-card" id="barcolaLive">
         <div>
-          <h2>Differenza di pressione ora</h2>
-          <div class="statgrid" id="deltaBoraGrid">
-            <div class="statbox">
-              <span class="etichetta">Maribor (SLO)</span>
-              <span class="valore" id="pMaribor">–<span class="unita"> hPa</span></span>
+          <h2>Spinta della bora</h2>
+          <div class="bd-verdetto" id="deltaVerdetto">–</div>
+          <p class="bd-spiega">La bora si accende quando oltre l'altipiano c'è più pressione che sul golfo: questa è la spinta <strong>in questo momento</strong>.</p>
+          <div class="bd-meter">
+            <div class="bd-bar">
+              <div style="flex:1;background:#b9b8b2;"></div>
+              <div style="flex:1;background:#e2680f;"></div>
+              <div style="flex:1;background:#cf2e22;"></div>
+              <div class="bd-marker" id="deltaMarker" style="left:0%;opacity:0;"></div>
             </div>
-            <div class="statbox">
-              <span class="etichetta">Trieste (ITA)</span>
-              <span class="valore" id="pTrieste">–<span class="unita"> hPa</span></span>
-            </div>
-            <div class="statbox" id="deltaBox">
-              <span class="etichetta">Δ Trieste − Maribor</span>
-              <span class="valore" id="pDelta">–<span class="unita"> hPa</span></span>
-              <span class="sub" id="deltaGiudizio"></span>
-            </div>
+            <div class="bd-labels"><div>assente</div><div>consistente</div><div>forte</div></div>
           </div>
+          <p class="bd-deltaval" id="deltaValore"></p>
           <p class="stato" id="deltaBoraStato">
             Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
             · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>
@@ -1988,6 +1996,7 @@
       <h3 id="deltaBoraTitolo">Differenza di pressione e Bora</h3>
       <p>Il box mostra la <strong>differenza di pressione a livello del mare (MSLP)</strong> misurata <em>in questo momento</em> tra Trieste e Maribor (Slovenia):</p>
       <p style="text-align:center; margin:.6rem 0;"><strong>Δ = pressione Trieste − pressione Maribor</strong></p>
+      <p id="deltaBoraLive" class="guida-meta" style="text-align:center;"></p>
       <p>Un valore <strong>negativo</strong> significa che a <strong>Maribor c'è più pressione che a Trieste</strong>: è la condizione che innesca la Bora in Adriatico. Più il valore è negativo, più forte sarà la Bora.</p>
       <p>Soglie indicative:</p>
       <p>
@@ -3381,19 +3390,23 @@
       ]).then(([mb, ts]) => {
         const pMb = mb.current.pressure_msl, pTs = ts.current.pressure_msl;
         const delta = Math.round((pTs - pMb) * 10) / 10;
-        document.getElementById("pMaribor").innerHTML = pMb.toFixed(1) + '<span class="unita"> hPa</span>';
-        document.getElementById("pTrieste").innerHTML = pTs.toFixed(1) + '<span class="unita"> hPa</span>';
-        let testo, colore;
-        if (delta > -4)       { testo = "Bora assente";     colore = "#5b6470"; } // sopra −4 hPa: niente Bora
-        else if (delta > -8)  { testo = "Bora consistente"; colore = "#e2680f"; } // da −4 hPa la Bora si innesca
-        else                  { testo = "Bora forte";       colore = "#cf2e22"; }
-        const dv = document.getElementById("pDelta");
-        dv.innerHTML = (delta > 0 ? "+" : "") + delta.toFixed(1) + '<span class="unita"> hPa</span>';
-        dv.style.color = colore;
-        const giud = document.getElementById("deltaGiudizio");
-        giud.textContent = testo;
-        giud.style.color = colore;
-        document.getElementById("deltaBox").style.borderColor = colore;
+        let cls, testo, sub;
+        if (delta > -4)       { cls = "assente";     testo = "Bora assente";     sub = "la pressione non spinge da nord-est"; } // sopra −4 hPa: niente Bora
+        else if (delta > -8)  { cls = "consistente"; testo = "Bora consistente"; sub = "spinta oltre la soglia: bora innescata o in arrivo"; } // da −4 hPa la Bora si innesca
+        else                  { cls = "forte";       testo = "Bora forte";       sub = "spinta alta: attese raffiche importanti"; }
+        const verd = document.getElementById("deltaVerdetto");
+        verd.innerHTML = testo + "<small>" + sub + "</small>";
+        verd.className = "bd-verdetto " + cls;
+        // marker sulla scala: 0 → −12 hPa (oltre resta a fondo scala)
+        const marker = document.getElementById("deltaMarker");
+        marker.style.left = (Math.min(Math.max(-delta, 0), 12) / 12 * 100) + "%";
+        marker.style.opacity = "1";
+        document.getElementById("deltaValore").textContent =
+          "Differenza attuale: " + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa (Trieste − Maribor)";
+        // i valori assoluti delle due pressioni vivono solo nel popup "come si legge"
+        const live = document.getElementById("deltaBoraLive");
+        if (live) live.innerHTML = "<strong>In questo momento:</strong> Trieste " + pTs.toFixed(1)
+          + " hPa · Maribor " + pMb.toFixed(1) + " hPa · Δ = " + (delta > 0 ? "+" : "") + delta.toFixed(1) + " hPa";
         stato.innerHTML =
           'Pressione livello mare (MSLP) · fonte <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>' +
           ' · agg. ' + mb.current.time.slice(11, 16) + infoBtn;

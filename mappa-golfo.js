@@ -37,7 +37,7 @@
        golfo per non accavallarsi al gruppo Monte Grisa/Barcola */
     { id: "mambo",       nome: "Boa Mambo",    lon: 13.630, lat: 45.670, lato: "sopra",    tipo: "mambo" },
     /* boa Paloma: rete Protezione Civile FVG, fetch autonomo (API aperta, vedi caricaPaloma) */
-    { id: "paloma",      nome: "Boa Paloma",   lon: 13.565, lat: 45.619, lato: "destra",   tipo: "paloma" },
+    { id: "paloma",      nome: "Boa Paloma",   lon: 13.565, lat: 45.619, lato: "sinistra", tipo: "paloma" },
     { id: "muggia",      nome: "Muggia",       lon: 13.768, lat: 45.602, lato: "destra"   },
     { id: "zusterna",    nome: "Zusterna",     lon: 13.712, lat: 45.543, lato: "destra"   },
     { id: "piran",       nome: "Boa Piran",    lon: 13.551, lat: 45.549, lato: "sinistra", tipo: "piran" },
@@ -126,8 +126,6 @@
     svg.appendChild(el("path", { d: TERRA, fill: "#171d21", stroke: "#46545e",
       "stroke-width": 1.3, "stroke-linejoin": "round" }));
 
-    svg.appendChild(el("text", { x: px(13.56), y: py(45.60), "font-size": 17, "font-style": "italic",
-      fill: "#8db8ca", "text-anchor": "middle", "font-weight": 600 }, "Golfo di Trieste"));
     svg.appendChild(el("text", { x: px(14.22), y: py(44.92), "font-size": 17, "font-style": "italic",
       fill: "#8db8ca", "text-anchor": "middle", "font-weight": 600 }, "Kvarner"));
 
