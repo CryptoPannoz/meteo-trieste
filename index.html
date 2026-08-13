@@ -246,6 +246,12 @@
     /* ---- Surfometro orizzontale ---- */
     .surf2-verdetto { text-align: center; font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.3rem; }
     .surf2-verdetto small { display: block; font-size: .85rem; font-weight: 500; color: var(--label); margin-top: .15rem; }
+    /* Surfometro offline: nessuna centralina aggiornata → scala spenta, niente numeri vecchi */
+    #surfometroCard.surf-offline .meter-bar,
+    #surfometroCard.surf-offline .meter-ticks,
+    #surfometroCard.surf-offline .meter-labels { filter: grayscale(1); opacity: .42; }
+    #surfometroCard.surf-offline .surf2-verdetto { font-size: 1.5rem; letter-spacing: .01em; }
+    .surf-agg { display: block; margin-top: .1rem; }
     .meter {
       position: relative;
       padding: 50px .55rem 1.15rem;
@@ -2288,7 +2294,7 @@
     const SURF_LIMITE = 35;
     const SURF_RAFFICA_VICINA = 1.5;
     function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_LIMITE) / SURF_SCALA * 100; }
-    function aggiornaSurfometro(kt, gust, dir) {
+    function aggiornaSurfometro(kt, gust, dir, offlineTxt) {
       const verd  = document.getElementById("verdettoBig");
       const ptr   = document.getElementById("meterPointer");
       const val   = document.getElementById("meterVal");
@@ -2309,7 +2315,7 @@
         ptr.classList.add("no-gust");
       };
       if (kt == null || isNaN(kt)) {
-        verd.innerHTML = "—";
+        verd.innerHTML = offlineTxt || "—";
         verd.style.color = "var(--label)";
         ptr.style.opacity = "0";
         val.textContent = "–";
@@ -2377,14 +2383,34 @@
        La centralina di Barcola può essere momentaneamente disattivata: in quel caso i
        dati arrivano assenti o piatti a 0.00 kt (medio e raffica entrambi a zero). Quando
        succede nascondiamo la scheda "Barcola – condizioni vento ora" e alimentiamo il
-       surfometro con Monte Grisa, segnalandolo. Al ritorno di Barcola si ripristina. */
+       surfometro con Monte Grisa, segnalandolo. Al ritorno di Barcola si ripristina.
+       Se anche Monte Grisa è ferma (agosto 2026: entrambe disattivate per giorni) il
+       surfometro NON deve mostrare l'ultimo dato buono — che sembrerebbe attuale — ma
+       dichiararsi offline. */
     const BARCOLA_STALE_MIN = 45;   // dati più vecchi di così → centralina considerata ferma
+    const GRISA_STALE_MIN = 45;     // stessa soglia per il backup di Monte Grisa
     function barcolaMinutiFa(b) {
       if (!b || !b.datetime) return null;
       // "2026-07-17 09:37:02 CEST" → minuti trascorsi (ora locale italiana)
       const m = String(b.datetime).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
       if (!m) return null;
       return (Date.now() - new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]).getTime()) / 60000;
+    }
+    function barcolaData(b) {
+      const m = (b && b.datetime) ? String(b.datetime).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/) : null;
+      return m ? new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]) : null;
+    }
+    /* Le righe vetercek portano solo "HH:MM", senza data: l'età si calcola rispetto ad
+       adesso e un orario "nel futuro" appartiene al giorno prima. Oltre le 24 ore il
+       conto non è più attendibile — per questo l'ora vecchia si mostra così com'è. */
+    function etaOraHHMM(ora) {
+      const m = String(ora || "").match(/^(\d{1,2}):(\d{2})/);
+      if (!m) return null;
+      const adesso = new Date();
+      const ts = new Date(adesso.getFullYear(), adesso.getMonth(), adesso.getDate(), +m[1], +m[2]);
+      let min = (adesso - ts) / 60000;
+      if (min < -5) { ts.setDate(ts.getDate() - 1); min += 1440; }
+      return { min: Math.max(min, 0), ts: ts };
     }
     function barcolaTws(b) {
       if (!b) return null;
@@ -2397,38 +2423,69 @@
       // centralina ferma: mostra ancora l'ultimo dato ma il surfometro passa a Monte Grisa
       const min = barcolaMinutiFa(b);
       if (min != null && min > BARCOLA_STALE_MIN) return null;
-      return { avg: avg, gust: isNaN(max) ? null : max, dir: isNaN(dir) ? null : dir };
+      return { avg: avg, gust: isNaN(max) ? null : max, dir: isNaN(dir) ? null : dir, ts: barcolaData(b) };
+    }
+    function grisaRighe(data) {
+      return (data && Array.isArray(data.monteGrisa) && data.monteGrisa.length)
+        ? data.monteGrisa : cacheStazione["grisa"];
     }
     function grisaTws(data) {
-      let rows = (data && Array.isArray(data.monteGrisa) && data.monteGrisa.length)
-        ? data.monteGrisa : cacheStazione["grisa"];
+      const rows = grisaRighe(data);
       if (!Array.isArray(rows) || !rows.length) return null;
       const avg = parseFloat(rows[0].kt);
       if (isNaN(avg)) return null;
+      // centralina ferma (o dato di ieri rimasto in tabella) → non alimenta il surfometro
+      const eta = etaOraHHMM(rows[0].ora);
+      if (eta && eta.min > GRISA_STALE_MIN) return null;
       const g = parseFloat(rows[0].sunki);
       const dir = cardinaleInGradi(rows[0].direzione);   // da cardinale (es. "O") a gradi
-      return { avg: avg, gust: isNaN(g) ? null : g, dir: (dir != null && !isNaN(dir)) ? dir : null };
+      return { avg: avg, gust: isNaN(g) ? null : g, dir: (dir != null && !isNaN(dir)) ? dir : null, ts: eta ? eta.ts : null };
+    }
+    /* Riga "ultimo aggiornamento" sotto il surfometro: ora, data e minuti trascorsi del
+       rilevamento effettivamente mostrato (non dell'ultima chiamata al proxy). */
+    function testoUltimoAgg(ts) {
+      if (!(ts instanceof Date) || isNaN(ts.getTime())) return "";
+      const hhmm = ts.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+      const dataTxt = ts.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric" });
+      const min = Math.round((Date.now() - ts.getTime()) / 60000);
+      const fa = min <= 0 ? "adesso" : (min === 1 ? "1 minuto fa" : min + " minuti fa");
+      return '<span class="surf-agg">🕒 Ultimo aggiornamento: <strong>' + hhmm + '</strong> del ' + dataTxt + ' · ' + fa + '</span>';
+    }
+    /* Ultimo orario noto (anche vecchio) da mostrare nel messaggio di offline. */
+    function ultimoDatoNoto(data) {
+      const b = barcolaData(data && data.barcola);
+      if (b) return "Barcola " + b.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+      const rows = grisaRighe(data);
+      if (Array.isArray(rows) && rows.length && rows[0].ora) return "Monte Grisa ore " + escHtml(rows[0].ora);
+      return "";
     }
     function aggiornaSurfometroAuto(data) {
       const titolo = document.getElementById("surfTitolo");
       const fonte  = document.getElementById("surfFonte");
+      const card   = document.getElementById("surfometroCard");
       const bTws = barcolaTws(data && data.barcola);
       if (bTws != null) {                       // Barcola attiva → tutto normale
+        if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Barcola";
-        if (fonte)  fonte.textContent = "";
+        if (fonte)  fonte.innerHTML = testoUltimoAgg(bTws.ts);
         aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir);
         return;
       }
       // Barcola offline → passa a Monte Grisa
       const gTws = grisaTws(data);
       if (gTws != null) {
+        if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
-        if (fonte)  fonte.innerHTML = "⚠️ Barcola offline o non aggiornata — surfometro calcolato sui dati di <strong>Monte Grisa</strong>.";
+        if (fonte)  fonte.innerHTML = "⚠️ Barcola offline o non aggiornata — surfometro calcolato sui dati di <strong>Monte Grisa</strong>."
+          + testoUltimoAgg(gTws.ts);
         aggiornaSurfometro(gTws.avg, gTws.gust, gTws.dir);
-      } else {                                  // nemmeno Grisa disponibile
-        if (titolo) titolo.textContent = "Surfometro – Barcola";
-        if (fonte)  fonte.textContent = "⚠️ Dati vento momentaneamente non disponibili.";
-        aggiornaSurfometro(null);
+      } else {                                  // nessuna centralina aggiornata → offline
+        const ultimo = ultimoDatoNoto(data);
+        if (card)   card.classList.add("surf-offline");
+        if (titolo) titolo.textContent = "Surfometro – non disponibile";
+        if (fonte)  fonte.innerHTML = "⚠️ Centraline di <strong>Barcola</strong> e <strong>Monte Grisa</strong> offline: nessun dato aggiornato, il surfometro riprende da solo appena tornano in linea."
+          + (ultimo ? '<span class="surf-agg">🕒 Ultimo dato ricevuto: ' + ultimo + '</span>' : "");
+        aggiornaSurfometro(null, null, null, 'Offline<small>centraline non in linea</small>');
       }
     }
 
