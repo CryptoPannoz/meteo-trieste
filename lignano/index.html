@@ -1907,7 +1907,7 @@
     /* Cache locale dell'ultimo payload valido: al riavvio la pagina si riempie
        subito con gli ultimi dati mentre il proxy (Apps Script, lento a freddo)
        risponde in background. */
-    const CACHE_DATI = "vt_dati_cache_grado";
+    const CACHE_DATI = "vt_dati_cache_lignano";
     function salvaCacheDati(data) {
       try { localStorage.setItem(CACHE_DATI, JSON.stringify({ t: Date.now(), data: data })); } catch (e) {}
     }
