@@ -262,3 +262,273 @@
     e.preventDefault(); if (typeof window.apriBirra === "function") window.apriBirra(e);
   });
 })();
+
+/* UX condivisa: stato dati, orientamento nella pagina, feedback dei comandi e
+   dock mobile. La navigazione viene costruita dai link reali di ogni pagina,
+   così home, spot italiani e pagina slovena restano allineati. */
+(function () {
+  "use strict";
+
+  var doc = document.documentElement;
+  var sl = doc.lang === "sl" ||
+    ((document.getElementById("footerWidgets") || { dataset: {} }).dataset.lang === "sl");
+  var copy = sl ? {
+    updated: "Posod.", updatedData: "Podatki posodobljeni", syncing: "Osvežujem podatke",
+    partial: "Delni podatki", refresh: "Osveži podatke", refreshing: "Osvežujem…",
+    fallback: "Prikazujem zadnje razpoložljive podatke", more: "Več",
+    now: "Zdaj", stations: "Postaje", buoys: "Boje", waves: "Valovi",
+    map: "Zemljevid", forecast: "Napovedi", webcams: "Kamere"
+  } : {
+    updated: "Agg.", updatedData: "Dati aggiornati", syncing: "Aggiorno dati",
+    partial: "Dati parziali", refresh: "Aggiorna dati", refreshing: "Aggiorno…",
+    fallback: "Mostro gli ultimi dati disponibili", more: "Altro",
+    now: "Ora", stations: "Stazioni", buoys: "Boe", waves: "Onde",
+    map: "Mappa", forecast: "Previsioni", webcams: "Webcam"
+  };
+
+  doc.classList.add("ux-enhanced");
+
+  var topbar = document.querySelector(".topbar");
+  var progressFill = null;
+  if (topbar) {
+    var progress = document.createElement("div");
+    progress.className = "ux-scroll-progress";
+    progress.setAttribute("aria-hidden", "true");
+    progress.innerHTML = "<span></span>";
+    topbar.appendChild(progress);
+    progressFill = progress.firstElementChild;
+  }
+  var progressTick = false;
+  function aggiornaProgresso() {
+    progressTick = false;
+    if (!progressFill) return;
+    var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    var ratio = Math.max(0, Math.min(1, window.scrollY / max));
+    progressFill.style.transform = "scaleX(" + ratio.toFixed(4) + ")";
+  }
+  window.addEventListener("scroll", function () {
+    if (progressTick) return;
+    progressTick = true;
+    requestAnimationFrame(aggiornaProgresso);
+  }, { passive: true });
+  window.addEventListener("resize", aggiornaProgresso, { passive: true });
+  aggiornaProgresso();
+
+  var live = document.querySelector(".topbar-live");
+  var status = document.getElementById("ultimoAggiornamento");
+  function leggiOra(testo) {
+    var match = testo.match(/\b([01]?\d|2[0-3]):[0-5]\d\b/);
+    return match ? match[0] : "";
+  }
+  function aggiornaStatoLive() {
+    if (!live || !status) return;
+    var testo = (status.textContent || "").trim();
+    var lower = testo.toLowerCase();
+    var ora = leggiOra(testo);
+    var state = "ok";
+    var label = ora ? copy.updated + " " + ora : copy.updatedData;
+    if (!testo || /caricamento|in corso|posodabljanje|nalaganje/.test(lower)) {
+      state = "syncing";
+      label = copy.syncing;
+    } else if (/⚠|impossibile|lento|ni mogoče|počasna|nedosegljiv/.test(lower)) {
+      state = "issue";
+      label = ora ? copy.partial + " · " + ora : copy.partial;
+    }
+    live.dataset.state = state;
+    live.textContent = label;
+    live.title = testo || label;
+  }
+  if (live && status) {
+    aggiornaStatoLive();
+    new MutationObserver(aggiornaStatoLive).observe(status, {
+      childList: true, subtree: true, characterData: true
+    });
+  }
+
+  var nav = document.getElementById("topnav");
+  var menuButton = document.getElementById("menuToggle");
+  var navLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll('a:not(.topnav-birra)')) : [];
+  function trovaLink(parola) {
+    return navLinks.find(function (link) {
+      return (link.getAttribute("href") || "").toLowerCase().indexOf(parola.toLowerCase()) !== -1;
+    });
+  }
+  function metaLink(link) {
+    var href = (link.getAttribute("href") || "").toLowerCase();
+    if (href.indexOf("mappa") !== -1) return { icon: "🗺️", label: copy.map };
+    if (href.indexOf("vento") !== -1) return { icon: "💨", label: copy.now };
+    if (href.indexOf("centraline") !== -1) return { icon: "📡", label: copy.stations };
+    if (href.indexOf("onde") !== -1) return { icon: "🌊", label: copy.waves };
+    if (href.indexOf("boe") !== -1) return { icon: "🌊", label: copy.buoys };
+    if (href.indexOf("previsioni") !== -1) return { icon: "📅", label: copy.forecast };
+    if (href.indexOf("webcam") !== -1) return { icon: "📷", label: copy.webcams };
+    return { icon: "•", label: (link.textContent || "").trim() };
+  }
+
+  var dock = null;
+  if (nav && menuButton && navLinks.length) {
+    var first = trovaLink("#vento") || navLinks[0];
+    var second = trovaLink("#onde") || trovaLink("#centraline") || trovaLink("#boe");
+    var third = trovaLink("#mappavento") || trovaLink("#previsioni");
+    var fourth = third && (third.getAttribute("href") || "").toLowerCase().indexOf("mappa") !== -1
+      ? trovaLink("#previsioni") : trovaLink("#webcam");
+    var selected = [];
+    [first, second, third, fourth].forEach(function (link) {
+      if (link && selected.indexOf(link) === -1) selected.push(link);
+    });
+    navLinks.forEach(function (link) {
+      if (selected.length < 4 && selected.indexOf(link) === -1) selected.push(link);
+    });
+
+    dock = document.createElement("nav");
+    dock.className = "ux-mobile-dock";
+    dock.setAttribute("aria-label", sl ? "Hitre povezave" : "Azioni rapide");
+    selected.slice(0, 4).forEach(function (source) {
+      var item = document.createElement("a");
+      var meta = metaLink(source);
+      item.href = source.getAttribute("href");
+      item.innerHTML = '<span class="ux-dock-icon" aria-hidden="true">' + meta.icon +
+        '</span><span class="ux-dock-label">' + meta.label + '</span>';
+      dock.appendChild(item);
+    });
+    var more = document.createElement("button");
+    more.type = "button";
+    more.innerHTML = '<span class="ux-dock-icon" aria-hidden="true">☰</span>' +
+      '<span class="ux-dock-label">' + copy.more + '</span>';
+    more.addEventListener("click", function (event) {
+      event.stopPropagation();
+      menuButton.click();
+      setTimeout(function () { menuButton.focus({ preventScroll: true }); }, 0);
+    });
+    dock.appendChild(more);
+    document.body.appendChild(dock);
+  }
+
+  function idLocale(link) {
+    var href = link && link.getAttribute("href");
+    return href && href.charAt(0) === "#" && href.length > 1 ? decodeURIComponent(href.slice(1)) : "";
+  }
+  var dockLinks = dock ? Array.prototype.slice.call(dock.querySelectorAll('a[href^="#"]')) : [];
+  var localNavLinks = navLinks.filter(function (link) { return !!idLocale(link); });
+  var localIds = localNavLinks.map(idLocale).filter(function (id, i, all) {
+    return id && all.indexOf(id) === i && document.getElementById(id);
+  });
+  function impostaAttivo(id) {
+    localNavLinks.forEach(function (link) {
+      link.classList.toggle("is-active", idLocale(link) === id);
+    });
+    dockLinks.forEach(function (link) {
+      link.classList.toggle("is-active", idLocale(link) === id);
+    });
+  }
+  var activeScrollTick = false;
+  function aggiornaSezioneAttiva() {
+    activeScrollTick = false;
+    if (!localIds.length) return;
+    var marker = (topbar ? topbar.getBoundingClientRect().height : 0) + 24;
+    var current = localIds[0];
+    var distance = Infinity;
+    localIds.forEach(function (id) {
+      var target = document.getElementById(id);
+      if (!target) return;
+      var rect = target.getBoundingClientRect();
+      if (rect.top <= marker && rect.bottom > marker) {
+        current = id;
+        distance = -1;
+      } else if (distance !== -1 && rect.top > marker && rect.top - marker < distance) {
+        current = id;
+        distance = rect.top - marker;
+      }
+    });
+    impostaAttivo(current);
+  }
+  function programmaSezioneAttiva() {
+    if (activeScrollTick) return;
+    activeScrollTick = true;
+    requestAnimationFrame(aggiornaSezioneAttiva);
+  }
+  window.addEventListener("scroll", programmaSezioneAttiva, { passive: true });
+  window.addEventListener("resize", programmaSezioneAttiva, { passive: true });
+  document.addEventListener("toggle", programmaSezioneAttiva, true);
+  impostaAttivo(location.hash.slice(1) || localIds[0] || "");
+  requestAnimationFrame(aggiornaSezioneAttiva);
+
+  if (dock) {
+    dock.addEventListener("click", function (event) {
+      var link = event.target.closest('a[href^="#"]');
+      if (!link) return;
+      var id = idLocale(link);
+      var target = document.getElementById(id);
+      if (!target) return;
+      event.preventDefault();
+      var gruppo = target.closest("details");
+      while (gruppo) {
+        gruppo.open = true;
+        gruppo = gruppo.parentElement ? gruppo.parentElement.closest("details") : null;
+      }
+      var riduciMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      function vaiAllaSezione(behavior) {
+        var offset = (topbar ? topbar.getBoundingClientRect().height : 0) + 12;
+        var y = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: Math.max(0, y), left: 0, behavior: behavior });
+        impostaAttivo(id);
+      }
+      vaiAllaSezione(riduciMovimento ? "auto" : "smooth");
+      setTimeout(function () { vaiAllaSezione("auto"); }, 320);
+      setTimeout(function () { vaiAllaSezione("auto"); }, 1050);
+      history.replaceState(null, "", "#" + id);
+    });
+  }
+
+  var toast = document.createElement("div");
+  toast.className = "ux-toast";
+  toast.setAttribute("role", "status");
+  toast.setAttribute("aria-live", "polite");
+  document.body.appendChild(toast);
+  var toastTimer = null;
+  function mostraToast(messaggio) {
+    clearTimeout(toastTimer);
+    toast.textContent = messaggio;
+    toast.classList.add("is-visible");
+    toastTimer = setTimeout(function () { toast.classList.remove("is-visible"); }, 2600);
+  }
+
+  var refresh = document.getElementById("btnAggiorna");
+  var manualRefresh = false;
+  if (refresh) {
+    function aggiornaPulsante() {
+      var loading = refresh.disabled;
+      refresh.classList.toggle("is-loading", loading);
+      refresh.innerHTML = loading
+        ? '<span class="ux-spin" aria-hidden="true">↻</span> ' + copy.refreshing
+        : '<span aria-hidden="true">↻</span> ' + copy.refresh;
+      if (!loading && manualRefresh) {
+        manualRefresh = false;
+        var problema = status && /⚠|impossibile|lento|ni mogoče|počasna|nedosegljiv/i.test(status.textContent || "");
+        mostraToast(problema ? copy.fallback : copy.updatedData);
+      }
+    }
+    refresh.addEventListener("click", function () { manualRefresh = true; }, true);
+    aggiornaPulsante();
+    new MutationObserver(aggiornaPulsante).observe(refresh, {
+      attributes: true, attributeFilter: ["disabled"]
+    });
+  }
+
+  if ("IntersectionObserver" in window &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var revealTargets = Array.prototype.slice.call(document.querySelectorAll(
+      ".section, .console-card, .side-card, .gruppo-sum"
+    ));
+    revealTargets.forEach(function (element) { element.classList.add("ux-reveal"); });
+    doc.classList.add("ux-motion-ready");
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        revealObserver.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -7% 0px", threshold: .04 });
+    revealTargets.forEach(function (element) { revealObserver.observe(element); });
+  }
+})();

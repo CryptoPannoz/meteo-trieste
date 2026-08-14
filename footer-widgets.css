@@ -796,3 +796,278 @@ footer { color: var(--label); }
   }
   .topbar > #topnav .topnav-birra { grid-column: auto; }
 }
+
+/* ============ UX condivisa: orientamento, feedback e navigazione mobile ============ */
+html.ux-enhanced { scroll-padding-top: 80px; }
+
+html.ux-enhanced .topbar {
+  border-bottom-color: rgba(240,244,60,.22);
+  box-shadow: 0 9px 28px rgba(0,0,0,.32);
+}
+.ux-scroll-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  overflow: hidden;
+  background: rgba(255,255,255,.07);
+  pointer-events: none;
+}
+.ux-scroll-progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #b9e735, var(--signal));
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+html.ux-enhanced .topbar-live {
+  min-height: 30px;
+  padding: .32rem .58rem;
+  border: 1px solid #313b43;
+  border-radius: 999px;
+  background: #11171c;
+  white-space: nowrap;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+html.ux-enhanced .topbar-live[data-state="ok"] {
+  color: #e8f1f3;
+  border-color: rgba(240,244,60,.3);
+}
+html.ux-enhanced .topbar-live[data-state="syncing"] { color: var(--signal); }
+html.ux-enhanced .topbar-live[data-state="issue"] {
+  color: #ffd074;
+  border-color: rgba(255,208,116,.35);
+}
+html.ux-enhanced .topbar-live[data-state="syncing"]::before {
+  animation: ux-live-pulse 1.15s ease-in-out infinite;
+}
+
+html.ux-enhanced button,
+html.ux-enhanced .spot-btn,
+html.ux-enhanced .dona-btn,
+html.ux-enhanced .theme-toggle,
+html.ux-enhanced .menu-toggle,
+html.ux-enhanced .bd-info,
+html.ux-enhanced .osmer-tab {
+  border-radius: 10px;
+  transition:
+    transform .16s cubic-bezier(.2,.75,.25,1),
+    background-color .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    box-shadow .18s ease;
+}
+html.ux-enhanced button:focus-visible,
+html.ux-enhanced a:focus-visible,
+html.ux-enhanced summary:focus-visible,
+html.ux-enhanced [tabindex]:focus-visible {
+  outline: 3px solid rgba(240,244,60,.42);
+  outline-offset: 3px;
+}
+html.ux-enhanced button:active,
+html.ux-enhanced .spot-btn:active,
+html.ux-enhanced .dona-btn:active { transform: translateY(1px) scale(.985); }
+
+html.ux-enhanced #btnAggiorna {
+  min-width: 150px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+}
+.ux-spin { display: inline-block; line-height: 1; }
+.is-loading .ux-spin { animation: ux-button-spin .8s linear infinite; }
+
+html.ux-enhanced .topnav:not([hidden]) {
+  animation: ux-menu-in .2s cubic-bezier(.2,.75,.25,1) both;
+}
+html.ux-enhanced .topnav a.is-active {
+  color: #090b0d;
+  border-color: var(--signal);
+  background: var(--signal);
+  box-shadow: 0 0 0 3px rgba(240,244,60,.1);
+}
+
+/* I richiami restano visibili, senza rimbalzi continui che distraggono dai dati. */
+html.ux-enhanced .gruppo-collapse:not([open]) .gruppo-sum::after {
+  animation: none !important;
+}
+html.ux-enhanced .gruppo-sum {
+  transition:
+    border-color .2s ease,
+    background .2s ease,
+    transform .2s cubic-bezier(.2,.75,.25,1),
+    box-shadow .2s ease;
+}
+html.ux-enhanced .gruppo-sum::after {
+  transition: transform .2s cubic-bezier(.2,.75,.25,1), background .2s ease;
+}
+
+html.ux-enhanced .section,
+html.ux-enhanced .console-card,
+html.ux-enhanced .side-card {
+  transition:
+    border-color .22s ease,
+    box-shadow .22s ease,
+    transform .22s cubic-bezier(.2,.75,.25,1);
+}
+html.ux-enhanced.ux-motion-ready .ux-reveal {
+  opacity: 0;
+  transform: translateY(8px);
+}
+html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity .42s ease, transform .42s cubic-bezier(.2,.75,.25,1);
+}
+
+.ux-mobile-dock { display: none; }
+.ux-toast {
+  position: fixed;
+  z-index: 1300;
+  left: 50%;
+  bottom: 22px;
+  max-width: calc(100vw - 32px);
+  padding: .7rem .9rem;
+  border: 1px solid #3b4750;
+  border-radius: 999px;
+  background: rgba(20,27,33,.97);
+  color: #f5f8f9;
+  box-shadow: 0 14px 40px rgba(0,0,0,.42);
+  font-size: .8rem;
+  font-weight: 750;
+  opacity: 0;
+  transform: translate(-50%,12px);
+  pointer-events: none;
+  transition: opacity .22s ease, transform .22s cubic-bezier(.2,.75,.25,1);
+}
+.ux-toast.is-visible { opacity: 1; transform: translate(-50%,0); }
+
+:root[data-theme="light"] .ux-scroll-progress { background: rgba(22,35,44,.09); }
+:root[data-theme="light"] .topbar-live {
+  background: #f2f5f6;
+  border-color: #c7d1d5;
+}
+:root[data-theme="light"] .topbar-live[data-state="ok"] { color: var(--ink); }
+:root[data-theme="light"] .topbar-live[data-state="syncing"] { color: var(--sea-dark); }
+:root[data-theme="light"] .topbar-live[data-state="issue"] { color: #87510a; }
+
+@media (hover: hover) {
+  html.ux-enhanced button:not(:disabled):hover,
+  html.ux-enhanced .spot-btn:hover,
+  html.ux-enhanced .dona-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.2);
+  }
+  html.ux-enhanced .section:hover,
+  html.ux-enhanced .console-card:hover,
+  html.ux-enhanced .side-card:hover {
+    border-color: #3b4852;
+    box-shadow: 0 11px 30px rgba(0,0,0,.25);
+  }
+  html.ux-enhanced .gruppo-sum:hover {
+    border-color: rgba(240,244,60,.42);
+    box-shadow: 0 10px 26px rgba(0,0,0,.22);
+  }
+}
+
+@media (max-width: 700px) {
+  html.ux-enhanced body { padding-bottom: calc(86px + env(safe-area-inset-bottom)); }
+  html.ux-enhanced .theme-toggle,
+  html.ux-enhanced .menu-toggle { min-width: 44px; min-height: 44px; }
+  html.ux-enhanced .menu-toggle { padding-inline: .72rem; }
+  html.ux-enhanced .gruppo-sum::after {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .ux-mobile-dock {
+    position: fixed;
+    z-index: 900;
+    top: auto;
+    left: 10px;
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    width: auto;
+    min-height: 62px;
+    margin: 0;
+    padding: 5px;
+    display: grid;
+    grid-template-columns: repeat(5,minmax(0,1fr));
+    gap: 3px;
+    overflow: visible;
+    border: 1px solid rgba(82,96,107,.7);
+    border-radius: 16px;
+    background: rgba(14,19,24,.94);
+    box-shadow: 0 18px 48px rgba(0,0,0,.48);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+  .ux-mobile-dock a,
+  .ux-mobile-dock button {
+    min-width: 0;
+    min-height: 50px;
+    padding: 5px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    overflow: hidden;
+    border: 0;
+    border-radius: 11px;
+    background: transparent;
+    color: #aeb9bf;
+    box-shadow: none;
+    text-decoration: none;
+    font-family: "Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size: .62rem;
+    font-weight: 750;
+    line-height: 1.05;
+  }
+  .ux-mobile-dock .ux-dock-icon { font-size: 1.05rem; line-height: 1; }
+  .ux-mobile-dock .ux-dock-label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ux-mobile-dock a.is-active { background: var(--signal); color: #090b0d; }
+  .ux-mobile-dock button:hover { background: #202930; color: #fff; }
+  .ux-toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
+
+  :root[data-theme="light"] .ux-mobile-dock {
+    border-color: rgba(168,182,190,.9);
+    background: rgba(255,255,255,.94);
+    box-shadow: 0 18px 48px rgba(22,35,44,.2);
+  }
+  :root[data-theme="light"] .ux-mobile-dock a,
+  :root[data-theme="light"] .ux-mobile-dock button { color: #52636d; }
+  :root[data-theme="light"] .ux-mobile-dock a.is-active { color: #17200a; }
+  :root[data-theme="light"] .ux-toast { background: rgba(255,255,255,.98); color: var(--ink); }
+}
+
+@keyframes ux-menu-in {
+  from { opacity: 0; transform: translateY(-6px) scale(.985); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ux-button-spin { to { transform: rotate(360deg); } }
+@keyframes ux-live-pulse {
+  0%,100% { opacity: .55; transform: scale(.86); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.ux-enhanced *,
+  html.ux-enhanced *::before,
+  html.ux-enhanced *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
