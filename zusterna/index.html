@@ -197,6 +197,7 @@
     .bd-verdetto { text-align: center; font-size: 1.75rem; font-weight: 800; line-height: 1.15; margin: .35rem 0 .1rem; }
     .bd-verdetto small { display: block; font-size: .84rem; font-weight: 600; color: var(--label); margin-top: .18rem; }
     .bd-verdetto.assente { color: #5b6470; }
+    .bd-verdetto.genesi { color: #a07800; }
     .bd-verdetto.consistente { color: #e2680f; }
     .bd-verdetto.forte { color: #cf2e22; }
     .tws-hero.bd-hero { font-size: 2.7rem; margin: .1rem 0 .8rem; }
@@ -865,7 +866,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-birre1" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-bora3" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -1092,12 +1093,12 @@
       <div class="tws-hero bd-hero"><span class="bd-sign" id="deltaSegno"></span><span class="lcd"><span class="lcd-ghost" id="deltaGhost">8.8</span><span class="lcd-lit" id="deltaLcd">–</span></span><span class="u">hPa</span></div>
       <div class="bd-meter">
         <div class="bd-bar">
-          <div style="flex:1;background:#b9b8b2;"></div>
-          <div style="flex:1;background:#e2680f;"></div>
-          <div style="flex:1;background:#cf2e22;"></div>
+          <div style="flex:3;background:#b9b8b2;"></div>
+          <div style="flex:2;background:#e0a80f;"></div><div style="flex:3;background:#e2680f;"></div>
+          <div style="flex:4;background:#cf2e22;"></div>
           <div class="bd-marker" id="deltaMarker" style="left:0%;opacity:0;"></div>
         </div>
-        <div class="bd-labels"><div>ni burje</div><div>občutna</div><div>močna</div></div>
+        <div class="bd-labels"><div style="flex:3;">ni burje</div><div style="flex:2;">nastanek</div><div style="flex:3;">občutna</div><div style="flex:4;">močna</div></div>
       </div>
       <p class="bd-spiega">Burja se vklopi, ko je nad planoto višji tlak kot nad zalivom: to je potisk <strong>v tem trenutku</strong>.</p>
       <p class="stato" id="deltaBoraStato">
@@ -1272,8 +1273,9 @@
       <p><strong>Negativna</strong> vrednost pomeni, da je <strong>v Mariboru več tlaka kot v Trstu</strong>: to je pogoj, ki sproži burjo na Jadranu. Bolj kot je vrednost negativna, močnejša bo burja.</p>
       <p>Okvirni pragovi:</p>
       <p>
-        • <strong>Δ &gt; −4 hPa</strong> → burje ni (gradient pod pragom).<br>
-        • <strong>Δ ≤ −4 hPa</strong> → prag <strong>nastanka</strong>: burja se sproži (občutna).<br>
+        • <strong>Δ &gt; −3 hPa</strong> → burje ni (gradient pod pragom).<br>
+        • <strong>Δ ≤ −3 hPa</strong> → prag <strong>nastanka</strong>: burja se prožila.<br>
+        • <strong>Δ ≤ −5 hPa</strong> → občutna burja.<br>
         • <strong>Δ ≤ −8 hPa</strong> → močna burja.
       </p>
       <p class="guida-meta">Graf zgoraj prikazuje <em>napovedano</em> razliko za naslednjih 5 dni (vir DWD / profiwetter.ch); ta okvirček pa uporablja <em>trenutni</em> tlak, normaliziran na morsko gladino, tako da sta Maribor (262&nbsp;m) in Trst primerljiva. Vir podatkov v živo: Open-Meteo.</p>
@@ -2140,11 +2142,12 @@
         const pMb = mb.current.pressure_msl, pTs = ts.current.pressure_msl;
         const delta = Math.round((pTs - pMb) * 10) / 10;
         let cls, testo, sub;
-        if (delta > -4)       { cls = "assente";     testo = "Burje ni";     sub = "tlak ne potiska s severovzhoda"; } // sopra −4 hPa: niente Bora
-        else if (delta > -8)  { cls = "consistente"; testo = "Občutna burja"; sub = "potisk nad pragom: burja se vklaplja ali prihaja"; } // da −4 hPa la Bora si innesca
+        if (delta > -3)       { cls = "assente";     testo = "Burje ni";     sub = "tlak ne potiska s severovzhoda"; } // sopra −3 hPa: niente Bora
+        else if (delta > -5)  { cls = "genesi";      testo = "Nastanek burje";   sub = ""; }
+        else if (delta > -8)  { cls = "consistente"; testo = "Občutna burja"; sub = "potisk nad pragom: burja se vklaplja ali prihaja"; }
         else                  { cls = "forte";       testo = "Močna burja";       sub = "močan potisk: pričakuj močne sunke"; }
         const verd = document.getElementById("deltaVerdetto");
-        verd.innerHTML = testo + "<small>" + sub + "</small>";
+        verd.innerHTML = testo + (sub ? "<small>" + sub + "</small>" : "");
         verd.className = "bd-verdetto " + cls;
         const abs = Math.abs(delta).toFixed(1);
         document.getElementById("deltaSegno").textContent = delta < 0 ? "−" : "+";

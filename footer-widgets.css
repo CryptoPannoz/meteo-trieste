@@ -693,12 +693,14 @@ footer { color: var(--label); }
 .bd-bar { background: #232b33; }
 .bd-marker { background: #f0f43c; box-shadow: 0 0 0 3px rgba(9,13,16,.6); }
 .bd-verdetto.assente { color: #9aa4ad; }
+.bd-verdetto.genesi { color: #ffcf4d; }
 .bd-verdetto.consistente { color: #ff9d4d; }
 .bd-verdetto.forte { color: #ff6a5e; }
 /* pressione di bora: scala e verdetto in palette chiara */
 :root[data-theme="light"] .bd-bar { background: #e7ebe5; }
 :root[data-theme="light"] .bd-marker { background: #122034; box-shadow: 0 0 0 3px rgba(255,255,255,.55); }
 :root[data-theme="light"] .bd-verdetto.assente { color: #5b6470; }
+:root[data-theme="light"] .bd-verdetto.genesi { color: #a07800; }
 :root[data-theme="light"] .bd-verdetto.consistente { color: #b35c00; }
 :root[data-theme="light"] .bd-verdetto.forte { color: #cf2e22; }
 /* avviso "centralina ferma" sopra il pannello vento: ambra leggibile su fondo chiaro */
