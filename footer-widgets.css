@@ -21,6 +21,24 @@
 .beer-widget { max-width: 420px; padding-top: 1.25rem; }
 .beer-bounce { display: inline-block; font-size: 3.1rem; line-height: 1; transform-origin: 50% 100%; animation: beer-hop 1.25s ease-in-out infinite; filter: drop-shadow(0 5px 4px rgba(31,42,55,.18)); }
 .beer-widget p { color: var(--label); margin: .5rem 0 .85rem; font-size: .82rem; }
+/* CTA sotto la birra che saltella: apre il popup col conteggio dei sostenitori */
+.beer-bounce { cursor: pointer; }
+.beer-count-cta {
+  display: block; margin: .3rem auto .45rem; background: none; border: none;
+  color: var(--signal); font-size: .8rem; font-weight: 700; cursor: pointer;
+  text-decoration: underline dotted; text-underline-offset: 3px;
+}
+.beer-count-cta:hover { text-decoration-style: solid; }
+.beer-count-line { text-align: center; margin: .4rem 0 .2rem; }
+.beer-count-num { display: block; font-size: 2.6rem; font-weight: 800; line-height: 1.1; }
+.beer-count-list {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: .18rem .9rem; max-height: 45vh; overflow-y: auto;
+  margin: .7rem 0 .2rem; padding: .5rem .6rem;
+  border: 1px solid #2a343d; border-radius: 10px;
+  font-size: .84rem; text-align: left;
+}
+.beer-count-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .supporters { margin-top: 1.1rem; padding-top: .9rem; border-top: 1px solid #2a343d; }
 .supporters h3 { margin: 0 0 .55rem; color: var(--slate); font-size: .78rem; }
 .supporters-marquee {
@@ -668,6 +686,9 @@ footer { color: var(--label); }
 :root[data-theme="light"] th,
 :root[data-theme="light"] td { border-bottom-color: #d7dfe2; }
 :root[data-theme="light"] tr.riga-recente td:first-child { background: #eef3f4; }
+/* popup birre: contrasto su tema chiaro */
+:root[data-theme="light"] .beer-count-cta { color: var(--sea-dark); }
+:root[data-theme="light"] .beer-count-list { border-color: var(--line); }
 /* pressione di bora: base scura del sito (le pagine definiscono la base chiara inline) */
 .bd-bar { background: #232b33; }
 .bd-marker { background: #f0f43c; box-shadow: 0 0 0 3px rgba(9,13,16,.6); }
