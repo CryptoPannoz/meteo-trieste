@@ -868,7 +868,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-bora3" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-legenda1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -1252,14 +1252,15 @@
         <div class="statbox"><span class="etichetta">Maribor (SLO)</span><span class="valore" id="dbLiveMb">–<span class="unita"> hPa</span></span></div>
       </div>
       <p class="guida-meta" id="dbLiveDelta" style="text-align:center; margin:.2rem 0 .6rem;"></p>
-      <p>Un valore <strong>negativo</strong> significa che a <strong>Maribor c'è più pressione che a Trieste</strong>: è la condizione che innesca la Bora in Adriatico. Più il valore è negativo, più forte sarà la Bora.</p>
-      <p>Soglie indicative:</p>
-      <p>
-        • <strong>Δ &gt; −3 hPa</strong> → Bora assente (gradiente sotto soglia).<br>
-        • <strong>Δ ≤ −3 hPa</strong> → soglia di <strong>genesi</strong>: la bora si sta innescando.<br>
-        • <strong>Δ ≤ −5 hPa</strong> → Bora consistente.<br>
-        • <strong>Δ ≤ −8 hPa</strong> → Bora forte.
-      </p>
+      <p>Un valore <strong>negativo</strong> vuol dire che oltre l'altipiano (lato Maribor) c'è più pressione che sul golfo: l'aria fredda e pesante accumulata sul continente "trabocca" verso il mare — ed è così che nasce la bora. <strong>Più il numero è negativo, più forte è la spinta.</strong></p>
+      <p><strong>Come leggere il valore</strong> (le fasce della barra):</p>
+      <div class="bd-legenda">
+        <div><i style="background:#b9b8b2;"></i><span><strong>sopra −3 · Bora assente</strong> — lo squilibrio non basta a innescarla: se senti vento, di solito non è bora.</span></div>
+        <div><i style="background:#e0a80f;"></i><span><strong>−3 … −5 · Genesi della Bora</strong> — soglia superata: la bora si sta innescando e i primi rinforzi da NE arrivano sul golfo.</span></div>
+        <div><i style="background:#e2680f;"></i><span><strong>−5 … −8 · Bora consistente</strong> — vento da NE ben stabilito e raffiche decise: condizioni impegnative in acqua.</span></div>
+        <div><i style="background:#cf2e22;"></i><span><strong>oltre −8 · Bora forte</strong> — squilibrio importante: possibili raffiche violente, attenzione in mare e in città.</span></div>
+      </div>
+      <p class="guida-meta">Le soglie sono indicative: l'intensità reale dipende anche da quanta aria fredda c'è in quota e dalla direzione del flusso. Leggi questo numero insieme al <strong>surfometro</strong>: la pressione anticipa, le centraline confermano.</p>
       <p class="guida-meta">Il grafico qui sopra mostra la differenza <em>prevista</em> per i prossimi 5 giorni (fonte DWD / profiwetter.ch); questo box invece usa la pressione <em>attuale</em>, normalizzata al livello del mare così che Maribor (262&nbsp;m) e Trieste siano confrontabili. Fonte dati live: Open-Meteo.</p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="document.getElementById('modalDeltaBora').style.display='none'">Chiudi</button>

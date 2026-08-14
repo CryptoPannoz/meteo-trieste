@@ -686,6 +686,10 @@ footer { color: var(--label); }
 :root[data-theme="light"] th,
 :root[data-theme="light"] td { border-bottom-color: #d7dfe2; }
 :root[data-theme="light"] tr.riga-recente td:first-child { background: #eef3f4; }
+/* legenda del popup "come si legge" della pressione di bora */
+.bd-legenda { margin: .5rem 0 .8rem; }
+.bd-legenda > div { display: flex; align-items: flex-start; gap: .55rem; margin: .5rem 0; line-height: 1.45; }
+.bd-legenda i { flex: none; width: 13px; height: 13px; border-radius: 4px; margin-top: .25em; }
 /* popup birre: contrasto su tema chiaro */
 :root[data-theme="light"] .beer-count-cta { color: var(--sea-dark); }
 :root[data-theme="light"] .beer-count-list { border-color: var(--line); }

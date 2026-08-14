@@ -866,7 +866,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-bora3" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-legenda1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -1270,14 +1270,15 @@
         <div class="statbox"><span class="etichetta">Maribor (SLO)</span><span class="valore" id="dbLiveMb">–<span class="unita"> hPa</span></span></div>
       </div>
       <p class="guida-meta" id="dbLiveDelta" style="text-align:center; margin:.2rem 0 .6rem;"></p>
-      <p><strong>Negativna</strong> vrednost pomeni, da je <strong>v Mariboru več tlaka kot v Trstu</strong>: to je pogoj, ki sproži burjo na Jadranu. Bolj kot je vrednost negativna, močnejša bo burja.</p>
-      <p>Okvirni pragovi:</p>
-      <p>
-        • <strong>Δ &gt; −3 hPa</strong> → burje ni (gradient pod pragom).<br>
-        • <strong>Δ ≤ −3 hPa</strong> → prag <strong>nastanka</strong>: burja se prožila.<br>
-        • <strong>Δ ≤ −5 hPa</strong> → občutna burja.<br>
-        • <strong>Δ ≤ −8 hPa</strong> → močna burja.
-      </p>
+      <p><strong>Negativna</strong> vrednost pomeni, da je nad planoto (stran Maribora) več tlaka kot nad zalivom: hladen, težak zrak s celine se "prelije" proti morju — tako nastane burja. <strong>Bolj kot je število negativno, močnejši je potisk.</strong></p>
+      <p><strong>Kako brati vrednost</strong> (pasovi na lestvici):</p>
+      <div class="bd-legenda">
+        <div><i style="background:#b9b8b2;"></i><span><strong>nad −3 · Burje ni</strong> — razlika ne zadošča: če piha, običajno ni burja.</span></div>
+        <div><i style="background:#e0a80f;"></i><span><strong>−3 … −5 · Nastanek burje</strong> — prag je presežen: burja se prožila, prvi sunki s SV dosežejo zaliv.</span></div>
+        <div><i style="background:#e2680f;"></i><span><strong>−5 … −8 · Občutna burja</strong> — veter s SV je vzpostavljen, sunki odločni: zahtevne razmere na vodi.</span></div>
+        <div><i style="background:#cf2e22;"></i><span><strong>pod −8 · Močna burja</strong> — velika razlika: možni siloviti sunki, previdno na morju in v mestu.</span></div>
+      </div>
+      <p class="guida-meta">Pragovi so okvirni: dejanska moč je odvisna tudi od količine hladnega zraka v višinah in smeri toka. To število beri skupaj s <strong>surfometrom</strong>: tlak napoveduje, postaje potrdijo.</p>
       <p class="guida-meta">Graf zgoraj prikazuje <em>napovedano</em> razliko za naslednjih 5 dni (vir DWD / profiwetter.ch); ta okvirček pa uporablja <em>trenutni</em> tlak, normaliziran na morsko gladino, tako da sta Maribor (262&nbsp;m) in Trst primerljiva. Vir podatkov v živo: Open-Meteo.</p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="document.getElementById('modalDeltaBora').style.display='none'">Zapri</button>
