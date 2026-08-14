@@ -2233,7 +2233,7 @@
         const delta = Math.round((pTs - pMb) * 10) / 10;
         let cls, testo, sub;
         if (delta > -3)       { cls = "assente";     testo = "Bora assente";     sub = "la pressione non spinge da nord-est"; } // sopra −3 hPa: niente Bora
-        else if (delta > -5)  { cls = "genesi";      testo = "Genesi di bora";   sub = ""; } // da −3 hPa la bora si sta innescando
+        else if (delta > -5)  { cls = "genesi";      testo = "Genesi della Bora";   sub = ""; } // da −3 hPa la bora si sta innescando
         else if (delta > -8)  { cls = "consistente"; testo = "Bora consistente"; sub = "spinta oltre la soglia: bora innescata o in arrivo"; }
         else                  { cls = "forte";       testo = "Bora forte";       sub = "spinta alta: attese raffiche importanti"; }
         const verd = document.getElementById("deltaVerdetto");
