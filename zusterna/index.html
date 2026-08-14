@@ -866,7 +866,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-legenda1" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-note1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -1093,12 +1093,12 @@
       <div class="tws-hero bd-hero"><span class="bd-sign" id="deltaSegno"></span><span class="lcd"><span class="lcd-ghost" id="deltaGhost">8.8</span><span class="lcd-lit" id="deltaLcd">–</span></span><span class="u">hPa</span></div>
       <div class="bd-meter">
         <div class="bd-bar">
-          <div style="flex:3;background:#b9b8b2;"></div>
-          <div style="flex:2;background:#e0a80f;"></div><div style="flex:3;background:#e2680f;"></div>
+          <div style="flex:3.5;background:#b9b8b2;"></div>
+          <div style="flex:1.5;background:#e0a80f;"></div><div style="flex:3;background:#e2680f;"></div>
           <div style="flex:4;background:#cf2e22;"></div>
           <div class="bd-marker" id="deltaMarker" style="left:0%;opacity:0;"></div>
         </div>
-        <div class="bd-labels"><div style="flex:3;">ni burje</div><div style="flex:2;">nastanek</div><div style="flex:3;">občutna</div><div style="flex:4;">močna</div></div>
+        <div class="bd-labels"><div style="flex:3.5;">ni burje</div><div style="flex:1.5;">nastanek</div><div style="flex:3;">občutna</div><div style="flex:4;">močna</div></div>
       </div>
       <p class="bd-spiega">Burja se vklopi, ko je nad planoto višji tlak kot nad zalivom: to je potisk <strong>v tem trenutku</strong>.</p>
       <p class="stato" id="deltaBoraStato">
@@ -1273,8 +1273,8 @@
       <p><strong>Negativna</strong> vrednost pomeni, da je nad planoto (stran Maribora) več tlaka kot nad zalivom: hladen, težak zrak s celine se "prelije" proti morju — tako nastane burja. <strong>Bolj kot je število negativno, močnejši je potisk.</strong></p>
       <p><strong>Kako brati vrednost</strong> (pasovi na lestvici):</p>
       <div class="bd-legenda">
-        <div><i style="background:#b9b8b2;"></i><span><strong>nad −3 · Burje ni</strong> — razlika ne zadošča: če piha, običajno ni burja.</span></div>
-        <div><i style="background:#e0a80f;"></i><span><strong>−3 … −5 · Nastanek burje</strong> — prag je presežen: burja se prožila, prvi sunki s SV dosežejo zaliv.</span></div>
+        <div><i style="background:#b9b8b2;"></i><span><strong>nad −3,5 · Nizka tlačna razlika</strong> — razlika ne zadošča: če piha, običajno ni burja.</span></div>
+        <div><i style="background:#e0a80f;"></i><span><strong>−3,5 … −5 · Nastanek burje</strong> — prag je presežen: burja se prožila, prvi sunki s SV dosežejo zaliv.</span></div>
         <div><i style="background:#e2680f;"></i><span><strong>−5 … −8 · Občutna burja</strong> — veter s SV je vzpostavljen, sunki odločni: zahtevne razmere na vodi.</span></div>
         <div><i style="background:#cf2e22;"></i><span><strong>pod −8 · Močna burja</strong> — velika razlika: možni siloviti sunki, previdno na morju in v mestu.</span></div>
       </div>
@@ -2143,7 +2143,7 @@
         const pMb = mb.current.pressure_msl, pTs = ts.current.pressure_msl;
         const delta = Math.round((pTs - pMb) * 10) / 10;
         let cls, testo, sub;
-        if (delta > -3)       { cls = "assente";     testo = "Burje ni";     sub = "tlak ne potiska s severovzhoda"; } // sopra −3 hPa: niente Bora
+        if (delta > -3.5)     { cls = "assente";     testo = "Nizka tlačna razlika";     sub = "tlak ne potiska s severovzhoda"; } // sopra −3,5 hPa: niente burja
         else if (delta > -5)  { cls = "genesi";      testo = "Nastanek burje";   sub = ""; }
         else if (delta > -8)  { cls = "consistente"; testo = "Občutna burja"; sub = "potisk nad pragom: burja se vklaplja ali prihaja"; }
         else                  { cls = "forte";       testo = "Močna burja";       sub = "močan potisk: pričakuj močne sunke"; }
@@ -2297,7 +2297,7 @@
 
   <footer class="site-footer" aria-label="Informacije, podpora in zasluge">
   <div class="footer-widgets" id="footerWidgets" data-lang="sl"></div>
-  <script src="/footer-widgets.js?v=20260814-birre1"></script>
+  <script src="/footer-widgets.js?v=20260814-note1"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="veterZusternaSeo">

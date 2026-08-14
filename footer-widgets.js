@@ -130,6 +130,68 @@
   });
 })();
 
+/* Nota fonti compatta, stile surfometro: ogni riga di stato con id="stato…"
+   (centraline e boe, su tutte le pagine) diventa un <details> chiuso col
+   triangolino; nel summary resta visibile solo l'ultimo aggiornamento, dentro
+   finiscono fonte, finestra e link posizione. Un MutationObserver tiene il
+   riassunto allineato quando i render riscrivono la riga. */
+(function () {
+  var sl = document.documentElement.lang === "sl" ||
+    ((document.getElementById("footerWidgets") || { dataset: {} }).dataset.lang === "sl");
+  function minutiDa(hhmm) {
+    var m = String(hhmm).match(/([0-2]?\d):(\d{2})/);
+    if (!m) return null;
+    var d = new Date();
+    var min = (d - new Date(d.getFullYear(), d.getMonth(), d.getDate(), +m[1], +m[2])) / 60000;
+    if (min < -5) min += 1440;
+    return Math.max(Math.round(min), 0);
+  }
+  function etaTxt(min) {
+    if (min == null) return "";
+    if (min < 60) return " · " + min + " min " + (sl ? "nazaj" : "fa");
+    var h = Math.floor(min / 60);
+    return " · " + (sl ? "pred več kot " + h + " h" : "oltre " + h + (h === 1 ? " ora fa" : " ore fa"));
+  }
+  function riassunto(p) {
+    var txt = p.textContent.replace(/\s+/g, " ").trim();
+    var warn = txt.indexOf("⚠") !== -1;
+    var icona = warn ? "⚠️ " : "🕒 ";
+    var m = txt.match(/(?:agg|posod)\.\s*([0-2]?\d:\d{2})/);
+    if (m) return icona + (sl ? "posod. " : "agg. ") + m[1] + etaTxt(minutiDa(m[1]));
+    m = txt.match(/(?:Rilevazione|Meritev)\s+([^·(]{2,28}?)(?:\s*[·(]|$)/i);
+    if (m) {
+      // la boa Piran porta la data ISO ("2026-08-14 17:15"): nel riassunto basta l'ora
+      var quando = m[1].trim().replace(/^\d{4}-\d{2}-\d{2}\s*/, "");
+      return icona + (sl ? "meritev " : "rilev. ") + quando + etaTxt(minutiDa(quando));
+    }
+    m = txt.match(/([0-2]?\d:\d{2})/);          // es. "l'ultimo dato è delle 04:09 (oltre 9 ore fa)"
+    if (m) {
+      var par = txt.match(/\(([^)]+(?: fa|nazaj))\)/);
+      return icona + (sl ? "posod. " : "agg. ") + m[1] + (par ? " · " + par[1] : "");
+    }
+    if (!txt) return "ℹ️ " + (sl ? "podrobnosti" : "dettagli");
+    return (warn ? "⚠️ " : "ℹ️ ") + (sl ? "vir in podrobnosti" : "fonte e dettagli");
+  }
+  document.querySelectorAll('p.stato[id^="stato"]').forEach(function (p) {
+    var det = document.createElement("details");
+    det.className = "fonte-note";
+    var sum = document.createElement("summary");
+    det.appendChild(sum);
+    p.parentNode.insertBefore(det, p);
+    det.appendChild(p);
+    // le righe statiche "Fonte: …" subito dopo (es. boe) entrano nello stesso dropdown
+    var next = det.nextElementSibling;
+    while (next && next.tagName === "P" && next.classList.contains("stato") && !/^stato/.test(next.id || "")) {
+      var daSpostare = next;
+      next = next.nextElementSibling;
+      det.appendChild(daSpostare);
+    }
+    function sync() { sum.textContent = riassunto(p); }
+    sync();
+    new MutationObserver(sync).observe(p, { childList: true, subtree: true, characterData: true });
+  });
+})();
+
 (function () {
   var root = document.getElementById("footerWidgets");
   if (!root) return;

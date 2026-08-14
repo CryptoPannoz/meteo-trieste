@@ -686,6 +686,15 @@ footer { color: var(--label); }
 :root[data-theme="light"] th,
 :root[data-theme="light"] td { border-bottom-color: #d7dfe2; }
 :root[data-theme="light"] tr.riga-recente td:first-child { background: #eef3f4; }
+/* nota fonti compatta (centraline e boe): dropdown chiuso, riassunto nel summary */
+.fonte-note { margin-top: .45rem; }
+.fonte-note summary { font-size: .8rem; font-weight: 600; color: var(--label); cursor: pointer; }
+.fonte-note summary:hover { color: var(--ink); }
+.fonte-note[open] summary { margin-bottom: .25rem; }
+.fonte-note .stato { margin: .25rem 0; }
+/* verdetto "Bassa differenza di pressione": testo lungo, corpo ridotto per non andare a capo male */
+.bd-verdetto.assente { font-size: 1.3rem; }
+#barcolaLive .bd-verdetto.assente { font-size: 1.5rem; }
 /* legenda del popup "come si legge" della pressione di bora */
 .bd-legenda { margin: .5rem 0 .8rem; }
 .bd-legenda > div { display: flex; align-items: flex-start; gap: .55rem; margin: .5rem 0; line-height: 1.45; }

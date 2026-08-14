@@ -903,7 +903,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-legenda1" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-note1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
   <!-- Mappa del vento: qui la vista è centrata su Marina Julia, quindi i punti
        del lato Trieste (boa Mambo, Barcola, Muggia) e Žusterna non si disegnano. -->
@@ -996,12 +996,12 @@
           <div class="tws-hero bd-hero"><span class="bd-sign" id="deltaSegno"></span><span class="lcd"><span class="lcd-ghost" id="deltaGhost">8.8</span><span class="lcd-lit" id="deltaLcd">–</span></span><span class="u">hPa</span></div>
           <div class="bd-meter">
             <div class="bd-bar">
-              <div style="flex:3;background:#b9b8b2;"></div>
-              <div style="flex:2;background:#e0a80f;"></div><div style="flex:3;background:#e2680f;"></div>
+              <div style="flex:3.5;background:#b9b8b2;"></div>
+              <div style="flex:1.5;background:#e0a80f;"></div><div style="flex:3;background:#e2680f;"></div>
               <div style="flex:4;background:#cf2e22;"></div>
               <div class="bd-marker" id="deltaMarker" style="left:0%;opacity:0;"></div>
             </div>
-            <div class="bd-labels"><div style="flex:3;">assente</div><div style="flex:2;">genesi</div><div style="flex:3;">consistente</div><div style="flex:4;">forte</div></div>
+            <div class="bd-labels"><div style="flex:3.5;">assente</div><div style="flex:1.5;">genesi</div><div style="flex:3;">consistente</div><div style="flex:4;">forte</div></div>
           </div>
           <p class="bd-spiega">La bora si accende quando oltre l'altipiano c'è più pressione che sul golfo: questa è la spinta <strong>in questo momento</strong>.</p>
           <p class="stato" id="deltaBoraStato">
@@ -1336,8 +1336,8 @@
       <p>Un valore <strong>negativo</strong> vuol dire che oltre l'altipiano (lato Maribor) c'è più pressione che sul golfo: l'aria fredda e pesante accumulata sul continente "trabocca" verso il mare — ed è così che nasce la bora. <strong>Più il numero è negativo, più forte è la spinta.</strong></p>
       <p><strong>Come leggere il valore</strong> (le fasce della barra):</p>
       <div class="bd-legenda">
-        <div><i style="background:#b9b8b2;"></i><span><strong>sopra −3 · Bora assente</strong> — lo squilibrio non basta a innescarla: se senti vento, di solito non è bora.</span></div>
-        <div><i style="background:#e0a80f;"></i><span><strong>−3 … −5 · Genesi della Bora</strong> — soglia superata: la bora si sta innescando e i primi rinforzi da NE arrivano sul golfo.</span></div>
+        <div><i style="background:#b9b8b2;"></i><span><strong>sopra −3,5 · Bassa differenza di pressione</strong> — lo squilibrio non basta a innescare la bora: se senti vento, di solito non è bora.</span></div>
+        <div><i style="background:#e0a80f;"></i><span><strong>−3,5 … −5 · Genesi della Bora</strong> — soglia superata: la bora si sta innescando e i primi rinforzi da NE arrivano sul golfo.</span></div>
         <div><i style="background:#e2680f;"></i><span><strong>−5 … −8 · Bora consistente</strong> — vento da NE ben stabilito e raffiche decise: condizioni impegnative in acqua.</span></div>
         <div><i style="background:#cf2e22;"></i><span><strong>oltre −8 · Bora forte</strong> — squilibrio importante: possibili raffiche violente, attenzione in mare e in città.</span></div>
       </div>
@@ -2305,8 +2305,8 @@
         const pMb = mb.current.pressure_msl, pTs = ts.current.pressure_msl;
         const delta = Math.round((pTs - pMb) * 10) / 10;
         let cls, testo, sub;
-        if (delta > -3)       { cls = "assente";     testo = "Bora assente";     sub = "la pressione non spinge da nord-est"; } // sopra −3 hPa: niente Bora
-        else if (delta > -5)  { cls = "genesi";      testo = "Genesi della Bora";   sub = ""; } // da −3 hPa la bora si sta innescando
+        if (delta > -3.5)     { cls = "assente";     testo = "Bassa differenza di pressione"; sub = "la pressione non spinge da nord-est"; } // sopra −3,5 hPa: niente bora
+        else if (delta > -5)  { cls = "genesi";      testo = "Genesi della Bora";   sub = ""; } // da −3,5 hPa la bora si sta innescando
         else if (delta > -8)  { cls = "consistente"; testo = "Bora consistente"; sub = "spinta oltre la soglia: bora innescata o in arrivo"; }
         else                  { cls = "forte";       testo = "Bora forte";       sub = "spinta alta: attese raffiche importanti"; }
         const verd = document.getElementById("deltaVerdetto");
@@ -2461,7 +2461,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js?v=20260814-birre1"></script>
+  <script src="/footer-widgets.js?v=20260814-note1"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoMarinaJuliaSeo">
