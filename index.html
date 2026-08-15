@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
   <title>Vento Trieste in tempo reale – Bora, raffiche e previsioni</title>
   <meta name="description" content="Vento a Trieste in tempo reale: velocità, raffiche e direzione da Barcola, Monte Grisa e Muggia. Previsioni Bora, modello ALADIN, mare e webcam live." />
-  <meta name="keywords" content="vento Trieste, Bora Trieste, surf Trieste, windsurf Trieste, vento Barcola, previsioni vento Trieste, ALADIN Trieste, Monte Grisa, Muggia, vento Istria, kitesurf Trieste, golfo di Trieste" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="bebroggi" />
   <link rel="canonical" href="https://ventotrieste.info/" />
@@ -1538,7 +1537,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20260815-bora1" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20260815-seo1" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20260815-nowcast1" defer></script>
 </head>
@@ -1582,6 +1581,7 @@
   </header>
 
   <main>
+    <h1 class="site-page-title">Vento a Trieste in tempo reale</h1>
     <section class="hero" id="vento">
       <!-- SURFOMETRO (scheda a parte) -->
       <div class="console-card" id="surfometroCard">
@@ -1867,110 +1867,16 @@
          onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Mappa Aladin momentaneamente non disponibile.</p>'); this.style.display='none';" />
   </div>
 
-  <!-- WINDY + WINDGURU -->
-  <div class="section" id="windy">
-    <h2>Windguru – WG Trieste</h2>
-    <div style="margin-top: 1rem; overflow-x:auto;">
-      <!-- Windguru widget WG (model mix) -->
-      <script id="wg_fwdg_49156_3_wg">
-        (function (window, document) {
-          var loader = function () {
-            var arg = [
-              "s=49156",
-              "m=3",
-              "uid=wg_fwdg_49156_3_wg",
-              "wj=knots",
-              "tj=c",
-              "waj=m",
-              "tij=cm",
-              "odh=0",
-              "doh=24",
-              "fhours=240",
-              "hrsm=2",
-              "vt=forecasts",
-              "lng=it",
-              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
-            ];
-            var script = document.createElement("script");
-            var tag = document.getElementsByTagName("script")[0];
-            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
-            tag.parentNode.insertBefore(script, tag);
-          };
-          window.addEventListener
-            ? window.addEventListener("load", loader, false)
-            : window.attachEvent("onload", loader);
-        })(window, document);
-      </script>
+  <!-- WINDGURU: caricamento differito all'apertura di Previsioni -->
+  <div class="section windguru-section" id="windy">
+    <div class="sec-head"><h2>Windguru – Trieste</h2><span class="windguru-badge">on demand</span></div>
+    <p class="stato">Aprendo questa sezione viene caricato solo il primo modello. Gli altri partono quando li selezioni.</p>
+    <div class="windguru-tabs" role="tablist" aria-label="Modelli Windguru per Trieste">
+      <button class="windguru-tab is-active" type="button" role="tab" aria-selected="true" data-wg-spot="49156" data-wg-model="3" data-wg-uid="wg_lazy_49156_3" data-wg-lang="it">WG</button>
+      <button class="windguru-tab" type="button" role="tab" aria-selected="false" data-wg-spot="49156" data-wg-model="107" data-wg-uid="wg_lazy_49156_107" data-wg-lang="it">ALADIN</button>
+      <button class="windguru-tab" type="button" role="tab" aria-selected="false" data-wg-spot="49156" data-wg-model="104" data-wg-uid="wg_lazy_49156_104" data-wg-lang="it">ICON-2I</button>
     </div>
-
-    <h2 style="margin-top:1.5rem;">Windguru – ALADIN Trieste</h2>
-    <div style="margin-top: 1rem; overflow-x:auto;">
-      <!-- Windguru widget -->
-      <script id="wg_fwdg_49156_107_1753785367900">
-        (function (window, document) {
-          var loader = function () {
-            var arg = [
-              "s=49156",
-              "m=107",
-              "uid=wg_fwdg_49156_107_1753785367900",
-              "wj=knots",
-              "tj=c",
-              "waj=m",
-              "tij=cm",
-              "odh=0",
-              "doh=24",
-              "fhours=240",
-              "hrsm=2",
-              "vt=forecasts",
-              "lng=it",
-              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
-            ];
-            var script = document.createElement("script");
-            var tag = document.getElementsByTagName("script")[0];
-            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
-            tag.parentNode.insertBefore(script, tag);
-          };
-          window.addEventListener
-            ? window.addEventListener("load", loader, false)
-            : window.attachEvent("onload", loader);
-        })(window, document);
-      </script>
-    </div>
-
-    <h2 style="margin-top:1.5rem;">Windguru – ICON-2I Trieste</h2>
-    <div style="margin-top: 1rem; overflow-x:auto;">
-      <!-- Windguru widget ICON-2I -->
-      <script id="wg_fwdg_49156_104_icon">
-        (function (window, document) {
-          var loader = function () {
-            var arg = [
-              "s=49156",
-              "m=104",
-              "uid=wg_fwdg_49156_104_icon",
-              "wj=knots",
-              "tj=c",
-              "waj=m",
-              "tij=cm",
-              "odh=0",
-              "doh=24",
-              "fhours=240",
-              "hrsm=2",
-              "vt=forecasts",
-              "lng=it",
-              "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
-            ];
-            var script = document.createElement("script");
-            var tag = document.getElementsByTagName("script")[0];
-            script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
-            tag.parentNode.insertBefore(script, tag);
-          };
-          window.addEventListener
-            ? window.addEventListener("load", loader, false)
-            : window.attachEvent("onload", loader);
-        })(window, document);
-      </script>
-    </div>
-
+    <div class="windguru-stage"><p class="windguru-placeholder">Il modello apparirà qui quando apri Previsioni.</p></div>
     <div style="text-align:center; margin-top: 1.5rem;">
       <button onclick="apriModal()">ℹ️ Differenze tra i modelli meteo</button>
     </div>
@@ -2606,12 +2512,12 @@
       const vento = nomeVento(dirDeg);
       const gustStr = (gust != null && gust !== "") ? gust : "–";
       return '<div class="pannello">' +
-        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + (dirTxt || "–") + '</span>' +
+        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + escHtml(dirTxt || "–") + '</span>' +
           (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</span>' +
           (vento ? '<span class="wind-name-badge">' + vento + '</span>' : '') + '</div>' +
         '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
-          '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
-        '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
+          '<span class="lcd-lit">' + escHtml(twsStr) + '</span></span><span class="u">kt</span></div>' +
+        '<div class="tws-raffica">raffica <b>' + escHtml(gustStr) + '</b> kt</div>' +
       '</div>';
     }
 
@@ -2646,7 +2552,7 @@
         '<div class="bollett' + (allerta ? ' allerta' : '') + '">' +
         '<div class="bollett-giorno">' + (allerta ? '⛈️ ' : '') + escHtml(lbl) + '</div>' +
         '<div class="bollett-testo">' + escHtml(g.testo) + '</div>' +
-        '<img class="osmer-mappa" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
+        '<img class="osmer-mappa" width="346" height="346" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
           '" src="https://www.meteo.fvg.it/previ/' + encodeURIComponent(g.giorno) + '.png?v=' + cb +
           '" onerror="this.style.display=\'none\'"></div>';
     }
@@ -3108,12 +3014,12 @@
         if (idx === 0) tr.className = "riga-recente";
         // ora (con tag "adesso" sulla riga più recente)
         const tdOra = document.createElement("td");
-        tdOra.innerHTML = (r.ora || "–") + (idx === 0 ? ' <span class="ora-now">adesso</span>' : "");
+        tdOra.innerHTML = escHtml(r.ora || "–") + (idx === 0 ? ' <span class="ora-now">adesso</span>' : "");
         tr.appendChild(tdOra);
         // direzione con freccia
         const deg = cardinaleInGradi(r.direzione);
         const tdDir = document.createElement("td");
-        tdDir.innerHTML = windArrowHtml(deg, "") + (r.direzione || "–");
+        tdDir.innerHTML = windArrowHtml(deg, "") + escHtml(r.direzione || "–");
         tr.appendChild(tdDir);
         tr.appendChild(cella(r.kt, classeVento(r.kt)));
         tr.appendChild(cella(r.sunki, classeVento(r.sunki)));
@@ -3662,12 +3568,12 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20260815-bora1"></script>
+  <script src="./footer-widgets.js?v=20260815-seo1"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
       <span class="story-kicker">💨 Perché nasce questo progetto</span>
-      <h1 id="ventoTriesteSeo">Vento Trieste in tempo reale</h1>
+      <h2 class="seo-footer-title" id="ventoTriesteSeo">Vento Trieste in tempo reale</h2>
       <p>Una webapp veloce per leggere a colpo d’occhio velocità, raffiche e direzione del vento nel Golfo di Trieste, dalle centraline di Barcola, Monte Grisa, Muggia, Marina Julia e Grado.</p>
       <h2>Vento a Trieste oggi: dati live e previsioni</h2>
       <p>Consulta il <a href="#bora">grafico della Bora</a>, il <a href="#aladin">modello ALADIN</a>, le condizioni del mare e le <a href="#webcam">webcam live</a> per windsurf, wingfoil, vela e attività in mare.</p>

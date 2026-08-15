@@ -7,9 +7,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
-  <title>Veter Žusterna (Koper) – Surfometer, maestral in napovedi za wing in windsurf</title>
-  <meta name="description" content="Veter v živo na Žusterni (Koper) za wing, windsurf in surf: surfometer postaje KJD BUM, spletna kamera v živo, graf burje, model ALADIN in podatki v živo s spotov Tržaškega zaliva in Istre." />
-  <meta name="keywords" content="veter Trst, burja Trst, surf Trst, windsurf Trst, veter Barkovlje, napoved vetra Trst, ALADIN Trst, Monte Grisa, Milje, veter Istra, kitesurf Trst, Tržaški zaliv" />
+  <title>Veter Žusterna v živo: sunki in smer | Vento Trieste</title>
+  <meta name="description" content="Veter v Žusterni pri Kopru v živo: hitrost, sunki in smer postaje KJD BUM, spletna kamera, burja ter napovedi za Tržaški zaliv." />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="bebroggi" />
   <link rel="canonical" href="https://ventotrieste.info/zusterna/" />
@@ -18,8 +17,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Vento Trieste" />
   <meta property="og:locale" content="sl_SI" />
-  <meta property="og:title" content="Veter Žusterna (Koper) – Surfometer, maestral in napovedi za wing in windsurf" />
-  <meta property="og:description" content="Veter v živo na Žusterni (Koper): surfometer postaje KJD BUM, spletna kamera v živo, burja, ALADIN in podatki v živo s spotov Tržaškega zaliva in Istre." />
+  <meta property="og:title" content="Veter Žusterna v živo: sunki in smer" />
+  <meta property="og:description" content="Podatki postaje KJD BUM, spletna kamera, burja in napovedi za Tržaški zaliv." />
   <meta property="og:url" content="https://ventotrieste.info/zusterna/" />
   <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
   <meta property="og:image:width" content="1080" />
@@ -861,12 +860,19 @@
             "addressCountry": "IT"
           }
         }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Vento Trieste", "item": "https://ventotrieste.info/" },
+          { "@type": "ListItem", "position": 2, "name": "Veter Žusterna", "item": "https://ventotrieste.info/zusterna/" }
+        ]
       }
     ]
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260815-bora1" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260815-seo1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -906,6 +912,7 @@
     <section class="hero" id="vento">
       <div class="hero-copy">
         <p class="eyebrow">Golfo di Trieste · Live</p>
+        <h1 class="site-page-title">Veter v Žusterni v živo</h1>
       </div>
 
       <!-- SURFOMETRO (scheda a parte) -->
@@ -1154,9 +1161,7 @@
             script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
             tag.parentNode.insertBefore(script, tag);
           };
-          window.addEventListener
-            ? window.addEventListener("load", loader, false)
-            : window.attachEvent("onload", loader);
+          (window.windguruDeferredLoaders = window.windguruDeferredLoaders || []).push(loader);
         })(window, document);
       </script>
     </div>
@@ -1188,9 +1193,7 @@
             script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
             tag.parentNode.insertBefore(script, tag);
           };
-          window.addEventListener
-            ? window.addEventListener("load", loader, false)
-            : window.attachEvent("onload", loader);
+          (window.windguruDeferredLoaders = window.windguruDeferredLoaders || []).push(loader);
         })(window, document);
       </script>
     </div>
@@ -1222,9 +1225,7 @@
             script.src = "https://www.windguru.cz/js/widget.php?" + arg.join("&");
             tag.parentNode.insertBefore(script, tag);
           };
-          window.addEventListener
-            ? window.addEventListener("load", loader, false)
-            : window.attachEvent("onload", loader);
+          (window.windguruDeferredLoaders = window.windguruDeferredLoaders || []).push(loader);
         })(window, document);
       </script>
     </div>
@@ -1633,12 +1634,12 @@
       const vento = nomeVento(dirDeg);
       const gustStr = (gust != null && gust !== "") ? gust : "–";
       return '<div class="pannello">' +
-        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + (dirTxt || "–") + '</span>' +
+        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + escHtml(dirTxt || "–") + '</span>' +
           (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</span>' +
           (vento ? '<span class="wind-name-badge">' + vento + '</span>' : '') + '</div>' +
         '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
-          '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
-        '<div class="tws-raffica">sunki <b>' + gustStr + '</b> vozli</div>' +
+          '<span class="lcd-lit">' + escHtml(twsStr) + '</span></span><span class="u">kt</span></div>' +
+        '<div class="tws-raffica">sunki <b>' + escHtml(gustStr) + '</b> vozli</div>' +
       '</div>';
     }
 
@@ -1673,7 +1674,7 @@
         '<div class="bollett' + (allerta ? ' allerta' : '') + '">' +
         '<div class="bollett-giorno">' + (allerta ? '⛈️ ' : '') + escHtml(lbl) + '</div>' +
         '<div class="bollett-testo">' + escHtml(g.testo) + '</div>' +
-        '<img class="osmer-mappa" loading="lazy" alt="Karta napovedi FVG ' + escHtml(g.giorno) +
+        '<img class="osmer-mappa" width="346" height="346" loading="lazy" alt="Karta napovedi FVG ' + escHtml(g.giorno) +
           '" src="https://www.meteo.fvg.it/previ/' + encodeURIComponent(g.giorno) + '.png?v=' + cb +
           '" onerror="this.style.display=\'none\'"></div>';
     }
@@ -1972,12 +1973,12 @@
         if (idx === 0) tr.className = "riga-recente";
         // ora (con tag "adesso" sulla riga più recente)
         const tdOra = document.createElement("td");
-        tdOra.innerHTML = (r.ora || "–") + (idx === 0 ? ' <span class="ora-now">zdaj</span>' : "");
+        tdOra.innerHTML = escHtml(r.ora || "–") + (idx === 0 ? ' <span class="ora-now">zdaj</span>' : "");
         tr.appendChild(tdOra);
         // direzione con freccia
         const deg = cardinaleInGradi(r.direzione);
         const tdDir = document.createElement("td");
-        tdDir.innerHTML = windArrowHtml(deg, "") + (r.direzione || "–");
+        tdDir.innerHTML = windArrowHtml(deg, "") + escHtml(r.direzione || "–");
         tr.appendChild(tdDir);
         tr.appendChild(cella(r.kt, classeVento(r.kt)));
         tr.appendChild(cella(r.sunki, classeVento(r.sunki)));
@@ -2297,12 +2298,12 @@
 
   <footer class="site-footer" aria-label="Informacije, podpora in zasluge">
   <div class="footer-widgets" id="footerWidgets" data-lang="sl"></div>
-  <script src="/footer-widgets.js?v=20260815-bora1"></script>
+  <script src="/footer-widgets.js?v=20260815-seo1"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="veterZusternaSeo">
       <span class="story-kicker">💨 Zakaj je nastal ta projekt</span>
-      <h1 id="veterZusternaSeo">Veter Žusterna v živo</h1>
+      <h2 class="seo-footer-title" id="veterZusternaSeo">Veter Žusterna v živo</h2>
       <p>Hitra spletna aplikacija za pregled hitrosti, sunkov in smeri vetra v Žusterni pri Kopru, z napovedjo za Tržaški zaliv, stanjem morja in kamerami.</p>
       <h2>Veter v Žusterni danes: meritve v živo in napovedi</h2>
       <p>Preverite najnovejše meritve postaje v Žusterni, razmere na morju in <a href="#previsioni">napoved vetra</a> za jadranje na deski, wingfoil, kajtanje, jadranje in druge dejavnosti v Tržaškem zalivu.</p>

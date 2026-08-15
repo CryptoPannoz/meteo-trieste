@@ -237,7 +237,8 @@
     supportCta: "Plačaj mi pivo", supportMethods: "Prostovoljni prispevek · PayPal, Revolut ali Bitcoin",
     supporters: "Podporniki projekta", supporterCount: "podpornikov",
     partners: "Partnerji in reference", partnersText: "Ljudje in ustanove, ki širijo kulturo vetra in deljenje podatkov.",
-    dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri"
+    dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri",
+    guides: "Vodniki in orodja", guidesText: "Poglobljene strani za razumevanje meritev in napovedi."
   } : {
     visitors: "Visitatori", since: "visitatori dall’inizio", request: "Richiedi una modifica o integrazione",
     placeholder: "Descrivi la modifica o l’integrazione che vorresti…", send: "📩 Invia richiesta",
@@ -248,7 +249,8 @@
     supportCta: "Offrimi una birra", supportMethods: "Donazione libera · PayPal, Revolut o Bitcoin",
     supporters: "Chi sostiene il progetto", supporterCount: "sostenitori",
     partners: "Partner e riferimenti", partnersText: "Persone e realtà che valorizzano la cultura del vento e la condivisione dei dati.",
-    dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali"
+    dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali",
+    guides: "Guide e strumenti", guidesText: "Approfondimenti per leggere meglio dati live e previsioni."
   };
   var supporters = ["Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop"];
   var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
@@ -282,6 +284,19 @@
     { name: "Bibione.com", url: "https://www.bibione.com/" },
     { name: "Island Surf", url: "https://www.islandsurf.it/" }
   ];
+  var guides = sl ? [
+    { name: "Zemljevid vetra", url: "/mappa/" },
+    { name: "Burja v Trstu", url: "/bora-trieste/" },
+    { name: "Kako brati surfometer", url: "/come-leggere-surfometro/" },
+    { name: "Modeli vetra", url: "/modelli-vento-trieste/" },
+    { name: "Spoti v zalivu", url: "/spot/" }
+  ] : [
+    { name: "Mappa vento live", url: "/mappa/" },
+    { name: "Guida alla Bora", url: "/bora-trieste/" },
+    { name: "Come leggere il surfometro", url: "/come-leggere-surfometro/" },
+    { name: "Modelli vento", url: "/modelli-vento-trieste/" },
+    { name: "Spot del Golfo", url: "/spot/" }
+  ];
   function sourcePills(list) {
     return list.map(function (source) {
       return '<a class="source-pill" href="' + source.url + '" target="_blank" rel="noopener">' +
@@ -293,8 +308,9 @@
       '<span class="partner-mark" aria-hidden="true">↗</span><span><strong>' + partner.name + '</strong><small>' + partner.detail + '</small></span></a>';
   }).join("");
   root.innerHTML =
+    '<nav class="footer-widget guide-widget" aria-labelledby="footerGuidesTitle"><h2 id="footerGuidesTitle">🧭 ' + t.guides + '</h2><p>' + t.guidesText + '</p><div class="guide-links">' + sourcePills(guides) + '</div></nav>' +
     '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' +
-    '<section class="footer-widget footer-request" aria-labelledby="footerRequestTitle"><h2 id="footerRequestTitle">💬 ' + t.request + '</h2><form id="footerRequestForm"><select id="footerRequestType"><option>' + t.modify + '</option><option>' + t.integrate + '</option><option>' + t.problem + '</option><option>' + t.other + '</option></select><textarea id="footerRequestText" required maxlength="1500" placeholder="' + t.placeholder + '"></textarea><button class="dona-btn" type="submit">' + t.send + '</button></form><p class="stato">' + t.note + '</p></section>' +
+    '<section class="footer-widget footer-request" aria-labelledby="footerRequestTitle"><h2 id="footerRequestTitle">💬 ' + t.request + '</h2><form id="footerRequestForm"><label class="visually-hidden" for="footerRequestType">' + t.request + '</label><select id="footerRequestType"><option>' + t.modify + '</option><option>' + t.integrate + '</option><option>' + t.problem + '</option><option>' + t.other + '</option></select><label class="visually-hidden" for="footerRequestText">' + t.placeholder + '</label><textarea id="footerRequestText" required maxlength="1500" placeholder="' + t.placeholder + '"></textarea><button class="dona-btn" type="submit">' + t.send + '</button></form><p class="stato">' + t.note + '</p></section>' +
     '<section class="footer-widget support-widget" aria-labelledby="footerSupportTitle">' +
       '<div class="support-hero"><span class="support-kicker">' + t.supportKicker + '</span>' +
       '<span class="support-symbol" aria-hidden="true">🍺</span><h2 id="footerSupportTitle">' + t.supportTitle + '</h2>' +
@@ -326,6 +342,97 @@
   document.getElementById("footerSupportButton").addEventListener("click", function (e) {
     e.preventDefault(); if (typeof window.apriBirra === "function") window.apriBirra(e);
   });
+})();
+
+/* I widget Windguru sono pesanti e non servono durante la lettura dei dati live.
+   Vengono montati solo quando l'utente apre Previsioni e soltanto per il modello
+   selezionato. Ogni pannello già caricato resta in memoria quando si cambia tab. */
+(function () {
+  "use strict";
+  document.querySelectorAll(".windguru-section").forEach(function (section) {
+    var buttons = Array.prototype.slice.call(section.querySelectorAll(".windguru-tab"));
+    var stage = section.querySelector(".windguru-stage");
+    if (!buttons.length || !stage) return;
+
+    function load(button) {
+      buttons.forEach(function (candidate) {
+        var active = candidate === button;
+        candidate.classList.toggle("is-active", active);
+        candidate.setAttribute("aria-selected", String(active));
+        var existing = stage.querySelector('[data-wg-panel="' + candidate.dataset.wgUid + '"]');
+        if (existing) existing.hidden = !active;
+      });
+
+      var uid = button.dataset.wgUid;
+      var panel = stage.querySelector('[data-wg-panel="' + uid + '"]');
+      if (panel) return;
+
+      panel = document.createElement("div");
+      panel.className = "windguru-panel";
+      panel.dataset.wgPanel = uid;
+      panel.setAttribute("role", "tabpanel");
+      panel.innerHTML = '<p class="windguru-loading" role="status">Carico il modello…</p>';
+      stage.appendChild(panel);
+
+      var marker = document.createElement("script");
+      marker.id = uid;
+      panel.appendChild(marker);
+      var params = [
+        "s=" + button.dataset.wgSpot,
+        "m=" + button.dataset.wgModel,
+        "uid=" + uid,
+        "wj=knots", "tj=c", "waj=m", "tij=cm", "odh=0", "doh=24",
+        "fhours=240", "hrsm=2", "vt=forecasts",
+        "lng=" + (button.dataset.wgLang || "it"),
+        "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
+      ];
+      var loader = document.createElement("script");
+      loader.src = "https://www.windguru.cz/js/widget.php?" + params.join("&");
+      loader.async = true;
+      loader.onload = function () {
+        var loading = panel.querySelector(".windguru-loading");
+        if (loading) loading.remove();
+      };
+      loader.onerror = function () {
+        panel.innerHTML = '<p class="windguru-error">⚠️ Modello non disponibile. Riprova tra poco.</p>';
+      };
+      marker.parentNode.insertBefore(loader, marker);
+    }
+
+    buttons.forEach(function (button) {
+      button.addEventListener("click", function () { load(button); });
+    });
+
+    var forecast = section.closest("details");
+    var first = buttons[0];
+    if (forecast) {
+      forecast.addEventListener("toggle", function () {
+        if (forecast.open && !stage.dataset.started) {
+          stage.dataset.started = "1";
+          load(first);
+        }
+      });
+      if (forecast.open) {
+        stage.dataset.started = "1";
+        load(first);
+      }
+    }
+  });
+
+  var legacyLoaders = window.windguruDeferredLoaders || [];
+  if (legacyLoaders.length) {
+    var legacyForecast = document.getElementById("previsioni");
+    var startLegacy = function () {
+      if (!legacyForecast || !legacyForecast.open || legacyForecast.dataset.windguruStarted) return;
+      legacyForecast.dataset.windguruStarted = "1";
+      legacyLoaders.splice(0).forEach(function (loader, index) {
+        /* Piccolo scaglionamento: evita tre picchi di rete nello stesso frame. */
+        window.setTimeout(loader, index * 180);
+      });
+    };
+    if (legacyForecast) legacyForecast.addEventListener("toggle", startLegacy);
+    startLegacy();
+  }
 })();
 
 /* UX condivisa: stato dati, orientamento nella pagina, feedback dei comandi e

@@ -7,9 +7,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
-  <title>Vento Lignano – Surfometro, onde e previsioni per windsurf, kite e wing</title>
-  <meta name="description" content="Vento a Lignano, Grado e Bibione in tempo reale per windsurf, kitesurf e wing: surfometro della centralina di Lignano, raffiche e direzione, onde e mare, webcam live, grafico della Bora e mappa vento interattiva (Windy). In collaborazione con ISLAND Surf Shop." />
-  <meta name="keywords" content="vento Lignano, vento Grado, vento Bibione, surfometro Lignano, windsurf Lignano, kitesurf Lignano, wingfoil Lignano, onde Lignano, previsioni vento Lignano, ALADIN Alto Adriatico, Island Surf Lignano, meteo Lignano Sabbiadoro" />
+  <title>Vento Lignano ora, raffiche e onde | Vento Trieste</title>
+  <meta name="description" content="Vento a Lignano in tempo reale: velocità, raffiche e direzione della centralina, onde, webcam e previsioni per windsurf, kite e wing nell'Alto Adriatico." />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="bebroggi" />
   <link rel="canonical" href="https://ventotrieste.info/lignano/" />
@@ -18,8 +17,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Vento Trieste" />
   <meta property="og:locale" content="it_IT" />
-  <meta property="og:title" content="Vento Lignano – Surfometro, onde e previsioni per windsurf, kite e wing" />
-  <meta property="og:description" content="Vento a Lignano, Grado e Bibione live: surfometro, raffiche, direzione, onde, webcam, Bora e mappe vento. In collaborazione con ISLAND Surf Shop." />
+  <meta property="og:title" content="Vento Lignano ora, raffiche e onde" />
+  <meta property="og:description" content="Dati live della centralina di Lignano, onde, webcam e previsioni per l'Alto Adriatico." />
   <meta property="og:url" content="https://ventotrieste.info/lignano/" />
   <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
   <meta property="og:image:width" content="1080" />
@@ -922,12 +921,19 @@
             "addressCountry": "IT"
           }
         }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Vento Trieste", "item": "https://ventotrieste.info/" },
+          { "@type": "ListItem", "position": 2, "name": "Vento Lignano", "item": "https://ventotrieste.info/lignano/" }
+        ]
       }
     ]
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260815-bora1" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260815-seo1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
 </head>
 <body>
@@ -965,6 +971,7 @@
     <section class="hero" id="vento">
       <div class="hero-copy">
         <p class="eyebrow">Lignano · Grado · Bibione · Live</p>
+        <h1 class="site-page-title">Vento a Lignano in tempo reale</h1>
       </div>
 
       <!-- SURFOMETRO (scheda a parte) -->
@@ -1526,12 +1533,12 @@
       const vento = nomeVento(dirDeg);
       const gustStr = (gust != null && gust !== "") ? gust : "–";
       return '<div class="pannello">' +
-        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + (dirTxt || "–") + '</span>' +
+        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + escHtml(dirTxt || "–") + '</span>' +
           (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</span>' +
           (vento ? '<span class="wind-name-badge">' + vento + '</span>' : '') + '</div>' +
         '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
-          '<span class="lcd-lit">' + twsStr + '</span></span><span class="u">kt</span></div>' +
-        '<div class="tws-raffica">raffica <b>' + gustStr + '</b> kt</div>' +
+          '<span class="lcd-lit">' + escHtml(twsStr) + '</span></span><span class="u">kt</span></div>' +
+        '<div class="tws-raffica">raffica <b>' + escHtml(gustStr) + '</b> kt</div>' +
       '</div>';
     }
 
@@ -1566,7 +1573,7 @@
         '<div class="bollett' + (allerta ? ' allerta' : '') + '">' +
         '<div class="bollett-giorno">' + (allerta ? '⛈️ ' : '') + escHtml(lbl) + '</div>' +
         '<div class="bollett-testo">' + escHtml(g.testo) + '</div>' +
-        '<img class="osmer-mappa" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
+        '<img class="osmer-mappa" width="346" height="346" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
           '" src="https://www.meteo.fvg.it/previ/' + encodeURIComponent(g.giorno) + '.png?v=' + cb +
           '" onerror="this.style.display=\'none\'"></div>';
     }
@@ -1917,12 +1924,12 @@
         if (idx === 0) tr.className = "riga-recente";
         // ora (con tag "adesso" sulla riga più recente)
         const tdOra = document.createElement("td");
-        tdOra.innerHTML = (r.ora || "–") + (idx === 0 ? ' <span class="ora-now">adesso</span>' : "");
+        tdOra.innerHTML = escHtml(r.ora || "–") + (idx === 0 ? ' <span class="ora-now">adesso</span>' : "");
         tr.appendChild(tdOra);
         // direzione con freccia
         const deg = cardinaleInGradi(r.direzione);
         const tdDir = document.createElement("td");
-        tdDir.innerHTML = windArrowHtml(deg, "") + (r.direzione || "–");
+        tdDir.innerHTML = windArrowHtml(deg, "") + escHtml(r.direzione || "–");
         tr.appendChild(tdDir);
         tr.appendChild(cella(r.kt, classeVento(r.kt)));
         tr.appendChild(cella(r.sunki, classeVento(r.sunki)));
@@ -2316,12 +2323,12 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js?v=20260815-bora1"></script>
+  <script src="/footer-widgets.js?v=20260815-seo1"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoGradoSeo">
       <span class="story-kicker">💨 Perché nasce questo progetto</span>
-      <h1 id="ventoGradoSeo">Vento Lignano in tempo reale</h1>
+      <h2 class="seo-footer-title" id="ventoGradoSeo">Vento Lignano in tempo reale</h2>
       <p>Una webapp veloce per leggere velocità, raffiche e direzione del vento a Lignano Sabbiadoro, con surfometro della centralina di Lignano, onde e stato del mare, previsioni e webcam live per windsurf, kitesurf, wing e SUP. Copre anche Grado e Bibione, in collaborazione con ISLAND Surf Shop.</p>
       <h2>Vento a Lignano oggi: dati live, onde e previsioni</h2>
       <p>Consulta i dati aggiornati della centralina di Lignano, lo stato delle onde, le webcam e le <a href="#previsioni">previsioni del vento</a> per organizzare uscite in windsurf, kitesurf, wingfoil, SUP e vela tra Lignano, Grado e Bibione.</p>

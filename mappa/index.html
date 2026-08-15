@@ -3,113 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mappa vento live – Golfo di Trieste e Istria</title>
+  <meta name="description" content="Mappa del vento in tempo reale nel Golfo di Trieste e in Istria: seleziona le frecce per vedere intensità, raffica, direzione e aggiornamento delle centraline." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://ventotrieste.info/mappa/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content="Mappa vento live – Golfo di Trieste e Istria" />
+  <meta property="og:description" content="Nowcasting dalle centraline del Golfo e dell'Istria. Tocca una freccia per aprire i dettagli." />
+  <meta property="og:url" content="https://ventotrieste.info/mappa/" />
+  <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
+  <meta property="og:image:width" content="1080" />
+  <meta property="og:image:height" content="719" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-  <title>Mappa vento live – Golfo di Trieste e Istria | Vento Trieste</title>
-  <meta name="description" content="Mappa del vento in tempo reale nel Golfo di Trieste e in Istria: direzione e intensità dalle centraline di Barcola, Monte Grisa, Muggia, Marina Julia, Grado, dalle boe Mambo e Vida e dagli spot istriani." />
-  <!-- Pagina sperimentale: noindex finché non viene pubblicata ufficialmente -->
-  <meta name="robots" content="noindex, nofollow" />
-  <link rel="canonical" href="https://ventotrieste.info/mappa/" />
+  <link rel="stylesheet" href="/guide.css?v=20260815-seo1" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
   <style>
-    :root {
-      color-scheme: dark;
-      --slate: #f4f7f8;
-      --slate-2: #b1bcc4;
-      --azzurro: #f0f43c;
-      --sfondo: #07090c;
-      --bordo: #2a343d;
-      --testo: #f4f7f8;
-      --label: #98a4ad;
-      --signal: #f0f43c;
-    }
-    * { box-sizing: border-box; }
-    body {
-      font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 0; padding: 0 1rem 2rem;
-      background: radial-gradient(circle at 50% -180px, rgba(240,244,60,.09), transparent 420px), var(--sfondo); color: var(--testo);
-      -webkit-font-smoothing: antialiased; line-height: 1.5;
-      font-feature-settings: "tnum" 1;
-    }
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      max-width: 680px; margin: 0 auto; padding: .9rem 0 .6rem;
-      border-bottom: 1px solid rgba(240,244,60,.25);
-    }
-    .brand { text-decoration: none; color: var(--slate); display: flex; flex-direction: column; line-height: 1.15; }
-    .brand strong { font-size: 1.05rem; font-weight: 800; }
-    .brand span { font-size: .72rem; color: var(--label); font-weight: 600; letter-spacing: .04em; }
-    .back { font-size: .82rem; font-weight: 600; color: var(--azzurro); text-decoration: none; }
-    .back:hover { text-decoration: underline; }
-    main { max-width: 680px; margin: 0 auto; }
-    h1 { font-size: 1.25rem; font-weight: 800; margin: .4rem 0 .15rem; color: var(--slate); }
-    .sub { font-size: .84rem; color: var(--label); margin: 0 0 .9rem; }
-    .beta {
-      display: inline-block; font-size: .66rem; font-weight: 800; letter-spacing: .06em;
-      background: var(--signal); color: #090b0d; border: 1px solid var(--signal);
-      border-radius: 6px; padding: .1rem .45rem; vertical-align: 2px; margin-left: .4rem;
-    }
-    .mappa-card {
-      background: #f7fbfb; border: 1px solid #b7d2d7; border-radius: 14px;
-      padding: .6rem; box-shadow: 0 8px 24px rgba(0,0,0,.26);
-    }
-    #mappa { display: block; width: 100%; height: auto; border-radius: 10px; }
-    .barra {
-      display: flex; align-items: center; justify-content: space-between; gap: .6rem;
-      flex-wrap: wrap; margin: .55rem .2rem 0;
-    }
-    .stato { font-size: .76rem; color: #52676d; margin: 0; }
-    .btn-aggiorna {
-      font: inherit; font-size: .78rem; font-weight: 700; cursor: pointer;
-      background: var(--signal); color: #090b0d; border: 0; border-radius: 8px; padding: .38rem .8rem;
-    }
-    .btn-aggiorna:disabled { opacity: .55; cursor: default; }
-    .legenda {
-      display: flex; gap: .9rem; flex-wrap: wrap; align-items: center;
-      font-size: .74rem; color: #52676d; margin: .7rem .2rem 0;
-    }
-    .legenda span { display: inline-flex; align-items: center; gap: .32rem; font-weight: 600; }
-    .legenda i { width: 20px; height: 5px; border-radius: 3px; display: inline-block; }
-    .fonti { font-size: .72rem; color: var(--label); margin: 1rem .2rem 0; }
-    .fonti a { color: var(--azzurro); }
+    .map-layout { display: grid; grid-template-columns: minmax(0, 760px) minmax(240px, 1fr); gap: 1.25rem; margin-top: 1.25rem; align-items: start; }
+    .map-card { padding: .8rem; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow); }
+    #mappa { display: block; width: 100%; height: auto; }
+    .map-bar { display: flex; align-items: center; justify-content: space-between; gap: .7rem; flex-wrap: wrap; margin: .7rem .15rem 0; }
+    .map-status { margin: 0; color: var(--muted); font-size: .76rem; }
+    .refresh { min-height: 40px; padding: .5rem .75rem; border: 1px solid var(--sea); border-radius: 9px; background: var(--sea); color: #fff; font: inherit; font-size: .74rem; font-weight: 850; cursor: pointer; }
+    .refresh:disabled { opacity: .55; cursor: default; }
+    .map-copy { padding: 1.15rem; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: 0 9px 28px rgba(24,51,60,.07); }
+    .map-copy h2 { margin: 0 0 .55rem; font-size: 1.15rem; }
+    .map-copy h3 { margin: 1.15rem 0 .35rem; font-size: .9rem; }
+    .map-copy p, .map-copy li { color: #405461; font-size: .8rem; }
+    .map-copy ul { padding-left: 1.1rem; }
+    .source-note { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .7rem; }
+    @media (max-width: 860px) { .map-layout { grid-template-columns: 1fr; } }
   </style>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"WebPage","name":"Mappa vento live – Golfo di Trieste e Istria","url":"https://ventotrieste.info/mappa/","description":"Mappa delle osservazioni del vento in tempo reale nel Golfo di Trieste e in Istria.","inLanguage":"it-IT"},
+    {"@type":"WebApplication","name":"Mappa vento Vento Trieste","url":"https://ventotrieste.info/mappa/","applicationCategory":"WeatherApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},
+    {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Mappa vento","item":"https://ventotrieste.info/mappa/"}]}
+  ]}
+  </script>
+  <script src="/mappa-golfo.js?v=20260815-seo1" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="/">
-      <strong>Vento Trieste</strong>
-      <span>surfometro live</span>
-    </a>
-    <a class="back" href="/">← Torna al sito</a>
-  </header>
-
+  <header class="topbar"><a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a><nav class="toplinks" aria-label="Navigazione"><a href="/">Vento ora</a><a href="/spot/">Spot</a><a href="/bora-trieste/">Bora</a></nav></header>
   <main>
-    <h1>Mappa del vento in tempo reale<span class="beta">BETA</span></h1>
-    <p class="sub">Nowcasting dalle centraline del Golfo di Trieste e dell'Istria. Tocca una freccia per vedere il dettaglio; le centraline offline non vengono mostrate.</p>
-
-    <div class="mappa-card">
-      <svg id="mappa" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento osservato nel Golfo di Trieste e in Istria"></svg>
-      <div class="barra">
-        <p class="stato" id="statoMappa">Carico i dati…</p>
-        <button class="btn-aggiorna" id="btnAggiorna" type="button">↻ Aggiorna</button>
-      </div>
-      <div class="legenda">
-        <span><i style="background:#8a94a0"></i> &lt;8 kt calmo</span>
-        <span><i style="background:#3b6d11"></i> 8–15 kt leggero</span>
-        <span><i style="background:#b35c00"></i> 15–25 kt buono</span>
-        <span><i style="background:#c20202"></i> &gt;25 kt forte</span>
-      </div>
+    <nav class="breadcrumbs" aria-label="Percorso"><a href="/">Home</a> / Mappa vento</nav>
+    <header class="hero-guide"><span class="kicker">Nowcasting</span><h1>Mappa del vento in tempo reale</h1><p class="lead">Solo frecce e punti di misura: seleziona una stazione per vedere intensità, raffica, direzione e ora dell'ultimo dato.</p><div class="quick-links"><a class="button primary" href="#mappaLive">Apri la mappa</a><a class="button" href="/spot/">Pagine degli spot</a></div></header>
+    <div class="map-layout" id="mappaLive">
+      <section class="map-card" aria-label="Mappa vento Golfo di Trieste e Istria">
+        <svg id="mappa" viewBox="0 0 762 1000" role="img" aria-label="Osservazioni del vento nel Golfo di Trieste e in Istria"></svg>
+        <div class="map-bar"><p class="map-status" id="statoMappa" aria-live="polite">Carico i dati…</p><button class="refresh" id="btnAggiorna" type="button">↻ Aggiorna</button></div>
+      </section>
+      <aside class="map-copy">
+        <h2>Come si legge</h2><p>La freccia indica dove va il vento. Il colore riassume l'intensità; toccando o cliccando il simbolo si apre il dettaglio della stazione.</p>
+        <h3>Dati non mostrati</h3><p>Una centralina ferma o troppo vecchia viene nascosta per non presentare come attuale una misura non aggiornata.</p>
+        <h3>Per approfondire</h3><ul><li><a href="/come-leggere-surfometro/">Media, raffica e direzione</a></li><li><a href="/bora-trieste/">Come leggere la Bora</a></li><li><a href="/modelli-vento-trieste/">Confrontare i modelli</a></li></ul>
+        <p class="source-note">Dati: Vetercek, Barcola, OGS MAMBO1, Protezione Civile FVG, NIB Vida e altre fonti locali. Costa © OpenStreetMap contributors. Aggiornamento automatico ogni 5 minuti.</p>
+      </aside>
     </div>
-
-    <p class="fonti" id="mappaIstruzioni">La freccia indica dove va il vento; selezionala per vedere stazione, intensità, raffica, direzione e ora. Dati live: <a href="https://vetercek.com" target="_blank" rel="noopener">vetercek.com</a> · boa Mambo (OGS, via ERDDAP) · boa Vida (NIB, Pirano) · centralina Barcola. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Aggiornamento automatico ogni 5 minuti.</p>
   </main>
-
-  <script src="/mappa-golfo.js?v=20260815-nowcast1"></script>
+  <footer class="page-footer"><nav><a href="/">Vento Trieste</a><a href="/spot/">Spot</a><a href="/bora-trieste/">Guida alla Bora</a></nav>Dati live e fonti attribuite · ventotrieste.info</footer>
   <script>
     "use strict";
     var PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
-
     function caricaMappa(retry) {
       var btn = document.getElementById("btnAggiorna");
       var stato = document.getElementById("statoMappa");
@@ -118,8 +77,7 @@
         .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
         .then(function (data) {
           MappaGolfo.render(data);
-          stato.textContent = "Aggiornato alle " +
-            new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+          stato.textContent = "Aggiornato alle " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
         })
         .catch(function () {
           if (retry) { setTimeout(function () { caricaMappa(false); }, 4000); return; }
@@ -127,15 +85,12 @@
         })
         .finally(function () { btn.disabled = false; });
     }
-
-    caricaMappa(true);
-    MappaGolfo.caricaMambo();
-    document.getElementById("btnAggiorna").addEventListener("click", function () { caricaMappa(false); });
-    setInterval(function () {
-      if (document.hidden) return;
-      caricaMappa(false);
+    window.addEventListener("DOMContentLoaded", function () {
+      caricaMappa(true);
       MappaGolfo.caricaMambo();
-    }, 5 * 60 * 1000);
+      document.getElementById("btnAggiorna").addEventListener("click", function () { caricaMappa(false); });
+      setInterval(function () { if (!document.hidden) { caricaMappa(false); MappaGolfo.caricaMambo(); } }, 5 * 60 * 1000);
+    });
   </script>
 </body>
 </html>
