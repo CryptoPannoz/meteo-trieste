@@ -204,7 +204,7 @@
     integrate: "Dopolnitev (vir, kamera, spot)", problem: "Prijava težave", other: "Drugo",
     supportKicker: "Neodvisen projekt", supportTitle: "Pomagaj, da Vento Trieste ostane brezplačen",
     supportText: "Podatki v živo, napovedi in vzdrževanje ostajajo dostopni vsem. Če ti je storitev uporabna, lahko podpreš njeno prihodnost.",
-    supportCta: "Podpri Vento Trieste", supportMethods: "Prostovoljni prispevek · PayPal, Revolut ali Bitcoin",
+    supportCta: "Plačaj mi pivo", supportMethods: "Prostovoljni prispevek · PayPal, Revolut ali Bitcoin",
     supporters: "Podporniki projekta", supporterCount: "podpornikov",
     partners: "Partnerji in reference", partnersText: "Ljudje in ustanove, ki širijo kulturo vetra in deljenje podatkov.",
     dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri"
@@ -215,7 +215,7 @@
     integrate: "Integrazione (fonte, webcam, spot)", problem: "Segnalazione problema", other: "Altro",
     supportKicker: "Progetto indipendente", supportTitle: "Aiuta Vento Trieste a restare gratuito",
     supportText: "Dati live, previsioni e manutenzione restano accessibili a tutti. Se il servizio ti è utile, puoi contribuire al suo futuro.",
-    supportCta: "Sostieni Vento Trieste", supportMethods: "Donazione libera · PayPal, Revolut o Bitcoin",
+    supportCta: "Offrimi una birra", supportMethods: "Donazione libera · PayPal, Revolut o Bitcoin",
     supporters: "Chi sostiene il progetto", supporterCount: "sostenitori",
     partners: "Partner e riferimenti", partnersText: "Persone e realtà che valorizzano la cultura del vento e la condivisione dei dati.",
     dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali"
@@ -273,7 +273,9 @@
       '<span class="support-methods">' + t.supportMethods + '</span></div>' +
       '<div class="supporters"><div class="supporters-heading"><h3>' + t.supporters + '</h3>' +
       '<span class="supporter-total"><strong>' + supporters.length + '</strong> ' + t.supporterCount + '</span></div>' +
-      '<div class="supporters-list" aria-label="' + t.supporters + ': ' + supporters.join(', ') + '">' + supporterNames + '</div></div>' +
+      '<div class="supporters-marquee" tabindex="0" aria-label="' + t.supporters + ': ' + supporters.join(', ') + '">' +
+      '<div class="supporters-track"><div class="supporters-group">' + supporterNames + '</div>' +
+      '<div class="supporters-group" aria-hidden="true">' + supporterNames + '</div></div></div></div>' +
       '<div class="sources"><div class="sources-heading"><h3>' + t.partners + '</h3><p>' + t.partnersText + '</p></div>' +
       '<div class="partner-grid">' + partnerCards + '</div>' +
       '<h4>' + t.dataSources + '</h4><div class="source-pills">' + sourcePills(dataSources) + '</div>' +
