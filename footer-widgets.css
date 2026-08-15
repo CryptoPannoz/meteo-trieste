@@ -33,9 +33,9 @@
 }
 .support-kicker::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 0 4px rgba(240,244,60,.1); }
 .support-symbol {
-  display: grid; place-items: center; width: 54px; height: 54px; margin: 0 auto .8rem;
-  border-radius: 17px; background: var(--signal); color: #101417; font-size: 1.55rem;
-  box-shadow: 0 12px 30px rgba(240,244,60,.17); transform: rotate(-4deg);
+  display: block; width: max-content; height: auto; margin: 0 auto .8rem;
+  background: transparent; font-size: 3.35rem; line-height: 1;
+  filter: drop-shadow(0 8px 8px rgba(0,0,0,.2)); transform: rotate(-4deg);
 }
 .support-widget .support-hero h2 { max-width: 560px; margin: 0 auto .7rem; color: var(--ink); font-size: clamp(1.35rem, 3.5vw, 1.9rem); line-height: 1.13; }
 .support-hero > p { max-width: 570px; margin: 0 auto 1.2rem; color: var(--label); font-size: .88rem; line-height: 1.55; }

@@ -267,7 +267,7 @@
     '<section class="footer-widget footer-request" aria-labelledby="footerRequestTitle"><h2 id="footerRequestTitle">💬 ' + t.request + '</h2><form id="footerRequestForm"><select id="footerRequestType"><option>' + t.modify + '</option><option>' + t.integrate + '</option><option>' + t.problem + '</option><option>' + t.other + '</option></select><textarea id="footerRequestText" required maxlength="1500" placeholder="' + t.placeholder + '"></textarea><button class="dona-btn" type="submit">' + t.send + '</button></form><p class="stato">' + t.note + '</p></section>' +
     '<section class="footer-widget support-widget" aria-labelledby="footerSupportTitle">' +
       '<div class="support-hero"><span class="support-kicker">' + t.supportKicker + '</span>' +
-      '<span class="support-symbol" aria-hidden="true">♥</span><h2 id="footerSupportTitle">' + t.supportTitle + '</h2>' +
+      '<span class="support-symbol" aria-hidden="true">🍺</span><h2 id="footerSupportTitle">' + t.supportTitle + '</h2>' +
       '<p>' + t.supportText + '</p><a class="dona-btn support-primary" href="#" id="footerSupportButton">' +
       '<span aria-hidden="true">♥</span><span>' + t.supportCta + '</span><span aria-hidden="true">→</span></a>' +
       '<span class="support-methods">' + t.supportMethods + '</span></div>' +
