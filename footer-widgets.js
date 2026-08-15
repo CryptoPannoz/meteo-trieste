@@ -192,6 +192,36 @@
   });
 })();
 
+/* Pressione di bora compatta: verdetto, valore e scala restano sempre visibili;
+   spiegazione, fonte e guida finiscono in un dropdown come quello del
+   Surfometro. Il riepilogo segue l'orario quando i dati live si aggiornano. */
+(function () {
+  var sl = document.documentElement.lang === "sl" ||
+    ((document.getElementById("footerWidgets") || { dataset: {} }).dataset.lang === "sl");
+  document.querySelectorAll("#barcolaLive, .bora-delta").forEach(function (box) {
+    var spiega = box.querySelector(".bd-spiega");
+    var stato = box.querySelector("#deltaBoraStato");
+    if (!spiega || !stato || spiega.closest(".bora-note")) return;
+
+    var det = document.createElement("details");
+    det.className = "bora-note";
+    var sum = document.createElement("summary");
+    det.appendChild(sum);
+    spiega.parentNode.insertBefore(det, spiega);
+    det.appendChild(spiega);
+    det.appendChild(stato);
+
+    function sync() {
+      var testo = stato.textContent.replace(/\s+/g, " ").trim();
+      var ora = testo.match(/(?:agg|posod)\.\s*([0-2]?\d:\d{2})/i);
+      sum.textContent = (sl ? "ℹ️ Razlaga in vir" : "ℹ️ Spiegazione e fonte") +
+        (ora ? " · " + (sl ? "posod. " : "agg. ") + ora[1] : "");
+    }
+    sync();
+    new MutationObserver(sync).observe(stato, { childList: true, subtree: true, characterData: true });
+  });
+})();
+
 (function () {
   var root = document.getElementById("footerWidgets");
   if (!root) return;

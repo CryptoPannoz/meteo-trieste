@@ -735,6 +735,19 @@ footer { color: var(--label); }
 .fonte-note summary:hover { color: var(--ink); }
 .fonte-note[open] summary { margin-bottom: .25rem; }
 .fonte-note .stato { margin: .25rem 0; }
+/* dettagli compatti sotto la scala della pressione di bora */
+.bora-note { margin-top: .65rem; text-align: left; }
+.bora-note summary {
+  min-height: 38px; padding: .45rem .6rem; display: flex; align-items: center;
+  border: 1px solid var(--bordo); border-radius: 10px; background: rgba(21,27,33,.68);
+  color: var(--label); font-size: .78rem; font-weight: 700; cursor: pointer;
+}
+.bora-note summary:hover { color: var(--ink); border-color: #46535d; }
+.bora-note[open] summary { margin-bottom: .35rem; }
+.bora-note .bd-spiega { margin: .55rem .4rem .25rem; }
+.bora-note .stato { margin: .25rem .4rem .1rem; }
+:root[data-theme="light"] .bora-note summary { background: #f3f6f7; border-color: var(--line); }
+:root[data-theme="light"] .bora-note summary:hover { border-color: var(--sea); }
 /* verdetto "Bassa differenza di pressione": testo lungo, corpo ridotto per non andare a capo male */
 .bd-verdetto.assente { font-size: 1.3rem; }
 #barcolaLive .bd-verdetto.assente { font-size: 1.5rem; }
