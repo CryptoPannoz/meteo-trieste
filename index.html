@@ -1540,7 +1540,7 @@
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
   <link rel="stylesheet" href="./footer-widgets.css?v=20260815-bora1" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
-  <script src="./mappa-golfo.js?v=20260813-paloma2" defer></script>
+  <script src="./mappa-golfo.js?v=20260815-nowcast1" defer></script>
 </head>
 <body>
 
@@ -1792,21 +1792,27 @@
   <details class="gruppo-collapse page-collapse" id="mappaVento">
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
-      <strong>🗺️ Mappa del vento</strong>
-      <span>Direzione e intensità nel Golfo e in Istria</span>
+      <strong>🌬️ Mappa live</strong>
+      <span>Nowcasting nel Golfo e in Istria</span>
     </span>
   </summary>
 
   <div class="section" id="mappaVentoContenuto">
-    <h2>Mappa del vento – Golfo e Istria <span style="display:inline-block;font-size:.62em;font-weight:800;letter-spacing:.06em;background:#fff3d6;color:#8a6100;border:1px solid #eedaa2;border-radius:6px;padding:.08em .45em;vertical-align:middle;margin-left:.35rem;">BETA</span></h2>
-    <svg id="mappaGolfo" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento nel Golfo di Trieste e in Istria" style="display:block;width:100%;height:auto;border-radius:8px;"></svg>
-    <div style="display:flex;gap:.9rem;flex-wrap:wrap;align-items:center;font-size:.74rem;color:#5c6675;font-weight:600;margin-top:.6rem;">
-      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#8a94a0;display:inline-block;"></i> &lt;8 kt</span>
-      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#3b6d11;display:inline-block;"></i> 8–15 kt</span>
-      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#b35c00;display:inline-block;"></i> 15–25 kt</span>
-      <span style="display:inline-flex;align-items:center;gap:.32rem;"><i style="width:20px;height:5px;border-radius:3px;background:#c20202;display:inline-block;"></i> &gt;25 kt</span>
+    <h2>Vento adesso – Golfo e Istria <span class="mappa-beta">BETA</span></h2>
+    <div class="mappa-nowcast-head">
+      <p>Dati osservati dalle stazioni attive, non una previsione.</p>
+      <span class="mappa-nowcast-hint">↗ Tocca una freccia</span>
     </div>
-    <p class="stato">La freccia indica dove va il vento; il colore l'intensità. Le centraline offline non vengono mostrate. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
+    <div class="mappa-canvas">
+      <svg id="mappaGolfo" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento osservato nel Golfo di Trieste e in Istria"></svg>
+    </div>
+    <div class="mappa-legenda" aria-label="Legenda intensità del vento">
+      <span><i style="background:#8a94a0;"></i> &lt;8 kt</span>
+      <span><i style="background:#3b6d11;"></i> 8–15 kt</span>
+      <span><i style="background:#b35c00;"></i> 15–25 kt</span>
+      <span><i style="background:#c20202;"></i> &gt;25 kt</span>
+    </div>
+    <p class="stato" id="mappaIstruzioni">La freccia indica dove va il vento; selezionala per vedere stazione, intensità, raffica, direzione e ora. Le centraline offline non vengono mostrate. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
   </div>
   </details>
 

@@ -51,7 +51,7 @@
       border-radius: 6px; padding: .1rem .45rem; vertical-align: 2px; margin-left: .4rem;
     }
     .mappa-card {
-      background: #10151a; border: 1px solid var(--bordo); border-radius: 14px;
+      background: #f7fbfb; border: 1px solid #b7d2d7; border-radius: 14px;
       padding: .6rem; box-shadow: 0 8px 24px rgba(0,0,0,.26);
     }
     #mappa { display: block; width: 100%; height: auto; border-radius: 10px; }
@@ -59,7 +59,7 @@
       display: flex; align-items: center; justify-content: space-between; gap: .6rem;
       flex-wrap: wrap; margin: .55rem .2rem 0;
     }
-    .stato { font-size: .76rem; color: var(--label); margin: 0; }
+    .stato { font-size: .76rem; color: #52676d; margin: 0; }
     .btn-aggiorna {
       font: inherit; font-size: .78rem; font-weight: 700; cursor: pointer;
       background: var(--signal); color: #090b0d; border: 0; border-radius: 8px; padding: .38rem .8rem;
@@ -67,7 +67,7 @@
     .btn-aggiorna:disabled { opacity: .55; cursor: default; }
     .legenda {
       display: flex; gap: .9rem; flex-wrap: wrap; align-items: center;
-      font-size: .74rem; color: var(--label); margin: .7rem .2rem 0;
+      font-size: .74rem; color: #52676d; margin: .7rem .2rem 0;
     }
     .legenda span { display: inline-flex; align-items: center; gap: .32rem; font-weight: 600; }
     .legenda i { width: 20px; height: 5px; border-radius: 3px; display: inline-block; }
@@ -86,10 +86,10 @@
 
   <main>
     <h1>Mappa del vento in tempo reale<span class="beta">BETA</span></h1>
-    <p class="sub">Direzione e intensità dalle centraline del Golfo di Trieste e dell'Istria. La freccia indica dove va il vento; il colore l'intensità. Le centraline offline non vengono mostrate.</p>
+    <p class="sub">Nowcasting dalle centraline del Golfo di Trieste e dell'Istria. Tocca una freccia per vedere il dettaglio; le centraline offline non vengono mostrate.</p>
 
     <div class="mappa-card">
-      <svg id="mappa" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento nel Golfo di Trieste e in Istria"></svg>
+      <svg id="mappa" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento osservato nel Golfo di Trieste e in Istria"></svg>
       <div class="barra">
         <p class="stato" id="statoMappa">Carico i dati…</p>
         <button class="btn-aggiorna" id="btnAggiorna" type="button">↻ Aggiorna</button>
@@ -102,10 +102,10 @@
       </div>
     </div>
 
-    <p class="fonti">Dati live: <a href="https://vetercek.com" target="_blank" rel="noopener">vetercek.com</a> · boa Mambo (OGS, via ERDDAP) · boa Vida (NIB, Pirano) · centralina Barcola. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Aggiornamento automatico ogni 5 minuti.</p>
+    <p class="fonti" id="mappaIstruzioni">La freccia indica dove va il vento; selezionala per vedere stazione, intensità, raffica, direzione e ora. Dati live: <a href="https://vetercek.com" target="_blank" rel="noopener">vetercek.com</a> · boa Mambo (OGS, via ERDDAP) · boa Vida (NIB, Pirano) · centralina Barcola. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Aggiornamento automatico ogni 5 minuti.</p>
   </main>
 
-  <script src="/mappa-golfo.js?v=20260813-paloma2"></script>
+  <script src="/mappa-golfo.js?v=20260815-nowcast1"></script>
   <script>
     "use strict";
     var PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
