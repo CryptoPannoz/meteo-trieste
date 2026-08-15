@@ -200,52 +200,85 @@
   var t = sl ? {
     visitors: "Obiskovalci", since: "obiskovalcev od začetka", request: "Predlagaj spremembo ali dopolnitev",
     placeholder: "Opiši želeno spremembo ali dopolnitev…", send: "📩 Pošlji predlog",
-    note: "Odpre se že pripravljeno sporočilo v tvojem e-poštnem programu.", beer: "Plačaj mi pivo",
-    beerText: "Projekt je brezplačen: če ti je uporaben, mi lahko plačaš pivo.", supporters: "Projekt so podprli", modify: "Sprememba / izboljšava",
-    integrate: "Dopolnitev (vir, kamera, spot)", problem: "Prijava težave", other: "Drugo", collab: "V sodelovanju z",
-    countCta: "👀 Klikni: koliko piv sem spil?", countTitle: "🍺 Popita piva",
-    countLine: "piv — eno za vsakega podpornika. Hvala!", close: "Zapri"
+    note: "Odpre se že pripravljeno sporočilo v tvojem e-poštnem programu.", modify: "Sprememba / izboljšava",
+    integrate: "Dopolnitev (vir, kamera, spot)", problem: "Prijava težave", other: "Drugo",
+    supportKicker: "Neodvisen projekt", supportTitle: "Pomagaj, da Vento Trieste ostane brezplačen",
+    supportText: "Podatki v živo, napovedi in vzdrževanje ostajajo dostopni vsem. Če ti je storitev uporabna, lahko podpreš njeno prihodnost.",
+    supportCta: "Podpri Vento Trieste", supportMethods: "Prostovoljni prispevek · PayPal, Revolut ali Bitcoin",
+    supporters: "Podporniki projekta", supporterCount: "podpornikov",
+    partners: "Partnerji in reference", partnersText: "Ljudje in ustanove, ki širijo kulturo vetra in deljenje podatkov.",
+    dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri"
   } : {
     visitors: "Visitatori", since: "visitatori dall’inizio", request: "Richiedi una modifica o integrazione",
     placeholder: "Descrivi la modifica o l’integrazione che vorresti…", send: "📩 Invia richiesta",
-    note: "La richiesta si apre nella tua app di posta, già compilata: basta premere invia.", beer: "Offrimi una birra",
-    beerText: "Il progetto è gratuito: se ti è utile, puoi offrirmi una birra.", supporters: "Hanno contribuito al progetto", modify: "Modifica / miglioria",
-    integrate: "Integrazione (fonte, webcam, spot)", problem: "Segnalazione problema", other: "Altro", collab: "In collaborazione con",
-    countCta: "👀 Clicca: quante birre ho bevuto?", countTitle: "🍺 Birre bevute",
-    countLine: "birre offerte — una per ogni sostenitore. Grazie!", close: "Chiudi"
+    note: "La richiesta si apre nella tua app di posta, già compilata: basta premere invia.", modify: "Modifica / miglioria",
+    integrate: "Integrazione (fonte, webcam, spot)", problem: "Segnalazione problema", other: "Altro",
+    supportKicker: "Progetto indipendente", supportTitle: "Aiuta Vento Trieste a restare gratuito",
+    supportText: "Dati live, previsioni e manutenzione restano accessibili a tutti. Se il servizio ti è utile, puoi contribuire al suo futuro.",
+    supportCta: "Sostieni Vento Trieste", supportMethods: "Donazione libera · PayPal, Revolut o Bitcoin",
+    supporters: "Chi sostiene il progetto", supporterCount: "sostenitori",
+    partners: "Partner e riferimenti", partnersText: "Persone e realtà che valorizzano la cultura del vento e la condivisione dei dati.",
+    dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali"
   };
   var supporters = ["Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop"];
   var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
+  var partners = [
+    { name: "Jaka87 · Vetercek", detail: sl ? "mreža postaj v živo" : "rete di centraline live", url: "https://vetercek.com/" },
+    { name: "Museo della Bora", detail: sl ? "kultura burje in vetra" : "cultura della Bora e del vento", url: "https://museobora.org/" },
+    { name: "Alessio Vremec · ALADIN", detail: sl ? "deljenje vremenskih kart" : "divulgazione delle mappe meteo", url: "https://kuguluff.altervista.org/vento/ventoAladinSI.htm" }
+  ];
+  var dataSources = [
+    { name: "OSMER · ARPA FVG", url: "https://www.meteo.fvg.it/" },
+    { name: "ARSO Slovenija", url: "https://meteo.arso.gov.si/" },
+    { name: "ProfiWetter · DWD", url: "https://profiwetter.ch/" },
+    { name: "Open-Meteo", url: "https://open-meteo.com/" },
+    { name: "OGS · NODC", url: "https://nodc.ogs.it/geoportal/?msv=1" },
+    { name: "NIB · boja Vida", url: "https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" },
+    { name: "Protezione Civile FVG", url: "https://monitor.protezionecivile.fvg.it/" },
+    { name: "Windguru", url: "https://www.windguru.cz/" },
+    { name: "Windy", url: "https://www.windy.com/" },
+    { name: "KJD BUM", url: "https://kjdbum.si/" }
+  ];
+  var localSources = [
+    { name: "Kite Life FVG", url: "https://www.kitelifefvg.it/" },
+    { name: "SVBG", url: "https://www.svbg.it/" },
+    { name: "Canottieri Saturnia", url: "https://www.canottierisaturniatrieste.com/webcam/" },
+    { name: "Comune di Monfalcone", url: "https://anemometro.comune.monfalcone.go.it/" },
+    { name: "Panomax", url: "https://marinamonfalcone.panomax.com/" },
+    { name: "What's Up Cams", url: "https://www.whatsupcams.com/it/webcams/italia/friuli-venezia-giulia-it/sistiana-it/webcam-sistiana/" },
+    { name: "Lignano Sabbiadoro", url: "https://www.lignanosabbiadoro.com/meteo-lignano" },
+    { name: "Meteo Grado", url: "https://meteogrado.kitelifefvg.it/" },
+    { name: "Mareografico.it", url: "https://www.mareografico.it/" },
+    { name: "Bibione.com", url: "https://www.bibione.com/" },
+    { name: "Island Surf", url: "https://www.islandsurf.it/" }
+  ];
+  function sourcePills(list) {
+    return list.map(function (source) {
+      return '<a class="source-pill" href="' + source.url + '" target="_blank" rel="noopener">' +
+        '<span>' + source.name + '</span><span aria-hidden="true">↗</span></a>';
+    }).join("");
+  }
+  var partnerCards = partners.map(function (partner) {
+    return '<a class="partner-card" href="' + partner.url + '" target="_blank" rel="noopener">' +
+      '<span class="partner-mark" aria-hidden="true">↗</span><span><strong>' + partner.name + '</strong><small>' + partner.detail + '</small></span></a>';
+  }).join("");
   root.innerHTML =
     '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' +
     '<section class="footer-widget footer-request" aria-labelledby="footerRequestTitle"><h2 id="footerRequestTitle">💬 ' + t.request + '</h2><form id="footerRequestForm"><select id="footerRequestType"><option>' + t.modify + '</option><option>' + t.integrate + '</option><option>' + t.problem + '</option><option>' + t.other + '</option></select><textarea id="footerRequestText" required maxlength="1500" placeholder="' + t.placeholder + '"></textarea><button class="dona-btn" type="submit">' + t.send + '</button></form><p class="stato">' + t.note + '</p></section>' +
-    '<section class="footer-widget beer-widget" aria-labelledby="footerBeerTitle"><div class="beer-bounce" aria-hidden="true">🍺</div><button type="button" class="beer-count-cta" id="footerBeerCount">' + t.countCta + '</button><h2 id="footerBeerTitle">' + t.beer + '</h2><p>' + t.beerText + '</p><a class="dona-btn" href="#" id="footerBeerButton">🍺 ' + t.beer + '</a><div class="supporters"><h3>' + t.supporters + '</h3><div class="supporters-marquee" tabindex="0" aria-label="' + t.supporters + ': ' + supporters.join(', ') + '"><div class="supporters-track"><div class="supporters-group">' + supporterNames + '</div><div class="supporters-group" aria-hidden="true">' + supporterNames + '</div></div></div><p class="stato collab-note">' + t.collab + ' <a href="https://vetercek.com/" target="_blank" rel="noopener"><strong>@jaka87 – Vetercek</strong></a></p></div></section>';
-
-  // Popup "quante birre ho bevuto": count dei sostenitori + lista compatta a colonne.
-  // Creato via JS così ogni pagina che carica questo script lo ha, senza toccare gli HTML.
-  var countModal = document.createElement("div");
-  countModal.id = "modalBirreCount";
-  countModal.className = "modal";
-  countModal.setAttribute("role", "dialog");
-  countModal.setAttribute("aria-modal", "true");
-  countModal.setAttribute("aria-labelledby", "birreCountTitolo");
-  countModal.innerHTML =
-    '<div class="contenuto">' +
-    '<button type="button" class="modal-x" aria-label="' + t.close + '">✕</button>' +
-    '<h3 id="birreCountTitolo">' + t.countTitle + '</h3>' +
-    '<p class="beer-count-line"><span class="beer-count-num">' + supporters.length + '</span> ' + t.countLine + '</p>' +
-    '<div class="beer-count-list">' + supporters.map(function (n) { return '<div class="beer-count-name">🍺 ' + n + '</div>'; }).join("") + '</div>' +
-    '<div style="text-align:right; margin-top:1rem;"><button type="button" class="beer-count-close">' + t.close + '</button></div>' +
-    '</div>';
-  document.body.appendChild(countModal);
-  function apriBirreCount(e) { if (e) e.preventDefault(); countModal.style.display = "block"; }
-  function chiudiBirreCount() { countModal.style.display = "none"; }
-  countModal.querySelector(".modal-x").addEventListener("click", chiudiBirreCount);
-  countModal.querySelector(".beer-count-close").addEventListener("click", chiudiBirreCount);
-  countModal.addEventListener("click", function (e) { if (e.target === countModal) chiudiBirreCount(); });
-  document.getElementById("footerBeerCount").addEventListener("click", apriBirreCount);
-  var bounce = root.querySelector(".beer-bounce");
-  if (bounce) bounce.addEventListener("click", apriBirreCount);
+    '<section class="footer-widget support-widget" aria-labelledby="footerSupportTitle">' +
+      '<div class="support-hero"><span class="support-kicker">' + t.supportKicker + '</span>' +
+      '<span class="support-symbol" aria-hidden="true">♥</span><h2 id="footerSupportTitle">' + t.supportTitle + '</h2>' +
+      '<p>' + t.supportText + '</p><a class="dona-btn support-primary" href="#" id="footerSupportButton">' +
+      '<span aria-hidden="true">♥</span><span>' + t.supportCta + '</span><span aria-hidden="true">→</span></a>' +
+      '<span class="support-methods">' + t.supportMethods + '</span></div>' +
+      '<div class="supporters"><div class="supporters-heading"><h3>' + t.supporters + '</h3>' +
+      '<span class="supporter-total"><strong>' + supporters.length + '</strong> ' + t.supporterCount + '</span></div>' +
+      '<div class="supporters-list" aria-label="' + t.supporters + ': ' + supporters.join(', ') + '">' + supporterNames + '</div></div>' +
+      '<div class="sources"><div class="sources-heading"><h3>' + t.partners + '</h3><p>' + t.partnersText + '</p></div>' +
+      '<div class="partner-grid">' + partnerCards + '</div>' +
+      '<h4>' + t.dataSources + '</h4><div class="source-pills">' + sourcePills(dataSources) + '</div>' +
+      '<h4>' + t.localSources + '</h4><div class="source-pills">' + sourcePills(localSources) + '</div></div>' +
+    '</section>';
 
   fetch(proxy + "?views=1&ts=" + Date.now()).then(function (r) { return r.json(); }).then(function (v) {
     if (v && v.total != null) document.getElementById("footerVisitorTotal").textContent = Number(v.total).toLocaleString(sl ? "sl-SI" : "it-IT");
@@ -258,7 +291,7 @@
     if (!msg) return;
     location.href = "mailto:bebroggi@gmail.com?subject=" + encodeURIComponent("[ventotrieste.info] " + type) + "&body=" + encodeURIComponent(msg);
   });
-  document.getElementById("footerBeerButton").addEventListener("click", function (e) {
+  document.getElementById("footerSupportButton").addEventListener("click", function (e) {
     e.preventDefault(); if (typeof window.apriBirra === "function") window.apriBirra(e);
   });
 })();

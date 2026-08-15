@@ -903,7 +903,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260814-ux4" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260815-support1" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
   <!-- Mappa del vento: qui la vista è centrata su Marina Julia, quindi i punti
        del lato Trieste (boa Mambo, Barcola, Muggia) e Žusterna non si disegnano. -->
@@ -939,7 +939,7 @@
       <a href="#previsioni">Previsioni</a>
       <a href="#webcam">Webcam</a>
       <a href="#istria" onclick="apriSpotIstria(event)">Spot Istria</a>
-      <a href="#" class="topnav-birra" onclick="apriBirra(event)" aria-label="Offrimi una birra">🍺 Offrimi una birra</a>
+      <a href="#" class="topnav-birra" onclick="apriBirra(event)" aria-label="Sostieni il progetto">♥ Sostieni il progetto</a>
     </nav>
   </header>
 
@@ -2266,7 +2266,7 @@
     /* ---------- Modal modelli ---------- */
     function apriModal()  { document.getElementById("modal").style.display = "block"; }
     function chiudiModal(){ document.getElementById("modal").style.display = "none"; }
-    /* Menu donazione (Offrimi una birra): Revolut / PayPal / Bitcoin */
+    /* Menu sostegno al progetto: Revolut / PayPal / Bitcoin */
     function apriBirra(e) { if (e) e.preventDefault(); var m = document.getElementById("modalBirra"); if (m) m.style.display = "block"; }
     function copiaBtc(e) {
       if (e) e.preventDefault();
@@ -2440,11 +2440,11 @@
     });
   </script>
 
-  <!-- MODAL OFFRI UNA BIRRA: Revolut / PayPal / Bitcoin -->
+  <!-- MODAL SOSTIENI IL PROGETTO: Revolut / PayPal / Bitcoin -->
   <div id="modalBirra" class="modal" role="dialog" aria-modal="true" aria-labelledby="birraTitolo">
     <div class="contenuto">
       <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
-      <h3 id="birraTitolo">🍺 Offrimi una birra</h3>
+      <h3 id="birraTitolo">♥ Sostieni Vento Trieste</h3>
       <p>Il progetto è gratuito ma ha qualche costo: grazie del supporto! Scegli come:</p>
       <div style="display:flex; gap:.6rem; flex-wrap:wrap; margin:.9rem 0;">
         <a class="dona-btn" href="https://revolut.me/albertjsz" target="_blank" rel="noopener">Revolut</a>
@@ -2461,7 +2461,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js?v=20260814-ux4"></script>
+  <script src="/footer-widgets.js?v=20260815-support1"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoMarinaJuliaSeo">
