@@ -252,7 +252,7 @@
     dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali",
     guides: "Guide e strumenti"
   };
-  var supporters = ["Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop"];
+  var supporters = ["Pietro Silvestri", "Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop"];
   var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
   var partners = [
     { name: "Jaka87 · Vetercek", detail: sl ? "mreža postaj v živo" : "rete di centraline live", url: "https://vetercek.com/" },
