@@ -24,9 +24,6 @@
   padding: 0 !important; margin: -1px !important; overflow: hidden !important;
   clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important;
 }
-.guide-widget > p { margin: -.2rem 0 .8rem; color: #b8c2c8; font-size: .74rem; }
-.guide-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .45rem; }
-.guide-links .source-pill { min-height: 38px; }
 .support-widget { max-width: 760px; padding: 0; overflow: hidden; text-align: left; }
 .support-hero {
   position: relative; padding: 2rem clamp(1.15rem, 4vw, 2.3rem) 1.8rem;
@@ -617,6 +614,41 @@ footer { color: var(--label); }
   border-color: var(--signal);
   color: #090b0d;
 }
+.topbar > #topnav .topnav-guides { grid-column: 1 / -1; }
+.topbar > #topnav .topnav-guides > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .65rem .75rem;
+  border: 1px solid #2f3942;
+  border-radius: 7px;
+  background: #151b21;
+  color: var(--ink);
+  font-size: .8rem;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+.topbar > #topnav .topnav-guides > summary::-webkit-details-marker { display: none; }
+.topbar > #topnav .topnav-guides > summary::after {
+  content: "+";
+  color: var(--signal);
+  font-size: 1rem;
+  line-height: 1;
+}
+.topbar > #topnav .topnav-guides[open] > summary::after { content: "−"; }
+.topbar > #topnav .topnav-guides > summary:hover {
+  background: #1c242b;
+  border-color: var(--signal);
+}
+.topnav-guides-menu {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .4rem;
+  padding-top: .4rem;
+}
+.topbar > #topnav .topnav-guides-menu a { min-height: 40px; font-size: .74rem; }
 .topbar > #topnav .topnav-birra { grid-column: 1 / -1; justify-content: center; }
 
 /* Variante chiara: mantiene il linguaggio nautico e il segnale giallo. */
@@ -845,12 +877,14 @@ footer { color: var(--label); }
   box-shadow: 0 18px 45px rgba(22,35,44,.18);
 }
 :root[data-theme="light"] .topbar > #topnav a,
-:root[data-theme="light"] .topbar > #topnav .topnav-birra {
+:root[data-theme="light"] .topbar > #topnav .topnav-birra,
+:root[data-theme="light"] .topbar > #topnav .topnav-guides > summary {
   background: #f3f6f7;
   border-color: #d2dade;
   color: var(--ink);
 }
 :root[data-theme="light"] .topbar > #topnav a:hover,
+:root[data-theme="light"] .topbar > #topnav .topnav-guides > summary:hover,
 :root[data-theme="light"] .theme-toggle:hover,
 :root[data-theme="light"] .menu-toggle:hover {
   background: var(--signal);
@@ -891,6 +925,7 @@ footer { color: var(--label); }
     width: calc(100vw - 1.4rem);
     grid-template-columns: 1fr;
   }
+  .topnav-guides-menu { grid-template-columns: 1fr; }
   .topbar > #topnav .topnav-birra { grid-column: auto; }
 }
 

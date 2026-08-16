@@ -238,7 +238,7 @@
     supporters: "Podporniki projekta", supporterCount: "podpornikov",
     partners: "Partnerji in reference", partnersText: "Ljudje in ustanove, ki širijo kulturo vetra in deljenje podatkov.",
     dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri",
-    guides: "Vodniki in orodja", guidesText: "Poglobljene strani za razumevanje meritev in napovedi."
+    guides: "Vodniki in orodja"
   } : {
     visitors: "Visitatori", since: "visitatori dall’inizio", request: "Richiedi una modifica o integrazione",
     placeholder: "Descrivi la modifica o l’integrazione che vorresti…", send: "📩 Invia richiesta",
@@ -250,7 +250,7 @@
     supporters: "Chi sostiene il progetto", supporterCount: "sostenitori",
     partners: "Partner e riferimenti", partnersText: "Persone e realtà che valorizzano la cultura del vento e la condivisione dei dati.",
     dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali",
-    guides: "Guide e strumenti", guidesText: "Approfondimenti per leggere meglio dati live e previsioni."
+    guides: "Guide e strumenti"
   };
   var supporters = ["Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop"];
   var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
@@ -297,6 +297,17 @@
     { name: "Modelli vento", url: "/modelli-vento-trieste/" },
     { name: "Spot del Golfo", url: "/spot/" }
   ];
+  var topnav = document.getElementById("topnav");
+  if (topnav && !topnav.querySelector(".topnav-guides")) {
+    var guideMenu = document.createElement("details");
+    var supportLink = topnav.querySelector(".topnav-birra");
+    guideMenu.className = "topnav-guides";
+    guideMenu.innerHTML = '<summary>🧭 ' + t.guides + '</summary><div class="topnav-guides-menu">' +
+      guides.map(function (guide) {
+        return '<a class="topnav-guide-link" href="' + guide.url + '">' + guide.name + '</a>';
+      }).join("") + '</div>';
+    topnav.insertBefore(guideMenu, supportLink || null);
+  }
   function sourcePills(list) {
     return list.map(function (source) {
       return '<a class="source-pill" href="' + source.url + '" target="_blank" rel="noopener">' +
@@ -308,7 +319,6 @@
       '<span class="partner-mark" aria-hidden="true">↗</span><span><strong>' + partner.name + '</strong><small>' + partner.detail + '</small></span></a>';
   }).join("");
   root.innerHTML =
-    '<nav class="footer-widget guide-widget" aria-labelledby="footerGuidesTitle"><h2 id="footerGuidesTitle">🧭 ' + t.guides + '</h2><p>' + t.guidesText + '</p><div class="guide-links">' + sourcePills(guides) + '</div></nav>' +
     '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' +
     '<section class="footer-widget footer-request" aria-labelledby="footerRequestTitle"><h2 id="footerRequestTitle">💬 ' + t.request + '</h2><form id="footerRequestForm"><label class="visually-hidden" for="footerRequestType">' + t.request + '</label><select id="footerRequestType"><option>' + t.modify + '</option><option>' + t.integrate + '</option><option>' + t.problem + '</option><option>' + t.other + '</option></select><label class="visually-hidden" for="footerRequestText">' + t.placeholder + '</label><textarea id="footerRequestText" required maxlength="1500" placeholder="' + t.placeholder + '"></textarea><button class="dona-btn" type="submit">' + t.send + '</button></form><p class="stato">' + t.note + '</p></section>' +
     '<section class="footer-widget support-widget" aria-labelledby="footerSupportTitle">' +
@@ -519,7 +529,7 @@
 
   var nav = document.getElementById("topnav");
   var menuButton = document.getElementById("menuToggle");
-  var navLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll('a:not(.topnav-birra)')) : [];
+  var navLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll('a:not(.topnav-birra):not(.topnav-guide-link)')) : [];
   function trovaLink(parola) {
     return navLinks.find(function (link) {
       return (link.getAttribute("href") || "").toLowerCase().indexOf(parola.toLowerCase()) !== -1;
