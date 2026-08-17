@@ -17,7 +17,8 @@
   function py(lat) { return (LAT1 - lat) * KY; }
 
   var CITTA = [
-    { nome: "Monfalcone", lon: 13.53,  lat: 45.805 },
+    /* Monfalcone è spostata a nord-ovest per non entrare nel simbolo di Marina Julia. */
+    { nome: "Monfalcone", lon: 13.53,  lat: 45.805, dx: -8, dy: -10, anchor: "end" },
     { nome: "Umag",       lon: 13.545, lat: 45.435 },
     { nome: "Poreč", lon: 13.615, lat: 45.227 },
     { nome: "Rovinj",     lon: 13.655, lat: 45.081 },
@@ -51,11 +52,24 @@
   var GRADI_CARDINALE = { N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
     S:180, SSW:202.5, SW:225, WSW:247.5, W:270, WNW:292.5, NW:315, NNW:337.5 };
 
+  var FASCE_VENTO = [
+    { max: 8,  colore: "#596574", range: "< 8",   nome: "Debole" },
+    { max: 15, colore: "#007f67", range: "8–14",  nome: "Moderato" },
+    { max: 25, colore: "#d96f00", range: "15–24", nome: "Teso" },
+    { max: 35, colore: "#c92b3a", range: "25–34", nome: "Forte" },
+    { max: Infinity, colore: "#7b246c", range: "≥ 35", nome: "Molto forte" }
+  ];
+
+  function fasciaVento(kt) {
+    if (isNaN(kt)) return FASCE_VENTO[0];
+    for (var i = 0; i < FASCE_VENTO.length; i++) {
+      if (kt < FASCE_VENTO[i].max) return FASCE_VENTO[i];
+    }
+    return FASCE_VENTO[FASCE_VENTO.length - 1];
+  }
+
   function classeColore(kt) {
-    if (isNaN(kt) || kt < 8) return "#8a94a0";
-    if (kt < 15) return "#3b6d11";
-    if (kt < 25) return "#b35c00";
-    return "#c20202";
+    return fasciaVento(kt).colore;
   }
 
   /* minuti trascorsi da un orario "HH:MM" (senza data): un orario nel futuro è di ieri.
@@ -123,16 +137,18 @@
       ".mappa-nowcast-head p{margin:0;color:var(--slate-2,#657481);font-size:.82rem;font-weight:600}" +
       ".mappa-nowcast-hint{display:inline-flex;align-items:center;gap:.35rem;padding:.34rem .62rem;border:1px solid rgba(15,92,108,.18);border-radius:999px;background:rgba(230,246,248,.72);color:#0f5c6c;font-size:.72rem;font-weight:800}" +
       ".mappa-beta{display:inline-block;font-size:.58em;font-weight:800;letter-spacing:.06em;background:#eef51f!important;color:#1f2933!important;border:0!important;border-radius:999px;padding:.16em .55em;vertical-align:middle;margin-left:.35rem}" +
-      ".mappa-canvas{position:relative;overflow:hidden;border:1px solid rgba(52,116,129,.2);border-radius:14px;background:#e8f5f7;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}" +
+      ".mappa-canvas{position:relative;overflow:hidden;border:1px solid #87b4bf;border-radius:14px;background:#c9eaf0;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 22px rgba(31,82,94,.1)}" +
       ".mappa-canvas svg{display:block;width:100%;height:auto;border-radius:0!important;touch-action:manipulation}" +
       ".mappa-popover{--mappa-accent:#0f6f7e;position:absolute;z-index:2;width:min(320px,calc(100% - 24px));padding:.72rem .8rem .68rem;border:2px solid var(--mappa-accent);border-radius:13px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(26,62,69,.2);color:#1d3035;transform:translateY(-50%)}" +
       ".mappa-popover[hidden]{display:none}.mappa-popover-head{display:flex;align-items:center;gap:.45rem;padding-right:1.7rem}.mappa-popover-dot{width:9px;height:9px;border-radius:50%;background:var(--mappa-accent);flex:0 0 auto}.mappa-popover strong{font-size:.9rem}.mappa-popover-valore{margin:.28rem 0 .12rem;color:var(--mappa-accent);font-size:.88rem;font-weight:800}.mappa-popover-meta{margin:0;color:#5d7075;font-size:.72rem;font-weight:650}.mappa-popover-close{position:absolute;top:.35rem;right:.35rem;display:grid;place-items:center;width:1.75rem;height:1.75rem;padding:0!important;border:0!important;border-radius:50%!important;background:#edf4f5!important;color:#4f6267!important;font:700 1rem/1 inherit!important;cursor:pointer}" +
-      ".mappa-legenda{display:flex;gap:.55rem 1rem;flex-wrap:wrap;align-items:center;font-size:.72rem;color:var(--slate-2,#657481);font-weight:700;margin:.7rem .1rem 0}" +
-      ".mappa-legenda span{display:inline-flex;align-items:center;gap:.32rem}" +
-      ".mappa-legenda i{width:18px;height:5px;border-radius:999px;display:inline-block}" +
+      ".mappa-legenda{display:flex;gap:.42rem;flex-wrap:wrap;align-items:center;margin:.7rem 0 0}" +
+      ".mappa-legenda span{min-height:30px;display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .5rem;border:1px solid #c7dadd;border-radius:999px;background:#f5fafb;color:#40545b;font-size:.67rem;font-weight:650;line-height:1}" +
+      ".mappa-legenda i{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:0 0 0 2px #fff,0 0 0 3px currentColor}" +
+      ".mappa-legenda strong{color:#1b3037;font-size:.7rem}.mappa-legenda em{color:#6a7a80;font-style:normal}" +
+      ".mg-speed circle{filter:url(#mgOmbra)}.mg-speed text{paint-order:stroke;stroke:#15313a;stroke-width:.8px}" +
       "#mappaVentoContenuto>.stato{margin-top:.55rem}" +
-      "@media(max-width:540px){.mappa-nowcast-head{align-items:flex-start}.mappa-nowcast-hint{font-size:.68rem}.mappa-legenda{gap:.45rem .75rem}}" +
-      "@media(prefers-reduced-motion:no-preference){.mg-stazione{transition:opacity .15s ease}.mg-stazione:hover .mg-halo,.mg-stazione:focus .mg-halo{opacity:1}.mappa-popover:not([hidden]){animation:mg-in .16s ease-out}@keyframes mg-in{from{opacity:0}to{opacity:1}}}";
+      "@media(max-width:540px){.mappa-nowcast-head{align-items:flex-start}.mappa-nowcast-hint{font-size:.68rem}.mappa-legenda span{min-height:28px;padding:.28rem .42rem;font-size:.62rem}.mappa-legenda em{display:none}.mg-halo{opacity:.06}}" +
+      "@media(prefers-reduced-motion:no-preference){.mg-stazione{transition:opacity .15s ease}.mg-stazione:hover .mg-halo,.mg-stazione:focus .mg-halo{opacity:.9}.mappa-popover:not([hidden]){animation:mg-in .16s ease-out}@keyframes mg-in{from{opacity:0}to{opacity:1}}}";
     document.head.appendChild(style);
   }
 
@@ -149,23 +165,24 @@
     var defs = el("defs");
     defs.innerHTML =
       '<linearGradient id="mgMare" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0" stop-color="#edf9fa"/><stop offset="1" stop-color="#d7edf1"/></linearGradient>' +
+      '<stop offset="0" stop-color="#d9f2f6"/><stop offset="1" stop-color="#b9dfe7"/></linearGradient>' +
       '<filter id="mgOmbra" x="-60%" y="-60%" width="220%" height="220%">' +
-      '<feDropShadow dx="0" dy="1.5" stdDeviation="1.8" flood-color="#163d46" flood-opacity="0.24"/>' +
+      '<feDropShadow dx="0" dy="1.8" stdDeviation="2.2" flood-color="#102f38" flood-opacity="0.34"/>' +
       '</filter>' +
-      '<style>.mg-stazione{cursor:pointer}.mg-halo{opacity:0}.mg-stazione:focus{outline:none}.mg-stazione:focus .mg-halo,.mg-stazione.mg-selected .mg-halo{opacity:1}</style>';
+      '<style>.mg-stazione{cursor:pointer}.mg-halo{opacity:.16}.mg-stazione:focus{outline:none}.mg-stazione:focus .mg-halo,.mg-stazione.mg-selected .mg-halo{opacity:.9}</style>';
     svg.appendChild(defs);
     svg.appendChild(el("rect", { x: 0, y: 0, width: 762, height: 1000, fill: "url(#mgMare)" }));
-    svg.appendChild(el("path", { d: TERRA, fill: "#f5f2e9", stroke: "#8aabb2",
-      "stroke-width": 1.45, "stroke-linejoin": "round" }));
+    svg.appendChild(el("path", { d: TERRA, fill: "#f7f3e9", stroke: "#5f8b96",
+      "stroke-width": 1.8, "stroke-linejoin": "round" }));
 
     svg.appendChild(el("text", { x: px(14.22), y: py(44.92), "font-size": 17, "font-style": "italic",
-      fill: "#4f8590", "text-anchor": "middle", "font-weight": 700 }, "Kvarner"));
+      fill: "#326c79", "text-anchor": "middle", "font-weight": 750 }, "Kvarner"));
 
     CITTA.forEach(function (c) {
-      svg.appendChild(el("circle", { cx: px(c.lon), cy: py(c.lat), r: 2.4, fill: "#7b8b8d" }));
-      svg.appendChild(el("text", { x: px(c.lon) + 7, y: py(c.lat) + 5, "font-size": 14,
-        fill: "#66787b", "font-weight": 650 }, c.nome));
+      svg.appendChild(el("circle", { cx: px(c.lon), cy: py(c.lat), r: 2.7, fill: "#395a64" }));
+      svg.appendChild(el("text", { x: px(c.lon) + (c.dx == null ? 7 : c.dx), y: py(c.lat) + (c.dy == null ? 5 : c.dy), "font-size": 14,
+        fill: "#3d5158", "font-weight": 750, stroke: "#ffffff", "stroke-width": 2.6,
+        "paint-order": "stroke", "text-anchor": c.anchor || "start", "class": "mg-city-label" }, c.nome));
     });
 
     gStazioni = el("g", {});
@@ -174,6 +191,23 @@
     svg.appendChild(gStazioni);
     svg.appendChild(gMambo);
     svg.appendChild(gPaloma);
+  }
+
+  function aggiornaLegenda() {
+    if (!svg) return;
+    var section = svg.closest(".section") || svg.closest(".map-card") || svg.parentNode;
+    var legend = section.querySelector(".mappa-legenda");
+    if (!legend) {
+      legend = document.createElement("div");
+      legend.className = "mappa-legenda";
+      var canvas = svg.closest(".mappa-canvas");
+      canvas.parentNode.insertBefore(legend, canvas.nextSibling);
+    }
+    legend.setAttribute("aria-label", "Intensità del vento in nodi");
+    legend.innerHTML = FASCE_VENTO.map(function (fascia) {
+      return '<span style="color:' + fascia.colore + '"><i style="background:' + fascia.colore + '"></i>' +
+        '<strong>' + fascia.range + ' kt</strong><em>' + fascia.nome + '</em></span>';
+    }).join("");
   }
 
   function direzioneCardinale(deg) {
@@ -204,7 +238,7 @@
     htmlDettaglio.style.left = x > 381 ? "12px" : "auto";
     htmlDettaglio.style.right = x > 381 ? "auto" : "12px";
     htmlDettaglio.querySelector("strong").textContent = st.nome;
-    htmlDettaglio.querySelector(".mappa-popover-valore").textContent = kt + " kt" + valoreRaffica;
+    htmlDettaglio.querySelector(".mappa-popover-valore").textContent = kt + " kt · " + fasciaVento(v.kt).nome + valoreRaffica;
     htmlDettaglio.querySelector(".mappa-popover-meta").textContent = "Da " + direzioneCardinale(v.deg) + (v.ora ? " · agg. " + v.ora : "");
     htmlDettaglio.hidden = false;
   }
@@ -243,31 +277,38 @@
       (v.ora ? " · agg. " + v.ora : "");
     g.setAttribute("aria-label", titolo + ". Apri dettaglio");
     g.appendChild(el("circle", { cx: x, cy: y, r: 25, fill: "transparent", "pointer-events": "all" }));
-    g.appendChild(el("circle", { cx: x, cy: y, r: 18, fill: "none", stroke: colore,
-      "stroke-width": 2.5, opacity: 0, "class": "mg-halo" }));
+    g.appendChild(el("circle", { cx: x, cy: y, r: 17.5, fill: colore, "fill-opacity": .07, stroke: colore,
+      "stroke-width": 2.6, "class": "mg-halo" }));
 
-    /* freccia: shaft sottile + punta a chevron, orientata dove VA il vento */
+    /* Freccia ad alto contrasto: parte dal bordo del valore e indica dove VA il vento. */
     if (v.deg != null && v.kt >= 1) {
       var k = Math.min(v.kt, 40);
-      var L = 25 + k * 0.72;
-      var sw = 3.3 + k * 0.045;
+      var L = 34 + k * 0.75;
+      var sw = 4.1 + k * 0.055;
       var hw = sw * 1.5 + 3.4;
       var freccia = el("g", { transform: "translate(" + x + " " + y + ") rotate(" + ((v.deg + 180) % 360) + ")", filter: "url(#mgOmbra)" });
-      freccia.appendChild(el("line", { x1: 0, y1: L / 2, x2: 0, y2: -L / 2 + 8,
-        stroke: "#ffffff", "stroke-width": sw + 3, "stroke-linecap": "round", opacity: .88 }));
-      freccia.appendChild(el("line", { x1: 0, y1: L / 2, x2: 0, y2: -L / 2 + 8,
+      freccia.appendChild(el("line", { x1: 0, y1: -12, x2: 0, y2: -L + 9,
+        stroke: "#ffffff", "stroke-width": sw + 4.5, "stroke-linecap": "round", opacity: .96 }));
+      freccia.appendChild(el("line", { x1: 0, y1: -12, x2: 0, y2: -L + 9,
         stroke: colore, "stroke-width": sw, "stroke-linecap": "round" }));
-      freccia.appendChild(el("path", { d: "M0," + (-L / 2 - 4) +
-        " L" + (-hw - 2) + "," + (-L / 2 + 10) +
-        " L0," + (-L / 2 + 6) +
-        " L" + (hw + 2) + "," + (-L / 2 + 10) + " Z", fill: "#ffffff", opacity: .88 }));
-      freccia.appendChild(el("path", { d: "M0," + (-L / 2 - 2) +
-        " L" + (-hw) + "," + (-L / 2 + 9) +
-        " L0," + (-L / 2 + 5) +
-        " L" + hw + "," + (-L / 2 + 9) + " Z", fill: colore }));
+      freccia.appendChild(el("path", { d: "M0," + (-L - 5) +
+        " L" + (-hw - 2) + "," + (-L + 10) +
+        " L0," + (-L + 6) +
+        " L" + (hw + 2) + "," + (-L + 10) + " Z", fill: "#ffffff", opacity: .96 }));
+      freccia.appendChild(el("path", { d: "M0," + (-L - 3) +
+        " L" + (-hw) + "," + (-L + 9) +
+        " L0," + (-L + 5) +
+        " L" + hw + "," + (-L + 9) + " Z", fill: colore }));
       g.appendChild(freccia);
     }
-    g.appendChild(el("circle", { cx: x, cy: y, r: 4, fill: "#fff", stroke: colore, "stroke-width": 2.5, filter: "url(#mgOmbra)" }));
+
+    /* Valore e origine della freccia sono un unico simbolo: numero = nodi. */
+    var speed = el("g", { "class": "mg-speed", "aria-hidden": "true" });
+    speed.appendChild(el("circle", { cx: x, cy: y, r: 12.5,
+      fill: "#15313a", stroke: colore, "stroke-width": 2.8 }));
+    speed.appendChild(el("text", { x: x, y: y + 4.1,
+      fill: "#ffffff", "font-size": 11.5, "font-weight": 900, "text-anchor": "middle" }, String(kt)));
+    g.appendChild(speed);
     g.appendChild(el("title", {}, titolo));
     function apri(e) {
       e.stopPropagation();
@@ -380,6 +421,7 @@
     svg.setAttribute("aria-describedby", "mappaIstruzioni");
     creaDettaglioHtml();
     disegnaBase();
+    aggiornaLegenda();
     svg.addEventListener("click", function (e) {
       if (!e.target.closest || !e.target.closest(".mg-stazione")) chiudiDettaglio();
     });
