@@ -68,6 +68,119 @@
   });
 })();
 
+/* Gerarchia temporale condivisa: separa ciò che sta accadendo ora dalle
+   previsioni senza cambiare dati, ID o integrazioni delle singole pagine. */
+(function () {
+  var doc = document.documentElement;
+  var sl = doc.lang === "sl" ||
+    ((document.getElementById("footerWidgets") || { dataset: {} }).dataset.lang === "sl");
+  var main = document.querySelector("main");
+  var hero = document.getElementById("vento");
+  var forecast = document.getElementById("previsioni");
+  if (!main || !hero || !forecast) return;
+
+  function phase(kind, kicker, title, text) {
+    var section = document.createElement("section");
+    section.className = "meteo-phase meteo-phase--" + kind;
+    section.setAttribute("aria-labelledby", "meteoPhase" + kind);
+    section.innerHTML = '<span class="meteo-phase-kicker">' + kicker + '</span>' +
+      '<div><h2 id="meteoPhase' + kind + '">' + title + '</h2><p>' + text + '</p></div>';
+    return section;
+  }
+
+  var nowcastHeading = phase(
+    "nowcast",
+    sl ? "ZDAJ" : "ORA",
+    "Nowcasting",
+    sl ? "Opazovanja, slike v živo in trenutne razmere." : "Osservazioni, immagini live e condizioni in questo momento."
+  );
+  var heroCopy = hero.querySelector(":scope > .hero-copy");
+  if (heroCopy) hero.insertBefore(nowcastHeading, heroCopy.nextSibling);
+  else main.insertBefore(nowcastHeading, hero);
+
+  /* Sulle pagine spot il gradiente live era storicamente dentro il grafico
+     previsionale: torna accanto al Surfometro, dove il suo significato è attuale. */
+  var pressure = document.querySelector(".bora-delta");
+  var surfCard = document.getElementById("surfometroCard");
+  if (pressure && surfCard && !hero.contains(pressure)) surfCard.appendChild(pressure);
+
+  var pressureBoxes = [];
+  var homePressure = document.getElementById("barcolaLive");
+  if (homePressure) pressureBoxes.push(homePressure);
+  if (pressure) pressureBoxes.push(pressure);
+  pressureBoxes.forEach(function (box) {
+    var title = box.matches(".bora-delta") ? box.querySelector(".bd-titolo") : box.querySelector("h2");
+    if (!title || title.querySelector(".bora-only-badge")) return;
+    title.textContent = sl ? "Potisk burje" : "Spinta della Bora";
+    var badge = document.createElement("span");
+    badge.className = "bora-only-badge";
+    badge.textContent = sl ? "SAMO BURJA · SV" : "SOLO BORA · NE";
+    title.appendChild(badge);
+  });
+
+  var map = document.getElementById("mappaVento");
+  if (map) {
+    var mapTitle = map.querySelector(":scope > .gruppo-sum .gruppo-sum-main > strong");
+    var mapText = map.querySelector(":scope > .gruppo-sum .gruppo-sum-main > span");
+    if (mapTitle) mapTitle.textContent = sl ? "🌬️ Zemljevid in postaje v živo" : "🌬️ Mappa e centraline live";
+    if (mapText) mapText.textContent = sl ? "Izmerjeni podatki, ne napoved" : "Dati osservati dalle stazioni, non una previsione";
+  }
+
+  /* Il radar mostra osservazioni delle ultime ore: diventa una sezione live
+     autonoma e viene rimosso dal contenitore Forecasting. */
+  var radar = document.getElementById("radar");
+  var radarLive = document.getElementById("radarLive");
+  if (radar && !radarLive) {
+    radarLive = document.createElement("details");
+    radarLive.id = "radarLive";
+    radarLive.className = "gruppo-collapse page-collapse" + (sl ? " page-collapse-sl" : "");
+    radarLive.innerHTML = '<summary class="gruppo-sum"><span class="gruppo-sum-main">' +
+      '<strong>' + (sl ? "🌧️ Radar padavin v živo" : "🌧️ Radar pioggia live") + '</strong>' +
+      '<span>' + (sl ? "Opazovanja ARSO · animacija zadnjih ur" : "Osservazioni ARSO · animazione delle ultime ore") + '</span>' +
+      '</span></summary>';
+    radar.parentNode.insertBefore(radarLive, radar);
+    radarLive.appendChild(radar);
+  }
+
+  var webcam = document.getElementById("webcam");
+  if (webcam && webcam.parentNode === main) main.insertBefore(webcam, forecast);
+  if (radarLive) main.insertBefore(radarLive, forecast);
+
+  var forecastSummary = forecast.querySelector(":scope > .gruppo-sum .gruppo-sum-main > span");
+  if (forecastSummary) forecastSummary.textContent = sl ? "OSMER, burja, Aladin in Windguru" : "OSMER, Bora, Aladin e Windguru";
+  main.insertBefore(phase(
+    "forecast",
+    sl ? "NASLEDNJE URE IN DNEVI" : "PROSSIME ORE E GIORNI",
+    "Forecasting",
+    sl ? "Bilteni in modeli za razvoj vremena." : "Bollettini e modelli per capire come evolverà il tempo."
+  ), forecast);
+
+  var nav = document.getElementById("topnav");
+  if (nav) {
+    function linkFor(hash) {
+      return Array.prototype.find.call(nav.querySelectorAll(":scope > a"), function (link) {
+        var href = link.getAttribute("href") || "";
+        return href.slice(-hash.length) === hash;
+      });
+    }
+    var forecastLink = linkFor("#previsioni");
+    var radarLink = linkFor("#radarLive");
+    if (!radarLink) {
+      radarLink = document.createElement("a");
+      radarLink.href = "#radarLive";
+      radarLink.textContent = sl ? "Radar v živo" : "Radar live";
+      nav.insertBefore(radarLink, forecastLink || nav.querySelector(".topnav-birra"));
+    }
+    var mapLink = linkFor("#mappaVento");
+    if (mapLink) mapLink.textContent = sl ? "Zemljevid v živo" : "Mappa live";
+    var supportLink = nav.querySelector(".topnav-birra");
+    ["#vento", "#mappaVento", "#webcam", "#radarLive", "#previsioni", "#centraline", "#boe", "#istria"].forEach(function (hash) {
+      var link = linkFor(hash);
+      if (link) nav.insertBefore(link, supportLink || null);
+    });
+  }
+})();
+
 (function () {
   var doc = document.documentElement;
   var topbar = document.querySelector(".topbar");
@@ -537,6 +650,7 @@
   }
   function metaLink(link) {
     var href = (link.getAttribute("href") || "").toLowerCase();
+    if (href.indexOf("radar") !== -1) return { icon: "🌧️", label: "Radar" };
     if (href.indexOf("mappa") !== -1) return { icon: "🗺️", label: copy.map };
     if (href.indexOf("vento") !== -1) return { icon: "💨", label: copy.now };
     if (href.indexOf("centraline") !== -1) return { icon: "📡", label: copy.stations };
@@ -550,10 +664,9 @@
   var dock = null;
   if (nav && menuButton && navLinks.length) {
     var first = trovaLink("#vento") || navLinks[0];
-    var second = trovaLink("#onde") || trovaLink("#centraline") || trovaLink("#boe");
-    var third = trovaLink("#mappavento") || trovaLink("#previsioni");
-    var fourth = third && (third.getAttribute("href") || "").toLowerCase().indexOf("mappa") !== -1
-      ? trovaLink("#previsioni") : trovaLink("#webcam");
+    var second = trovaLink("#mappavento") || trovaLink("#centraline") || trovaLink("#boe");
+    var third = trovaLink("#webcam") || trovaLink("#radarlive");
+    var fourth = trovaLink("#radarlive") || trovaLink("#previsioni");
     var selected = [];
     [first, second, third, fourth].forEach(function (link) {
       if (link && selected.indexOf(link) === -1) selected.push(link);

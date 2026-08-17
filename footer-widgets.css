@@ -152,6 +152,50 @@
 .page-collapse-sl:not([open]) > .gruppo-sum::after { content: "odpri razdelek ▾"; }
 .page-collapse { width: 100%; max-width: 1160px; margin-left: auto; margin-right: auto; }
 .page-collapse > .section:first-of-type { margin-top: 1rem; }
+.meteo-phase {
+  width: min(100%, 1160px);
+  margin: 1.65rem auto .8rem;
+  padding: .85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid #33404a;
+  border-left: 6px solid var(--signal);
+  border-radius: 10px;
+  background: linear-gradient(105deg, #11181e, #0d1217);
+  box-shadow: 0 9px 26px rgba(0,0,0,.2);
+}
+.hero > .meteo-phase { grid-column: 1 / -1; width: 100%; margin: .15rem 0 .35rem; }
+.meteo-phase-kicker {
+  flex: 0 0 auto;
+  padding: .32rem .58rem;
+  border-radius: 999px;
+  background: var(--signal);
+  color: #0b1013;
+  font-size: .66rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  line-height: 1;
+}
+.meteo-phase h2 { margin: 0; color: var(--ink); font-size: 1rem; line-height: 1.15; }
+.meteo-phase p { margin: .2rem 0 0; color: var(--label); font-size: .72rem; line-height: 1.4; }
+.meteo-phase--forecast { border-left-color: #4ab3c5; }
+.meteo-phase--forecast .meteo-phase-kicker { background: #183d48; color: #aeeaf2; }
+.bora-only-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: .55rem;
+  padding: .24rem .45rem;
+  border: 1px solid rgba(240,244,60,.45);
+  border-radius: 999px;
+  color: var(--signal);
+  font-size: .55rem;
+  font-weight: 900;
+  letter-spacing: .06em;
+  line-height: 1;
+  vertical-align: middle;
+}
+#radarLive > .section { overflow: hidden; }
 @keyframes spot-hop {
   0%, 55%, 100% { transform: translateY(0) scale(1); }
   12% { transform: translateY(-7px) scale(1.04); }
@@ -909,6 +953,15 @@ footer { color: var(--label); }
 :root[data-theme="light"] .site-credits .seo-footer-copy { border-bottom-color: var(--line); }
 :root[data-theme="light"] .seo-spot-pages { background: #f3f6f7; border-color: var(--line); }
 :root[data-theme="light"] .origin-story { background: linear-gradient(135deg, #f1f5f6, #f6f7df); border-color: var(--line); }
+:root[data-theme="light"] .meteo-phase {
+  background: linear-gradient(105deg, #ffffff, #edf3f4);
+  border-color: var(--line);
+  border-left-color: var(--signal);
+  box-shadow: 0 9px 26px rgba(22,35,44,.1);
+}
+:root[data-theme="light"] .meteo-phase--forecast { border-left-color: var(--sea); }
+:root[data-theme="light"] .meteo-phase--forecast .meteo-phase-kicker { background: var(--sea-dark); color: #fff; }
+:root[data-theme="light"] .bora-only-badge { border-color: #aeb42a; color: #596000; }
 
 @media (max-width: 560px) {
   .topbar {
@@ -927,6 +980,9 @@ footer { color: var(--label); }
   }
   .topnav-guides-menu { grid-template-columns: 1fr; }
   .topbar > #topnav .topnav-birra { grid-column: auto; }
+  .meteo-phase { align-items: flex-start; gap: .7rem; padding: .75rem .8rem; }
+  .meteo-phase-kicker { margin-top: .08rem; }
+  .bora-only-badge { display: flex; width: max-content; margin: .35rem 0 0; }
 }
 
 /* ============ UX condivisa: orientamento, feedback e navigazione mobile ============ */
