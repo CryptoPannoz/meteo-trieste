@@ -3,7 +3,7 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, lignanoLive, preluka, dajla, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
+ * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, lignanoLive, preluka, antenal, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
  * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
  * gps: coordinate di ogni centralina (dal feed API, in parte stimate da vetercek)
@@ -29,7 +29,8 @@ var STATIONS = {
   lignano:     { postaja: 'lignano' },
   zusterna:   { id: 147, postaja: 'kjdbum' },
   preluka:    { id: 149, postaja: 'preluka' },
-  dajla:      { id: 39,  postaja: 'dajla' },
+  // Dajla (id 39) ferma dal 20 ago 2026: sostituita da Antenal (Cittanova), 4 km a sud
+  antenal:    { id: 127, postaja: 'antenal' },
   liznjan:    { id: 74,  postaja: 'liznjan' },
   savudrija:  { id: 124, postaja: 'savudrija' },
   premantura: { id: 86,  postaja: 'stupice' },

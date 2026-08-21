@@ -41,7 +41,7 @@
     { id: "zusterna",    nome: "Zusterna",     lon: 13.712, lat: 45.543, lato: "destra"   },
     { id: "piran",       nome: "Boa Piran",    lon: 13.551, lat: 45.549, lato: "sinistra", tipo: "piran" },
     { id: "savudrija",   nome: "Savudrija",    lon: 13.499, lat: 45.492, lato: "sinistra" },
-    { id: "dajla",       nome: "Dajla",        lon: 13.545, lat: 45.334, lato: "destra"   },
+    { id: "antenal",     nome: "Antenal",      lon: 13.574, lat: 45.314, lato: "destra"   },
     { id: "porec",       nome: "Poreč",        lon: 13.604, lat: 45.222, lato: "destra"   },
     { id: "rovinj",      nome: "Rovinj",       lon: 13.614, lat: 45.043, lato: "destra"   },
     { id: "preluka",     nome: "Preluka",      lon: 14.288, lat: 45.377, lato: "sinistra" },

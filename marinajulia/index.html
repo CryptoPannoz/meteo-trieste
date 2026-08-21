@@ -914,7 +914,7 @@
   <!-- Mappa del vento: qui la vista è centrata su Marina Julia, quindi i punti
        del lato Trieste (boa Mambo, Barcola, Muggia) e Žusterna non si disegnano. -->
   <script>window.__mappaEscludi = ["mambo", "barcola", "muggia", "zusterna"];</script>
-  <script src="/mappa-golfo.js?v=20260821-istria2" defer></script>
+  <script src="/mappa-golfo.js?v=20260821-istria3" defer></script>
 </head>
 <body>
 
@@ -1429,7 +1429,7 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>🏖️ Spot Istria</strong>
-      <span>Žusterna, Salvore, Dajla, Preluka, Ližnjan e Premantura</span>
+      <span>Žusterna, Salvore, Antenal, Preluka, Ližnjan e Premantura</span>
     </span>
   </summary>
 
@@ -1473,21 +1473,21 @@
     </div>
   </div>
 
-  <div class="section" id="dajla">
-    <h2>Dajla</h2>
-    <div id="dajlaCards"></div>
-    <div class="trend" id="dajlaTrend"></div>
+  <div class="section" id="antenal">
+    <h2>Antenal (Cittanova)</h2>
+    <div id="antenalCards"></div>
+    <div class="trend" id="antenalTrend"></div>
     <details class="dettaglio">
       <summary>Tabella dettaglio · ultimi 45 min</summary>
-      <table aria-describedby="statoDajla">
+      <table aria-describedby="statoAntenal">
         <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
-        <tbody id="dajlaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+        <tbody id="antenalBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
       </table>
     </details>
-    <p class="stato" id="statoDajla"></p>
+    <p class="stato" id="statoAntenal"></p>
     <div class="spot-azioni">
-      <a class="spot-btn" href="https://maps.app.goo.gl/a4ZHnntRdun3bfVb7" target="_blank" rel="noopener">📍 Spot Position</a>
-      <button class="spot-btn" onclick="apriGuida('dajla')">ℹ️ Guida spot</button>
+      <a class="spot-btn" href="https://www.google.com/maps?q=45.3138,13.5740" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('antenal')">ℹ️ Guida spot</button>
     </div>
   </div>
 
@@ -1555,11 +1555,11 @@
       muggia: "https://vetercek.com/danes/index.php?postaja=muggia",
       marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4"
     };
-    const SPOT_ISTRIA = ["zusterna", "savudrija", "dajla", "preluka", "liznjan", "premantura"];
+    const SPOT_ISTRIA = ["zusterna", "savudrija", "antenal", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
       zusterna:   "https://vetercek.com/danes/index.php?id=147&postaja=kjdbum",
       preluka:    "https://vetercek.com/danes/index.php?id=149&postaja=preluka",
-      dajla:      "https://vetercek.com/danes/index.php?id=39&postaja=dajla",
+      antenal:      "https://vetercek.com/danes/index.php?id=127&postaja=antenal",
       liznjan:    "https://vetercek.com/danes/index.php?id=74&postaja=liznjan",
       savudrija:  "https://vetercek.com/danes/index.php?id=124&postaja=savudrija",
       premantura: "https://vetercek.com/danes/index.php?id=86&postaja=stupice"
@@ -2350,7 +2350,7 @@
         "<p>Spot da <strong>Bora (NE)</strong>, in arrivo dalla zona di Portorose; funziona anche con i venti da sud. Ci si attrezza al riparo dalla Bora, ma il lancio è impegnativo: si scavalca un muretto e si attraversano una cinquantina di metri di bonaccia prima di entrare nel vento forte.</p>" +
         "<p>Mare <strong>bump &amp; jump</strong>, da piccolo a moderato, che può farsi “da onda” quando la Bora rinforza. Ingresso e fondo rocciosi: serve attenzione. Livello <strong>intermedio–avanzato</strong>.</p>",
         fonte: "surf-magazin.de · kite-and-windsurfing-guide.com" },
-      dajla: { nome: "Dajla", html:
+      antenal: { nome: "Antenal (Cittanova)", html:
         "<p>Spot sulla costa occidentale dell'Istria, vicino a Cittanova (Novigrad). In estate lavora soprattutto con la <strong>termica (Maestrale, da O/SO nel pomeriggio)</strong>; con la <strong>Bora (NE)</strong> il vento arriva più irregolare.</p>" +
         "<p>Mare in genere poco mosso, adatto anche a chi inizia nelle giornate di termica.</p>",
         fonte: "nota generale (spot non presente nelle guide consultate)" },
