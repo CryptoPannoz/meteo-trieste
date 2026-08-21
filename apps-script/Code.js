@@ -44,6 +44,10 @@ var OSMER_URL = 'https://www.osmer.fvg.it/previsioni.php?ln=';
 var PIRAN_URL = 'https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2?tmpl=component';
 // Stazione meteo Grado (Kite Life FVG): temperatura aria/mare, pressione, umidità e marea
 var METEOGRADO_URL = 'https://meteogrado.kitelifefvg.it/';
+// Webcam Barcola (meteobridge): niente CORS, quindi il browser non può leggere il
+// Last-Modified. Lo legge il proxy con un GET di 1 byte (Range) e il sito nasconde
+// la webcam se l'immagine è vecchia (ago 2026: ferma 12 giorni con data solo nei pixel).
+var CAM_BARCOLA_URL = 'https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg';
 // Stazione meteo professionale sulla spiaggia di Lignano (lignanosabbiadoro.com):
 // vento quasi in tempo reale, molto più fresco della stazione OSMER via vetercek
 // che per Lignano pubblica un solo dato all'ora. Pagina pubblica, valori
@@ -379,6 +383,8 @@ function buildData() {
   requests.push({ url: VETERCEK_RELAY ? VETERCEK_RELAY + encodeURIComponent(VETERCEK_API) : VETERCEK_API, muteHttpExceptions: true, followRedirects: true });
   // ultima: stazione meteo spiaggia Lignano (lignanosabbiadoro.com)
   requests.push({ url: LIGNANO_LIVE_URL, muteHttpExceptions: true, followRedirects: true });
+  // ultima+1: header della webcam Barcola (1 byte, solo per il Last-Modified)
+  requests.push({ url: CAM_BARCOLA_URL, headers: { Range: 'bytes=0-0' }, muteHttpExceptions: true, followRedirects: true });
 
   var responses = fetchAllResilient(requests);
 
@@ -447,6 +453,16 @@ function buildData() {
   } catch (e) {
     out.lignanoLive = null;
     out.lignanoLiveError = String(e);
+  }
+
+  try {
+    var rc = responses[keys.length + 6];
+    var h = rc.getAllHeaders ? rc.getAllHeaders() : {};
+    var lm = h['Last-Modified'] || h['last-modified'] || null;
+    var t = lm ? Date.parse(lm) : NaN;
+    out.camBarcola = { lastModified: lm, etaMin: isNaN(t) ? null : Math.round((Date.now() - t) / 60000), http: rc.getResponseCode() };
+  } catch (e) {
+    out.camBarcola = { lastModified: null, etaMin: null, error: String(e) };
   }
 
   out.updated = new Date().toISOString();

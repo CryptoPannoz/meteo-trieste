@@ -3097,6 +3097,7 @@
       renderStazione(data.grado, "grado");
       SPOT_ISTRIA.forEach(sp => renderStazione(data[sp], sp));
       renderPiran(data.piran);
+      applicaStatoCamBarcola(data.camBarcola);
       aggiornaSurfometroAuto(data);
       // mappa del vento (beta): stesso payload, nessuna richiesta aggiuntiva
       window.__mappaDati = data;
@@ -3187,8 +3188,27 @@
     /* ---------- Webcam ---------- */
     function aggiornaWebcam() {
       document.querySelectorAll("img.webcam").forEach(img => {
+        if (img.closest("#camBarcolaBlock") && window.__camBarcolaVecchia) return;   // ferma: non la ricarico
         img.src = img.dataset.src + "?ts=" + Date.now();
       });
+    }
+
+    /* Webcam Barcola (meteobridge): la data dell'ultimo scatto sta solo nei pixel e il
+       server non manda CORS, quindi il Last-Modified lo legge il proxy (data.camBarcola).
+       Oltre CAM_BARCOLA_MAX_MIN il blocco sparisce (immagine + etichetta 📍); quando
+       l'immagine torna fresca ricompare da sola al payload successivo. */
+    const CAM_BARCOLA_MAX_MIN = 180;
+    window.__camBarcolaVecchia = false;
+    function applicaStatoCamBarcola(info) {
+      const blocco = document.getElementById("camBarcolaBlock");
+      if (!blocco) return;
+      const label = blocco.closest(".section") && blocco.closest(".section").previousElementSibling;
+      const vecchia = !!(info && info.etaMin != null && info.etaMin > CAM_BARCOLA_MAX_MIN);
+      const cambiata = vecchia !== window.__camBarcolaVecchia;
+      window.__camBarcolaVecchia = vecchia;
+      blocco.style.display = vecchia ? "none" : "";
+      if (label && label.classList.contains("webcam-luogo")) label.style.display = vecchia ? "none" : "";
+      if (!vecchia && cambiata) aggiornaWebcam();   // tornata online: ricarico subito l'immagine
     }
 
     /* Webcam statiche offline → il blocco sparisce (niente icona rotta) e
@@ -3199,7 +3219,10 @@
       if (!blocco) return;
       const label = blocco.dataset.camLabel ? document.getElementById(blocco.dataset.camLabel) : null;
       img.addEventListener("error", () => { blocco.style.display = "none"; if (label) label.style.display = "none"; });
-      img.addEventListener("load",  () => { blocco.style.display = ""; if (label) label.style.display = ""; });
+      img.addEventListener("load",  () => {
+        if (blocco.id === "camBarcolaBlock" && window.__camBarcolaVecchia) return;   // immagine vecchia: resta nascosta
+        blocco.style.display = ""; if (label) label.style.display = "";
+      });
     });
 
     /* Webcam HLS incorporata: hls.js caricato solo al click (risparmia banda).
