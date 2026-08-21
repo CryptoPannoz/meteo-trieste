@@ -150,7 +150,8 @@
 .page-collapse:not([open]) > .gruppo-sum::after { content: "apri sezione ▾"; }
 .page-collapse-sl > .gruppo-sum::after { content: "zapri razdelek ▴"; }
 .page-collapse-sl:not([open]) > .gruppo-sum::after { content: "odpri razdelek ▾"; }
-.page-collapse { width: 100%; max-width: 1160px; margin-left: auto; margin-right: auto; }
+/* Stessa larghezza per tutti i gruppi collassabili: anche #istria (senza .page-collapse) resta allineato. */
+.page-collapse, .gruppo-collapse { width: 100%; max-width: 1160px; margin-left: auto; margin-right: auto; }
 .page-collapse > .section:first-of-type { margin-top: 1rem; }
 .meteo-phase {
   width: min(100%, 1160px);
