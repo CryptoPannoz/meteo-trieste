@@ -1539,7 +1539,7 @@
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
   <link rel="stylesheet" href="./footer-widgets.css?v=20260821-istria1" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
-  <script src="./mappa-golfo.js?v=20260817-mobile1" defer></script>
+  <script src="./mappa-golfo.js?v=20260821-istria2" defer></script>
 </head>
 <body>
 
@@ -2042,7 +2042,7 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>🏖️ Spot Istria</strong>
-      <span>Žusterna, Salvore, Dajla, Preluka, Ližnjan e Premantura</span>
+      <span>Žusterna, Salvore, Dajla, Parenzo, Rovigno, Preluka, Ližnjan e Premantura</span>
     </span>
   </summary>
 
@@ -2101,6 +2101,42 @@
     <div class="spot-azioni">
       <a class="spot-btn" href="https://maps.app.goo.gl/a4ZHnntRdun3bfVb7" target="_blank" rel="noopener">📍 Spot Position</a>
       <button class="spot-btn" onclick="apriGuida('dajla')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+
+  <div class="section" id="porec">
+    <h2>Parenzo (Poreč)</h2>
+    <div id="porecCards"></div>
+    <div class="trend" id="porecTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoPorec">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="porecBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoPorec"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://www.google.com/maps?q=45.2220,13.6036" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('porec')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+
+  <div class="section" id="rovinj">
+    <h2>Rovigno (Rovinj)</h2>
+    <div id="rovinjCards"></div>
+    <div class="trend" id="rovinjTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoRovinj">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="rovinjBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoRovinj"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://www.google.com/maps?q=45.0433,13.6138" target="_blank" rel="noopener">📍 Spot Position</a>
+      <button class="spot-btn" onclick="apriGuida('rovinj')">ℹ️ Guida spot</button>
     </div>
   </div>
 
@@ -2170,11 +2206,13 @@
       marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4",
       grado: "https://vetercek.com/danes/index.php?id=24&postaja=grado"
     };
-    const SPOT_ISTRIA = ["zusterna", "savudrija", "dajla", "preluka", "liznjan", "premantura"];
+    const SPOT_ISTRIA = ["zusterna", "savudrija", "dajla", "porec", "rovinj", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
       zusterna:   "https://vetercek.com/danes/index.php?id=147&postaja=kjdbum",
       preluka:    "https://vetercek.com/danes/index.php?id=149&postaja=preluka",
       dajla:      "https://vetercek.com/danes/index.php?id=39&postaja=dajla",
+      porec:      "https://vetercek.com/danes/index.php?postaja=porec",
+      rovinj:     "https://vetercek.com/danes/index.php?postaja=rovinj",
       liznjan:    "https://vetercek.com/danes/index.php?id=74&postaja=liznjan",
       savudrija:  "https://vetercek.com/danes/index.php?id=124&postaja=savudrija",
       premantura: "https://vetercek.com/danes/index.php?id=86&postaja=stupice"
@@ -3360,6 +3398,12 @@
     /* ---------- Guida spot (popup) ----------
        Fonte condizioni: surf-magazin.de (guida spot Istria) dove indicato. */
     const GUIDE = {
+      porec: { nome: "Parenzo (Poreč)", html:
+        "<p>Stazione meteo DHMZ sulla costa di Parenzo, a metà strada tra Dajla e Rovigno: serve a leggere il <strong>vento lungo la costa ovest dell'Istria</strong>. In estate lavora soprattutto la <strong>termica da O/SO (Maestrale)</strong> nel pomeriggio; con <strong>Bora (NE)</strong> il vento arriva da terra, più irregolare e a raffiche. Aggiornamento ogni 10–20 minuti.</p>",
+        fonte: 'DHMZ via <a href="https://vetercek.com/danes/index.php?postaja=porec" target="_blank" rel="noopener">vetercek.com</a>' },
+      rovinj: { nome: "Rovigno (Rovinj)", html:
+        "<p>Stazione meteo DHMZ di Rovigno, il punto più a ovest della costa istriana e il riferimento tra Parenzo e Premantura. Esposta ai <strong>venti da sud e da ovest (Scirocco, Libeccio, termica)</strong>; la <strong>Bora (NE)</strong> qui è già più debole e discontinua rispetto a Trieste. Aggiornamento ogni 20 minuti circa.</p>",
+        fonte: 'DHMZ via <a href="https://vetercek.com/danes/index.php?postaja=rovinj" target="_blank" rel="noopener">vetercek.com</a>' },
       zusterna: { nome: "Žusterna – Koper", html:
         "<p>Spot da <strong>Maestrale estivo</strong> (vento termico nel pomeriggio), molto interessante per <strong>wing</strong> e <strong>windsurf</strong>. Con <strong>12–16 nodi</strong> si plana bene con una wing da circa <strong>5&nbsp;m</strong> (foil).</p>" +
         "<p>Il club è il <strong>KJD BUM</strong>, che ha due proprie zattere; si entra in acqua dalla <strong>spiaggetta a destra</strong>. La centralina è installata al club. <strong>Parcheggio a pagamento</strong> (~3&nbsp;€) vicino alla scuola.</p>",

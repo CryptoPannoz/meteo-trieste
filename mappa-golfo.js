@@ -20,8 +20,6 @@
     /* Monfalcone è spostata a nord-ovest per non entrare nel simbolo di Marina Julia. */
     { nome: "Monfalcone", lon: 13.53,  lat: 45.805, dx: -8, dy: -10, anchor: "end" },
     { nome: "Umag",       lon: 13.545, lat: 45.435 },
-    { nome: "Poreč", lon: 13.615, lat: 45.227 },
-    { nome: "Rovinj",     lon: 13.655, lat: 45.081 },
     { nome: "Pula",       lon: 13.85,  lat: 44.875 },
     { nome: "Opatija",    lon: 14.315, lat: 45.335 }
   ];
@@ -44,6 +42,8 @@
     { id: "piran",       nome: "Boa Piran",    lon: 13.551, lat: 45.549, lato: "sinistra", tipo: "piran" },
     { id: "savudrija",   nome: "Savudrija",    lon: 13.499, lat: 45.492, lato: "sinistra" },
     { id: "dajla",       nome: "Dajla",        lon: 13.545, lat: 45.334, lato: "destra"   },
+    { id: "porec",       nome: "Poreč",        lon: 13.604, lat: 45.222, lato: "destra"   },
+    { id: "rovinj",      nome: "Rovinj",       lon: 13.614, lat: 45.043, lato: "destra"   },
     { id: "preluka",     nome: "Preluka",      lon: 14.288, lat: 45.377, lato: "sinistra" },
     { id: "premantura",  nome: "Premantura",   lon: 13.908, lat: 44.797, lato: "sinistra" },
     { id: "liznjan",     nome: "Ližnjan", lon: 13.955, lat: 44.824, lato: "destra"   }

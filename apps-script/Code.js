@@ -3,7 +3,7 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, lignanoLive, preluka, dajla, liznjan, savudrija, barcola, meteogrado, gps, updated }
+ * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, lignanoLive, preluka, dajla, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
  * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
  * gps: coordinate di ogni centralina (dal feed API, in parte stimate da vetercek)
@@ -32,7 +32,10 @@ var STATIONS = {
   dajla:      { id: 39,  postaja: 'dajla' },
   liznjan:    { id: 74,  postaja: 'liznjan' },
   savudrija:  { id: 124, postaja: 'savudrija' },
-  premantura: { id: 86,  postaja: 'stupice' }
+  premantura: { id: 86,  postaja: 'stupice' },
+  // costa ovest tra Dajla e Premantura (stazioni DHMZ via vetercek, ogni 10-20 min)
+  porec:      { postaja: 'porec' },
+  rovinj:     { postaja: 'rovinj' }
 };
 
 var BARCOLA_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data_current&id_station=5307';
