@@ -153,10 +153,46 @@ var DATI_CACHE_TTL = 21600; // 6h (massimo di CacheService): oltre i 5 min la co
 // Legge la copia in cache. Torna { json, eta } (eta = secondi dall'ultima ricostruzione)
 // oppure null se non c'è nulla. Senza timestamp la trattiamo come vecchissima.
 function leggiCacheDati(cache) {
-  var v = cache.getAll([DATI_CACHE_KEY, DATI_TS_KEY]);
-  var json = v[DATI_CACHE_KEY];
-  if (!json) return null;
-  return { json: json, eta: (Date.now() - Number(v[DATI_TS_KEY] || 0)) / 1000 };
+  var v = {};
+  try { v = cache.getAll([DATI_CACHE_KEY, DATI_TS_KEY]) || {}; } catch (ignore) {}
+  var daCache = v[DATI_CACHE_KEY]
+    ? { json: v[DATI_CACHE_KEY], eta: (Date.now() - Number(v[DATI_TS_KEY] || 0)) / 1000 }
+    : null;
+  var daProp = leggiPropDati();
+  // vince la copia più recente: se CacheService è fermo (21 ago 2026) le Properties
+  // portano il dato fresco, se è sano la cache è pari o più recente e costa meno.
+  if (daCache && daProp) return daCache.eta <= daProp.eta ? daCache : daProp;
+  return daCache || daProp;
+}
+
+/* FALLBACK su PropertiesService (ago 2026). Il 21 ago CacheService ha smesso di
+   persistere le scritture (put senza errore, get subito dopo = null; le chiavi
+   vecchie restavano leggibili): per ore ogni visitatore ha ricostruito il payload
+   da zero e ricevuto comunque la copia di 4 ore prima. Le Properties funzionavano.
+   Limite 9 KB per valore: il JSON (~12 KB) va spezzato in chunk. Una sola
+   getProperties()/setProperties() per lettura/scrittura. */
+var PROP_DATI_PREFIX = 'dati_p_';
+var PROP_CHUNK = 8000;
+function scriviPropDati(json, ts) {
+  var props = PropertiesService.getScriptProperties();
+  var kv = {}, n = 0;
+  for (var i = 0; i < json.length; i += PROP_CHUNK) kv[PROP_DATI_PREFIX + (n++)] = json.substr(i, PROP_CHUNK);
+  kv[PROP_DATI_PREFIX + 'n'] = String(n);
+  kv[PROP_DATI_PREFIX + 'ts'] = String(ts);
+  props.setProperties(kv);   // non cancella i chunk in eccesso: 'n' dice quanti leggerne
+}
+function leggiPropDati() {
+  try {
+    var all = PropertiesService.getScriptProperties().getProperties();
+    var n = Number(all[PROP_DATI_PREFIX + 'n'] || 0);
+    if (!n) return null;
+    var json = '';
+    for (var i = 0; i < n; i++) {
+      if (all[PROP_DATI_PREFIX + i] == null) return null;   // scrittura a metà: ignoro
+      json += all[PROP_DATI_PREFIX + i];
+    }
+    return { json: json, eta: (Date.now() - Number(all[PROP_DATI_PREFIX + 'ts'] || 0)) / 1000 };
+  } catch (e) { return null; }
 }
 
 // Ricostruisce il payload e lo mette in cache. Torna il JSON (anche se non cacheabile).
@@ -167,10 +203,12 @@ function aggiornaCacheDati(cache) {
   // messo in cache, altrimenti continueremmo a servire errori anche dopo il reset quota
   // — e soprattutto sovrascriveremmo una copia vecchia ma buona.
   if (datiValidi(data)) {
+    var ts = Date.now();
     var kv = {};
     kv[DATI_CACHE_KEY] = json;
-    kv[DATI_TS_KEY] = String(Date.now());
+    kv[DATI_TS_KEY] = String(ts);
     try { cache.putAll(kv, DATI_CACHE_TTL); } catch (ignore) {}
+    try { scriviPropDati(json, ts); } catch (ignore2) {}
   }
   return json;
 }
@@ -286,7 +324,13 @@ function riscaldaCache() {
 
 function statoRiscaldamento() {
   var st = leggiWarmStat();
-  var cache = leggiCacheDati(CacheService.getScriptCache());
+  var sc = CacheService.getScriptCache();
+  var cache = leggiCacheDati(sc);
+  // salute di CacheService: scrivo e rileggo una chiave di prova (21 ago 2026: put ok,
+  // get = null per ore -> fallback Properties). Se false, il sito gira sulle Properties.
+  var cacheScrive = false;
+  try { var k = 'cachetest'; var val = 'v' + Date.now(); sc.put(k, val, 600); cacheScrive = sc.get(k) === val; } catch (e) {}
+  var prop = leggiPropDati();
   return {
     giorno: st.g,
     esecuzioni: st.n,
@@ -294,6 +338,8 @@ function statoRiscaldamento() {
     minutiTrigger: Math.round(st.ms / 600) / 100,
     budgetMinuti: BUDGET_TRIGGER_MS / 60000,
     cacheEtaSec: cache ? Math.round(cache.eta) : null,
+    cacheScrive: cacheScrive,
+    propEtaSec: prop ? Math.round(prop.eta) : null,
     // niente ScriptApp qui (servirebbe uno scope in più): se il trigger gira,
     // esecuzioni sale da solo. esecuzioni = 0 a giornata avviata = non installato.
     triggerAttivo: st.n > 0
