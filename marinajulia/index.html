@@ -909,7 +909,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20260822-ux1" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260822-ux2" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
   <!-- Mappa del vento: qui la vista è centrata su Marina Julia, quindi i punti
        del lato Trieste (boa Mambo, Barcola, Muggia) e Žusterna non si disegnano. -->
@@ -1203,7 +1203,8 @@
 
   <!-- WINDY + WINDGURU -->
   <div class="section" id="windy">
-    <h2>Windguru – WG Trieste</h2>
+    <div class="sec-head"><h2>Windguru – WG Trieste</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info sugli altri modelli</button></div>
+    <p class="stato windguru-consiglio">• <strong>Modello suggerito: WG (model mix)</strong>: la "media intelligente" di Windguru, che combina più modelli in un'unica previsione di sintesi.</p>
     <div style="margin-top: 1rem; overflow-x:auto;">
       <!-- Windguru widget WG (model mix) -->
       <script id="wg_fwdg_49156_100_wg">

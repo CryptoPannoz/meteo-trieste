@@ -1537,7 +1537,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20260822-ux1" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20260822-ux2" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20260822-ux1" defer></script>
 </head>
@@ -1869,7 +1869,8 @@
 
   <!-- WINDGURU: caricamento differito all'apertura di Previsioni -->
   <div class="section windguru-section" id="windy">
-    <div class="sec-head"><h2>Windguru – Trieste</h2><span class="windguru-badge">on demand</span></div>
+    <div class="sec-head"><h2>Windguru – Trieste</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info sugli altri modelli</button><span class="windguru-badge">on demand</span></div>
+    <p class="stato windguru-consiglio">• <strong>Modello suggerito: WG (model mix)</strong>: la "media intelligente" di Windguru, che combina più modelli in un'unica previsione di sintesi.</p>
     <p class="stato">Aprendo questa sezione viene caricato solo il primo modello. Gli altri partono quando li selezioni.</p>
     <div class="windguru-tabs" role="tablist" aria-label="Modelli Windguru per Trieste">
       <button class="windguru-tab is-active" type="button" role="tab" aria-selected="true" data-wg-spot="49156" data-wg-model="100" data-wg-uid="wg_lazy_49156_100" data-wg-lang="it">WG</button>
@@ -1877,9 +1878,6 @@
       <button class="windguru-tab" type="button" role="tab" aria-selected="false" data-wg-spot="49156" data-wg-model="104" data-wg-uid="wg_lazy_49156_104" data-wg-lang="it">ICON-2I</button>
     </div>
     <div class="windguru-stage"><p class="windguru-placeholder">Il modello apparirà qui quando apri Previsioni.</p></div>
-    <div style="text-align:center; margin-top: 1.5rem;">
-      <button onclick="apriModal()">ℹ️ Differenze tra i modelli meteo</button>
-    </div>
   </div>
 
   </details>

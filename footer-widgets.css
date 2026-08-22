@@ -139,6 +139,9 @@
 .windguru-section .sec-head { align-items: center; }
 .windguru-badge { padding: .22rem .5rem; border: 1px solid var(--signal); border-radius: 999px; color: var(--signal); font-size: .63rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
 .windguru-tabs { display: flex; gap: .45rem; flex-wrap: wrap; margin: .9rem 0; }
+.windguru-section .sec-head { flex-wrap: wrap; gap: .5rem; }
+.windguru-info { font-size: .8rem !important; padding: .38rem .7rem !important; border-radius: 999px !important; }
+.windguru-consiglio { color: var(--ink) !important; font-size: .9rem !important; }
 .windguru-tab { min-height: 42px; padding: .55rem .8rem; border: 1px solid #3b4650; border-radius: 10px; background: #171d23; color: #c8d0d4; font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer; }
 .windguru-tab:hover, .windguru-tab.is-active { border-color: var(--signal); background: var(--signal); color: #090b0d; }
 .windguru-stage { min-height: 92px; overflow-x: auto; padding: .7rem; border: 1px solid #303a43; border-radius: 11px; background: #0c1115; }
