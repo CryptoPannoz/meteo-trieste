@@ -365,7 +365,7 @@
     dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali",
     guides: "Guide e strumenti"
   };
-  var supporters = ["Pietro Silvestri", "Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop"];
+  var supporters = ["Pietro Silvestri", "Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop", "Stefano Davini"];
   var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
   var partners = [
     { name: "Jaka87 · Vetercek", detail: sl ? "mreža postaj v živo" : "rete di centraline live", url: "https://vetercek.com/" },
@@ -648,17 +648,30 @@
       return (link.getAttribute("href") || "").toLowerCase().indexOf(parola.toLowerCase()) !== -1;
     });
   }
+  /* Icone del dock: SVG a tratto (currentColor), niente emoji (rendono diverso
+     su ogni sistema e sembrano poco serie). */
+  var DOCK_ICONS = {
+    radar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 16a4 4 0 0 1-.5-8 5.5 5.5 0 0 1 10.6 1.2A3.5 3.5 0 0 1 17 16H7z"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/></svg>',
+    mappa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>',
+    vento: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h7"/></svg>',
+    centraline: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12v9"/><circle cx="12" cy="11" r="1.5"/><path d="M8.5 7.5a5 5 0 0 1 7 0M6 5a8.5 8.5 0 0 1 12 0"/></svg>',
+    onde: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9c2 0 2.5-2 4.5-2s2.5 2 4.5 2 2.5-2 4.5-2 2.5 2 4.5 2"/><path d="M3 15c2 0 2.5-2 4.5-2s2.5 2 4.5 2 2.5-2 4.5-2 2.5 2 4.5 2"/></svg>',
+    previsioni: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+    webcam: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+    more: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+    dot: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/></svg>'
+  };
   function metaLink(link) {
     var href = (link.getAttribute("href") || "").toLowerCase();
-    if (href.indexOf("radar") !== -1) return { icon: "🌧️", label: "Radar" };
-    if (href.indexOf("mappa") !== -1) return { icon: "🗺️", label: copy.map };
-    if (href.indexOf("vento") !== -1) return { icon: "💨", label: copy.now };
-    if (href.indexOf("centraline") !== -1) return { icon: "📡", label: copy.stations };
-    if (href.indexOf("onde") !== -1) return { icon: "🌊", label: copy.waves };
-    if (href.indexOf("boe") !== -1) return { icon: "🌊", label: copy.buoys };
-    if (href.indexOf("previsioni") !== -1) return { icon: "📅", label: copy.forecast };
-    if (href.indexOf("webcam") !== -1) return { icon: "📷", label: copy.webcams };
-    return { icon: "•", label: (link.textContent || "").trim() };
+    if (href.indexOf("radar") !== -1) return { icon: DOCK_ICONS.radar, label: "Radar" };
+    if (href.indexOf("mappa") !== -1) return { icon: DOCK_ICONS.mappa, label: copy.map };
+    if (href.indexOf("vento") !== -1) return { icon: DOCK_ICONS.vento, label: copy.now };
+    if (href.indexOf("centraline") !== -1) return { icon: DOCK_ICONS.centraline, label: copy.stations };
+    if (href.indexOf("onde") !== -1) return { icon: DOCK_ICONS.onde, label: copy.waves };
+    if (href.indexOf("boe") !== -1) return { icon: DOCK_ICONS.onde, label: copy.buoys };
+    if (href.indexOf("previsioni") !== -1) return { icon: DOCK_ICONS.previsioni, label: copy.forecast };
+    if (href.indexOf("webcam") !== -1) return { icon: DOCK_ICONS.webcam, label: copy.webcams };
+    return { icon: DOCK_ICONS.dot, label: (link.textContent || "").trim() };
   }
 
   var dock = null;
@@ -688,7 +701,7 @@
     });
     var more = document.createElement("button");
     more.type = "button";
-    more.innerHTML = '<span class="ux-dock-icon" aria-hidden="true">☰</span>' +
+    more.innerHTML = '<span class="ux-dock-icon" aria-hidden="true">' + DOCK_ICONS.more + '</span>' +
       '<span class="ux-dock-label">' + copy.more + '</span>';
     more.addEventListener("click", function (event) {
       event.stopPropagation();

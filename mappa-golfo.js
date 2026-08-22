@@ -169,7 +169,9 @@
       '<filter id="mgOmbra" x="-60%" y="-60%" width="220%" height="220%">' +
       '<feDropShadow dx="0" dy="1.8" stdDeviation="2.2" flood-color="#102f38" flood-opacity="0.34"/>' +
       '</filter>' +
-      '<style>.mg-stazione{cursor:pointer}.mg-halo{opacity:.16}.mg-stazione:focus{outline:none}.mg-stazione:focus .mg-halo,.mg-stazione.mg-selected .mg-halo{opacity:.9}</style>';
+      '<style>.mg-stazione{cursor:pointer}.mg-halo{opacity:.16}.mg-stazione:focus{outline:none}.mg-stazione:focus .mg-halo,.mg-stazione.mg-selected .mg-halo{opacity:.9}' +
+      '.mg-invito .mg-halo{animation:mg-pulse 1.4s ease-in-out 3}@keyframes mg-pulse{0%,100%{opacity:.16}50%{opacity:.95}}' +
+      '@media(prefers-reduced-motion:reduce){.mg-invito .mg-halo{animation:none}}</style>';
     svg.appendChild(defs);
     svg.appendChild(el("rect", { x: 0, y: 0, width: 762, height: 1000, fill: "url(#mgMare)" }));
     svg.appendChild(el("path", { d: TERRA, fill: "#f7f3e9", stroke: "#5f8b96",
@@ -266,7 +268,7 @@
   /* freccia centrata sulla stazione, orientata dove VA il vento (deg + 180);
      centralina offline (v null) -> punto spento, non si disegna nulla */
   function disegnaStazione(dest, st, v) {
-    if (!v || isNaN(v.kt)) return;
+    if (!v || isNaN(v.kt)) return null;
     var x = px(st.lon), y = py(st.lat);
     var g = el("g", { "class": "mg-stazione", role: "button", tabindex: "0", "data-stazione": st.id });
     var colore = classeColore(v.kt);
@@ -321,6 +323,7 @@
       if (e.key === "Escape") chiudiDettaglio();
     });
     dest.appendChild(g);
+    return g;
   }
 
   /* window.__mappaEscludi = ["barcola", ...]: elenco di id da NON disegnare.
@@ -336,13 +339,28 @@
     if (!gStazioni || !data) return;
     chiudiDettaglio();
     gStazioni.innerHTML = "";
+    var disegnate = [];
     STAZIONI.forEach(function (st) {
       if (st.tipo === "mambo" || st.tipo === "paloma") return;   // gruppi propri, fetch a parte
       if (escluso(st)) return;
-      disegnaStazione(gStazioni, st, normalizza(st, data));
+      var v = normalizza(st, data);
+      var g = disegnaStazione(gStazioni, st, v);
+      if (g) disegnate.push({ st: st, v: v, g: g });
     });
     caricaPaloma();   // throttled: al massimo un fetch ogni 4 minuti
+    /* Invito all'uso (solo al primo disegno): gli aloni pulsano tre volte e il
+       dettaglio della stazione più ventosa si apre da solo, così si capisce che i
+       numeri sono cliccabili senza doverlo spiegare. Ai refresh successivi no:
+       il visitatore ha già capito, e non gli riapriamo un popover in faccia. */
+    if (!invitoFatto && disegnate.length) {
+      invitoFatto = true;
+      gStazioni.classList.add("mg-invito");
+      setTimeout(function () { gStazioni.classList.remove("mg-invito"); }, 4500);
+      var top = disegnate.reduce(function (a, b) { return b.v.kt > a.v.kt ? b : a; });
+      mostraDettaglio(top.st, top.v, top.g);
+    }
   }
+  var invitoFatto = false;
 
   function mambo(v) {
     if (!gMambo) return;

@@ -146,10 +146,10 @@
 .windguru-panel[hidden] { display: none !important; }
 /* Invito visivo stile GIF: saltella solo il pulsante dei gruppi Spot ancora chiusi. */
 .gruppo-collapse:not([open]) .gruppo-sum::after { animation: spot-hop 1.8s cubic-bezier(.36,.07,.19,.97) infinite; transform-origin: 50% 100%; }
-.page-collapse > .gruppo-sum::after { content: "chiudi sezione ▴"; }
-.page-collapse:not([open]) > .gruppo-sum::after { content: "apri sezione ▾"; }
-.page-collapse-sl > .gruppo-sum::after { content: "zapri razdelek ▴"; }
-.page-collapse-sl:not([open]) > .gruppo-sum::after { content: "odpri razdelek ▾"; }
+.page-collapse > .gruppo-sum::after { content: "chiudi ▴"; }
+.page-collapse:not([open]) > .gruppo-sum::after { content: "apri ▾"; }
+.page-collapse-sl > .gruppo-sum::after { content: "zapri ▴"; }
+.page-collapse-sl:not([open]) > .gruppo-sum::after { content: "odpri ▾"; }
 /* Stessa larghezza per tutti i gruppi collassabili: anche #istria (senza .page-collapse) resta allineato. */
 .page-collapse, .gruppo-collapse { width: 100%; max-width: 1160px; margin-left: auto; margin-right: auto; }
 .page-collapse > .section:first-of-type { margin-top: 1rem; }
@@ -180,8 +180,14 @@
 }
 .meteo-phase h2 { margin: 0; color: var(--ink); font-size: 1rem; line-height: 1.15; }
 .meteo-phase p { margin: .2rem 0 0; color: var(--label); font-size: .72rem; line-height: 1.4; }
-.meteo-phase--forecast { border-left-color: #4ab3c5; }
-.meteo-phase--forecast .meteo-phase-kicker { background: #183d48; color: #aeeaf2; }
+/* Le due fasi hanno colori propri su tutto il box (non solo il bordo sinistro),
+   così si leggono come intestazioni di sezione: Nowcasting = giallo segnale,
+   Forecasting = azzurro mare. */
+.meteo-phase--nowcast { border-color: rgba(240,244,60,.45); background: linear-gradient(105deg, #272a12, #161a0c); }
+.meteo-phase--nowcast h2 { color: var(--signal); }
+.meteo-phase--forecast { border-color: rgba(74,179,197,.5); border-left-color: #4ab3c5; background: linear-gradient(105deg, #0f2a33, #0b1b21); }
+.meteo-phase--forecast h2 { color: #8fdde9; }
+.meteo-phase--forecast .meteo-phase-kicker { background: #4ab3c5; color: #06242b; }
 .bora-only-badge {
   display: inline-flex;
   align-items: center;
@@ -960,7 +966,10 @@ footer { color: var(--label); }
   border-left-color: var(--signal);
   box-shadow: 0 9px 26px rgba(22,35,44,.1);
 }
-:root[data-theme="light"] .meteo-phase--forecast { border-left-color: var(--sea); }
+:root[data-theme="light"] .meteo-phase--nowcast { background: linear-gradient(105deg, #fdfee9, #f4f7c9); border-color: #d9dd7a; }
+:root[data-theme="light"] .meteo-phase--nowcast h2 { color: #4d5200; }
+:root[data-theme="light"] .meteo-phase--forecast { background: linear-gradient(105deg, #eaf6f9, #d6edf2); border-color: #9fcfd9; border-left-color: var(--sea); }
+:root[data-theme="light"] .meteo-phase--forecast h2 { color: var(--sea-dark); }
 :root[data-theme="light"] .meteo-phase--forecast .meteo-phase-kicker { background: var(--sea-dark); color: #fff; }
 :root[data-theme="light"] .bora-only-badge { border-color: #aeb42a; color: #596000; }
 
@@ -1218,7 +1227,8 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
     font-weight: 750;
     line-height: 1.05;
   }
-  .ux-mobile-dock .ux-dock-icon { font-size: 1.05rem; line-height: 1; }
+  .ux-mobile-dock .ux-dock-icon { display: inline-flex; line-height: 1; }
+  .ux-mobile-dock .ux-dock-icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .ux-mobile-dock .ux-dock-label {
     max-width: 100%;
     overflow: hidden;
