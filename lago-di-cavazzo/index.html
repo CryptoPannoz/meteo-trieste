@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
+  <title>Vento Lago di Cavazzo in tempo reale – surfometro, raffiche e direzione</title>
+  <meta name="description" content="Vento al Lago di Cavazzo (Lago dei Tre Comuni) in tempo reale per windsurf, wing e vela: surfometro, raffiche, direzione e temperatura dalla stazione di Interneppo (boranucleare.it)." />
+  <meta name="keywords" content="vento lago di cavazzo, lago dei tre comuni vento, windsurf lago di cavazzo, wing foil cavazzo, meteo interneppo, surfometro" />
+  <link rel="canonical" href="https://ventotrieste.info/lago-di-cavazzo/" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:title" content="Vento Lago di Cavazzo in tempo reale – surfometro" />
+  <meta property="og:description" content="Surfometro del Lago dei Tre Comuni: vento, raffiche e direzione in tempo reale dalla stazione di Interneppo." />
+  <meta property="og:url" content="https://ventotrieste.info/lago-di-cavazzo/" />
+  <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    :root {
+      --slate: #1f2d3d;
+      --slate-2: #45566a;
+      --azzurro: #2f6fb0;
+      --azzurro-scuro: #245991;
+      --sfondo: #eef1f4;
+      --bordo: #dce1e7;
+      --testo: #16202b;
+      --label: #5c6675;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0 1rem 1.5rem;
+      background: var(--sfondo);
+      color: var(--testo);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      font-feature-settings: "tnum" 1;
+      line-height: 1.5;
+    }
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      letter-spacing: -.01em;
+    }
+    h2 {
+      color: var(--slate);
+      margin: 0 0 .5rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -.01em;
+    }
+    h3 { font-weight: 600; color: var(--slate); }
+    .section {
+      background: white;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      scroll-margin-top: 100px;
+    }
+    img, iframe {
+      max-width: 100%;
+      border-radius: 6px;
+      border: 0;
+    }
+    a { color: var(--azzurro); }
+
+    /* ---- Barra di navigazione fissa ---- */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--sfondo);
+      margin: 0 -1rem 1rem;
+      padding: .5rem 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .4rem;
+      border-bottom: 1px solid var(--bordo);
+    }
+    @media (min-width: 600px) { nav { grid-template-columns: repeat(4, 1fr); } }
+    nav a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      background: #fff;
+      border: 1px solid var(--bordo);
+      color: var(--slate);
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 500;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    nav a:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+    /* ---- Titoli di gruppo ---- */
+    .gruppo-titolo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin: 1.75rem .15rem .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 2px solid var(--slate);
+      scroll-margin-top: 100px;
+    }
+    .gruppo-titolo:first-of-type { margin-top: .5rem; }
+
+    /* gruppo collassabile (Spot Istria) */
+    .gruppo-collapse { margin-top: 1.75rem; scroll-margin-top: 100px; }
+    .gruppo-sum {
+      font-size: 1.15rem; font-weight: 700; color: var(--slate);
+      text-transform: uppercase; letter-spacing: .04em;
+      padding-bottom: .4rem; margin-bottom: 1rem;
+      border-bottom: 2px solid var(--slate);
+      cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .gruppo-sum::-webkit-details-marker { display: none; }
+    .gruppo-sum::after {
+      content: "▾ apri"; font-size: .8rem; font-weight: 500;
+      text-transform: none; letter-spacing: 0; color: var(--azzurro);
+    }
+    .gruppo-collapse[open] .gruppo-sum::after { content: "▴ chiudi"; }
+
+    /* ---- Mini-card dato (stile strumento) ---- */
+    .statgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+      gap: .5rem;
+      margin-top: .5rem;
+    }
+    .statbox {
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 10px;
+      padding: .6rem .7rem;
+      text-align: left;
+    }
+    .statbox .etichetta {
+      display: block;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--label);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: .2rem;
+    }
+    .statbox .valore {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--testo);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+    .statbox .unita { font-size: .8rem; font-weight: 500; color: var(--label); }
+    .statbox .sub { display: block; font-size: .72rem; color: var(--label); margin-top: 3px; }
+    .freccia { display: inline-block; font-size: 1.05rem; line-height: 1; }
+    /* chip fascia vento nella tabella "Cosa si fa a Lignano" */
+    .cosa-kt { display: inline-block; padding: .18rem .55rem; border-radius: 999px; color: #fff; font-weight: 700; font-size: .8rem; white-space: nowrap; }
+    /* box partner locale ISLAND Surf Shop (pagina Lignano) */
+    .island-partner {
+      max-width: 760px; margin: 2.4rem auto 0; padding: 1.5rem 1.4rem 1.3rem;
+      border: 1px solid var(--bordo); border-top: 4px solid var(--azzurro);
+      border-radius: 16px; background: var(--surface-soft); text-align: center;
+    }
+    .island-ribbon {
+      display: inline-block; font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--sfondo); background: var(--azzurro);
+      padding: .22rem .7rem; border-radius: 999px; margin-bottom: .8rem;
+    }
+    .island-wordmark {
+      display: block; font-family: "Barlow Condensed", "Manrope", sans-serif;
+      font-size: 2.7rem; font-weight: 700; letter-spacing: .22em;
+      color: var(--azzurro); line-height: 1; text-indent: .22em;
+    }
+    .island-sub { display: block; font-size: .82rem; font-weight: 600; color: var(--label); letter-spacing: .03em; margin-top: .25rem; }
+    .island-claim { font-size: 1.15rem; margin: .9rem 0 .3rem; color: var(--testo); }
+    .island-desc { font-size: .92rem; color: var(--slate-2); max-width: 58ch; margin: 0 auto 1rem; line-height: 1.55; }
+    .island-actions { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; align-items: center; }
+    .island-actions .dona-btn { margin: 0; }
+    .island-link {
+      font-size: .85rem; font-weight: 600; color: var(--azzurro); text-decoration: none;
+      padding: .48rem .8rem; border: 1px solid var(--bordo); border-radius: 8px; background: transparent;
+    }
+    .island-link:hover { border-color: var(--azzurro); }
+    .island-addr { font-size: .78rem; color: var(--label); margin: 1rem 0 0; }
+    /* card link alle webcam (Panomax + Bibione) */
+    .webcam-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .6rem; margin-top: .5rem; }
+    /* webcam Panomax embeddate (iframe live) */
+    .webcam-embeds { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: .5rem; }
+    .cam-embed { margin: 0; }
+    .cam-embed .cam-video { margin-top: 0; }
+    .cam-embed figcaption { font-size: .8rem; color: var(--label); text-align: center; margin-top: .35rem; }
+    /* mappa vento interattiva (Windy) */
+    .map-embed { margin: 0; }
+    .map-embed iframe { width: 100%; height: 460px; border: 0; border-radius: 12px; background: var(--surface); display: block; }
+    .map-embed figcaption { font-size: .8rem; color: var(--label); text-align: center; margin-top: .35rem; }
+    @media (max-width: 640px) { .map-embed iframe { height: 380px; } }
+    .webcam-card { display: flex; flex-direction: column; gap: .12rem; padding: .8rem .9rem; border: 1px solid var(--bordo); border-radius: 12px; background: var(--surface); text-decoration: none; transition: border-color .15s; }
+    .webcam-card:hover { border-color: var(--azzurro); }
+    .webcam-card .wc-emoji { font-size: 1.4rem; line-height: 1; }
+    .webcam-card .wc-t { font-weight: 700; color: var(--testo); font-size: .92rem; }
+    .webcam-card .wc-s { font-size: .76rem; color: var(--label); }
+    /* Centraline vicine: intestazione compatta */
+    .centraline-head { padding-bottom: .35rem; }
+    /* Boe di riferimento affiancate (compatto) nella sezione Onde */
+    .boe-compact { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .8rem; }
+    .boa-mini h4 { margin: 0 0 .35rem; font-size: .88rem; color: var(--slate-2); }
+    /* Cosa si fa: bozza in attesa di approvazione ISLAND Surf (grigio chiaro) */
+    .cosa-pending-head { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: .3rem; }
+    .cosa-pending-head h2 { margin: 0; }
+    .pending-badge { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--sfondo); background: var(--label); padding: .2rem .6rem; border-radius: 999px; }
+    .cosa-pending-body { opacity: .5; filter: grayscale(.5); }
+    /* Logo partner ISLAND, adattato al tema (nero in chiaro, bianco in scuro) */
+    .island-logo { display: block; width: min(240px, 72%); height: auto; margin: 0 auto .2rem; filter: invert(1); }
+    :root[data-theme="light"] .island-logo { filter: none; }
+
+    /* ---- Intestazione sezione con azione a destra (es. "come si legge") ---- */
+    .sec-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; }
+    .sec-head h2 { margin: 0; }
+
+    /* ---- Box differenza pressione Bora (live) ---- */
+    .bora-delta { margin-top: 1.1rem; }
+    .bora-delta .bd-titolo { font-size: 1rem; margin: 0 0 .15rem; }
+    /* Pressione di bora: verdetto + numero LCD + scala a tre fasce (stile surfometro).
+       Palette scura e tema chiaro arrivano da footer-widgets.css. */
+    .bd-verdetto { text-align: center; font-size: 1.75rem; font-weight: 800; line-height: 1.15; margin: .35rem 0 .1rem; }
+    .bd-verdetto small { display: block; font-size: .84rem; font-weight: 600; color: var(--label); margin-top: .18rem; }
+    .bd-verdetto.assente { color: #5b6470; }
+    .bd-verdetto.genesi { color: #a07800; }
+    .bd-verdetto.consistente { color: #e2680f; }
+    .bd-verdetto.forte { color: #cf2e22; }
+    .tws-hero.bd-hero { font-size: 2.7rem; margin: .1rem 0 .8rem; }
+    .bd-hero .bd-sign { font-size: 2rem; font-weight: 800; }
+    .bd-spiega { font-size: .8rem; color: var(--label); text-align: center; margin: .6rem 0 .2rem; line-height: 1.45; }
+    .bd-bar { position: relative; display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: #e7ebe5; box-shadow: inset 0 1px 2px rgba(23,33,45,.14); }
+    .bd-marker { position: absolute; top: -3px; bottom: -3px; width: 3px; pointer-events: none; background: #122034; border-radius: 999px; transform: translateX(-50%); box-shadow: 0 0 0 3px rgba(255,255,255,.55); transition: left .5s ease, opacity .3s ease; }
+    .bd-labels { display: flex; font-size: .68rem; color: var(--label); font-weight: 700; margin-top: .3rem; text-align: center; }
+    .bd-labels div { flex: 1; }
+    .bd-info {
+      border: 1px solid var(--bordo); background: #fff; color: var(--azzurro);
+      border-radius: 999px; padding: .12rem .55rem; font-size: .78rem;
+      cursor: pointer; line-height: 1.4; white-space: nowrap;
+    }
+    .bd-info:hover { background: var(--sfondo); }
+
+    /* display LCD a 7 segmenti: cifra accesa (nera) sopra i segmenti spenti */
+    .lcd { position: relative; display: inline-block; font-family: 'DSEG7-Classic', monospace; }
+    .lcd-ghost { color: rgba(26,35,48,.12); }
+    .lcd-lit { position: absolute; left: 0; top: 0; color: #111; }
+
+    /* ---- Pannello vento piatto (tutte le stazioni, niente box annidati) ---- */
+    .pannello { text-align: center; padding: .2rem 0 .1rem; }
+    .tws-hero {
+      display: flex; align-items: baseline; justify-content: center; gap: .35rem;
+      font-size: 3.4rem; line-height: 1;
+    }
+    .tws-hero .u { font-size: 1rem; font-weight: 600; color: var(--label); }
+    .tws-raffica { font-size: .85rem; color: var(--label); margin-top: .25rem; }
+    .tws-raffica b { color: var(--testo); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .tws-dir { font-size: 1.55rem; font-weight: 800; color: var(--testo); margin-top: .55rem; line-height: 1.1; }
+    .tws-dir .deg { font-size: 1rem; font-weight: 600; color: var(--label); }
+    .tws-dir .freccia { font-size: 1.4rem; vertical-align: -1px; }
+    /* Centralina ferma: il valore resta leggibile (è storia) ma spento, con avviso sopra */
+    .dato-vecchio {
+      margin: 0 0 .55rem; padding: .4rem .6rem;
+      border: 1px solid rgba(255,189,105,.34); border-radius: 10px;
+      background: rgba(179,92,0,.18); color: #ffbd69;
+      font-size: .78rem; font-weight: 700; line-height: 1.4; text-align: center;
+    }
+    .stazione-stale .pannello { opacity: .5; filter: grayscale(.8); }
+
+    /* ---- Surfometro orizzontale ---- */
+    .surf2-verdetto { text-align: center; font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.3rem; }
+    .surf2-verdetto small { display: block; font-size: .85rem; font-weight: 500; color: var(--label); margin-top: .15rem; }
+    .meter {
+      position: relative;
+      padding: 50px .55rem 1.15rem;
+      margin-top: .4rem;
+      border: 1px solid rgba(216,222,216,.9);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.9), rgba(248,250,247,.72)),
+        radial-gradient(circle at 20% 0, rgba(207,246,75,.16), transparent 32%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    .meter-bar {
+      position: relative;
+      display: flex;
+      height: 20px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e7ebe5;
+      box-shadow: inset 0 1px 2px rgba(23,33,45,.14);
+    }
+    /* fascia raffica: dal vento medio alla raffica, più è larga più lo spot è rafficato */
+    .meter-range {
+      position: absolute; top: 0; bottom: 0; left: 0; width: 0; pointer-events: none;
+      background: linear-gradient(90deg, rgba(24,116,130,.28), rgba(24,116,130,.08));
+      border-left: 1px solid rgba(255,255,255,.62);
+      border-right: 3px solid rgba(24,116,130,.86);
+      transition: left .5s ease, width .5s ease, opacity .3s ease;
+    }
+    /* linea del vento medio: sempre visibile sulla barra (anche quando medio = raffica) */
+    .meter-mean-line {
+      position: absolute; top: -3px; bottom: -3px; width: 3px; pointer-events: none;
+      background: #122034; border-radius: 999px; transform: translateX(-50%);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.55);
+      transition: left .5s ease, opacity .3s ease;
+    }
+    /* indicatore unico: freccia della direzione (reale) a lato, poi vento medio grande
+       con la raffica come appendice bassa. Posizionato sul punto del medio nella scala. */
+    .meter-pointer {
+      position: absolute; top: .55rem; min-height: 34px;
+      display: flex; flex-direction: row; align-items: center; gap: 6px;
+      line-height: 1; transition: left .5s ease, transform .5s ease, opacity .3s ease; z-index: 2;
+      padding: .36rem .5rem .34rem;
+      border: 1px solid rgba(23,33,45,.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 8px 18px rgba(23,33,45,.12), inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    /* indicatore "fuori scala" (>40 kt): chevron rosso sull'estremità destra della barra */
+    .meter-over {
+      position: absolute; top: 50px; right: 1rem; height: 20px;
+      display: flex; align-items: center; font-size: 12px; font-weight: 800; color: #fff;
+      opacity: 0; transition: opacity .3s ease; pointer-events: none; z-index: 1;
+    }
+    .meter-pointer .meter-dir { font-size: 16px; line-height: 1; color: var(--teal); transform-origin: center; display: inline-block; }
+    .meter-pointer .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 16px; color: var(--ink); }
+    /* raffica: a destra del medio (è sempre maggiore del TWS medio), più piccola e chiara */
+    .meter-pointer .meter-gust-app { font-size: 12px; font-weight: 800; color: var(--slate-2); font-variant-numeric: tabular-nums; white-space: nowrap; margin-bottom: 1px; }
+    .meter-ticks { position: relative; height: 16px; margin-top: 5px; font-size: 11px; font-weight: 700; color: var(--label); }
+    .meter-ticks span { position: absolute; transform: translateX(-50%); }
+    .meter-labels { display: flex; margin-top: 3px; font-size: 10.5px; text-align: center; color: var(--label); line-height: 1.2; }
+
+    /* ---- Tabella tendenza: dropdown chiuso, si apre al click ---- */
+    details.dettaglio { margin-top: .6rem; }
+    details.dettaglio > summary {
+      cursor: pointer; font-size: .85rem; font-weight: 500; color: var(--slate);
+      padding: .55rem .8rem; list-style: none; user-select: none;
+      border: 1px solid var(--bordo); border-radius: 8px; background: #fff;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    details.dettaglio > summary::-webkit-details-marker { display: none; }
+    details.dettaglio > summary::after {
+      content: "apri ▾";
+      flex: 0 0 auto; margin-left: .6rem;
+      font-size: .74rem; font-weight: 700; color: var(--azzurro);
+      border: 1px solid currentColor; border-radius: 999px; padding: 2px 10px;
+    }
+    details.dettaglio > summary:hover { background: #f2f7fa; border-color: var(--azzurro); }
+    details.dettaglio[open] > summary { border-radius: 8px 8px 0 0; border-bottom: 0; }
+    details.dettaglio[open] > summary::after { content: "chiudi ▴"; }
+
+    /* ---- Bottoni spot (posizione + guida) ---- */
+    .spot-azioni { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .8rem; }
+    .spot-btn {
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: #fff; border: 1px solid var(--bordo); color: var(--slate);
+      text-decoration: none; padding: 8px 14px; border-radius: 8px;
+      font-size: .88rem; font-weight: 500; font-family: inherit; cursor: pointer;
+    }
+    .spot-btn:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+    /* ---- Trend stazioni ---- */
+    .trend {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin: .6rem 0 .2rem;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .trend-badge {
+      font-weight: 600;
+      padding: .25rem .7rem;
+      border-radius: 8px;
+      font-size: .88rem;
+      background: #eef1f4;
+      color: var(--slate);
+      border: 1px solid var(--bordo);
+    }
+    .trend-badge .frec { font-weight: 800; }
+    .trend-delta { font-size: .8rem; color: var(--label); }
+    .spark { vertical-align: middle; width: 100%; min-width: 0; }
+    /* sparkline trend con didascalia e scala min/max */
+    .spark-wrap { flex: 1 0 100%; width: 100%; max-width: none; min-width: 0; display: flex; flex-direction: column; }
+    .spark-wrap .spark { width: 100%; max-width: none; height: 48px; }
+    .spark-cap { font-size: .62rem; color: var(--label); text-align: center; margin-top: 2px; white-space: nowrap; letter-spacing: .02em; }
+
+    /* ---- Tabella dettaglio ---- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      border: 1px solid var(--bordo);
+      border-top: 0;
+    }
+    th, td {
+      border-bottom: 1px solid var(--bordo);
+      padding: 7px 6px;
+      text-align: center;
+    }
+    th { background: #f6f8fa; font-weight: 600; color: var(--slate); font-size: .8rem; }
+    td { font-variant-numeric: tabular-nums; }
+    /* formattazione condizionale per intensità del vento (kt e raffica) */
+    td.vento-calmo   { color: #8a94a0; }
+    td.vento-leggero { background: #eef6e6; color: #3b6d11; font-weight: 700; }
+    td.vento-buono   { background: #fbeede; color: #b35c00; font-weight: 700; }
+    td.vento-forte   { background: #fbe4e4; color: #c20202; font-weight: 700; }
+    tr.riga-recente td { font-weight: 700; }
+    tr.riga-recente td:first-child { background: #f6f8fa; }
+    .ora-now { font-size: .66rem; background: var(--slate); color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 5px; font-weight: 500; }
+    .stato {
+      font-size: .72rem;
+      color: #666;
+      margin: .25rem 0 0;
+    }
+    /* nel grafico della Bora la fonte resta della dimensione originale */
+    #bora > .stato { font-size: .85rem; }
+    .errore {
+      background: #fdf2f2;
+      border: 1px solid #f5c2c2;
+      border-radius: 6px;
+      padding: .6rem .8rem;
+      font-size: .9rem;
+      color: #8a1f1f;
+      margin-top: .5rem;
+    }
+
+    /* ---- Bottoni ---- */
+    button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--azzurro);
+      color: white;
+      cursor: pointer;
+      font-size: .9rem;
+    }
+    button:hover { background-color: var(--azzurro-scuro); }
+    button:disabled { opacity: .5; cursor: default; }
+
+    /* ---- Viewer Aladin ---- */
+    .aladin-controlli {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: .5rem 0;
+    }
+    .aladin-controlli span { font-variant-numeric: tabular-nums; color: #444; }
+
+    /* ---- Webcam ---- */
+    .webcam-intestazione {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .cam-video { width: 100%; border-radius: 8px; background: #000; aspect-ratio: 16/9; margin-top: .5rem; }
+    .cam-play {
+      width: 100%; aspect-ratio: 16/9; margin-top: .5rem;
+      border: 1px dashed var(--bordo); border-radius: 8px;
+      background: #f6f8fa; color: var(--slate); font-size: 1rem;
+      font-family: inherit; font-weight: 500; cursor: pointer;
+    }
+    .cam-play:hover { background: #eef1f4; }
+
+    /* ---- Bollettino OSMER ---- */
+    .bollett { padding: .6rem 0; border-bottom: 1px solid var(--bordo); }
+    .bollett:first-child { padding-top: 0; }
+    .bollett:last-child { border-bottom: 0; padding-bottom: 0; }
+    .bollett-giorno {
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--label); font-weight: 600; margin-bottom: .25rem;
+    }
+    .bollett-testo { font-size: .95rem; line-height: 1.5; color: var(--testo); }
+    .bollett.allerta .bollett-giorno { color: #b35c00; }
+    .osmer-mappa { width: 100%; max-width: 360px; display: block; margin: .6rem auto 0; border-radius: 8px; }
+    .osmer-tabs { display: flex; gap: .4rem; margin-bottom: .2rem; }
+    .osmer-tab {
+      flex: 1; background: #fff; border: 1px solid var(--bordo); border-radius: 8px;
+      padding: .5rem .3rem; font-family: inherit; font-size: .82rem; font-weight: 600;
+      color: var(--slate); cursor: pointer; line-height: 1.2;
+    }
+    .osmer-tab:hover { background: #eef1f4; }
+    .osmer-tab.attivo, .osmer-tab.attivo:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+    /* ---- Modal ---- */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,22,30,0.55);
+      z-index: 1000;
+      padding: 1rem;
+      overflow-y: auto;                    /* contenuti lunghi scorrono (mobile) */
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    .modal .contenuto {
+      position: relative;
+      background: white;
+      max-width: 600px;
+      margin: 6vh auto 6vh;
+      padding: 22px;
+      border-radius: 12px;
+      line-height: 1.55;
+    }
+    .modal .contenuto h3 { margin-top: 0; padding-right: 2.2rem; }
+    .modal-x {
+      position: absolute; top: 10px; right: 10px;
+      width: 34px; height: 34px; padding: 0;
+      border-radius: 50%; background: #eef1f4; color: var(--slate);
+      font-size: 1.05rem; line-height: 34px; text-align: center;
+    }
+    .modal-x:hover { background: var(--slate); color: #fff; }
+    .guida-meta { font-size: .82rem; color: var(--label); margin: .4rem 0 0; }
+    .dona {
+      text-align: center;
+      max-width: 420px;
+      margin: 2rem auto 0;
+      padding: 1rem 1.2rem;
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+    }
+    .dona p { margin: 0 0 .7rem; font-size: .9rem; color: var(--slate); }
+    .dona-btn {
+      display: inline-block;
+      background: var(--slate);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: .95rem;
+    }
+    .dona-btn:hover { background: #0d141d; }
+    .dona-nota { font-size: .72rem !important; color: var(--label) !important; margin: .6rem 0 0 !important; }
+    /* Box "Pagine per spot": stessa larghezza e centratura della donazione, per bilanciare i due box */
+    #altre-pagine {
+      max-width: 420px;
+      margin: 1rem auto 1.5rem;
+      text-align: center;
+    }
+    #altre-pagine h2 { font-size: 1.05rem; margin: 0 0 1rem; }
+    #altre-pagine .spot-azioni { justify-content: center; margin-top: 0; }
+    #altre-pagine .dona-btn { margin-top: .2rem; }
+    footer {
+      text-align: center;
+      font-size: .9rem;
+      color: #6a737d;
+      margin-top: 2rem;
+      line-height: 1.6;
+    }
+
+    /* ============ Versione spot-first ============ */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      margin: 0 -1rem;
+      padding: .65rem 1rem;
+      background: rgba(247,248,244,.92);
+      backdrop-filter: blur(14px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      overflow: hidden;
+    }
+    .brand {
+      color: var(--testo);
+      text-decoration: none;
+      display: inline-flex;
+      flex-direction: column;
+      line-height: 1.05;
+      min-width: 150px;
+    }
+    .brand strong { font-size: 1rem; font-weight: 800; letter-spacing: 0; }
+    .brand span { font-size: .72rem; color: var(--label); margin-top: .15rem; }
+    .topnav {
+      display: flex;
+      gap: .45rem;
+      overflow-x: auto;
+      max-width: 100%;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(216,222,216,.85);
+      border-radius: 999px;
+      padding: .25rem;
+      box-shadow: 0 10px 28px rgba(23,33,45,.06);
+      scrollbar-width: none;
+    }
+    .topnav::-webkit-scrollbar { display: none; }
+    .topnav a,
+    .spot-pill {
+      flex: 0 0 auto;
+      color: var(--testo);
+      background: rgba(255,255,255,.86);
+      border: 1px solid transparent;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 800;
+      padding: .48rem .75rem;
+      white-space: nowrap;
+      box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    }
+    .topnav a:hover,
+    .spot-pill:hover { background: var(--testo); color: #fff; border-color: var(--testo); }
+    .hero {
+      max-width: 1160px;
+      width: 100%;
+      margin: 1rem auto 1.2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, .8fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+    .hero-copy { grid-column: 1 / -1; padding: .4rem .15rem .45rem; }
+    .eyebrow {
+      margin: 0 0 .25rem;
+      color: var(--azzurro-scuro);
+      font-size: .78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .hero h1 {
+      margin: 0;
+      color: var(--testo);
+      font-size: clamp(2.1rem, 7vw, 5.8rem);
+      line-height: .9;
+      letter-spacing: 0;
+    }
+    .console-card,
+    .side-card,
+    .section { box-shadow: 0 16px 45px rgba(23,33,45,.07); }
+    .console-card {
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 18px;
+      padding: 1.2rem;
+      overflow: hidden;
+    }
+    /* alba/tramonto in alto a destra nella card surfometro */
+    #surfometroCard { position: relative; }
+    #surfometroCard h2 { padding-right: 6.5rem; }
+    .sun-times { position: absolute; top: 1.25rem; right: 1.2rem; font-size: .78rem; font-weight: 600; color: #6b7480; white-space: nowrap; }
+    @media (max-width: 480px) { #surfometroCard h2 { padding-right: 5.4rem; } .sun-times { font-size: .72rem; top: 1.3rem; right: 1rem; } }
+    .console-card .surf2-verdetto {
+      font-size: clamp(2.2rem, 8vw, 5.4rem);
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    .console-card .surf2-verdetto small { font-size: .9rem; max-width: 520px; }
+    .console-card h2,
+    .side-card h2 {
+      font-size: .85rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--label);
+      margin-bottom: .8rem;
+    }
+    .side-card {
+      background: #eaf3f4;
+      color: var(--testo);
+      border: 1px solid #c7dcdf;
+      border-radius: 18px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .side-card .statbox { background: rgba(255,255,255,.78); border-color: #c3d3d6; }
+    .side-card .statbox .valore,
+    .side-card .tws-dir,
+    .side-card .tws-raffica b { color: var(--testo); }
+    .spot-switcher { display: grid; gap: .45rem; }
+    .spot-switcher .spot-pill {
+      text-align: center;
+      background: rgba(255,255,255,.8);
+      border-color: #c3d3d6;
+      color: var(--testo);
+    }
+    .spot-switcher .spot-pill.primary {
+      background: #d8ef64;
+      color: #1a250a;
+      border-color: #d8ef64;
+    }
+    .quick-grid {
+      max-width: 1160px;
+      width: 100%;
+      margin: 0 auto 1.1rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .quick-grid .section { margin: 0; min-width: 0; }
+    .section,
+    .dona,
+    #altre-pagine,
+    #viewsBox { max-width: 1160px; width: 100%; margin-left: auto; margin-right: auto; }
+    .section { border-radius: 14px; }
+    .gruppo-collapse { scroll-margin-top: 130px; }
+    .gruppo-sum {
+      padding: .85rem 1rem;
+      border: 1px solid var(--bordo);
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ffffff 0%, #e8f5f2 62%, #d8ef64 100%);
+      box-shadow: 0 16px 45px rgba(23,33,45,.07);
+      align-items: center;
+      gap: 1rem;
+    }
+    .gruppo-sum-main { display: flex; flex-direction: column; gap: .1rem; }
+    .gruppo-sum-main strong { font-size: 1.15rem; }
+    .gruppo-sum-main span {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--azzurro-scuro);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .gruppo-sum::after {
+      content: "apri ▾";
+      background: rgba(255,255,255,.76);
+      border: 1px solid rgba(15,111,125,.16);
+      border-radius: 999px;
+      padding: .28rem .55rem;
+      color: var(--azzurro-scuro);
+      font-weight: 800;
+    }
+    .gruppo-collapse[open] .gruppo-sum::after { content: "chiudi ▴"; }
+    .trend {
+      flex-wrap: wrap;
+      padding: .5rem;
+      background: linear-gradient(90deg, #f7fbfb 0%, #eef7f0 100%);
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+    }
+    .trend-badge {
+      font-weight: 800;
+      border-radius: 999px;
+      background: #fff;
+      white-space: nowrap;
+    }
+    .trend-delta { white-space: nowrap; }
+    .spark {
+      flex: 1 1 auto;
+      width: 100%;
+      min-width: 92px;
+      max-width: 190px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(15,111,125,.08), rgba(216,239,100,.16));
+    }
+
+    /* ============ Rifinitura mobile ============ */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .quick-grid { grid-template-columns: 1fr; }
+      .topbar { align-items: center; flex-direction: column; gap: .55rem; }
+      .brand { align-items: center; text-align: center; min-width: 0; }
+      .topnav { width: min(100%, 430px); justify-content: center; margin: 0 auto; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 0 .7rem 1.5rem; }
+      .section { padding: .85rem; max-width: 100%; }
+      .topbar { margin: 0 -.7rem; padding: .6rem .7rem; }
+      .topnav { gap: .22rem; padding: .22rem; }
+      .topnav a { padding: .48rem .62rem; font-size: .78rem; }
+      .hero { margin-top: .75rem; gap: .75rem; max-width: 100%; }
+      .hero h1 { font-size: 2.45rem; }
+      .console-card,
+      .side-card { border-radius: 14px; padding: .9rem; }
+      .console-card .surf2-verdetto { font-size: 2.45rem; }
+      .quick-grid,
+      .dona,
+      #altre-pagine,
+      #viewsBox { max-width: 100%; }
+      .trend-delta {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      h1 { font-size: 1.25rem; }
+
+      /* target di tocco ≥44px su tutto ciò che è cliccabile */
+      button,
+      .spot-btn,
+      .osmer-tab,
+      .dona-btn,
+      details.dettaglio > summary,
+      .gruppo-sum {
+        min-height: 44px;
+      }
+      .aladin-controlli { justify-content: center; gap: 1rem; }
+      .aladin-controlli button { min-width: 48px; min-height: 44px; font-size: 1.1rem; }
+
+      /* card piccole allineate: 3 per riga (es. Barcola temp/pressione/umidità) */
+      .statgrid { grid-template-columns: repeat(3, 1fr); gap: .4rem; }
+      .statbox { padding: .55rem .5rem; }
+      .statbox .valore { font-size: 1.3rem; }
+      /* bottoni spot a piena larghezza, in colonna, ben distanziati */
+      .spot-azioni { flex-direction: column; }
+      .spot-azioni .spot-btn { width: 100%; justify-content: center; }
+    }
+
+    /* ---------- Overlay di caricamento iniziale ---------- */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1rem; text-align: center; padding: 1rem;
+      background: var(--sfondo);
+      transition: opacity .5s ease;
+    }
+    #loader.nascondi { opacity: 0; pointer-events: none; }
+    /* Barra di caricamento in stile surfometro: il "vento" accelera lungo la scala
+       (bavisela -> buriana) e riparte, come una raffica che monta. Indeterminata di
+       proposito: la fetch non espone un progresso vero. Se clip-path non e' animabile
+       (browser vecchi) resta la scala colorata piena: comunque leggibile. */
+    .loader-meter { position: relative; width: min(300px, 74vw); padding-top: 2.5rem; }
+    .loader-meter .surf {
+      position: absolute; top: 0; left: 0; font-size: 2rem; line-height: 1;
+      animation: loader-vento-surf 2.4s cubic-bezier(.5,.15,.75,.55) infinite;
+    }
+    .loader-bar-track {
+      position: relative; height: 14px; border-radius: 999px; overflow: hidden;
+      background: var(--bordo); box-shadow: inset 0 1px 2px rgba(23,33,45,.14);
+    }
+    .loader-bar-fill {
+      position: absolute; inset: 0;
+      /* le sei fasce del surfometro, stesse proporzioni della scala vera */
+      background: linear-gradient(90deg,
+        #b9b8b2 0 20%, #79CFC8 20% 32.5%, #97C459 32.5% 45%,
+        #639922 45% 62.5%, #3B6D11 62.5% 87.5%, #E24B4A 87.5% 100%);
+      clip-path: inset(0 100% 0 0);
+      animation: loader-vento 2.4s cubic-bezier(.5,.15,.75,.55) infinite;
+    }
+    .loader-txt { font-weight: 600; color: var(--slate); font-size: 1.02rem; }
+    .loader-sub { color: var(--label); font-size: .85rem; margin-top: -.6rem; }
+    @keyframes loader-vento {
+      0%        { clip-path: inset(0 100% 0 0); }
+      86%, 100% { clip-path: inset(0 0 0 0); }
+    }
+    @keyframes loader-vento-surf {
+      0%        { left: 0%;   transform: translateX(-30%) rotate(-7deg); }
+      43%       { transform: translateX(-50%) rotate(7deg); }
+      86%, 100% { left: 100%; transform: translateX(-70%) rotate(-7deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .loader-meter .surf, .loader-bar-fill { animation-duration: 5s; }
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://ventotrieste.info/lago-di-cavazzo/#website",
+        "url": "https://ventotrieste.info/lago-di-cavazzo/",
+        "name": "Vento Lago di Cavazzo",
+        "description": "Vento al Lago di Cavazzo (Lago dei Tre Comuni) in tempo reale: surfometro, raffiche e direzione dalla stazione di Interneppo.",
+        "inLanguage": "it-IT"
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Vento Lago di Cavazzo – Surfometro",
+        "url": "https://ventotrieste.info/lago-di-cavazzo/",
+        "applicationCategory": "WeatherApplication",
+        "operatingSystem": "Web",
+        "browserRequirements": "Requires JavaScript",
+        "inLanguage": "it-IT",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "about": {
+          "@type": "Place",
+          "name": "Lago di Cavazzo (Lago dei Tre Comuni)",
+          "address": { "@type": "PostalAddress", "addressLocality": "Interneppo, Bordano", "addressRegion": "Friuli-Venezia Giulia", "addressCountry": "IT" }
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Vento Trieste", "item": "https://ventotrieste.info/" },
+          { "@type": "ListItem", "position": 2, "name": "Spot", "item": "https://ventotrieste.info/spot/" },
+          { "@type": "ListItem", "position": 3, "name": "Lago di Cavazzo", "item": "https://ventotrieste.info/lago-di-cavazzo/" }
+        ]
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260822-ux2" />
+</head>
+<body>
+
+  <div id="loader" role="status" aria-live="polite" aria-label="Caricamento dati in corso">
+    <div class="loader-meter" aria-hidden="true">
+      <span class="surf">🏄‍♂️</span>
+      <div class="loader-bar-track"><div class="loader-bar-fill"></div></div>
+    </div>
+    <div class="loader-txt">Carico il vento del lago…</div>
+    <div class="loader-sub">dati live dalla stazione di Interneppo</div>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="/">
+      <strong>Vento Trieste</strong>
+      <span>Lago di Cavazzo · Tre Comuni</span>
+    </a>
+    <div class="topbar-actions">
+      <span class="topbar-live">Dati live</span>
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-label">Chiaro</span></button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav"><span class="menu-toggle-icon" aria-hidden="true">☰</span>Menu</button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" hidden>
+      <a href="#vento">Vento ora</a>
+      <a href="#lago">Il vento sul lago</a>
+      <a href="#previsioni">Previsioni</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="vento">
+      <div class="hero-copy">
+        <p class="eyebrow">Lago di Cavazzo · Interneppo · Live</p>
+        <h1 class="site-page-title">Vento al Lago di Cavazzo in tempo reale</h1>
+      </div>
+
+      <!-- SURFOMETRO (stessa scala e stessi colori delle altre pagine spot) -->
+      <div class="console-card" id="surfometroCard">
+        <span id="solare" class="sun-times" aria-label="alba e tramonto"></span>
+        <h2 id="surfTitolo">Surfometro – Lago di Cavazzo</h2>
+        <div class="surf2">
+          <div class="surf2-verdetto" id="verdettoBig">—</div>
+          <div class="meter">
+            <div class="meter-pointer no-gust" id="meterPointer" style="opacity:0;" aria-live="polite">
+              <span class="meter-mean-readout">
+                <span class="meter-readout-label">Vento medio</span>
+                <span class="meter-readout-data"><svg class="meter-dir wind-arrow" id="meterDir" aria-hidden="true" viewBox="0 0 24 24" style="display:none;"><path d="M12 3v17m-6-6 6 6 6-6"/></svg><span class="meter-val" id="meterVal">–</span><span class="meter-unit">kt</span></span>
+              </span>
+              <span class="meter-gust-app" id="meterGust" style="display:none;">
+                <span class="meter-readout-label">Raffica</span>
+                <span class="meter-readout-data"><span class="meter-gust-value" id="meterGustVal">–</span><span class="meter-unit">kt</span></span>
+              </span>
+            </div>
+            <div class="meter-over" id="meterOver" aria-hidden="true"></div>
+            <div class="meter-bar">
+              <div style="flex:20;background:#b9b8b2;"></div>
+              <div style="flex:12.5;background:#79CFC8;"></div>
+              <div style="flex:12.5;background:#97C459;"></div>
+              <div style="flex:17.5;background:#639922;"></div>
+              <div style="flex:25;background:#3B6D11;"></div>
+              <div style="flex:12.5;background:#E24B4A;"></div>
+              <div class="meter-range" id="meterRange" style="left:0%;width:0%;opacity:0;"></div>
+              <div class="meter-mean-line" id="meterMeanLine" style="left:0%;opacity:0;"></div>
+              <div class="meter-gust-line" id="meterGustLine" style="left:0%;opacity:0;"></div>
+            </div>
+            <div class="meter-ticks">
+              <span style="left:20%;">8</span><span style="left:32.5%;">13</span><span style="left:45%;">18</span><span style="left:62.5%;">25</span><span style="left:87.5%;">35</span>
+            </div>
+            <div class="meter-labels">
+              <div style="flex:20;">piatto</div><div style="flex:12.5;">brezza</div><div style="flex:12.5;">si plana</div><div style="flex:17.5;">vento pieno</div><div style="flex:25;">sostenuto</div><div style="flex:12.5;">troppo</div>
+            </div>
+          </div>
+        </div>
+        <p class="stato" id="surfFonte"></p>
+      </div>
+
+      <!-- DATI STAZIONE (boranucleare.it, via proxy) -->
+      <aside class="side-card" id="cavazzo">
+        <h2>Cavazzo ora</h2>
+        <div class="statgrid" id="cavazzoStat">
+          <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+        </div>
+        <p class="stato" id="statoCavazzo"></p>
+        <button id="btnAggiorna">🔄 Aggiorna dati</button>
+        <span class="stato" id="ultimoAggiornamento"></span>
+        <div class="spot-switcher" aria-label="Pagine spot">
+          <a class="spot-pill primary" href="/lago-di-cavazzo/">Cavazzo</a>
+          <a class="spot-pill" href="/lignano/">Lignano</a>
+          <a class="spot-pill" href="/grado/">Grado</a>
+          <a class="spot-pill" href="/">Trieste / Barcola</a>
+        </div>
+      </aside>
+    </section>
+
+  <!-- IL VENTO SUL LAGO -->
+  <section class="section" id="lago">
+    <h2>Come funziona il vento sul Lago di Cavazzo</h2>
+    <p class="stato" style="margin:.1rem 0 .6rem;">Il Lago di Cavazzo (o <strong>Lago dei Tre Comuni</strong>: Bordano, Trasaghis e Cavazzo Carnico) è uno degli spot di lago più affidabili del Friuli. Nelle giornate di sole il motore è la <strong>brezza termica</strong>: al mattino il lago è quasi piatto, dal primo pomeriggio il vento da sud risale la valle e si rinforza fino a metà pomeriggio, ideale per windsurf, wing e vela leggera. Con correnti settentrionali in quota il quadro si ribalta: entra vento da nord, più rafficato. La stazione di Interneppo, sulla sponda ovest, misura proprio il campo di gara.</p>
+  </section>
+
+  <!-- PREVISIONI -->
+  <section class="section" id="previsioni">
+    <h2>Previsioni per il lago</h2>
+    <p class="stato" style="margin:.1rem 0 .6rem;">Per la termica guarda soleggiamento e gradiente: le previsioni puntuali sul lago vanno sempre confrontate col dato live qui sopra.</p>
+    <div class="quick-links">
+      <a class="button primary" href="https://www.windy.com/46.317/13.083?46.317,13.083,12" target="_blank" rel="noopener">Windy · Lago di Cavazzo</a>
+      <a class="button" href="https://www.boranucleare.it/windstation/pages/forecast/index.php" target="_blank" rel="noopener">Previsioni boranucleare.it</a>
+      <a class="button" href="https://www.boranucleare.it/windstation/indexDesktop.php" target="_blank" rel="noopener">Stazione Windstation Cavazzo</a>
+    </div>
+  </section>
+
+  <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
+  <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
+  <script src="/footer-widgets.js?v=20260822-ux1"></script>
+
+  <div class="site-credits">
+    <section class="seo-footer-copy" aria-labelledby="ventoCavazzoSeo">
+      <span class="story-kicker">💨 Perché nasce questo progetto</span>
+      <h2 class="seo-footer-title" id="ventoCavazzoSeo">Vento Lago di Cavazzo in tempo reale</h2>
+      <p>Una webapp veloce per leggere velocità, raffiche e direzione del vento al Lago di Cavazzo, con il surfometro della stazione di Interneppo, per windsurf, wing, SUP e vela sul Lago dei Tre Comuni.</p>
+      <section class="seo-spot-pages" aria-labelledby="pagineSpotCavazzoSeo">
+        <h2 id="pagineSpotCavazzoSeo">Pagine meteo dedicate agli spot</h2>
+        <p>Il progetto raccoglie pagine dedicate con vento in tempo reale, raffiche, direzione e previsioni per il Golfo di Trieste, l'Alto Adriatico e i laghi del Friuli.</p>
+        <nav class="seo-spot-links" aria-label="Pagine meteo per spot">
+          <a class="spot-btn" href="/lago-di-cavazzo/">📍 Lago di Cavazzo</a><a class="spot-btn" href="/lignano/">📍 Lignano</a><a class="spot-btn" href="/grado/">📍 Grado</a><a class="spot-btn" href="/">🏠 Trieste</a>
+        </nav>
+        <p>Hai uno spot con una centralina e vorresti una pagina meteo dedicata?</p>
+        <a class="dona-btn seo-spot-cta" href="mailto:bebroggi@gmail.com?subject=Richiesta%20nuovo%20spot%20su%20ventotrieste.info&amp;body=Ciao%20Alberto%2C%20vorrei%20aggiungere%20il%20mio%20spot%20(nome%2C%20link%20centralina%2C%20eventuale%20webcam)%3A%20">📩 Richiedi il tuo spot</a>
+      </section>
+    </section>
+    <p class="credits-meta">
+      Dati live del lago: stazione <a href="https://www.boranucleare.it/windstation/indexDesktop.php" target="_blank" rel="noopener">Windstation Cavazzo (boranucleare.it)</a><br>
+      Suggerimenti e migliorie: <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a> ·
+      <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a><br>
+      <span class="credits-signoff">Che SUFI!</span>
+    </p>
+  </div>
+  </footer>
+
+  </main>
+
+  <!-- JS -->
+  <script>
+    // Endpoint Apps Script del progetto (cartella apps-script/ nel repo): il campo
+    // "cavazzo" arriva dalla stazione boranucleare.it (niente CORS -> serve il proxy).
+    const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
+
+    const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
+    function gradiInDirezione(deg) {
+      if (typeof deg !== "number" || isNaN(deg)) return "–";
+      return PUNTI_CARDINALI[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
+    }
+    function windArrowHtml(deg, colore) {
+      if (deg == null || isNaN(deg)) return "";
+      const stile = "--wind-deg:" + deg + "deg" + (colore ? ";color:" + colore : "");
+      return '<svg class="wind-arrow" aria-hidden="true" viewBox="0 0 24 24" style="' + stile + '"><path d="M12 3v17m-6-6 6 6 6-6"/></svg>';
+    }
+    function num(v, dec) {
+      return (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec) : "–";
+    }
+
+    /* Verdetti standard (in nodi). Stesse fasce e colori delle altre pagine spot. */
+    const BANDE = [
+      { txt: "Piatto",       gloss: "vento troppo debole per uscire",            bg: "#888780" },
+      { txt: "Brezza",       gloss: "foil e wing per i più leggeri",             bg: "#2AA198" },
+      { txt: "Si plana",     gloss: "si esce: wing, windsurf e kite foil",       bg: "#6FA83C" },
+      { txt: "Vento pieno",  gloss: "planata piena, condizioni ideali",          bg: "#4E8718" },
+      { txt: "Sostenuto",    gloss: "vele piccole, per chi ha esperienza",       bg: "#2F5A0E" },
+      { txt: "Troppo!",      gloss: "condizioni estreme, meglio restare a riva", bg: "#D63A3A" }
+    ];
+    function verdetto(kt) {
+      let i;
+      if (kt < 8) i = 0;
+      else if (kt < 13) i = 1;
+      else if (kt < 18) i = 2;
+      else if (kt < 25) i = 3;
+      else if (kt <= 35) i = 4;
+      else i = 5;
+      return Object.assign({ i: i }, BANDE[i]);
+    }
+
+    /* Surfometro: identico alle altre pagine spot (marker unificato quando medio e
+       raffica sono vicini, soglia visiva a 35 kt). Sul lago niente nomi dei venti
+       marini: il badge mostra cardinale e gradi. */
+    const SURF_SCALA = 40;
+    const SURF_LIMITE = 35;
+    const SURF_RAFFICA_VICINA = 1.5;
+    function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_LIMITE) / SURF_SCALA * 100; }
+    function aggiornaSurfometro(kt, gust, dir) {
+      const verd  = document.getElementById("verdettoBig");
+      const ptr   = document.getElementById("meterPointer");
+      const val   = document.getElementById("meterVal");
+      const dirEl = document.getElementById("meterDir");
+      const gapp  = document.getElementById("meterGust");
+      const gval  = document.getElementById("meterGustVal");
+      const range = document.getElementById("meterRange");
+      const meanLine = document.getElementById("meterMeanLine");
+      const gustLine = document.getElementById("meterGustLine");
+      const bar = range ? range.parentElement : null;
+      const over  = document.getElementById("meterOver");
+      if (!verd || !ptr || !val) return;
+      const spegniRaffica = () => {
+        if (gapp)  gapp.style.display = "none";
+        if (range) range.style.opacity = "0";
+        if (gustLine) gustLine.style.opacity = "0";
+        if (bar) bar.classList.remove("gust-close");
+        ptr.classList.add("no-gust");
+      };
+      if (kt == null || isNaN(kt)) {
+        verd.innerHTML = "—";
+        verd.style.color = "var(--label)";
+        ptr.style.opacity = "0";
+        val.textContent = "–";
+        if (dirEl) dirEl.style.display = "none";
+        if (over) { over.style.opacity = "0"; over.className = "meter-over"; over.setAttribute("aria-hidden", "true"); }
+        if (meanLine) meanLine.style.opacity = "0";
+        spegniRaffica();
+        return;
+      }
+      const pa = posSurf(kt);
+      ptr.style.opacity = "1";
+      if (meanLine) { meanLine.style.left = pa + "%"; meanLine.style.opacity = "1"; }
+      val.textContent = num(kt, 1);
+      if (dirEl) {
+        if (dir != null && !isNaN(dir)) {
+          dirEl.style.transform = "rotate(" + dir + "deg)";
+          dirEl.style.display = "";
+        } else {
+          dirEl.style.display = "none";
+        }
+      }
+      const ver = verdetto(kt);
+      const ventoBadge = (dir != null && !isNaN(dir))
+        ? '<span class="surf-wind-badge">' + windArrowHtml(dir, "") +
+          '<span>' + gradiInDirezione(dir) + ' · ' + Math.round(dir) + '°</span></span>'
+        : "";
+      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + ventoBadge;
+      verd.style.color = ver.bg;
+      const gustValida = gust != null && !isNaN(gust);
+      if (gustValida) {
+        if (gapp) gapp.style.display = "";
+        if (gval) gval.textContent = num(gust, 1);
+        ptr.classList.remove("no-gust");
+        const pg = posSurf(gust);
+        const w = Math.abs(pg - pa);
+        const markerVicini = Math.abs(gust - kt) <= SURF_RAFFICA_VICINA || w < 2.5;
+        if (bar) bar.classList.toggle("gust-close", markerVicini);
+        if (range) { range.style.left = Math.min(pa, pg) + "%"; range.style.width = w + "%"; range.style.opacity = (!markerVicini && w >= 1) ? "1" : "0"; }
+        if (gustLine) { gustLine.style.left = pg + "%"; gustLine.style.opacity = markerVicini ? "0" : "1"; }
+      } else {
+        spegniRaffica();
+      }
+      const medioOltre = kt > SURF_LIMITE;
+      const rafficaOltre = gustValida && gust > SURF_LIMITE;
+      if (over) {
+        over.className = "meter-over";
+        over.classList.toggle("active", medioOltre || rafficaOltre);
+        over.classList.toggle("mean-over", medioOltre && !rafficaOltre);
+        over.classList.toggle("gust-over", rafficaOltre && !medioOltre);
+        over.classList.toggle("both-over", medioOltre && rafficaOltre);
+        over.textContent = medioOltre && rafficaOltre ? "Vento + raffica oltre 35 kt" :
+          (rafficaOltre ? "Raffica oltre 35 kt" : (medioOltre ? "Vento oltre 35 kt" : ""));
+        over.style.opacity = (medioOltre || rafficaOltre) ? "1" : "0";
+        over.setAttribute("aria-hidden", (medioOltre || rafficaOltre) ? "false" : "true");
+      }
+    }
+
+    /* mini-card dato: etichetta + valore (+ unità, +sub, +prefix html es. freccia) */
+    function miniCard(label, valore, unita, sub, prefix) {
+      return '<div class="statbox">' +
+             '<span class="etichetta">' + label + '</span>' +
+             '<span class="valore">' + (prefix || "") + valore +
+             (unita ? ' <span class="unita">' + unita + '</span>' : "") + '</span>' +
+             (sub ? '<span class="sub">' + sub + '</span>' : "") +
+             '</div>';
+    }
+
+    const FONTE_LINK = '<a href="https://www.boranucleare.it/windstation/indexDesktop.php" target="_blank" rel="noopener">boranucleare.it</a>';
+    // Oltre questa età il dato non è più "live": surfometro spento, resta la tabella
+    const MAX_ETA_MIN = 40;
+
+    function renderCavazzo(data) {
+      const c = data && data.cavazzo;
+      const st = document.getElementById("cavazzoStat");
+      const stato = document.getElementById("statoCavazzo");
+      const fonte = document.getElementById("surfFonte");
+      if (!c || (c.kt == null && c.sunki == null)) {
+        aggiornaSurfometro(null);
+        st.innerHTML = miniCard("Dati", "non disponibili");
+        stato.textContent = "⚠️ Stazione di Interneppo momentaneamente non raggiungibile.";
+        if (fonte) fonte.innerHTML = "Dati: stazione Windstation Cavazzo · " + FONTE_LINK;
+        return;
+      }
+      const etaMin = c.epoch ? Math.max(0, Math.round(Date.now() / 60000 - c.epoch / 60)) : null;
+      const vecchio = c.offline === 1 || (etaMin != null && etaMin > MAX_ETA_MIN);
+      aggiornaSurfometro(vecchio ? null : c.kt, c.sunki, c.dirGradi);
+      if (fonte) fonte.innerHTML = "Dati: stazione Windstation Cavazzo (Interneppo) · " + FONTE_LINK +
+        (c.ora ? " · agg. " + c.ora : "");
+
+      const dirTxt = gradiInDirezione(c.dirGradi);
+      st.innerHTML =
+        miniCard("Direzione", dirTxt, c.dirGradi != null ? Math.round(c.dirGradi) + "°" : "", null, windArrowHtml(c.dirGradi, "")) +
+        miniCard("Vento medio", num(c.kt, 1), "kt") +
+        miniCard("Raffica", num(c.sunki, 1), "kt") +
+        miniCard("Temperatura", num(c.temp, 1), "°C") +
+        miniCard("Umidità", num(c.umidita, 0), "%") +
+        miniCard("Pressione", num(c.pressione, 1), "hPa");
+      stato.innerHTML = vecchio
+        ? "⚠️ Ultimo dato delle " + (c.ora || "?") + ": la stazione non trasmette da un po', il surfometro resta spento."
+        : "Stazione sulla sponda di Interneppo, rilevamento delle " + (c.ora || "–") + ".";
+    }
+
+    /* Cache locale dell'ultimo payload: la pagina si riempie subito mentre
+       il proxy (Apps Script, lento a freddo) risponde in background. */
+    const CACHE_DATI = "vt_dati_cache_cavazzo";
+    function salvaCacheDati(data) {
+      try { localStorage.setItem(CACHE_DATI, JSON.stringify({ t: Date.now(), data: data })); } catch (e) {}
+    }
+    function leggiCacheDati(maxEtaMin) {
+      try {
+        const c = JSON.parse(localStorage.getItem(CACHE_DATI));
+        if (c && c.data && (Date.now() - c.t) <= maxEtaMin * 60000) return c;
+      } catch (e) {}
+      return null;
+    }
+
+    /* fetch con retry: il primo colpo su Apps Script a freddo può fallire o
+       impiegare troppo; ritentiamo prima di dichiarare errore. */
+    function fetchDati(tentativi) {
+      return fetch(PROXY + "?ts=" + Date.now())
+        .then(res => {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return res.json();
+        })
+        .catch(err => {
+          if (tentativi > 0) {
+            return new Promise(r => setTimeout(r, 2500)).then(() => fetchDati(tentativi - 1));
+          }
+          throw err;
+        });
+    }
+
+    let retryProgrammato = false;
+    function caricaDati() {
+      const btn = document.getElementById("btnAggiorna");
+      btn.disabled = true;
+      return fetchDati(2)
+        .then(data => {
+          renderCavazzo(data);
+          salvaCacheDati(data);
+          document.getElementById("ultimoAggiornamento").textContent =
+            "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+        })
+        .catch(err => {
+          console.error("Errore caricamento dati:", err);
+          const cache = leggiCacheDati(12 * 60);
+          if (cache) {
+            renderCavazzo(cache.data);
+            document.getElementById("ultimoAggiornamento").textContent =
+              "⚠️ Servizio dati lento: mostro gli ultimi dati delle " +
+              new Date(cache.t).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) + ", riprovo tra poco…";
+          } else {
+            renderCavazzo(null);
+            document.getElementById("ultimoAggiornamento").textContent = "⚠️ Impossibile contattare il servizio dati, riprovo tra poco…";
+          }
+          if (!retryProgrammato) {
+            retryProgrammato = true;
+            setTimeout(() => { retryProgrammato = false; caricaDati(); }, 45000);
+          }
+        })
+        .finally(() => { btn.disabled = false; });
+    }
+    document.getElementById("btnAggiorna").addEventListener("click", caricaDati);
+
+    function nascondiLoader() {
+      const l = document.getElementById("loader");
+      if (l) l.classList.add("nascondi");
+    }
+
+    // se c'è una cache recente, la pagina si riempie subito (il fetch live la rimpiazza appena arriva)
+    const cacheIniziale = leggiCacheDati(60);
+    if (cacheIniziale) { renderCavazzo(cacheIniziale.data); nascondiLoader(); }
+    caricaDati().finally(nascondiLoader);
+    setInterval(caricaDati, 5 * 60 * 1000);   // auto-refresh, stesso passo della cache del proxy
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) caricaDati(); });
+  </script>
+
+  <!-- GoatCounter (statistiche anonime, senza cookie) -->
+  <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <!-- Alba/tramonto (calcolo SunCalc offline, coordinate del lago) -->
+  <script>
+    (function () {
+      var el = document.getElementById("solare"); if (!el) return;
+      var dayMs = 864e5, J1970 = 2440588, J2000 = 2451545, rad = Math.PI / 180, e = rad * 23.4397, J0 = 0.0009;
+      function tJ(d) { return d.valueOf() / dayMs - 0.5 + J1970; }
+      function fJ(j) { return new Date((j + 0.5 - J1970) * dayMs); }
+      var d = tJ(new Date()) - J2000, lw = rad * -13.08, phi = rad * 46.32;
+      var n = Math.round(d - J0 - lw / (2 * Math.PI)), ds = J0 + lw / (2 * Math.PI) + n;
+      var M = rad * (357.5291 + 0.98560028 * ds);
+      var L = M + rad * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M)) + rad * 102.9372 + Math.PI;
+      var dec = Math.asin(Math.sin(e) * Math.sin(L)), Jn = J2000 + ds + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+      var cw = (Math.sin(rad * -0.833) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec));
+      if (cw < -1 || cw > 1) return;
+      var w = Math.acos(cw);
+      var Jset = J2000 + (J0 + (w + lw) / (2 * Math.PI) + n) + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L), Jrise = Jn - (Jset - Jn);
+      var f = function (dt) { return dt.toLocaleTimeString("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" }); };
+      el.textContent = "☀ " + f(fJ(Jrise)) + " – " + f(fJ(Jset));
+    })();
+  </script>
+</body>
+</html>

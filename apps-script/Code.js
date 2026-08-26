@@ -3,7 +3,7 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, lignanoLive, preluka, antenal, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
+ * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, lignanoLive, cavazzo, preluka, antenal, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
  * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
  * gps: coordinate di ogni centralina (dal feed API, in parte stimate da vetercek)
@@ -55,6 +55,12 @@ var CAM_BARCOLA_URL = 'https://content.meteobridge.com/cam/98c72e78ea6476e807429
 // renderizzati lato server nel blocco "Meteo Live". Il sito accetta lo UA di
 // Apps Script (verificato lug 2026), quindi niente relay.
 var LIGNANO_LIVE_URL = 'https://www.lignanosabbiadoro.com/meteo-lignano';
+// Lago di Cavazzo (Interneppo): stazione "Windstation Cavazzo" su boranucleare.it
+// (sito MeteoTemplate). Il blocco current della homepage espone un JSON già pronto;
+// niente CORS, quindi passa dal proxy. Unità di default del sito: nodi (W, G),
+// gradi (B), °C (T), mmHg (P). Se l'admin cambiasse le unità di default cambierebbe
+// anche il JSON: le sigle nelle chiavi restano uguali, i valori no.
+var CAVAZZO_URL = 'https://www.boranucleare.it/windstation/homepage/blocks/current/updater.php?interval=11';
 var MAX_ROWS = 10;
 // NOTA (giu 2026): vetercek.com ha iniziato a bloccare le richieste senza User-Agent
 // da browser (la connessione resta appesa fino al timeout -> "Indirizzo non disponibile").
@@ -362,6 +368,7 @@ function datiValidi(d) {
   if (d.osmer && d.osmer.length) return true;
   if (d.piran) return true;
   if (d.lignanoLive) return true;
+  if (d.cavazzo) return true;
   return false;
 }
 
@@ -386,6 +393,8 @@ function buildData() {
   requests.push({ url: LIGNANO_LIVE_URL, muteHttpExceptions: true, followRedirects: true });
   // ultima+1: header della webcam Barcola (1 byte, solo per il Last-Modified)
   requests.push({ url: CAM_BARCOLA_URL, headers: { Range: 'bytes=0-0' }, muteHttpExceptions: true, followRedirects: true });
+  // ultima+2: stazione Lago di Cavazzo (boranucleare.it)
+  requests.push({ url: CAVAZZO_URL, muteHttpExceptions: true, followRedirects: true });
 
   var responses = fetchAllResilient(requests);
 
@@ -464,6 +473,13 @@ function buildData() {
     out.camBarcola = { lastModified: lm, etaMin: isNaN(t) ? null : Math.round((Date.now() - t) / 60000), http: rc.getResponseCode() };
   } catch (e) {
     out.camBarcola = { lastModified: null, etaMin: null, error: String(e) };
+  }
+
+  try {
+    out.cavazzo = parseCavazzo(responses[keys.length + 7].getContentText());
+  } catch (e) {
+    out.cavazzo = null;
+    out.cavazzoError = String(e);
   }
 
   out.updated = new Date().toISOString();
@@ -717,6 +733,31 @@ function parseLignanoLive(html) {
   if (d.kt == null && d.sunki == null) {
     throw new Error('Nessun dato vento lignanosabbiadoro trovato');
   }
+  return d;
+}
+
+/* Lago di Cavazzo (boranucleare.it, updater.php del blocco current): JSON con i
+   valori correnti. W=vento (kt), G=raffica (kt), B=direzione (°), T=temperatura,
+   H=umidità, P=pressione (mmHg -> qui convertita in hPa), Timestamp=HH:MM:SS,
+   DateTime=epoch in secondi, offline=1 se la stazione non trasmette.
+   I "--" del sito diventano null. */
+function parseCavazzo(text) {
+  var j = JSON.parse(text);
+  if (!j || typeof j !== 'object') throw new Error('JSON cavazzo non valido');
+  function num(v) { var n = parseFloat(v); return isNaN(n) ? null : n; }
+  var p = num(j.P);
+  var d = {
+    kt: num(j.W),
+    sunki: num(j.G),
+    dirGradi: num(j.B),
+    temp: num(j.T),
+    umidita: num(j.H),
+    pressione: p == null ? null : Math.round(p * 1.33322 * 10) / 10,
+    ora: String(j.Timestamp || '').slice(0, 5),
+    epoch: Number(j.DateTime) || null,
+    offline: Number(j.offline) || 0
+  };
+  if (d.kt == null && d.sunki == null) throw new Error('nessun dato vento cavazzo');
   return d;
 }
 
