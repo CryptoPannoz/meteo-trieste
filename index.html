@@ -1765,7 +1765,7 @@
   <div class="section" id="mare">
     <h2>Mare e onde – boe OGS</h2>
 
-    <h3 style="margin:.5rem 0 .25rem;">Boa Trieste (MAMBO1, largo di Barcola)</h3>
+    <h3 style="margin:.5rem 0 .25rem;">Boa Trieste (MAMBO1, davanti al castello di Miramare)</h3>
     <div id="mamboStat">
       <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
     </div>
@@ -2472,7 +2472,7 @@
       if (Array.isArray(rows) && rows.length && rows[0].ora) return "Monte Grisa ore " + escHtml(rows[0].ora);
       return "";
     }
-    /* Terzo fallback: boa MAMBO1 (OGS), al largo di Barcola. È oraria e pubblica con
+    /* Terzo fallback: boa MAMBO1 (OGS), davanti al castello di Miramare. È oraria e pubblica con
        ritardo, quindi la soglia è più larga delle centraline: 150 min = due cicli persi.
        Il dato arriva da caricaMambo (fetch ERDDAP separato dal proxy), che dopo ogni
        aggiornamento rilancia aggiornaSurfometroAuto. */
@@ -2514,7 +2514,7 @@
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Boa Mambo";
         if (sum)    sum.textContent = "⚠️ Backup 2: boa MAMBO1" + (mTws.ts ? " · agg. " + oraBreve(mTws.ts) : "");
-        if (fonte)  fonte.innerHTML = "⚠️ Centraline di Barcola e Monte Grisa ferme — surfometro calcolato sulla boa <strong>MAMBO1</strong> (OGS), al largo di Barcola (<a href=\"https://maps.google.com/?q=45.698333,13.700000\" target=\"_blank\" rel=\"noopener\">📍 posizione</a>). La boa è oraria: meno reattiva delle centraline."
+        if (fonte)  fonte.innerHTML = "⚠️ Centraline di Barcola e Monte Grisa ferme — surfometro calcolato sulla boa <strong>MAMBO1</strong> (OGS), davanti al castello di Miramare (<a href=\"https://maps.google.com/?q=45.698333,13.700000\" target=\"_blank\" rel=\"noopener\">📍 posizione</a>). La boa è oraria: meno reattiva delle centraline."
           + testoUltimoAgg(mTws.ts);
         aggiornaSurfometro(mTws.avg, mTws.gust, mTws.dir);
       } else {                                  // nessuna fonte aggiornata → offline

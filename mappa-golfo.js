@@ -32,7 +32,7 @@
     { id: "marinajulia", nome: "Marina Julia", lon: 13.565, lat: 45.782, lato: "sinistra" },
     { id: "monteGrisa",  nome: "Monte Grisa",  lon: 13.757, lat: 45.712, lato: "destra"   },
     { id: "barcola",     nome: "Barcola",      lon: 13.754, lat: 45.680, lato: "destra", dy: 16, tipo: "barcola" },
-    /* posizione reale 13.708/45.698 (largo di Barcola), mostrata in mezzo al
+    /* posizione reale 13.708/45.698 (davanti al castello di Miramare), mostrata in mezzo al
        golfo per non accavallarsi al gruppo Monte Grisa/Barcola */
     { id: "mambo",       nome: "Boa Mambo",    lon: 13.630, lat: 45.670, lato: "sopra",    tipo: "mambo" },
     /* boa Paloma: rete Protezione Civile FVG, fetch autonomo (API aperta, vedi caricaPaloma) */
