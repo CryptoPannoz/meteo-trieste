@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <title>Vento Barcolana 2026 – il vento sul percorso in tempo reale</title>
+  <meta name="description" content="Vento sul percorso della Barcolana 2026 (11 ottobre, Trieste): mappa del percorso con boe, vento live da Barcola, boa Mambo e boa Paloma, andatura e vele lato per lato, previsioni per il giorno della regata." />
+  <meta name="keywords" content="barcolana 2026, vento barcolana, meteo barcolana, percorso barcolana, barcolana 58, vento golfo di trieste, bora barcolana, previsioni barcolana" />
+  <link rel="canonical" href="https://ventotrieste.info/barcolana2026/" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:title" content="Vento Barcolana 2026 – il vento sul percorso, live" />
+  <meta property="og:description" content="Mappa del percorso, vento live dalle centraline e dalle boe del Golfo, andatura e vele lato per lato. Gratis, per tutti i regatanti." />
+  <meta property="og:url" content="https://ventotrieste.info/barcolana2026/" />
+  <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E⛵%3C/text%3E%3C/svg%3E" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <style>
+    :root {
+      --slate: #1f2d3d;
+      --slate-2: #45566a;
+      --azzurro: #2f6fb0;
+      --azzurro-scuro: #245991;
+      --sfondo: #eef1f4;
+      --bordo: #dce1e7;
+      --testo: #16202b;
+      --label: #5c6675;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0 1rem 1.5rem;
+      background: var(--sfondo);
+      color: var(--testo);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      font-feature-settings: "tnum" 1;
+      line-height: 1.5;
+    }
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      letter-spacing: -.01em;
+    }
+    h2 {
+      color: var(--slate);
+      margin: 0 0 .5rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -.01em;
+    }
+    h3 { font-weight: 600; color: var(--slate); }
+    .section {
+      background: white;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      scroll-margin-top: 100px;
+    }
+    img, iframe {
+      max-width: 100%;
+      border-radius: 6px;
+      border: 0;
+    }
+    a { color: var(--azzurro); }
+
+    /* ---- Barra di navigazione fissa ---- */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--sfondo);
+      margin: 0 -1rem 1rem;
+      padding: .5rem 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .4rem;
+      border-bottom: 1px solid var(--bordo);
+    }
+    @media (min-width: 600px) { nav { grid-template-columns: repeat(4, 1fr); } }
+    nav a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      background: #fff;
+      border: 1px solid var(--bordo);
+      color: var(--slate);
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 500;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    nav a:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+    /* ---- Titoli di gruppo ---- */
+    .gruppo-titolo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin: 1.75rem .15rem .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 2px solid var(--slate);
+      scroll-margin-top: 100px;
+    }
+    .gruppo-titolo:first-of-type { margin-top: .5rem; }
+
+    /* gruppo collassabile (Spot Istria) */
+    .gruppo-collapse { margin-top: 1.75rem; scroll-margin-top: 100px; }
+    .gruppo-sum {
+      font-size: 1.15rem; font-weight: 700; color: var(--slate);
+      text-transform: uppercase; letter-spacing: .04em;
+      padding-bottom: .4rem; margin-bottom: 1rem;
+      border-bottom: 2px solid var(--slate);
+      cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .gruppo-sum::-webkit-details-marker { display: none; }
+    .gruppo-sum::after {
+      content: "▾ apri"; font-size: .8rem; font-weight: 500;
+      text-transform: none; letter-spacing: 0; color: var(--azzurro);
+    }
+    .gruppo-collapse[open] .gruppo-sum::after { content: "▴ chiudi"; }
+
+    /* ---- Mini-card dato (stile strumento) ---- */
+    .statgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+      gap: .5rem;
+      margin-top: .5rem;
+    }
+    .statbox {
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 10px;
+      padding: .6rem .7rem;
+      text-align: left;
+    }
+    .statbox .etichetta {
+      display: block;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--label);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: .2rem;
+    }
+    .statbox .valore {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--testo);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+    .statbox .unita { font-size: .8rem; font-weight: 500; color: var(--label); }
+    .statbox .sub { display: block; font-size: .72rem; color: var(--label); margin-top: 3px; }
+    .freccia { display: inline-block; font-size: 1.05rem; line-height: 1; }
+    /* chip fascia vento nella tabella "Cosa si fa a Lignano" */
+    .cosa-kt { display: inline-block; padding: .18rem .55rem; border-radius: 999px; color: #fff; font-weight: 700; font-size: .8rem; white-space: nowrap; }
+    /* box partner locale ISLAND Surf Shop (pagina Lignano) */
+    .island-partner {
+      max-width: 760px; margin: 2.4rem auto 0; padding: 1.5rem 1.4rem 1.3rem;
+      border: 1px solid var(--bordo); border-top: 4px solid var(--azzurro);
+      border-radius: 16px; background: var(--surface-soft); text-align: center;
+    }
+    .island-ribbon {
+      display: inline-block; font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--sfondo); background: var(--azzurro);
+      padding: .22rem .7rem; border-radius: 999px; margin-bottom: .8rem;
+    }
+    .island-wordmark {
+      display: block; font-family: "Barlow Condensed", "Manrope", sans-serif;
+      font-size: 2.7rem; font-weight: 700; letter-spacing: .22em;
+      color: var(--azzurro); line-height: 1; text-indent: .22em;
+    }
+    .island-sub { display: block; font-size: .82rem; font-weight: 600; color: var(--label); letter-spacing: .03em; margin-top: .25rem; }
+    .island-claim { font-size: 1.15rem; margin: .9rem 0 .3rem; color: var(--testo); }
+    .island-desc { font-size: .92rem; color: var(--slate-2); max-width: 58ch; margin: 0 auto 1rem; line-height: 1.55; }
+    .island-actions { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; align-items: center; }
+    .island-actions .dona-btn { margin: 0; }
+    .island-link {
+      font-size: .85rem; font-weight: 600; color: var(--azzurro); text-decoration: none;
+      padding: .48rem .8rem; border: 1px solid var(--bordo); border-radius: 8px; background: transparent;
+    }
+    .island-link:hover { border-color: var(--azzurro); }
+    .island-addr { font-size: .78rem; color: var(--label); margin: 1rem 0 0; }
+    /* card link alle webcam (Panomax + Bibione) */
+    .webcam-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .6rem; margin-top: .5rem; }
+    /* webcam Panomax embeddate (iframe live) */
+    .webcam-embeds { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: .5rem; }
+    .cam-embed { margin: 0; }
+    .cam-embed .cam-video { margin-top: 0; }
+    .cam-embed figcaption { font-size: .8rem; color: var(--label); text-align: center; margin-top: .35rem; }
+    /* mappa vento interattiva (Windy) */
+    .map-embed { margin: 0; }
+    .map-embed iframe { width: 100%; height: 460px; border: 0; border-radius: 12px; background: var(--surface); display: block; }
+    .map-embed figcaption { font-size: .8rem; color: var(--label); text-align: center; margin-top: .35rem; }
+    @media (max-width: 640px) { .map-embed iframe { height: 380px; } }
+    .webcam-card { display: flex; flex-direction: column; gap: .12rem; padding: .8rem .9rem; border: 1px solid var(--bordo); border-radius: 12px; background: var(--surface); text-decoration: none; transition: border-color .15s; }
+    .webcam-card:hover { border-color: var(--azzurro); }
+    .webcam-card .wc-emoji { font-size: 1.4rem; line-height: 1; }
+    .webcam-card .wc-t { font-weight: 700; color: var(--testo); font-size: .92rem; }
+    .webcam-card .wc-s { font-size: .76rem; color: var(--label); }
+    /* Centraline vicine: intestazione compatta */
+    .centraline-head { padding-bottom: .35rem; }
+    /* Boe di riferimento affiancate (compatto) nella sezione Onde */
+    .boe-compact { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .8rem; }
+    .boa-mini h4 { margin: 0 0 .35rem; font-size: .88rem; color: var(--slate-2); }
+    /* Cosa si fa: bozza in attesa di approvazione ISLAND Surf (grigio chiaro) */
+    .cosa-pending-head { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: .3rem; }
+    .cosa-pending-head h2 { margin: 0; }
+    .pending-badge { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--sfondo); background: var(--label); padding: .2rem .6rem; border-radius: 999px; }
+    .cosa-pending-body { opacity: .5; filter: grayscale(.5); }
+    /* Logo partner ISLAND, adattato al tema (nero in chiaro, bianco in scuro) */
+    .island-logo { display: block; width: min(240px, 72%); height: auto; margin: 0 auto .2rem; filter: invert(1); }
+    :root[data-theme="light"] .island-logo { filter: none; }
+
+    /* ---- Intestazione sezione con azione a destra (es. "come si legge") ---- */
+    .sec-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; }
+    .sec-head h2 { margin: 0; }
+
+    /* ---- Box differenza pressione Bora (live) ---- */
+    .bora-delta { margin-top: 1.1rem; }
+    .bora-delta .bd-titolo { font-size: 1rem; margin: 0 0 .15rem; }
+    /* Pressione di bora: verdetto + numero LCD + scala a tre fasce (stile surfometro).
+       Palette scura e tema chiaro arrivano da footer-widgets.css. */
+    .bd-verdetto { text-align: center; font-size: 1.75rem; font-weight: 800; line-height: 1.15; margin: .35rem 0 .1rem; }
+    .bd-verdetto small { display: block; font-size: .84rem; font-weight: 600; color: var(--label); margin-top: .18rem; }
+    .bd-verdetto.assente { color: #5b6470; }
+    .bd-verdetto.genesi { color: #a07800; }
+    .bd-verdetto.consistente { color: #e2680f; }
+    .bd-verdetto.forte { color: #cf2e22; }
+    .tws-hero.bd-hero { font-size: 2.7rem; margin: .1rem 0 .8rem; }
+    .bd-hero .bd-sign { font-size: 2rem; font-weight: 800; }
+    .bd-spiega { font-size: .8rem; color: var(--label); text-align: center; margin: .6rem 0 .2rem; line-height: 1.45; }
+    .bd-bar { position: relative; display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: #e7ebe5; box-shadow: inset 0 1px 2px rgba(23,33,45,.14); }
+    .bd-marker { position: absolute; top: -3px; bottom: -3px; width: 3px; pointer-events: none; background: #122034; border-radius: 999px; transform: translateX(-50%); box-shadow: 0 0 0 3px rgba(255,255,255,.55); transition: left .5s ease, opacity .3s ease; }
+    .bd-labels { display: flex; font-size: .68rem; color: var(--label); font-weight: 700; margin-top: .3rem; text-align: center; }
+    .bd-labels div { flex: 1; }
+    .bd-info {
+      border: 1px solid var(--bordo); background: #fff; color: var(--azzurro);
+      border-radius: 999px; padding: .12rem .55rem; font-size: .78rem;
+      cursor: pointer; line-height: 1.4; white-space: nowrap;
+    }
+    .bd-info:hover { background: var(--sfondo); }
+
+    /* display LCD a 7 segmenti: cifra accesa (nera) sopra i segmenti spenti */
+    .lcd { position: relative; display: inline-block; font-family: 'DSEG7-Classic', monospace; }
+    .lcd-ghost { color: rgba(26,35,48,.12); }
+    .lcd-lit { position: absolute; left: 0; top: 0; color: #111; }
+
+    /* ---- Pannello vento piatto (tutte le stazioni, niente box annidati) ---- */
+    .pannello { text-align: center; padding: .2rem 0 .1rem; }
+    .tws-hero {
+      display: flex; align-items: baseline; justify-content: center; gap: .35rem;
+      font-size: 3.4rem; line-height: 1;
+    }
+    .tws-hero .u { font-size: 1rem; font-weight: 600; color: var(--label); }
+    .tws-raffica { font-size: .85rem; color: var(--label); margin-top: .25rem; }
+    .tws-raffica b { color: var(--testo); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .tws-dir { font-size: 1.55rem; font-weight: 800; color: var(--testo); margin-top: .55rem; line-height: 1.1; }
+    .tws-dir .deg { font-size: 1rem; font-weight: 600; color: var(--label); }
+    .tws-dir .freccia { font-size: 1.4rem; vertical-align: -1px; }
+    /* Centralina ferma: il valore resta leggibile (è storia) ma spento, con avviso sopra */
+    .dato-vecchio {
+      margin: 0 0 .55rem; padding: .4rem .6rem;
+      border: 1px solid rgba(255,189,105,.34); border-radius: 10px;
+      background: rgba(179,92,0,.18); color: #ffbd69;
+      font-size: .78rem; font-weight: 700; line-height: 1.4; text-align: center;
+    }
+    .stazione-stale .pannello { opacity: .5; filter: grayscale(.8); }
+
+    /* ---- Surfometro orizzontale ---- */
+    .surf2-verdetto { text-align: center; font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.3rem; }
+    .surf2-verdetto small { display: block; font-size: .85rem; font-weight: 500; color: var(--label); margin-top: .15rem; }
+    .meter {
+      position: relative;
+      padding: 50px .55rem 1.15rem;
+      margin-top: .4rem;
+      border: 1px solid rgba(216,222,216,.9);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.9), rgba(248,250,247,.72)),
+        radial-gradient(circle at 20% 0, rgba(207,246,75,.16), transparent 32%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    .meter-bar {
+      position: relative;
+      display: flex;
+      height: 20px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e7ebe5;
+      box-shadow: inset 0 1px 2px rgba(23,33,45,.14);
+    }
+    /* fascia raffica: dal vento medio alla raffica, più è larga più lo spot è rafficato */
+    .meter-range {
+      position: absolute; top: 0; bottom: 0; left: 0; width: 0; pointer-events: none;
+      background: linear-gradient(90deg, rgba(24,116,130,.28), rgba(24,116,130,.08));
+      border-left: 1px solid rgba(255,255,255,.62);
+      border-right: 3px solid rgba(24,116,130,.86);
+      transition: left .5s ease, width .5s ease, opacity .3s ease;
+    }
+    /* linea del vento medio: sempre visibile sulla barra (anche quando medio = raffica) */
+    .meter-mean-line {
+      position: absolute; top: -3px; bottom: -3px; width: 3px; pointer-events: none;
+      background: #122034; border-radius: 999px; transform: translateX(-50%);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.55);
+      transition: left .5s ease, opacity .3s ease;
+    }
+    /* indicatore unico: freccia della direzione (reale) a lato, poi vento medio grande
+       con la raffica come appendice bassa. Posizionato sul punto del medio nella scala. */
+    .meter-pointer {
+      position: absolute; top: .55rem; min-height: 34px;
+      display: flex; flex-direction: row; align-items: center; gap: 6px;
+      line-height: 1; transition: left .5s ease, transform .5s ease, opacity .3s ease; z-index: 2;
+      padding: .36rem .5rem .34rem;
+      border: 1px solid rgba(23,33,45,.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 8px 18px rgba(23,33,45,.12), inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    /* indicatore "fuori scala" (>40 kt): chevron rosso sull'estremità destra della barra */
+    .meter-over {
+      position: absolute; top: 50px; right: 1rem; height: 20px;
+      display: flex; align-items: center; font-size: 12px; font-weight: 800; color: #fff;
+      opacity: 0; transition: opacity .3s ease; pointer-events: none; z-index: 1;
+    }
+    .meter-pointer .meter-dir { font-size: 16px; line-height: 1; color: var(--teal); transform-origin: center; display: inline-block; }
+    .meter-pointer .meter-val { font-family: 'DSEG7-Classic', monospace; font-size: 16px; color: var(--ink); }
+    /* raffica: a destra del medio (è sempre maggiore del TWS medio), più piccola e chiara */
+    .meter-pointer .meter-gust-app { font-size: 12px; font-weight: 800; color: var(--slate-2); font-variant-numeric: tabular-nums; white-space: nowrap; margin-bottom: 1px; }
+    .meter-ticks { position: relative; height: 16px; margin-top: 5px; font-size: 11px; font-weight: 700; color: var(--label); }
+    .meter-ticks span { position: absolute; transform: translateX(-50%); }
+    .meter-labels { display: flex; margin-top: 3px; font-size: 10.5px; text-align: center; color: var(--label); line-height: 1.2; }
+
+    /* ---- Tabella tendenza: dropdown chiuso, si apre al click ---- */
+    details.dettaglio { margin-top: .6rem; }
+    details.dettaglio > summary {
+      cursor: pointer; font-size: .85rem; font-weight: 500; color: var(--slate);
+      padding: .55rem .8rem; list-style: none; user-select: none;
+      border: 1px solid var(--bordo); border-radius: 8px; background: #fff;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    details.dettaglio > summary::-webkit-details-marker { display: none; }
+    details.dettaglio > summary::after {
+      content: "apri ▾";
+      flex: 0 0 auto; margin-left: .6rem;
+      font-size: .74rem; font-weight: 700; color: var(--azzurro);
+      border: 1px solid currentColor; border-radius: 999px; padding: 2px 10px;
+    }
+    details.dettaglio > summary:hover { background: #f2f7fa; border-color: var(--azzurro); }
+    details.dettaglio[open] > summary { border-radius: 8px 8px 0 0; border-bottom: 0; }
+    details.dettaglio[open] > summary::after { content: "chiudi ▴"; }
+
+    /* ---- Bottoni spot (posizione + guida) ---- */
+    .spot-azioni { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .8rem; }
+    .spot-btn {
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: #fff; border: 1px solid var(--bordo); color: var(--slate);
+      text-decoration: none; padding: 8px 14px; border-radius: 8px;
+      font-size: .88rem; font-weight: 500; font-family: inherit; cursor: pointer;
+    }
+    .spot-btn:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+    /* ---- Trend stazioni ---- */
+    .trend {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin: .6rem 0 .2rem;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .trend-badge {
+      font-weight: 600;
+      padding: .25rem .7rem;
+      border-radius: 8px;
+      font-size: .88rem;
+      background: #eef1f4;
+      color: var(--slate);
+      border: 1px solid var(--bordo);
+    }
+    .trend-badge .frec { font-weight: 800; }
+    .trend-delta { font-size: .8rem; color: var(--label); }
+    .spark { vertical-align: middle; width: 100%; min-width: 0; }
+    /* sparkline trend con didascalia e scala min/max */
+    .spark-wrap { flex: 1 0 100%; width: 100%; max-width: none; min-width: 0; display: flex; flex-direction: column; }
+    .spark-wrap .spark { width: 100%; max-width: none; height: 48px; }
+    .spark-cap { font-size: .62rem; color: var(--label); text-align: center; margin-top: 2px; white-space: nowrap; letter-spacing: .02em; }
+
+    /* ---- Tabella dettaglio ---- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      border: 1px solid var(--bordo);
+      border-top: 0;
+    }
+    th, td {
+      border-bottom: 1px solid var(--bordo);
+      padding: 7px 6px;
+      text-align: center;
+    }
+    th { background: #f6f8fa; font-weight: 600; color: var(--slate); font-size: .8rem; }
+    td { font-variant-numeric: tabular-nums; }
+    /* formattazione condizionale per intensità del vento (kt e raffica) */
+    td.vento-calmo   { color: #8a94a0; }
+    td.vento-leggero { background: #eef6e6; color: #3b6d11; font-weight: 700; }
+    td.vento-buono   { background: #fbeede; color: #b35c00; font-weight: 700; }
+    td.vento-forte   { background: #fbe4e4; color: #c20202; font-weight: 700; }
+    tr.riga-recente td { font-weight: 700; }
+    tr.riga-recente td:first-child { background: #f6f8fa; }
+    .ora-now { font-size: .66rem; background: var(--slate); color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 5px; font-weight: 500; }
+    .stato {
+      font-size: .72rem;
+      color: #666;
+      margin: .25rem 0 0;
+    }
+    /* nel grafico della Bora la fonte resta della dimensione originale */
+    #bora > .stato { font-size: .85rem; }
+    .errore {
+      background: #fdf2f2;
+      border: 1px solid #f5c2c2;
+      border-radius: 6px;
+      padding: .6rem .8rem;
+      font-size: .9rem;
+      color: #8a1f1f;
+      margin-top: .5rem;
+    }
+
+    /* ---- Bottoni ---- */
+    button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--azzurro);
+      color: white;
+      cursor: pointer;
+      font-size: .9rem;
+    }
+    button:hover { background-color: var(--azzurro-scuro); }
+    button:disabled { opacity: .5; cursor: default; }
+
+    /* ---- Viewer Aladin ---- */
+    .aladin-controlli {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: .5rem 0;
+    }
+    .aladin-controlli span { font-variant-numeric: tabular-nums; color: #444; }
+
+    /* ---- Webcam ---- */
+    .webcam-intestazione {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .cam-video { width: 100%; border-radius: 8px; background: #000; aspect-ratio: 16/9; margin-top: .5rem; }
+    .cam-play {
+      width: 100%; aspect-ratio: 16/9; margin-top: .5rem;
+      border: 1px dashed var(--bordo); border-radius: 8px;
+      background: #f6f8fa; color: var(--slate); font-size: 1rem;
+      font-family: inherit; font-weight: 500; cursor: pointer;
+    }
+    .cam-play:hover { background: #eef1f4; }
+
+    /* ---- Bollettino OSMER ---- */
+    .bollett { padding: .6rem 0; border-bottom: 1px solid var(--bordo); }
+    .bollett:first-child { padding-top: 0; }
+    .bollett:last-child { border-bottom: 0; padding-bottom: 0; }
+    .bollett-giorno {
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--label); font-weight: 600; margin-bottom: .25rem;
+    }
+    .bollett-testo { font-size: .95rem; line-height: 1.5; color: var(--testo); }
+    .bollett.allerta .bollett-giorno { color: #b35c00; }
+    .osmer-mappa { width: 100%; max-width: 360px; display: block; margin: .6rem auto 0; border-radius: 8px; }
+    .osmer-tabs { display: flex; gap: .4rem; margin-bottom: .2rem; }
+    .osmer-tab {
+      flex: 1; background: #fff; border: 1px solid var(--bordo); border-radius: 8px;
+      padding: .5rem .3rem; font-family: inherit; font-size: .82rem; font-weight: 600;
+      color: var(--slate); cursor: pointer; line-height: 1.2;
+    }
+    .osmer-tab:hover { background: #eef1f4; }
+    .osmer-tab.attivo, .osmer-tab.attivo:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+
+    /* ---- Modal ---- */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,22,30,0.55);
+      z-index: 1000;
+      padding: 1rem;
+      overflow-y: auto;                    /* contenuti lunghi scorrono (mobile) */
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    .modal .contenuto {
+      position: relative;
+      background: white;
+      max-width: 600px;
+      margin: 6vh auto 6vh;
+      padding: 22px;
+      border-radius: 12px;
+      line-height: 1.55;
+    }
+    .modal .contenuto h3 { margin-top: 0; padding-right: 2.2rem; }
+    .modal-x {
+      position: absolute; top: 10px; right: 10px;
+      width: 34px; height: 34px; padding: 0;
+      border-radius: 50%; background: #eef1f4; color: var(--slate);
+      font-size: 1.05rem; line-height: 34px; text-align: center;
+    }
+    .modal-x:hover { background: var(--slate); color: #fff; }
+    .guida-meta { font-size: .82rem; color: var(--label); margin: .4rem 0 0; }
+    .dona {
+      text-align: center;
+      max-width: 420px;
+      margin: 2rem auto 0;
+      padding: 1rem 1.2rem;
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+    }
+    .dona p { margin: 0 0 .7rem; font-size: .9rem; color: var(--slate); }
+    .dona-btn {
+      display: inline-block;
+      background: var(--slate);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: .95rem;
+    }
+    .dona-btn:hover { background: #0d141d; }
+    .dona-nota { font-size: .72rem !important; color: var(--label) !important; margin: .6rem 0 0 !important; }
+    /* Box "Pagine per spot": stessa larghezza e centratura della donazione, per bilanciare i due box */
+    #altre-pagine {
+      max-width: 420px;
+      margin: 1rem auto 1.5rem;
+      text-align: center;
+    }
+    #altre-pagine h2 { font-size: 1.05rem; margin: 0 0 1rem; }
+    #altre-pagine .spot-azioni { justify-content: center; margin-top: 0; }
+    #altre-pagine .dona-btn { margin-top: .2rem; }
+    footer {
+      text-align: center;
+      font-size: .9rem;
+      color: #6a737d;
+      margin-top: 2rem;
+      line-height: 1.6;
+    }
+
+    /* ============ Versione spot-first ============ */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      margin: 0 -1rem;
+      padding: .65rem 1rem;
+      background: rgba(247,248,244,.92);
+      backdrop-filter: blur(14px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      overflow: hidden;
+    }
+    .brand {
+      color: var(--testo);
+      text-decoration: none;
+      display: inline-flex;
+      flex-direction: column;
+      line-height: 1.05;
+      min-width: 150px;
+    }
+    .brand strong { font-size: 1rem; font-weight: 800; letter-spacing: 0; }
+    .brand span { font-size: .72rem; color: var(--label); margin-top: .15rem; }
+    .topnav {
+      display: flex;
+      gap: .45rem;
+      overflow-x: auto;
+      max-width: 100%;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(216,222,216,.85);
+      border-radius: 999px;
+      padding: .25rem;
+      box-shadow: 0 10px 28px rgba(23,33,45,.06);
+      scrollbar-width: none;
+    }
+    .topnav::-webkit-scrollbar { display: none; }
+    .topnav a,
+    .spot-pill {
+      flex: 0 0 auto;
+      color: var(--testo);
+      background: rgba(255,255,255,.86);
+      border: 1px solid transparent;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 800;
+      padding: .48rem .75rem;
+      white-space: nowrap;
+      box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    }
+    .topnav a:hover,
+    .spot-pill:hover { background: var(--testo); color: #fff; border-color: var(--testo); }
+    .hero {
+      max-width: 1160px;
+      width: 100%;
+      margin: 1rem auto 1.2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, .8fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+    .hero-copy { grid-column: 1 / -1; padding: .4rem .15rem .45rem; }
+    .eyebrow {
+      margin: 0 0 .25rem;
+      color: var(--azzurro-scuro);
+      font-size: .78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .hero h1 {
+      margin: 0;
+      color: var(--testo);
+      font-size: clamp(2.1rem, 7vw, 5.8rem);
+      line-height: .9;
+      letter-spacing: 0;
+    }
+    .console-card,
+    .side-card,
+    .section { box-shadow: 0 16px 45px rgba(23,33,45,.07); }
+    .console-card {
+      background: #fff;
+      border: 1px solid var(--bordo);
+      border-radius: 18px;
+      padding: 1.2rem;
+      overflow: hidden;
+    }
+    /* alba/tramonto in alto a destra nella card surfometro */
+    #surfometroCard { position: relative; }
+    #surfometroCard h2 { padding-right: 6.5rem; }
+    .sun-times { position: absolute; top: 1.25rem; right: 1.2rem; font-size: .78rem; font-weight: 600; color: #6b7480; white-space: nowrap; }
+    @media (max-width: 480px) { #surfometroCard h2 { padding-right: 5.4rem; } .sun-times { font-size: .72rem; top: 1.3rem; right: 1rem; } }
+    .console-card .surf2-verdetto {
+      font-size: clamp(2.2rem, 8vw, 5.4rem);
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    .console-card .surf2-verdetto small { font-size: .9rem; max-width: 520px; }
+    .console-card h2,
+    .side-card h2 {
+      font-size: .85rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--label);
+      margin-bottom: .8rem;
+    }
+    .side-card {
+      background: #eaf3f4;
+      color: var(--testo);
+      border: 1px solid #c7dcdf;
+      border-radius: 18px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .side-card .statbox { background: rgba(255,255,255,.78); border-color: #c3d3d6; }
+    .side-card .statbox .valore,
+    .side-card .tws-dir,
+    .side-card .tws-raffica b { color: var(--testo); }
+    .spot-switcher { display: grid; gap: .45rem; }
+    .spot-switcher .spot-pill {
+      text-align: center;
+      background: rgba(255,255,255,.8);
+      border-color: #c3d3d6;
+      color: var(--testo);
+    }
+    .spot-switcher .spot-pill.primary {
+      background: #d8ef64;
+      color: #1a250a;
+      border-color: #d8ef64;
+    }
+    .quick-grid {
+      max-width: 1160px;
+      width: 100%;
+      margin: 0 auto 1.1rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .quick-grid .section { margin: 0; min-width: 0; }
+    .section,
+    .dona,
+    #altre-pagine,
+    #viewsBox { max-width: 1160px; width: 100%; margin-left: auto; margin-right: auto; }
+    .section { border-radius: 14px; }
+    .gruppo-collapse { scroll-margin-top: 130px; }
+    .gruppo-sum {
+      padding: .85rem 1rem;
+      border: 1px solid var(--bordo);
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ffffff 0%, #e8f5f2 62%, #d8ef64 100%);
+      box-shadow: 0 16px 45px rgba(23,33,45,.07);
+      align-items: center;
+      gap: 1rem;
+    }
+    .gruppo-sum-main { display: flex; flex-direction: column; gap: .1rem; }
+    .gruppo-sum-main strong { font-size: 1.15rem; }
+    .gruppo-sum-main span {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--azzurro-scuro);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .gruppo-sum::after {
+      content: "apri ▾";
+      background: rgba(255,255,255,.76);
+      border: 1px solid rgba(15,111,125,.16);
+      border-radius: 999px;
+      padding: .28rem .55rem;
+      color: var(--azzurro-scuro);
+      font-weight: 800;
+    }
+    .gruppo-collapse[open] .gruppo-sum::after { content: "chiudi ▴"; }
+    .trend {
+      flex-wrap: wrap;
+      padding: .5rem;
+      background: linear-gradient(90deg, #f7fbfb 0%, #eef7f0 100%);
+      border: 1px solid var(--bordo);
+      border-radius: 12px;
+    }
+    .trend-badge {
+      font-weight: 800;
+      border-radius: 999px;
+      background: #fff;
+      white-space: nowrap;
+    }
+    .trend-delta { white-space: nowrap; }
+    .spark {
+      flex: 1 1 auto;
+      width: 100%;
+      min-width: 92px;
+      max-width: 190px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(15,111,125,.08), rgba(216,239,100,.16));
+    }
+
+    /* ============ Rifinitura mobile ============ */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .quick-grid { grid-template-columns: 1fr; }
+      .topbar { align-items: center; flex-direction: column; gap: .55rem; }
+      .brand { align-items: center; text-align: center; min-width: 0; }
+      .topnav { width: min(100%, 430px); justify-content: center; margin: 0 auto; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 0 .7rem 1.5rem; }
+      .section { padding: .85rem; max-width: 100%; }
+      .topbar { margin: 0 -.7rem; padding: .6rem .7rem; }
+      .topnav { gap: .22rem; padding: .22rem; }
+      .topnav a { padding: .48rem .62rem; font-size: .78rem; }
+      .hero { margin-top: .75rem; gap: .75rem; max-width: 100%; }
+      .hero h1 { font-size: 2.45rem; }
+      .console-card,
+      .side-card { border-radius: 14px; padding: .9rem; }
+      .console-card .surf2-verdetto { font-size: 2.45rem; }
+      .quick-grid,
+      .dona,
+      #altre-pagine,
+      #viewsBox { max-width: 100%; }
+      .trend-delta {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      h1 { font-size: 1.25rem; }
+
+      /* target di tocco ≥44px su tutto ciò che è cliccabile */
+      button,
+      .spot-btn,
+      .osmer-tab,
+      .dona-btn,
+      details.dettaglio > summary,
+      .gruppo-sum {
+        min-height: 44px;
+      }
+      .aladin-controlli { justify-content: center; gap: 1rem; }
+      .aladin-controlli button { min-width: 48px; min-height: 44px; font-size: 1.1rem; }
+
+      /* card piccole allineate: 3 per riga (es. Barcola temp/pressione/umidità) */
+      .statgrid { grid-template-columns: repeat(3, 1fr); gap: .4rem; }
+      .statbox { padding: .55rem .5rem; }
+      .statbox .valore { font-size: 1.3rem; }
+      /* bottoni spot a piena larghezza, in colonna, ben distanziati */
+      .spot-azioni { flex-direction: column; }
+      .spot-azioni .spot-btn { width: 100%; justify-content: center; }
+    }
+
+    /* ---------- Overlay di caricamento iniziale ---------- */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1rem; text-align: center; padding: 1rem;
+      background: var(--sfondo);
+      transition: opacity .5s ease;
+    }
+    #loader.nascondi { opacity: 0; pointer-events: none; }
+    /* Barra di caricamento in stile surfometro: il "vento" accelera lungo la scala
+       (bavisela -> buriana) e riparte, come una raffica che monta. Indeterminata di
+       proposito: la fetch non espone un progresso vero. Se clip-path non e' animabile
+       (browser vecchi) resta la scala colorata piena: comunque leggibile. */
+    .loader-meter { position: relative; width: min(300px, 74vw); padding-top: 2.5rem; }
+    .loader-meter .surf {
+      position: absolute; top: 0; left: 0; font-size: 2rem; line-height: 1;
+      animation: loader-vento-surf 2.4s cubic-bezier(.5,.15,.75,.55) infinite;
+    }
+    .loader-bar-track {
+      position: relative; height: 14px; border-radius: 999px; overflow: hidden;
+      background: var(--bordo); box-shadow: inset 0 1px 2px rgba(23,33,45,.14);
+    }
+    .loader-bar-fill {
+      position: absolute; inset: 0;
+      /* le sei fasce del surfometro, stesse proporzioni della scala vera */
+      background: linear-gradient(90deg,
+        #b9b8b2 0 20%, #79CFC8 20% 32.5%, #97C459 32.5% 45%,
+        #639922 45% 62.5%, #3B6D11 62.5% 87.5%, #E24B4A 87.5% 100%);
+      clip-path: inset(0 100% 0 0);
+      animation: loader-vento 2.4s cubic-bezier(.5,.15,.75,.55) infinite;
+    }
+    .loader-txt { font-weight: 600; color: var(--slate); font-size: 1.02rem; }
+    .loader-sub { color: var(--label); font-size: .85rem; margin-top: -.6rem; }
+    @keyframes loader-vento {
+      0%        { clip-path: inset(0 100% 0 0); }
+      86%, 100% { clip-path: inset(0 0 0 0); }
+    }
+    @keyframes loader-vento-surf {
+      0%        { left: 0%;   transform: translateX(-30%) rotate(-7deg); }
+      43%       { transform: translateX(-50%) rotate(7deg); }
+      86%, 100% { left: 100%; transform: translateX(-70%) rotate(-7deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .loader-meter .surf, .loader-bar-fill { animation-duration: 5s; }
+    }
+  </style>
+  <style>
+    /* ================= Barcolana 2026 =================
+       Base (topbar, hero, card, footer) copiata dalle pagine spot; palette scura e tema
+       chiaro da footer-widgets.css. Qui solo i pezzi della pagina regata (prefisso bc-). */
+    :root {
+      --bc-bolina: #ff6b6b; --bc-traverso: #f0f43c; --bc-lasco: #43d39e; --bc-poppa: #5cb8ff; --bc-neutro: #8fa0ab;
+      --bc-mare: #0a1a22; --bc-terra: #1a2228; --bc-costa: #4d606b; --bc-diga: #66747d;
+      --bc-etichetta: #c3cdd4; --bc-alone: #07090c; --bc-boa: #ff9f1c; --bc-rotta-casing: rgba(0,0,0,.55);
+    }
+    :root[data-theme="light"] {
+      --bc-bolina: #c92b3a; --bc-traverso: #8c7400; --bc-lasco: #0e8a5f; --bc-poppa: #1f6fd1; --bc-neutro: #6a7a84;
+      --bc-mare: #d3ecf2; --bc-terra: #f5f1e7; --bc-costa: #7d9ba4; --bc-diga: #9fabb0;
+      --bc-etichetta: #2d4149; --bc-alone: #ffffff; --bc-boa: #d85f00; --bc-rotta-casing: rgba(255,255,255,.85);
+    }
+    .bc-lead { margin: .35rem 0 0; max-width: 760px; color: var(--slate-2); font-size: 1rem; line-height: 1.55; }
+    .bc-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .75rem; }
+    .bc-chip { display: inline-flex; align-items: center; gap: .35rem; padding: .32rem .7rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); color: var(--ink); font-size: .78rem; font-weight: 700; }
+    .bc-chip b { color: var(--signal); }
+    :root[data-theme="light"] .bc-chip b { color: var(--sea-dark); }
+
+    /* --- vento sul campo, ora --- */
+    .bc-now { display: flex; align-items: center; gap: 1.1rem; margin: .4rem 0 .2rem; flex-wrap: wrap; }
+    .bc-now-kt { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 5.2rem; line-height: .9; color: var(--ink); letter-spacing: -.02em; }
+    .bc-now-kt small { font-size: 1.6rem; margin-left: .2rem; color: var(--label); font-weight: 600; }
+    .bc-now-info { display: grid; gap: .15rem; min-width: 0; }
+    .bc-now-dir { display: flex; align-items: center; gap: .45rem; font-size: 1.35rem; font-weight: 800; color: var(--ink); }
+    .bc-now-dir svg { width: 2rem; height: 2rem; flex: 0 0 auto; }
+    .bc-now-nome { font-size: .95rem; font-weight: 800; color: var(--signal); text-transform: uppercase; letter-spacing: .06em; }
+    :root[data-theme="light"] .bc-now-nome { color: var(--sea-dark); }
+    .bc-now-raffica { font-size: .92rem; color: var(--slate-2); font-weight: 650; }
+    .bc-now-fonti { margin: .55rem 0 .7rem; font-size: .8rem; color: var(--label); line-height: 1.45; }
+    .bc-mini-lati { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .35rem; }
+    .bc-mini-lato { border: 1px solid var(--line); border-top: 4px solid var(--c, var(--bc-neutro)); border-radius: 10px; padding: .4rem .3rem; text-align: center; background: var(--surface-soft); min-width: 0; cursor: pointer; color: var(--ink); font: inherit; }
+    .bc-mini-lato:hover { border-color: var(--c, var(--line)); background: var(--surface-soft); }
+    .bc-mini-lato b { display: block; font-size: .7rem; color: var(--label); font-weight: 800; }
+    .bc-mini-lato span { display: block; font-size: .76rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* --- card regata (lato destro dell'hero) --- */
+    .bc-fatti { list-style: none; margin: .1rem 0 .8rem; padding: 0; display: grid; gap: .5rem; }
+    .bc-fatti li { display: grid; grid-template-columns: 1.6rem 1fr; gap: .45rem; font-size: .9rem; line-height: 1.4; color: var(--ink); }
+    .bc-fatti li span:first-child { font-size: 1.05rem; line-height: 1.3; }
+    .bc-fatti strong { font-weight: 800; }
+    .bc-countdown { border: 1px solid var(--line); border-radius: 12px; padding: .65rem .8rem; background: var(--surface-soft); margin-bottom: .75rem; }
+    .bc-countdown small { display: block; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--label); }
+    .bc-countdown strong { font-family: "Barlow Condensed", sans-serif; font-size: 1.9rem; line-height: 1.1; font-weight: 700; color: var(--signal); }
+    :root[data-theme="light"] .bc-countdown strong { color: var(--sea-dark); }
+    .bc-share { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .bc-share a, .bc-share button { flex: 1 1 auto; justify-content: center; text-align: center; margin: 0; }
+    .bc-indip { margin: .75rem 0 0; font-size: .74rem; color: var(--label); line-height: 1.4; }
+
+    /* --- mappa + lati --- */
+    .bc-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .95fr); gap: 1rem; align-items: start; }
+    .bc-seg { display: inline-flex; gap: .2rem; padding: .2rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); flex-wrap: wrap; }
+    .bc-seg button { margin: 0; padding: .38rem .8rem; border: 0; border-radius: 999px; background: transparent; color: var(--slate-2); font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; min-height: 34px; }
+    .bc-seg button:hover { background: rgba(127,127,127,.12); color: var(--ink); }
+    .bc-seg button[aria-pressed="true"] { background: var(--signal); color: #0b0d10; }
+    :root[data-theme="light"] .bc-seg button[aria-pressed="true"] { background: var(--sea); color: #fff; }
+    .bc-map-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: .6rem; }
+    .bc-map-head p { margin: 0; font-size: .8rem; color: var(--label); font-weight: 650; }
+    .bc-mappa { position: relative; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--bc-mare); }
+    .bc-mappa svg { display: block; width: 100%; height: auto; border-radius: 0 !important; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+    .bc-mappa .bc-hit { cursor: pointer; }
+    .bc-mappa .bc-lato-g { transition: opacity .15s ease; }
+    .bc-mappa.bc-ha-sel .bc-lato-g:not(.sel) { opacity: .3; }
+    .bc-mappa .bc-staz-g { cursor: pointer; }
+    .bc-mappa .bc-staz-g:focus { outline: none; }
+    .bc-mappa .bc-staz-g:focus .bc-halo, .bc-mappa .bc-staz-g.sel .bc-halo { stroke-opacity: 1; }
+    .bc-info { margin-top: .55rem; min-height: 2.9rem; padding: .55rem .75rem; border: 1px dashed var(--line); border-radius: 12px; font-size: .84rem; color: var(--slate-2); line-height: 1.45; }
+    .bc-info strong { color: var(--ink); }
+    .bc-legenda { display: flex; flex-wrap: wrap; gap: .35rem .5rem; margin-top: .55rem; font-size: .72rem; font-weight: 700; color: var(--slate-2); }
+    .bc-legenda span { display: inline-flex; align-items: center; gap: .3rem; }
+    .bc-legenda i { width: 18px; height: 5px; border-radius: 3px; display: inline-block; background: var(--c); }
+    .bc-legenda .bc-leg-sep { flex-basis: 100%; height: 0; }
+    .bc-legenda .bc-leg-dot i { width: 10px; height: 10px; border-radius: 50%; }
+
+    .bc-pannello h3 { margin: 0 0 .5rem; font-size: 1.02rem; }
+    .bc-ctrl { margin: .65rem 0 .2rem; display: grid; gap: .55rem; }
+    .bc-ctrl[hidden] { display: none; }
+    .bc-ctrl label { font-size: .78rem; font-weight: 800; color: var(--label); display: flex; justify-content: space-between; gap: .5rem; }
+    .bc-ctrl label output { color: var(--ink); }
+    .bc-ctrl input[type="range"] { width: 100%; accent-color: var(--signal); }
+    :root[data-theme="light"] .bc-ctrl input[type="range"] { accent-color: var(--sea); }
+    .bc-preset { display: flex; flex-wrap: wrap; gap: .3rem; }
+    .bc-preset button { margin: 0; padding: .3rem .6rem; font-size: .76rem; font-weight: 800; border-radius: 999px; min-height: 32px; }
+    .bc-nota { font-size: .76rem; color: var(--label); line-height: 1.45; margin: .45rem 0 0; }
+    .bc-somma { margin: .75rem 0 .55rem; }
+    .bc-somma-bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--surface-soft); border: 1px solid var(--line); }
+    .bc-somma-bar div { background: var(--c); }
+    .bc-somma p { margin: .35rem 0 0; font-size: .8rem; color: var(--slate-2); line-height: 1.45; }
+    .bc-somma p b { color: var(--ink); }
+    .bc-lati { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+    .bc-lato { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: .65rem; padding: .65rem .7rem; border: 1px solid var(--line); border-left: 5px solid var(--c, var(--bc-neutro)); border-radius: 12px; background: var(--surface-soft); cursor: pointer; transition: border-color .15s ease, transform .15s ease; }
+    .bc-lato:hover { border-color: var(--c, var(--line)); }
+    .bc-lato.sel { border-color: var(--c, var(--signal)); box-shadow: 0 0 0 2px var(--c, var(--signal)) inset; }
+    .bc-barca { width: 52px; height: 52px; }
+    .bc-lato-titolo { display: flex; justify-content: space-between; gap: .4rem; flex-wrap: wrap; align-items: baseline; }
+    .bc-lato-titolo strong { font-size: .92rem; color: var(--ink); }
+    .bc-lato-titolo span { font-size: .75rem; color: var(--label); font-weight: 700; white-space: nowrap; }
+    .bc-lato-and { margin-top: .12rem; font-size: .88rem; font-weight: 800; color: var(--c, var(--ink)); }
+    .bc-lato-and small { color: var(--slate-2); font-weight: 650; font-size: .78rem; }
+    .bc-lato-vento { font-size: .78rem; color: var(--slate-2); margin-top: .1rem; }
+    .bc-lato-vele { font-size: .82rem; color: var(--ink); margin-top: .3rem; line-height: 1.4; }
+    .bc-lato-vele em { display: block; font-style: normal; color: var(--label); font-size: .76rem; margin-top: .15rem; }
+
+    /* --- centraline --- */
+    .bc-staz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: .6rem; }
+    .bc-staz { border: 1px solid var(--line); border-top: 4px solid var(--c, var(--line)); border-radius: 12px; padding: .7rem .8rem; background: var(--surface-soft); }
+    .bc-staz h3 { margin: 0; font-size: .95rem; }
+    .bc-staz .bc-ruolo { margin: .1rem 0 .45rem; font-size: .74rem; color: var(--label); line-height: 1.35; min-height: 2em; }
+    .bc-staz .bc-val { display: flex; align-items: baseline; gap: .3rem; flex-wrap: wrap; }
+    .bc-staz .bc-val b { font-family: "Barlow Condensed", sans-serif; font-size: 2.3rem; line-height: 1; color: var(--ink); }
+    .bc-staz .bc-val span { font-size: .82rem; color: var(--slate-2); font-weight: 700; }
+    .bc-staz .bc-dir { display: flex; align-items: center; gap: .3rem; font-size: .85rem; font-weight: 800; margin-top: .25rem; color: var(--ink); }
+    .bc-staz .bc-dir svg { width: 1.2rem; height: 1.2rem; }
+    .bc-staz .bc-agg { margin: .35rem 0 0; font-size: .72rem; color: var(--label); }
+    .bc-staz.off .bc-val b { color: var(--label); }
+
+    /* --- previsioni --- */
+    .bc-affid { display: inline-block; padding: .25rem .6rem; border-radius: 999px; font-size: .74rem; font-weight: 800; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); margin: .1rem 0 .6rem; }
+    .bc-tab-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); border-radius: 12px; }
+    .bc-tab { width: 100%; border-collapse: collapse; font-size: .82rem; min-width: 520px; margin: 0; }
+    .bc-tab th, .bc-tab td { padding: .42rem .5rem; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; background: transparent; color: var(--ink); }
+    .bc-tab th { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--label); font-weight: 800; background: var(--surface-soft); }
+    .bc-tab tr.gara td { background: rgba(240,244,60,.07); }
+    :root[data-theme="light"] .bc-tab tr.gara td { background: rgba(23,111,128,.07); }
+    .bc-tab td b { font-size: .95rem; }
+    .bc-tab td small { color: var(--label); }
+    .bc-tab td .wind-arrow { width: 1.05rem; height: 1.05rem; vertical-align: -.2rem; margin: 0 .1rem 0 .3rem; }
+    .bc-tab td.media { font-weight: 800; }
+    .bc-links { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .75rem; }
+    .bc-links .button, .bc-links a { margin: 0; }
+
+    /* --- scenari --- */
+    .bc-scen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .6rem; }
+    .bc-scen { border: 1px solid var(--line); border-radius: 12px; padding: .75rem .8rem; background: var(--surface-soft); display: flex; flex-direction: column; gap: .45rem; }
+    .bc-scen h3 { margin: 0; font-size: .98rem; display: flex; justify-content: space-between; gap: .4rem; align-items: baseline; }
+    .bc-scen h3 small { font-size: .74rem; color: var(--label); font-weight: 700; }
+    .bc-scen p { margin: 0; font-size: .82rem; color: var(--slate-2); line-height: 1.45; flex: 1; }
+    .bc-scen-lati { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .25rem; }
+    .bc-scen-lati span { font-size: .66rem; font-weight: 800; text-align: center; padding: .22rem .1rem; border-radius: 6px; background: color-mix(in srgb, var(--c) 22%, transparent); color: var(--ink); border-bottom: 3px solid var(--c); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bc-scen button { margin: 0; align-self: flex-start; font-size: .78rem; padding: .35rem .7rem; }
+    .bc-avviso { border: 1px solid var(--line); border-left: 4px solid var(--bc-boa); border-radius: 10px; padding: .6rem .8rem; font-size: .8rem; color: var(--slate-2); line-height: 1.5; margin-top: .8rem; background: var(--surface-soft); }
+    .bc-avviso strong { color: var(--ink); }
+
+    @media (max-width: 900px) {
+      .bc-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .bc-now-kt { font-size: 4.2rem; }
+      .bc-mini-lato span { font-size: .68rem; }
+      .bc-lato { grid-template-columns: 44px minmax(0, 1fr); padding: .6rem; }
+      .bc-barca { width: 44px; height: 44px; }
+      .bc-seg button { padding: .34rem .62rem; font-size: .76rem; }
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "name": "Vento Barcolana 2026 – il vento sul percorso in tempo reale",
+        "url": "https://ventotrieste.info/barcolana2026/",
+        "inLanguage": "it",
+        "description": "Mappa del percorso della Barcolana 2026 con vento live da centraline e boe del Golfo di Trieste, andatura e vele lato per lato, previsioni per l'11 ottobre 2026.",
+        "isPartOf": { "@type": "WebSite", "name": "Vento Trieste", "url": "https://ventotrieste.info/" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Vento Trieste", "item": "https://ventotrieste.info/" },
+          { "@type": "ListItem", "position": 2, "name": "Barcolana 2026", "item": "https://ventotrieste.info/barcolana2026/" }
+        ]
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20260822-ux2" />
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="/">
+      <strong>Vento Trieste</strong>
+      <span>Barcolana 2026 · Golfo di Trieste</span>
+    </a>
+    <div class="topbar-actions">
+      <span class="topbar-live">Dati live</span>
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-label">Chiaro</span></button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav"><span class="menu-toggle-icon" aria-hidden="true">☰</span>Menu</button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" hidden>
+      <a href="#vento">Vento ora</a>
+      <a href="#mappaVento">Mappa e lati</a>
+      <a href="#centraline">Centraline</a>
+      <a href="#previsioni-gara">Previsioni 11/10</a>
+      <a href="#scenari">Scenari</a>
+      <a href="/">Vento Trieste</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="vento">
+      <div class="hero-copy">
+        <p class="eyebrow">Barcolana 58 · domenica 11 ottobre 2026 · partenza 10:30</p>
+        <h1 class="site-page-title">Il vento sul percorso della Barcolana 2026</h1>
+        <p class="bc-lead">Mappa del percorso, vento in tempo reale dalle centraline e dalle boe del Golfo, andatura e vele lato per lato. Gratis, per chi regata e per chi la segue da riva.</p>
+        <div class="bc-chips" aria-label="Il percorso in breve">
+          <span class="bc-chip"><b>13</b> miglia</span>
+          <span class="bc-chip"><b>5</b> lati · <b>4</b> boe</span>
+          <span class="bc-chip">Partenza Barcola–Miramare</span>
+          <span class="bc-chip">Arrivo davanti a piazza Unità</span>
+        </div>
+      </div>
+
+      <div class="console-card" id="campoOra">
+        <h2>Vento sul campo di regata · adesso</h2>
+        <div class="bc-now">
+          <div class="bc-now-kt" aria-live="polite"><span id="nowKt">–</span><small>kt</small></div>
+          <div class="bc-now-info">
+            <div class="bc-now-dir"><span id="nowFreccia"></span><span id="nowDir">in arrivo…</span></div>
+            <div class="bc-now-nome" id="nowNome"></div>
+            <div class="bc-now-raffica" id="nowRaffica"></div>
+          </div>
+        </div>
+        <p class="bc-now-fonti" id="nowFonti">Carico i dati di Barcola, boa Mambo, boa Paloma e Muggia…</p>
+        <div class="bc-mini-lati" id="nowLati" aria-label="Andatura attuale lato per lato"></div>
+      </div>
+
+      <aside class="side-card" id="regata">
+        <h2>La regata</h2>
+        <ul class="bc-fatti">
+          <li><span aria-hidden="true">🗓️</span><span><strong>Domenica 11 ottobre 2026</strong>, partenza alle <strong>10:30</strong></span></li>
+          <li><span aria-hidden="true">🧭</span><span>Quadrilatero a <strong>vertici fissi</strong> nel Golfo di Trieste, <strong>13 miglia</strong></span></li>
+          <li><span aria-hidden="true">🚩</span><span>Linea di partenza tra la sede della <strong>SVBG</strong> a Barcola e il <strong>Castello di Miramare</strong></span></li>
+          <li><span aria-hidden="true">🏁</span><span>Arrivo alla <strong>Diga del Porto Vecchio</strong>, davanti a piazza Unità</span></li>
+        </ul>
+        <div class="bc-countdown"><small id="countLabel">Alla partenza mancano</small><strong id="countVal">–</strong></div>
+        <div class="bc-share">
+          <a class="dona-btn" id="shareWa" href="https://wa.me/?text=Il%20vento%20sul%20percorso%20della%20Barcolana%202026%2C%20live%20e%20lato%20per%20lato%3A%20https%3A%2F%2Fventotrieste.info%2Fbarcolana2026%2F" target="_blank" rel="noopener">📲 Mandala all'equipaggio</a>
+          <button type="button" id="shareCopy">🔗 Copia link</button>
+        </div>
+        <p class="bc-indip">Pagina indipendente di ventotrieste.info: non è affiliata né approvata dall'organizzazione della regata. Per tutto ciò che è ufficiale fa fede <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.</p>
+      </aside>
+    </section>
+
+    <!-- PERCORSO + LATI -->
+    <section class="section" id="mappaVento">
+      <h2>Il percorso e il vento, lato per lato</h2>
+      <p class="stato" style="margin:.1rem 0 .8rem;">Ogni lato si colora secondo l'andatura che avrà con il vento scelto: <strong>live</strong> (stimato lato per lato dalle centraline più vicine), <strong>previsto</strong> per domenica o <strong>simulato</strong> da te. Tocca un lato o una centralina per i dettagli.</p>
+      <div class="bc-layout">
+        <div>
+          <div class="bc-map-head">
+            <div class="bc-seg" role="group" aria-label="Inquadratura della mappa">
+              <button type="button" data-vista="percorso" aria-pressed="true">Percorso</button>
+              <button type="button" data-vista="golfo" aria-pressed="false">Tutto il Golfo</button>
+            </div>
+            <p id="mappaModo">Vento: live</p>
+          </div>
+          <div class="bc-mappa" id="bcMappa">
+            <svg id="bcSvg" role="img" aria-labelledby="bcSvgTitolo" xmlns="http://www.w3.org/2000/svg"><title id="bcSvgTitolo">Mappa del percorso della Barcolana con boe, centraline e vento</title></svg>
+          </div>
+          <div class="bc-info" id="bcInfo" aria-live="polite">Tocca un lato del percorso o una centralina.</div>
+          <div class="bc-legenda" id="bcLegenda"></div>
+        </div>
+
+        <div class="bc-pannello" id="lati">
+          <h3>Andatura e vele</h3>
+          <div class="bc-seg" role="group" aria-label="Quale vento usare">
+            <button type="button" data-modo="live" aria-pressed="true">Live</button>
+            <button type="button" data-modo="prev" aria-pressed="false">Previsione 11/10</button>
+            <button type="button" data-modo="sim" aria-pressed="false">Simula</button>
+          </div>
+          <div class="bc-ctrl" id="ctrlPrev" hidden>
+            <label>Ora (domenica 11 ottobre) <output id="prevOraOut">11:00</output></label>
+            <div class="bc-seg" role="group" aria-label="Ora della previsione" id="prevOre"></div>
+            <p class="bc-nota" id="prevNota"></p>
+          </div>
+          <div class="bc-ctrl" id="ctrlSim" hidden>
+            <div class="bc-preset" id="simPreset"></div>
+            <label for="simDir">Vento da <output id="simDirOut">65°</output></label>
+            <input type="range" id="simDir" min="0" max="355" step="5" value="65" />
+            <label for="simKt">Intensità <output id="simKtOut">20 kt</output></label>
+            <input type="range" id="simKt" min="0" max="40" step="1" value="20" />
+          </div>
+          <div class="bc-somma" id="bcSomma"></div>
+          <ol class="bc-lati" id="bcLati"></ol>
+          <p class="bc-nota">Rotte e distanze dei lati 1, 2 e 5 sono quelle del percorso ufficiale; le rotte dei lati 3 e 4 (≈) e le posizioni delle boe sono ricostruite da distanze e punti di riferimento. I suggerimenti sulle vele sono generici: ogni barca e ogni equipaggio fanno storia a sé. Classe Crociera: niente Code Zero né drifter (sì gennaker e spi).</p>
+        </div>
+      </div>
+      <div class="bc-avviso"><strong>Non per la navigazione.</strong> Le boe sulla mappa sono indicative, ricostruite dal percorso pubblicato. Coordinate, lati da lasciare e segnali li trovi solo nelle Istruzioni di Regata del Comitato.</div>
+    </section>
+
+    <!-- CENTRALINE -->
+    <section class="section" id="centraline">
+      <h2>Centraline e boe sul campo di regata</h2>
+      <p class="stato" style="margin:.1rem 0 .8rem;">Le cinque stazioni che raccontano il vento del percorso. Si aggiornano da sole ogni 5 minuti (la boa Mambo è oraria).</p>
+      <div class="bc-staz-grid" id="bcStazioni"></div>
+      <p class="stato" id="bcAgg" style="margin:.7rem 0 0;"></p>
+    </section>
+
+    <!-- PREVISIONI -->
+    <section class="section" id="previsioni-gara">
+      <h2>Previsioni per domenica 11 ottobre</h2>
+      <span class="bc-affid" id="prevAffid">Carico i modelli…</span>
+      <div class="bc-tab-wrap"><table class="bc-tab" id="prevTab"><tbody><tr><td>Carico le previsioni…</td></tr></tbody></table></div>
+      <p class="bc-nota">Vento a 10 m sul centro del percorso (nodi, raffica dopo la barra). <strong>Media</strong> = media dei modelli disponibili. In evidenza le ore di regata. Più ci si avvicina alla data, più modelli ad alta risoluzione entrano nella tabella (ICON-2I e AROME solo negli ultimi 2–3 giorni). Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>.</p>
+      <div class="bc-links">
+        <a class="spot-btn" href="https://www.windy.com/45.665/13.715?45.665,13.715,12" target="_blank" rel="noopener">Windy sul Golfo</a>
+        <a class="spot-btn" href="/modelli-vento-trieste/">Guida ai modelli</a>
+        <a class="spot-btn" href="/bora-trieste/">Come si legge la Bora</a>
+        <a class="spot-btn" href="https://www.meteo.fvg.it/" target="_blank" rel="noopener">Bollettino OSMER</a>
+      </div>
+    </section>
+
+    <!-- SCENARI -->
+    <section class="section" id="scenari">
+      <h2>Che regata sarà? I venti tipici di ottobre</h2>
+      <p class="stato" style="margin:.1rem 0 .8rem;">Ogni vento del Golfo ridisegna il percorso: ecco come cambiano le andature dei cinque lati. Tocca "Prova sul percorso" per vederlo sulla mappa.</p>
+      <div class="bc-scen-grid" id="bcScenari"></div>
+    </section>
+
+  <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
+  <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
+  <script src="/footer-widgets.js?v=20260822-ux1"></script>
+
+  <div class="site-credits">
+    <section class="seo-footer-copy" aria-labelledby="ventoBarcolanaSeo">
+      <span class="story-kicker">⛵ Perché questa pagina</span>
+      <h2 class="seo-footer-title" id="ventoBarcolanaSeo">Vento Barcolana 2026 in tempo reale</h2>
+      <p>La Barcolana è la regata più grande del mondo: migliaia di barche sulla stessa linea di partenza nel Golfo di Trieste. Questa pagina mette insieme ciò che serve a chi regata per leggere il vento sul percorso: le centraline di Barcola e Monte Grisa, la boa Mambo davanti a Miramare, la boa Paloma in mezzo al Golfo, Muggia e i modelli meteo per la domenica della regata.</p>
+      <section class="seo-spot-pages" aria-labelledby="pagineSpotBarcolanaSeo">
+        <h2 id="pagineSpotBarcolanaSeo">Le altre pagine di Vento Trieste</h2>
+        <nav class="seo-spot-links" aria-label="Pagine meteo per spot">
+          <a class="spot-btn" href="/">🏠 Trieste · Barcola</a><a class="spot-btn" href="/mappa/">🗺️ Mappa del vento</a><a class="spot-btn" href="/muggia/">📍 Muggia</a><a class="spot-btn" href="/grado/">📍 Grado</a><a class="spot-btn" href="/lignano/">📍 Lignano</a>
+        </nav>
+      </section>
+    </section>
+    <p class="credits-meta">
+      Dati: centralina Barcola (Windguru), Monte Grisa e Muggia (rete Vetercek), boa MAMBO1 (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>), boa Paloma (<a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile FVG</a>, dati ARPA FVG – OSMER, licenza IODL 2.0), previsioni <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, costa © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>.<br>
+      Pagina indipendente, non affiliata alla Barcolana né alla Società Velica di Barcola e Grignano. I nomi citati appartengono ai rispettivi titolari.<br>
+      Suggerimenti e migliorie: <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a> ·
+      <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a><br>
+      <span class="credits-signoff">Buon vento!</span>
+    </p>
+  </div>
+  </footer>
+
+  </main>
+
+  <!-- GoatCounter (statistiche anonime, senza cookie) -->
+  <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script src="./costa.js?v=1"></script>
+  <script>
+  (function () {
+    "use strict";
+
+    // Endpoint Apps Script del progetto (cartella apps-script/ nel repo): Barcola,
+    // Monte Grisa e Muggia arrivano da li'. Mambo (OGS) e Paloma (Prot. Civile) hanno CORS.
+    const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
+    const MS_IN_KT = 1.94384;
+    const PARTENZA_ORA = Date.parse("2026-10-11T10:30:00+02:00");
+    const GIORNO_GARA = "2026-10-11";
+
+    /* ---------- proiezione: identica a genera-costa.py ---------- */
+    const COSTA = window.BARCOLANA_COSTA || { w: 1000, h: 732, terra: "", dighe: "", moli: "" };
+    const LON0 = 13.54, LAT1 = 45.728, KX = 1000 / 0.26;
+    const KY = KX / Math.cos((45.595 + 45.728) / 2 * Math.PI / 180);
+    const px = lon => (lon - LON0) * KX;
+    const py = lat => (LAT1 - lat) * KY;
+    const rad = d => d * Math.PI / 180;
+    const norm360 = d => ((d % 360) + 360) % 360;
+
+    /* avanza di nm miglia lungo una rotta (lossodromia piana: sul golfo basta e avanza) */
+    function avanza(p, rotta, nm) {
+      return { lat: p.lat + nm * Math.cos(rad(rotta)) / 60,
+               lon: p.lon + nm * Math.sin(rad(rotta)) / (60 * Math.cos(rad(p.lat))) };
+    }
+    function distNm(a, b) {
+      const dy = (b.lat - a.lat) * 60, dx = (b.lon - a.lon) * 60 * Math.cos(rad((a.lat + b.lat) / 2));
+      return Math.hypot(dx, dy);
+    }
+
+    /* ---------- percorso ----------
+       Dal percorso ufficiale: partenza tra SVBG e Miramare, 210° per 4,3 mn (boa 1),
+       332° per 0,9 mn (boa 2), 4 mn fino alla boa 3 al largo di Miramare, 2,3 mn lungo
+       costa verso Barcola (boa 4, al largo del Faro della Vittoria), 160° per 1,5 mn fino
+       all'arrivo alla testata sud della Diga del Porto Vecchio. Risalendo dall'arrivo con
+       rotte e distanze ufficiali, la boa 3 cade sulla boa MAMBO1 e la partenza a ~0,8 mn
+       dalla costa di Viale Miramare: le rotte dei lati 3 e 4 sono ricavate cosi'. */
+    const CENTRO_PARTENZA = { lat: 45.6867, lon: 13.7189 };
+    const LATI = [
+      { n: 1, da: "Partenza", a: "Boa 1", rotta: 210, nm: 4.3, uff: true,  nome: "Il lungo verso sud-ovest" },
+      { n: 2, da: "Boa 1",    a: "Boa 2", rotta: 332, nm: 0.9, uff: true,  nome: "Il disimpegno" },
+      { n: 3, da: "Boa 2",    a: "Boa 3", rotta: 26,  nm: 4.0, uff: false, nome: "La risalita verso Miramare" },
+      { n: 4, da: "Boa 3",    a: "Boa 4", rotta: 121, nm: 2.3, uff: false, nome: "Lungo costa verso Barcola" },
+      { n: 5, da: "Boa 4",    a: "Arrivo", rotta: 160, nm: 1.5, uff: true,  nome: "Il finale lungo la diga" }
+    ];
+    (function () {
+      let p = CENTRO_PARTENZA;
+      LATI.forEach(l => {
+        l.p0 = p; l.p1 = avanza(p, l.rotta, l.nm);
+        l.mid = avanza(p, l.rotta, l.nm / 2);
+        p = l.p1;
+      });
+    })();
+    const BOE = LATI.slice(0, 4).map(l => ({ n: l.n, p: l.p1 }));
+    const ARRIVO = LATI[4].p1;
+    const LINEA_PARTENZA = [avanza(CENTRO_PARTENZA, 300, 0.6), avanza(CENTRO_PARTENZA, 120, 0.6)];
+    const LINEA_ARRIVO = [avanza(ARRIVO, 70, 0.12), avanza(ARRIVO, 250, 0.12)];
+    const CENTRO_CAMPO = { lat: 45.665, lon: 13.712 };
+
+    /* ---------- stazioni ---------- */
+    const STAZIONI = [
+      { id: "barcola", nome: "Barcola", lat: 45.680, lon: 13.754, interp: true,
+        ruolo: "Porticciolo di Barcola: linea di partenza, boa 4 e ultimo lato." },
+      { id: "mambo", nome: "Boa Mambo", lat: 45.6983, lon: 13.7000, interp: true, sposta: [-30, -30],
+        ruolo: "Boa OGS davanti a Miramare: praticamente sulla boa 3. Dato orario." },
+      { id: "paloma", nome: "Boa Paloma", lat: 45.619, lon: 13.565, interp: true,
+        ruolo: "In mezzo al Golfo, a ovest delle boe 1 e 2: vento di mare aperto." },
+      { id: "monteGrisa", nome: "Monte Grisa", lat: 45.712, lon: 13.757, interp: false,
+        ruolo: "In quota sopra Barcola: con la Bora segna prima e più forte del mare." },
+      { id: "muggia", nome: "Muggia", lat: 45.602, lon: 13.768, interp: true,
+        ruolo: "Sud del Golfo: dice quanto vento c'è verso la zona della boa 1." }
+    ];
+    const LUOGHI = [
+      { nome: "Miramare", lat: 45.7026, lon: 13.7124, dx: 10, dy: -4 },
+      { nome: "Grignano", lat: 45.7097, lon: 13.7108, dx: 10, dy: -8 },
+      { nome: "Faro della Vittoria", lat: 45.6742, lon: 13.7600, dx: 10, dy: 4, punto: true },
+      { nome: "Piazza Unità", lat: 45.6505, lon: 13.7672, dx: 8, dy: 12, punto: true },
+      { nome: "Trieste", lat: 45.6440, lon: 13.7720, dx: 0, dy: 0, grande: true }
+    ];
+
+    /* ---------- utilità ---------- */
+    const CARD = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
+    const GRADI_CARDINALE = { N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
+      S:180, SSW:202.5, SW:225, WSW:247.5, W:270, WNW:292.5, NW:315, NNW:337.5,
+      SSO:202.5, SO:225, OSO:247.5, O:270, ONO:292.5, NO:315, NNO:337.5 };
+    const cardinale = d => CARD[Math.round(norm360(d) / 22.5) % 16];
+    function nomeVento(d, kt) {
+      if (d == null) return "";
+      d = norm360(d);
+      if (kt != null && kt < 3) return "Bonaccia";
+      if (d >= 20 && d < 90) return (kt != null && kt < 12) ? "Borino" : "Bora";
+      if (d >= 90 && d < 110) return "Levante";
+      if (d >= 110 && d < 160) return "Scirocco";
+      if (d >= 160 && d < 200) return "Ostro";
+      if (d >= 200 && d < 250) return "Garbin";
+      if (d >= 250 && d < 290) return "Ponente";
+      if (d >= 290 && d < 340) return "Maestral";
+      return "Tramontana";
+    }
+    const fmt = (v, dec) => (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec || 0).replace(".", ",") : "–";
+    function frecciaSvg(deg, cls) {
+      if (deg == null || isNaN(deg)) return "";
+      // la freccia punta dove VA il vento (da deg verso deg+180)
+      return '<svg class="wind-arrow' + (cls ? " " + cls : "") + '" aria-hidden="true" viewBox="0 0 24 24" style="--wind-deg:' + Math.round(norm360(deg)) + 'deg">' +
+        '<path d="M12 3v17m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    }
+    const FASCE = [
+      { max: 8, c: "#7d8b97" }, { max: 15, c: "#12a58a" }, { max: 25, c: "#e8830c" },
+      { max: 35, c: "#d9364a" }, { max: Infinity, c: "#a2358f" }
+    ];
+    const coloreKt = kt => (FASCE.find(f => kt < f.max) || FASCE[0]).c;
+    function oraHHMM(d) { return d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }); }
+    function fetchTimeout(url, ms) {
+      const ctl = new AbortController();
+      const t = setTimeout(() => ctl.abort(), ms);
+      return fetch(url, { signal: ctl.signal }).finally(() => clearTimeout(t));
+    }
+
+    /* ---------- andatura e vele ---------- */
+    const ANDATURE = {
+      bolina:   { nome: "Bolina",   c: "var(--bc-bolina)" },
+      traverso: { nome: "Traverso", c: "var(--bc-traverso)" },
+      lasco:    { nome: "Lasco",    c: "var(--bc-lasco)" },
+      poppa:    { nome: "Poppa",    c: "var(--bc-poppa)" }
+    };
+    /* angolo al vento reale (0 = prua al vento) e lato da cui arriva il vento */
+    function angoloVento(rotta, daDeg) {
+      const rel = norm360(daDeg - rotta);
+      return { twa: rel > 180 ? 360 - rel : rel, mure: rel < 180 ? "mure a dritta" : "mure a sinistra" };
+    }
+    function andatura(twa) {
+      if (twa < 45) return { k: "bolina", testo: "Bolina stretta", nota: "rotta diretta impossibile: si bordeggia" };
+      if (twa < 70) return { k: "bolina", testo: "Bolina larga", nota: "" };
+      if (twa < 110) return { k: "traverso", testo: "Traverso", nota: "" };
+      if (twa < 150) return { k: "lasco", testo: "Lasco", nota: "" };
+      return { k: "poppa", testo: "Poppa", nota: "in VMG conviene strambare" };
+    }
+    function vele(twa, kt, raffica) {
+      let v;
+      if (kt < 4) {
+        v = "Aria leggerissima: vele leggere, peso sottovento e pazienza" + (twa >= 45 && twa < 120 ? "; Code 0 / drifter per chi li ha" : "") + ".";
+      } else if (twa < 70) {
+        v = kt <= 16 ? "Randa piena + genoa." : kt <= 22 ? "Randa + fiocco o genoa ridotto, twist aperto." :
+            kt <= 30 ? "Una mano di terzaroli + fiocco piccolo." : "Due mani di terzaroli e tormentina.";
+      } else if (twa < 110) {
+        v = kt < 12 ? "Code 0 o genoa, randa lascata." : kt <= 20 ? "Genoa (Code 0 solo per chi è attrezzato), vang lasco." :
+            kt <= 28 ? "Genoa ridotto, randa terzarolata e scotte in mano." : "Vele ridotte al minimo, attenzione alle straorzate.";
+      } else if (twa < 150) {
+        v = kt < 18 ? "Gennaker asimmetrico (o spi)." : kt <= 25 ? "Gennaker solo con equipaggio rodato, altrimenti genoa." :
+            "Niente vele volanti: genoa ridotto.";
+      } else {
+        v = kt < 18 ? "Spinnaker o gennaker, strambando sui salti." : kt <= 25 ? "Spi solo con equipaggio rodato; in alternativa genoa tangonato a farfalla." :
+            "Randa terzarolata e genoa ridotto, occhio alle strambate involontarie.";
+      }
+      let nota = "";
+      if (!isNaN(raffica) && raffica >= kt * 1.45 && raffica - kt >= 7) nota = "Vento a raffiche (fino a " + Math.round(raffica) + " kt): regola le vele per le raffiche, non per il medio.";
+      return { v, nota };
+    }
+
+    /* ---------- stato ---------- */
+    const stato = {
+      modo: "live", vista: "percorso",
+      live: {}, prev: null, prevOra: 11, sim: { deg: 65, kt: 20 }, sel: null
+    };
+
+    /* vento stimato in un punto: media pesata 1/d² delle stazioni a mare disponibili */
+    function stimaVento(punto) {
+      const fonti = STAZIONI.filter(s => s.interp && stato.live[s.id]);
+      let usa = fonti.length ? fonti : STAZIONI.filter(s => stato.live[s.id]);
+      if (!usa.length) return null;
+      let sw = 0, sk = 0, sg = 0, sgw = 0, sx = 0, sy = 0;
+      const pesi = [];
+      usa.forEach(s => {
+        const v = stato.live[s.id];
+        const d = Math.max(distNm(punto, s), 0.4);
+        const w = 1 / (d * d);
+        pesi.push({ nome: s.nome, w });
+        sw += w; sk += w * v.kt;
+        if (!isNaN(v.raffica)) { sg += w * v.raffica; sgw += w; }
+        if (v.deg != null) { const wv = w * Math.max(v.kt, 1); sx += wv * Math.sin(rad(v.deg)); sy += wv * Math.cos(rad(v.deg)); }
+      });
+      pesi.sort((a, b) => b.w - a.w);
+      const tot = pesi.reduce((a, p) => a + p.w, 0);
+      return { kt: sk / sw, raffica: sgw ? sg / sgw : NaN,
+        deg: (sx || sy) ? norm360(Math.atan2(sx, sy) * 180 / Math.PI) : null,
+        fonti: pesi.filter(p => p.w / tot > 0.15).map(p => p.nome) };
+    }
+
+    /* media dei modelli (Open-Meteo) in un punto e a un'ora */
+    function mediaModelli(punto, ora) {
+      if (!stato.prev || !stato.prev[punto]) return null;
+      const h = stato.prev[punto].hourly;
+      const i = h.time.findIndex(t => t.endsWith("T" + String(ora).padStart(2, "0") + ":00"));
+      if (i < 0) return null;
+      let n = 0, sk = 0, sg = 0, ng = 0, sx = 0, sy = 0; const nomi = [];
+      MODELLI.forEach(m => {
+        const k = h["wind_speed_10m_" + m.id], g = h["wind_gusts_10m_" + m.id], d = h["wind_direction_10m_" + m.id];
+        if (!k || k[i] == null) return;
+        n++; sk += k[i]; nomi.push(m.nome);
+        if (g && g[i] != null) { sg += g[i]; ng++; }
+        if (d && d[i] != null) { const w = Math.max(k[i], 1); sx += w * Math.sin(rad(d[i])); sy += w * Math.cos(rad(d[i])); }
+      });
+      if (!n) return null;
+      return { kt: sk / n, raffica: ng ? sg / ng : NaN, deg: (sx || sy) ? norm360(Math.atan2(sx, sy) * 180 / Math.PI) : null, fonti: nomi };
+    }
+
+    function ventoLato(i) {
+      const l = LATI[i];
+      if (stato.modo === "sim") return { kt: stato.sim.kt, raffica: NaN, deg: stato.sim.deg, fonti: ["simulazione"] };
+      if (stato.modo === "prev") return mediaModelli(i, stato.prevOra);
+      return stimaVento(l.mid);
+    }
+
+    function analisiLati() {
+      return LATI.map((l, i) => {
+        const v = ventoLato(i);
+        if (!v || v.deg == null) return { l, v: null };
+        const a = angoloVento(l.rotta, v.deg);
+        const an = andatura(a.twa);
+        // di bolina stretta si va a bordi: le mure si alternano, non ha senso indicarne una
+        return { l, v, twa: a.twa, mure: a.twa < 45 ? "" : a.mure, an, vele: vele(a.twa, v.kt, v.raffica) };
+      });
+    }
+
+    /* ---------- mappa ---------- */
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const svg = document.getElementById("bcSvg");
+    const boxMappa = document.getElementById("bcMappa");
+    const VISTE = { percorso: { x: 400, y: 60, w: 585, h: 570 }, golfo: { x: 0, y: 0, w: 1000, h: COSTA.h } };
+    function el(tag, attrs, testo) {
+      const n = document.createElementNS(SVG_NS, tag);
+      for (const k in attrs) n.setAttribute(k, attrs[k]);
+      if (testo != null) n.textContent = testo;
+      return n;
+    }
+    function testo(g, x, y, t, s, extra) {
+      g.appendChild(el("text", Object.assign({ x, y, "font-size": 12.5 * s, "font-weight": 750,
+        fill: "var(--bc-etichetta)", stroke: "var(--bc-alone)", "stroke-width": 3 * s, "paint-order": "stroke",
+        "stroke-linejoin": "round" }, extra || {}), t));
+    }
+
+    function disegnaMappa() {
+      const vb = VISTE[stato.vista];
+      const s = vb.w / 565;                           // scala dei simboli: costanti a schermo
+      svg.setAttribute("viewBox", vb.x + " " + vb.y + " " + vb.w + " " + vb.h);
+      svg.innerHTML = "";
+      svg.appendChild(el("title", { id: "bcSvgTitolo" }, "Mappa del percorso della Barcolana con boe, centraline e vento"));
+      svg.appendChild(el("rect", { x: 0, y: 0, width: COSTA.w, height: COSTA.h, fill: "var(--bc-mare)" }));
+      svg.appendChild(el("path", { d: COSTA.terra, fill: "var(--bc-terra)", stroke: "var(--bc-costa)", "stroke-width": 1.1 * s, "stroke-linejoin": "round" }));
+      if (COSTA.dighe) svg.appendChild(el("path", { d: COSTA.dighe, fill: "var(--bc-diga)" }));
+      if (COSTA.moli) svg.appendChild(el("path", { d: COSTA.moli, fill: "none", stroke: "var(--bc-diga)", "stroke-width": 1.6 * s, "stroke-linecap": "round" }));
+
+      const gL = el("g", {});
+      LUOGHI.forEach(l => {
+        const x = px(l.lon), y = py(l.lat);
+        if (l.punto) gL.appendChild(el("circle", { cx: x, cy: y, r: 2.4 * s, fill: "var(--bc-etichetta)" }));
+        testo(gL, x + l.dx * s, y + l.dy * s, l.nome, l.grande ? s * 1.25 : s * .92,
+          l.grande ? { "font-weight": 800, "letter-spacing": 1 } : { "font-style": "italic", "font-weight": 650 });
+      });
+      testo(gL, px(13.60), py(45.690), "Golfo di Trieste", s * 1.3, { "font-style": "italic", "font-weight": 700, opacity: .75 });
+      svg.appendChild(gL);
+
+      const an = analisiLati();
+      const gR = el("g", {});
+      // rotta: casing scuro sotto, poi un gruppo per lato (colore = andatura)
+      LATI.forEach((l, i) => {
+        const x0 = px(l.p0.lon), y0 = py(l.p0.lat), x1 = px(l.p1.lon), y1 = py(l.p1.lat);
+        gR.appendChild(el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: "var(--bc-rotta-casing)", "stroke-width": 8 * s, "stroke-linecap": "round" }));
+      });
+      LATI.forEach((l, i) => {
+        const a = an[i];
+        const col = a.v ? ANDATURE[a.an.k].c : "var(--bc-neutro)";
+        const g = el("g", { "class": "bc-lato-g" + (stato.sel === "l" + l.n ? " sel" : ""), "data-lato": l.n });
+        const x0 = px(l.p0.lon), y0 = py(l.p0.lat), x1 = px(l.p1.lon), y1 = py(l.p1.lat);
+        g.appendChild(el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: col, "stroke-width": 4.2 * s, "stroke-linecap": "round",
+          "stroke-dasharray": a.v ? "none" : (7 * s) + " " + (6 * s) }));
+        // chevron di direzione al 58% del lato
+        const t = 0.58, cx = x0 + (x1 - x0) * t, cy = y0 + (y1 - y0) * t;
+        const ch = el("path", { d: "M" + (-6 * s) + "," + (4 * s) + " L0," + (-5 * s) + " L" + (6 * s) + "," + (4 * s),
+          fill: "none", stroke: col, "stroke-width": 3 * s, "stroke-linecap": "round", "stroke-linejoin": "round",
+          transform: "translate(" + cx + " " + cy + ") rotate(" + l.rotta + ")" });
+        g.appendChild(ch);
+        // numero del lato: di fianco al lato, dalla parte esterna
+        const mx = x0 + (x1 - x0) * 0.35, my = y0 + (y1 - y0) * 0.35;
+        const nx = Math.cos(rad(l.rotta)), ny = Math.sin(rad(l.rotta));   // normale destra in coordinate schermo
+        const off = (l.n === 4 || l.n === 5 ? -1 : 1) * 15 * s;
+        const bx = mx + nx * off, by = my + ny * off;
+        g.appendChild(el("circle", { cx: bx, cy: by, r: 9 * s, fill: col, stroke: "var(--bc-alone)", "stroke-width": 1.5 * s }));
+        g.appendChild(el("text", { x: bx, y: by + 4 * s, "text-anchor": "middle", "font-size": 11.5 * s, "font-weight": 900, fill: "#0b0d10" }, String(l.n)));
+        // area di tocco larga
+        const hit = el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: "transparent", "stroke-width": 26 * s, "class": "bc-hit" });
+        g.appendChild(hit);
+        g.appendChild(el("title", {}, "Lato " + l.n + ": " + l.da + " → " + l.a + ", " + (l.uff ? "" : "≈") + String(l.rotta).padStart(3, "0") + "°, " + fmt(l.nm, 1) + " mn"));
+        g.addEventListener("click", ev => { ev.stopPropagation(); seleziona("l" + l.n); });
+        gR.appendChild(g);
+      });
+      svg.appendChild(gR);
+
+      // linea di partenza e di arrivo
+      const lp = LINEA_PARTENZA.map(p => [px(p.lon), py(p.lat)]);
+      svg.appendChild(el("line", { x1: lp[0][0], y1: lp[0][1], x2: lp[1][0], y2: lp[1][1], stroke: "var(--bc-alone)", "stroke-width": 5 * s, "stroke-linecap": "round" }));
+      svg.appendChild(el("line", { x1: lp[0][0], y1: lp[0][1], x2: lp[1][0], y2: lp[1][1], stroke: "var(--bc-boa)", "stroke-width": 2.6 * s, "stroke-dasharray": (5 * s) + " " + (3 * s) }));
+      lp.forEach(p => svg.appendChild(el("circle", { cx: p[0], cy: p[1], r: 3.6 * s, fill: "var(--bc-boa)", stroke: "var(--bc-alone)", "stroke-width": 1.3 * s })));
+      const pl = avanza(CENTRO_PARTENZA, 300, 0.32);
+      testo(svg, px(pl.lon) - 8 * s, py(pl.lat) + 16 * s, "Partenza", s, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": "end" });
+      const la = LINEA_ARRIVO.map(p => [px(p.lon), py(p.lat)]);
+      svg.appendChild(el("line", { x1: la[0][0], y1: la[0][1], x2: la[1][0], y2: la[1][1], stroke: "var(--bc-alone)", "stroke-width": 6 * s, "stroke-linecap": "round" }));
+      svg.appendChild(el("line", { x1: la[0][0], y1: la[0][1], x2: la[1][0], y2: la[1][1], stroke: "var(--bc-boa)", "stroke-width": 3.2 * s, "stroke-dasharray": (2.5 * s) + " " + (2.5 * s) }));
+      testo(svg, la[1][0] - 8 * s, la[1][1] + 17 * s, "Arrivo", s, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": "end" });
+
+      // boe
+      BOE.forEach(b => {
+        const x = px(b.p.lon), y = py(b.p.lat);
+        const g = el("g", {});
+        g.appendChild(el("circle", { cx: x, cy: y, r: 7.5 * s, fill: "var(--bc-boa)", stroke: "var(--bc-alone)", "stroke-width": 2 * s }));
+        g.appendChild(el("text", { x, y: y + 3.6 * s, "text-anchor": "middle", "font-size": 9.5 * s, "font-weight": 900, fill: "#0b0d10" }, String(b.n)));
+        g.appendChild(el("title", {}, "Boa " + b.n + " (posizione indicativa)"));
+        svg.appendChild(g);
+        const lab = { 1: [12, 16, "start"], 2: [-12, -4, "end"], 3: [-12, 20, "end"], 4: [-12, 16, "end"] }[b.n];
+        testo(svg, x + lab[0] * s, y + lab[1] * s, "Boa " + b.n, s * .95, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": lab[2] });
+      });
+
+      // stazioni (sopra a tutto)
+      const gS = el("g", {});
+      STAZIONI.forEach(st => disegnaStazione(gS, st, stato.live[st.id], vb, s));
+      svg.appendChild(gS);
+
+      // nord e scala (1 miglio)
+      const nx0 = vb.x + 26 * s, ny0 = vb.y + 64 * s;   // sotto la scala, lontano dalle stazioni
+      const gN = el("g", { opacity: .85 });
+      gN.appendChild(el("path", { d: "M" + nx0 + "," + (ny0 - 14 * s) + " l" + (7 * s) + "," + (18 * s) + " l" + (-7 * s) + "," + (-5 * s) + " l" + (-7 * s) + "," + (5 * s) + "z", fill: "var(--bc-etichetta)" }));
+      testo(gN, nx0, ny0 + 18 * s, "N", s, { "text-anchor": "middle", "font-weight": 900 });
+      svg.appendChild(gN);
+      const unitaMiglio = KY / 60;                     // 1 miglio = 1/60 di grado di latitudine
+      const sx0 = vb.x + 16 * s, sy0 = vb.y + 26 * s;
+      svg.appendChild(el("line", { x1: sx0, y1: sy0, x2: sx0 + unitaMiglio, y2: sy0, stroke: "var(--bc-etichetta)", "stroke-width": 2.4 * s }));
+      [0, unitaMiglio].forEach(d => svg.appendChild(el("line", { x1: sx0 + d, y1: sy0 - 5 * s, x2: sx0 + d, y2: sy0 + 1 * s, stroke: "var(--bc-etichetta)", "stroke-width": 2 * s })));
+      testo(svg, sx0 + unitaMiglio / 2, sy0 + 15 * s, "1 miglio", s * .9, { "text-anchor": "middle" });
+
+      boxMappa.classList.toggle("bc-ha-sel", !!(stato.sel && stato.sel[0] === "l"));
+    }
+
+    /* simbolo stazione: cerchio con i nodi + freccia verso dove VA il vento;
+       fuori inquadratura -> etichetta sul bordo che indica la direzione */
+    function disegnaStazione(dest, st, v, vb, s) {
+      let x = px(st.lon), y = py(st.lat);
+      const dentro = x > vb.x + 8 * s && x < vb.x + vb.w - 8 * s && y > vb.y + 8 * s && y < vb.y + vb.h - 8 * s;
+      const g = el("g", { "class": "bc-staz-g" + (stato.sel === "s" + st.id ? " sel" : ""), role: "button", tabindex: "0" });
+      const kt = v ? Math.round(v.kt) : null;
+      const col = v ? coloreKt(v.kt) : "#6b7780";
+      const titolo = st.nome + (v ? ": " + kt + " kt" + (v.deg != null ? " da " + cardinale(v.deg) : "") : ": dato non disponibile");
+      g.setAttribute("aria-label", titolo + ". Dettagli");
+      if (!dentro) {
+        const pad = 16 * s;
+        const cx = Math.min(Math.max(x, vb.x + pad + 40 * s), vb.x + vb.w - pad - 40 * s);
+        const cy = Math.min(Math.max(y, vb.y + pad), vb.y + vb.h - pad);
+        const lato = x < vb.x ? "sx" : x > vb.x + vb.w ? "dx" : y < vb.y ? "su" : "giu";
+        const ex = lato === "sx" ? vb.x + pad : lato === "dx" ? vb.x + vb.w - pad : cx;
+        const ey = lato === "su" ? vb.y + pad : lato === "giu" ? vb.y + vb.h - pad : cy;
+        const lab = (lato === "sx" ? "◀ " : "") + st.nome + (v ? " " + kt + " kt" : " –") + (lato === "dx" ? " ▶" : lato === "giu" ? " ▼" : lato === "su" ? " ▲" : "");
+        const w = (lab.length * 6.6 + 14) * s, h = 20 * s;
+        const rx = lato === "dx" ? ex - w : lato === "sx" ? ex : ex - w / 2;
+        g.appendChild(el("rect", { x: rx, y: ey - h / 2, width: w, height: h, rx: h / 2, fill: "var(--bc-alone)", stroke: col, "stroke-width": 1.8 * s, opacity: .92 }));
+        g.appendChild(el("text", { x: rx + w / 2, y: ey + 4 * s, "text-anchor": "middle", "font-size": 11 * s, "font-weight": 800, fill: "var(--bc-etichetta)" }, lab));
+      } else {
+        let sx = x, sy = y;
+        if (st.sposta) {
+          sx = x + st.sposta[0] * s; sy = y + st.sposta[1] * s;
+          g.appendChild(el("line", { x1: x, y1: y, x2: sx, y2: sy, stroke: col, "stroke-width": 1.4 * s, "stroke-dasharray": (2 * s) + " " + (2 * s) }));
+          g.appendChild(el("circle", { cx: x, cy: y, r: 2.2 * s, fill: col }));
+        }
+        g.appendChild(el("circle", { cx: sx, cy: sy, r: 22 * s, fill: "transparent" }));
+        g.appendChild(el("circle", { "class": "bc-halo", cx: sx, cy: sy, r: 16 * s, fill: col, "fill-opacity": .08, stroke: col, "stroke-width": 2.2 * s, "stroke-opacity": .35 }));
+        if (v && v.deg != null && v.kt >= 1) {
+          const k = Math.min(v.kt, 40), L = (28 + k * .6) * s, sw = (3.4 + k * .05) * s, hw = sw * 1.5 + 3 * s;
+          const fr = el("g", { transform: "translate(" + sx + " " + sy + ") rotate(" + norm360(v.deg + 180) + ")" });
+          fr.appendChild(el("line", { x1: 0, y1: -11 * s, x2: 0, y2: -L + 7 * s, stroke: "var(--bc-alone)", "stroke-width": sw + 3.5 * s, "stroke-linecap": "round" }));
+          fr.appendChild(el("line", { x1: 0, y1: -11 * s, x2: 0, y2: -L + 7 * s, stroke: col, "stroke-width": sw, "stroke-linecap": "round" }));
+          fr.appendChild(el("path", { d: "M0," + (-L - 3 * s) + " L" + (-hw) + "," + (-L + 8 * s) + " L0," + (-L + 4 * s) + " L" + hw + "," + (-L + 8 * s) + " Z",
+            fill: col, stroke: "var(--bc-alone)", "stroke-width": 1.2 * s, "stroke-linejoin": "round" }));
+          g.appendChild(fr);
+        }
+        g.appendChild(el("circle", { cx: sx, cy: sy, r: 11 * s, fill: "#15313a", stroke: col, "stroke-width": 2.4 * s }));
+        g.appendChild(el("text", { x: sx, y: sy + 3.8 * s, "text-anchor": "middle", "font-size": 10.5 * s, "font-weight": 900, fill: "#fff" }, v ? String(kt) : "–"));
+        const ds = st.id === "barcola" ? [14, 20, "start"] : st.id === "monteGrisa" ? [14, -8, "start"] : st.id === "mambo" ? [-14, -12, "end"] : [14, 4, "start"];
+        testo(g, sx + ds[0] * s, sy + ds[1] * s, st.nome, s * .9, { "text-anchor": ds[2], "font-weight": 800 });
+      }
+      g.appendChild(el("title", {}, titolo));
+      const apri = ev => { ev.stopPropagation(); seleziona("s" + st.id); };
+      g.addEventListener("click", apri);
+      g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); apri(e); } });
+      dest.appendChild(g);
+    }
+
+    function seleziona(id) {
+      stato.sel = stato.sel === id ? null : id;
+      aggiornaTutto();
+      if (stato.sel && stato.sel[0] === "l") {
+        const card = document.querySelector('.bc-lato[data-lato="' + stato.sel.slice(1) + '"]');
+        if (card && window.innerWidth >= 900) card.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    }
+    svg.addEventListener("click", () => { if (stato.sel) { stato.sel = null; aggiornaTutto(); } });
+
+    function aggiornaInfo(an) {
+      const box = document.getElementById("bcInfo");
+      if (!stato.sel) { box.innerHTML = "Tocca un lato del percorso o una centralina."; return; }
+      if (stato.sel[0] === "l") {
+        const a = an[+stato.sel.slice(1) - 1], l = a.l;
+        let h = "<strong>Lato " + l.n + " · " + l.da + " → " + l.a + "</strong> · " + (l.uff ? "" : "≈") + String(l.rotta).padStart(3, "0") + "°, " + fmt(l.nm, 1) + " mn — " + l.nome + ".";
+        if (a.v) h += "<br>" + a.an.testo + " (vento a " + Math.round(a.twa) + "° dalla prua" + (a.mure ? ", " + a.mure : "") + ") con " + Math.round(a.v.kt) + " kt da " + cardinale(a.v.deg) + ".";
+        box.innerHTML = h;
+      } else {
+        const st = STAZIONI.find(s => "s" + s.id === stato.sel), v = stato.live[st.id];
+        box.innerHTML = "<strong>" + st.nome + "</strong> — " + st.ruolo + (v ? "<br>" + Math.round(v.kt) + " kt" +
+          (!isNaN(v.raffica) ? ", raffica " + Math.round(v.raffica) + " kt" : "") + (v.deg != null ? ", da " + cardinale(v.deg) + " (" + Math.round(v.deg) + "°)" : "") +
+          (v.ora ? " · agg. " + v.ora : "") : "<br>Dato al momento non disponibile.");
+      }
+    }
+
+    /* ---------- pannello lati ---------- */
+    function barcaSvg(twa, rel, col) {
+      // barca con la prua in alto; il vento arriva dall'angolo relativo "rel" (0 = da prua)
+      const r = rad(rel), R = 21;
+      const wx = 26 + Math.sin(r) * R, wy = 26 - Math.cos(r) * R;
+      const tx = 26 + Math.sin(r) * 9, ty = 26 - Math.cos(r) * 9;
+      const ang = Math.atan2(ty - wy, tx - wx);
+      const hx = tx - Math.cos(ang) * 1, hy = ty - Math.sin(ang) * 1;
+      const a1 = ang + 2.6, a2 = ang - 2.6;
+      return '<svg class="bc-barca" viewBox="0 0 52 52" aria-hidden="true">' +
+        '<circle cx="26" cy="26" r="24" fill="none" stroke="var(--line)" stroke-width="1.2"/>' +
+        '<path d="M26 12 C31 18 31 30 29.5 40 L22.5 40 C21 30 21 18 26 12Z" fill="' + col + '" opacity=".9"/>' +
+        '<line x1="' + wx.toFixed(1) + '" y1="' + wy.toFixed(1) + '" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round"/>' +
+        '<path d="M' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ' L' + (tx + Math.cos(a1) * 6).toFixed(1) + ' ' + (ty + Math.sin(a1) * 6).toFixed(1) +
+        ' L' + (tx + Math.cos(a2) * 6).toFixed(1) + ' ' + (ty + Math.sin(a2) * 6).toFixed(1) + 'Z" fill="var(--ink)"/></svg>';
+    }
+
+    function aggiornaPannello(an) {
+      const lista = document.getElementById("bcLati");
+      lista.innerHTML = an.map(a => {
+        const l = a.l;
+        const col = a.v ? ANDATURE[a.an.k].c : "var(--bc-neutro)";
+        const rotta = (l.uff ? "" : "≈") + String(l.rotta).padStart(3, "0") + "° · " + fmt(l.nm, 1) + " mn";
+        let corpo;
+        if (!a.v) {
+          corpo = '<div class="bc-lato-vento">' + (stato.modo === "prev" ? "Previsione non ancora disponibile per quest'ora." : "In attesa dei dati delle centraline…") + "</div>";
+        } else {
+          const rel = norm360(a.v.deg - l.rotta);
+          corpo = '<div class="bc-lato-and">' + a.an.testo + ' <small>· ' + [Math.round(a.twa) + "° dal vento", a.mure, a.an.nota].filter(Boolean).join(" · ") + '</small></div>' +
+            '<div class="bc-lato-vento">' + Math.round(a.v.kt) + " kt" + (!isNaN(a.v.raffica) ? " (raff. " + Math.round(a.v.raffica) + ")" : "") +
+            " da " + cardinale(a.v.deg) + " " + Math.round(a.v.deg) + "° · " + nomeVento(a.v.deg, a.v.kt) +
+            (a.v.fonti && a.v.fonti.length && stato.modo !== "sim" ? " · " + a.v.fonti.join(", ") : "") + "</div>" +
+            '<div class="bc-lato-vele">⛵ ' + a.vele.v + (a.vele.nota ? "<em>" + a.vele.nota + "</em>" : "") + "</div>";
+          a.rel = rel;
+        }
+        return '<li class="bc-lato' + (stato.sel === "l" + l.n ? " sel" : "") + '" data-lato="' + l.n + '" style="--c:' + col + '" tabindex="0">' +
+          (a.v ? barcaSvg(a.twa, a.rel, col) : '<svg class="bc-barca" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none" stroke="var(--line)" stroke-width="1.2"/><text x="26" y="33" text-anchor="middle" font-size="20" font-weight="900" fill="var(--label)">' + l.n + '</text></svg>') +
+          '<div><div class="bc-lato-titolo"><strong>' + l.n + ". " + l.da + " → " + l.a + "</strong><span>" + rotta + "</span></div>" + corpo + "</div></li>";
+      }).join("");
+      Array.prototype.forEach.call(lista.children, li => {
+        const vai = () => seleziona("l" + li.getAttribute("data-lato"));
+        li.addEventListener("click", vai);
+        li.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); vai(); } });
+      });
+
+      // somma per andatura
+      const somma = { bolina: 0, traverso: 0, lasco: 0, poppa: 0 };
+      let tot = 0;
+      an.forEach(a => { if (a.v) { somma[a.an.k] += a.l.nm; tot += a.l.nm; } });
+      const box = document.getElementById("bcSomma");
+      if (!tot) { box.innerHTML = ""; return; }
+      const chi = stato.modo === "live" ? "Con il vento di adesso" : stato.modo === "prev" ? "Con la previsione delle " + stato.prevOra + ":00" : "Con questo vento";
+      box.innerHTML = '<div class="bc-somma-bar">' + Object.keys(somma).filter(k => somma[k]).map(k =>
+          '<div style="--c:' + ANDATURE[k].c + ';flex:' + somma[k] + '" title="' + ANDATURE[k].nome + '"></div>').join("") + "</div>" +
+        "<p>" + chi + " il percorso è: " + Object.keys(somma).filter(k => somma[k]).map(k =>
+          "<b>" + fmt(somma[k], 1) + " mn</b> di " + ANDATURE[k].nome.toLowerCase()).join(" · ") + ".</p>";
+    }
+
+    /* ---------- hero: vento sul campo ---------- */
+    function aggiornaHero() {
+      const v = stimaVento(CENTRO_CAMPO);
+      const $ = id => document.getElementById(id);
+      if (!v) return;
+      $("nowKt").textContent = Math.round(v.kt);
+      $("nowFreccia").innerHTML = frecciaSvg(v.deg, "");
+      $("nowDir").textContent = v.deg != null ? "da " + cardinale(v.deg) + " · " + Math.round(v.deg) + "°" : "direzione n.d.";
+      $("nowNome").textContent = nomeVento(v.deg, v.kt);
+      $("nowRaffica").textContent = !isNaN(v.raffica) ? "raffiche fino a " + Math.round(v.raffica) + " kt" : "";
+      const attive = STAZIONI.filter(s => s.interp && stato.live[s.id]).map(s => s.nome);
+      $("nowFonti").textContent = "Stima al centro del percorso da " + (attive.length ? attive.join(", ") : "Monte Grisa") + ", pesata sulla distanza.";
+      const live = LATI.map((l, i) => {
+        const w = stimaVento(l.mid);
+        if (!w || w.deg == null) return '<button type="button" class="bc-mini-lato"><b>Lato ' + l.n + "</b><span>–</span></button>";
+        const an = andatura(angoloVento(l.rotta, w.deg).twa);
+        return '<button type="button" class="bc-mini-lato" data-lato="' + l.n + '" style="--c:' + ANDATURE[an.k].c + '"><b>Lato ' + l.n + "</b><span>" + ANDATURE[an.k].nome + "</span></button>";
+      });
+      $("nowLati").innerHTML = live.join("");
+      Array.prototype.forEach.call($("nowLati").querySelectorAll("[data-lato]"), b => b.addEventListener("click", () => {
+        impostaModo("live");
+        stato.sel = "l" + b.getAttribute("data-lato");
+        aggiornaTutto();
+        document.getElementById("mappaVento").scrollIntoView({ behavior: "smooth" });
+      }));
+    }
+
+    /* ---------- card centraline ---------- */
+    function aggiornaStazioni() {
+      document.getElementById("bcStazioni").innerHTML = STAZIONI.map(st => {
+        const v = stato.live[st.id];
+        return '<article class="bc-staz' + (v ? "" : " off") + '" style="--c:' + (v ? coloreKt(v.kt) : "var(--line)") + '">' +
+          "<h3>" + st.nome + '</h3><p class="bc-ruolo">' + st.ruolo + "</p>" +
+          '<div class="bc-val"><b>' + (v ? Math.round(v.kt) : "–") + "</b><span>kt" + (v && !isNaN(v.raffica) ? " · raffica " + Math.round(v.raffica) : "") + "</span></div>" +
+          '<div class="bc-dir">' + (v && v.deg != null ? frecciaSvg(v.deg, "") + " da " + cardinale(v.deg) + " · " + nomeVento(v.deg, v.kt) : (v ? "direzione n.d." : "offline o dato vecchio")) + "</div>" +
+          '<p class="bc-agg">' + (v && v.ora ? "agg. " + v.ora : "&nbsp;") + "</p></article>";
+      }).join("");
+    }
+
+    function aggiornaTutto() {
+      const an = analisiLati();
+      disegnaMappa();
+      aggiornaPannello(an);
+      aggiornaInfo(an);
+      aggiornaHero();
+      aggiornaStazioni();
+      aggiornaLegenda();
+      document.getElementById("mappaModo").textContent = "Vento: " +
+        (stato.modo === "live" ? "live" : stato.modo === "prev" ? "previsto dom. 11/10 ore " + stato.prevOra + ":00" :
+         "simulato " + Math.round(stato.sim.kt) + " kt da " + cardinale(stato.sim.deg));
+    }
+
+    function aggiornaLegenda() {
+      const leg = document.getElementById("bcLegenda");
+      if (leg.childElementCount) return;
+      leg.innerHTML = Object.keys(ANDATURE).map(k => '<span style="--c:' + ANDATURE[k].c + '"><i></i>' + ANDATURE[k].nome + "</span>").join("") +
+        '<span style="--c:var(--bc-neutro)"><i style="background:repeating-linear-gradient(90deg,var(--c) 0 5px,transparent 5px 9px)"></i>senza dati</span>' +
+        '<span class="bc-leg-sep"></span>' +
+        '<span class="bc-leg-dot" style="--c:var(--bc-boa)"><i></i>Boe e linee (indicative)</span>' +
+        '<span>Nei cerchi: nodi medi · la freccia va dove va il vento</span>';
+    }
+
+    /* ---------- dati live ---------- */
+    function etaMinuti(ora) {
+      const m = String(ora || "").match(/^(\d{1,2}):(\d{2})/);
+      if (!m) return 0;
+      const ad = new Date();
+      let eta = (ad - new Date(ad.getFullYear(), ad.getMonth(), ad.getDate(), +m[1], +m[2])) / 60000;
+      if (eta < -5) eta += 1440;
+      return Math.max(eta, 0);
+    }
+    function leggiProxy(d) {
+      const b = d.barcola;
+      stato.live.barcola = null;
+      if (b && b.wind_avg != null) {
+        const m = String(b.datetime || "").match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+        const eta = m ? (Date.now() - new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]).getTime()) / 60000 : 0;
+        const avg = parseFloat(b.wind_avg), max = parseFloat(b.wind_max);
+        if (eta <= 45 && !(avg === 0 && (isNaN(max) || max === 0))) {
+          stato.live.barcola = { kt: avg, raffica: max, deg: typeof b.wind_direction === "number" ? b.wind_direction : null,
+            ora: m ? m[4] + ":" + m[5] : "" };
+        }
+      }
+      ["monteGrisa", "muggia"].forEach(id => {
+        const r = Array.isArray(d[id]) && d[id][0];
+        stato.live[id] = null;
+        if (!r || etaMinuti(r.ora) > 45) return;
+        const deg = GRADI_CARDINALE[String(r.direzione || "").toUpperCase().trim()];
+        const kt = parseFloat(r.kt);
+        if (isNaN(kt)) return;
+        stato.live[id] = { kt, raffica: parseFloat(r.sunki), deg: deg === undefined ? null : deg, ora: r.ora || "" };
+      });
+    }
+    function caricaProxy() {
+      return fetchTimeout(PROXY + "?ts=" + Date.now(), 30000)
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(leggiProxy)
+        .catch(() => {});
+    }
+    function caricaMambo() {
+      const url = "https://nodc.ogs.it/erddap/tabledap/MAMBO1_TS.json?" + encodeURIComponent("time,WSPD,GSPD,WDIR") + "&" + encodeURIComponent("time>=now-6hours");
+      return fetchTimeout(url, 20000)
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(j => {
+          const t = j.table;
+          const rows = t.rows.map(r => Object.fromEntries(t.columnNames.map((c, i) => [c, r[i]])))
+            .filter(r => r.WSPD != null).sort((a, b) => a.time < b.time ? -1 : 1);
+          const m = rows.pop();
+          if (!m) { stato.live.mambo = null; return; }
+          const d = new Date(m.time);
+          const vecchio = isNaN(d) || (Date.now() - d) / 60000 > 150;
+          stato.live.mambo = vecchio ? null : { kt: m.WSPD * MS_IN_KT, raffica: m.GSPD != null ? m.GSPD * MS_IN_KT : NaN,
+            deg: typeof m.WDIR === "number" ? m.WDIR : null, ora: oraHHMM(d) };
+        })
+        .catch(() => {});
+    }
+    function caricaPaloma() {
+      return fetchTimeout("https://monitor.protezionecivile.fvg.it/api/stations/574/measures/latest", 20000)
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(j => {
+          const per = {}; let dt = null;
+          (j.measures || []).forEach(m => {
+            per[m.sensor_id] = m.value;
+            if ([5, 6, 7].indexOf(m.sensor_id) !== -1 && (!dt || m.dt > dt)) dt = m.dt;
+          });
+          const d = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(String(dt || "").trim()) ? new Date(String(dt).trim().replace(" ", "T") + "Z") : null;
+          if (per[6] == null || !d || isNaN(d) || (Date.now() - d) / 60000 > 45) { stato.live.paloma = null; return; }
+          stato.live.paloma = { kt: per[6] * MS_IN_KT, raffica: per[7] != null ? per[7] * MS_IN_KT : NaN,
+            deg: typeof per[5] === "number" ? per[5] : null, ora: oraHHMM(d) };
+        })
+        .catch(() => {});
+    }
+    function caricaLive() {
+      const agg = document.getElementById("bcAgg");
+      agg.textContent = "Aggiorno le centraline…";
+      // ognuna ridisegna appena arriva: il proxy Apps Script puo' metterci decine di secondi
+      const tutte = [caricaMambo(), caricaPaloma(), caricaProxy()].map(p => p.then(aggiornaTutto));
+      Promise.all(tutte).then(() => {
+        const n = STAZIONI.filter(s => stato.live[s.id]).length;
+        agg.textContent = n + " stazioni su " + STAZIONI.length + " in linea · ultimo controllo " + oraHHMM(new Date());
+      });
+    }
+
+    /* ---------- previsioni (Open-Meteo, multi-punto e multi-modello) ---------- */
+    const MODELLI = [
+      { id: "ecmwf_ifs025", nome: "ECMWF" },
+      { id: "icon_seamless", nome: "ICON" },
+      { id: "italia_meteo_arpae_icon_2i", nome: "ICON-2I" },
+      { id: "meteofrance_seamless", nome: "Météo-France" },
+      { id: "gfs_seamless", nome: "GFS" }
+    ];
+    function caricaPrevisioni() {
+      const punti = LATI.map(l => l.mid).concat([CENTRO_CAMPO]);
+      const url = "https://api.open-meteo.com/v1/forecast?latitude=" + punti.map(p => p.lat.toFixed(4)).join(",") +
+        "&longitude=" + punti.map(p => p.lon.toFixed(4)).join(",") +
+        "&hourly=wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=kn&timezone=Europe%2FRome" +
+        "&start_date=" + GIORNO_GARA + "&end_date=" + GIORNO_GARA + "&models=" + MODELLI.map(m => m.id).join(",");
+      return fetchTimeout(url, 20000)
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(j => { stato.prev = Array.isArray(j) ? j : [j]; disegnaPrevisioni(); aggiornaTutto(); })
+        .catch(() => {
+          document.getElementById("prevAffid").textContent = "Previsioni non disponibili in questo momento";
+          document.getElementById("prevTab").innerHTML = "<tbody><tr><td>Riprova tra poco: il servizio dei modelli non ha risposto.</td></tr></tbody>";
+        });
+    }
+    function disegnaPrevisioni() {
+      const giorni = Math.floor((PARTENZA_ORA - Date.now()) / 86400000);
+      const aff = document.getElementById("prevAffid");
+      aff.textContent = giorni < 0 ? "Regata conclusa: previsioni della giornata" :
+        giorni > 7 ? "A " + giorni + " giorni: tendenza, affidabilità bassa. Guarda la direzione più dei nodi" :
+        giorni > 3 ? "A " + giorni + " giorni: affidabilità media" :
+        giorni >= 1 ? "A " + giorni + (giorni === 1 ? " giorno" : " giorni") + ": entrano i modelli ad alta risoluzione" : "Ultime ore: affidabilità buona, confronta con il live";
+      const c = stato.prev[LATI.length].hourly;
+      const disp = MODELLI.filter(m => (c["wind_speed_10m_" + m.id] || []).some(v => v != null));
+      const tab = document.getElementById("prevTab");
+      if (!disp.length) { tab.innerHTML = "<tbody><tr><td>Nessun modello arriva ancora all'11 ottobre: torna nei prossimi giorni.</td></tr></tbody>"; return; }
+      const cella = (k, g, d, cls) => k == null ? "<td>–</td>" :
+        '<td class="' + (cls || "") + '"><b>' + Math.round(k) + "</b>" + (g != null && !isNaN(g) ? "<small>/" + Math.round(g) + "</small>" : "") +
+        frecciaSvg(d) + "<small>" + (d != null ? cardinale(d) : "") + "</small></td>";
+      let h = "<thead><tr><th>Ora</th><th>Media</th>" + disp.map(m => "<th>" + m.nome + "</th>").join("") + "</tr></thead><tbody>";
+      for (let ora = 8; ora <= 17; ora++) {
+        const i = c.time.findIndex(t => t.endsWith("T" + String(ora).padStart(2, "0") + ":00"));
+        if (i < 0) continue;
+        const med = mediaModelli(LATI.length, ora);
+        h += '<tr class="' + (ora >= 10 && ora <= 15 ? "gara" : "") + '"><td><b>' + ora + ":00</b></td>" +
+          (med ? cella(med.kt, med.raffica, med.deg, "media") : "<td>–</td>") +
+          disp.map(m => cella(c["wind_speed_10m_" + m.id][i], (c["wind_gusts_10m_" + m.id] || [])[i], (c["wind_direction_10m_" + m.id] || [])[i])).join("") + "</tr>";
+      }
+      tab.innerHTML = h + "</tbody>";
+      document.getElementById("prevNota").textContent = "Media di " + disp.map(m => m.nome).join(", ") + " sul punto medio di ogni lato. " + aff.textContent + ".";
+    }
+
+    /* ---------- controlli ---------- */
+    function impostaModo(m) {
+      stato.modo = m;
+      document.querySelectorAll("[data-modo]").forEach(b => b.setAttribute("aria-pressed", String(b.getAttribute("data-modo") === m)));
+      document.getElementById("ctrlPrev").hidden = m !== "prev";
+      document.getElementById("ctrlSim").hidden = m !== "sim";
+    }
+    document.querySelectorAll("[data-modo]").forEach(b => b.addEventListener("click", () => { impostaModo(b.getAttribute("data-modo")); aggiornaTutto(); }));
+    document.querySelectorAll("[data-vista]").forEach(b => b.addEventListener("click", () => {
+      stato.vista = b.getAttribute("data-vista");
+      document.querySelectorAll("[data-vista]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      disegnaMappa();
+    }));
+    (function () {
+      const box = document.getElementById("prevOre");
+      for (let o = 10; o <= 15; o++) {
+        const b = document.createElement("button");
+        b.type = "button"; b.textContent = o + ":00"; b.setAttribute("aria-pressed", String(o === stato.prevOra));
+        b.addEventListener("click", () => {
+          stato.prevOra = o;
+          box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+          document.getElementById("prevOraOut").textContent = o + ":00";
+          aggiornaTutto();
+        });
+        box.appendChild(b);
+      }
+    })();
+
+    const SCENARI = [
+      { nome: "Bora", deg: 65, kt: 24, testo: "Da ENE, a raffiche, più forte sotto costa tra Barcola e Miramare. Si parte al lasco verso la boa 1, poi bolina dura dalla boa 2 fino a Miramare." },
+      { nome: "Borino", deg: 70, kt: 9, testo: "La Bora leggera del mattino: stessa geometria della Bora con meno pressione. Nelle giornate serene tende a calare verso mezzogiorno, quando entra la brezza." },
+      { nome: "Scirocco", deg: 135, kt: 14, testo: "Da SE, umido e con onda formata. Lati 1 e 3 veloci, ma il ritorno lungo costa verso Barcola e l'arrivo diventano di bolina." },
+      { nome: "Maestral", deg: 290, kt: 9, testo: "La brezza da ONO delle giornate stabili. Primo lato al traverso, poi poppa lungo costa verso Barcola e arrivo al lasco." },
+      { nome: "Garbin", deg: 225, kt: 12, testo: "Da SO: primo lato tutto di bolina fino alla boa 1, poi risalita verso Miramare in poppa. Si respira in mezzo al Golfo." },
+      { nome: "Bonaccia", deg: 240, kt: 3, testo: "Aria leggerissima e a chiazze: conta leggere l'acqua per trovare pressione. Vele leggere e pazienza, i distacchi si fanno sui buchi d'aria." }
+    ];
+    function impostaSim(deg, kt) {
+      stato.sim = { deg, kt };
+      document.getElementById("simDir").value = deg;
+      document.getElementById("simKt").value = kt;
+      document.getElementById("simDirOut").textContent = deg + "° (" + cardinale(deg) + " · " + nomeVento(deg, kt) + ")";
+      document.getElementById("simKtOut").textContent = kt + " kt";
+    }
+    (function () {
+      const pre = document.getElementById("simPreset");
+      SCENARI.forEach(sc => {
+        const b = document.createElement("button");
+        b.type = "button"; b.textContent = sc.nome;
+        b.addEventListener("click", () => { impostaSim(sc.deg, sc.kt); aggiornaTutto(); });
+        pre.appendChild(b);
+      });
+      ["simDir", "simKt"].forEach(id => document.getElementById(id).addEventListener("input", () => {
+        impostaSim(+document.getElementById("simDir").value, +document.getElementById("simKt").value);
+        aggiornaTutto();
+      }));
+      impostaSim(stato.sim.deg, stato.sim.kt);
+
+      document.getElementById("bcScenari").innerHTML = SCENARI.map((sc, i) =>
+        '<article class="bc-scen"><h3>' + sc.nome + " <small>" + cardinale(sc.deg) + " · ~" + sc.kt + " kt</small></h3><p>" + sc.testo + "</p>" +
+        '<div class="bc-scen-lati">' + LATI.map(l => {
+          const an = andatura(angoloVento(l.rotta, sc.deg).twa);
+          return '<span style="--c:' + ANDATURE[an.k].c + '" title="Lato ' + l.n + ": " + an.testo + '">' + l.n + " " + ANDATURE[an.k].nome + "</span>";
+        }).join("") + "</div>" +
+        '<button type="button" data-scen="' + i + '">Prova sul percorso</button></article>').join("");
+      document.querySelectorAll("[data-scen]").forEach(b => b.addEventListener("click", () => {
+        const sc = SCENARI[+b.getAttribute("data-scen")];
+        impostaSim(sc.deg, sc.kt); impostaModo("sim"); aggiornaTutto();
+        document.getElementById("mappaVento").scrollIntoView({ behavior: "smooth" });
+      }));
+    })();
+
+    /* ---------- countdown e condivisione ---------- */
+    function countdown() {
+      const ms = PARTENZA_ORA - Date.now();
+      const lab = document.getElementById("countLabel"), val = document.getElementById("countVal");
+      if (ms > 0) {
+        const g = Math.floor(ms / 86400000), h = Math.floor(ms / 3600000) % 24, m = Math.floor(ms / 60000) % 60;
+        lab.textContent = "Alla partenza mancano";
+        val.textContent = (g ? g + " g " : "") + h + " h " + String(m).padStart(2, "0") + " min";
+      } else if (ms > -7 * 3600000) {
+        lab.textContent = "Barcolana 58"; val.textContent = "Regata in corso ⛵";
+      } else {
+        lab.textContent = "Barcolana 58"; val.textContent = "Regata conclusa";
+      }
+    }
+    document.getElementById("shareCopy").addEventListener("click", function () {
+      const url = "https://ventotrieste.info/barcolana2026/", btn = this;
+      const fatto = () => { btn.textContent = "✅ Link copiato"; setTimeout(() => { btn.textContent = "🔗 Copia link"; }, 2200); };
+      if (navigator.share && window.matchMedia("(pointer: coarse)").matches) {
+        navigator.share({ title: "Vento Barcolana 2026", url }).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(fatto).catch(() => {});
+      }
+    });
+
+    /* ---------- avvio ---------- */
+    aggiornaTutto();
+    countdown();
+    setInterval(countdown, 30000);
+    caricaLive();
+    caricaPrevisioni();
+    setInterval(caricaLive, 5 * 60 * 1000);
+    setInterval(caricaPrevisioni, 60 * 60 * 1000);
+  })();
+  </script>
+</body>
+</html>
