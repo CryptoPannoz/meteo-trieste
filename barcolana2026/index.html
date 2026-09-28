@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <title>Vento Barcolana 2026 – il vento sul percorso in tempo reale</title>
-  <meta name="description" content="Vento sul percorso della Barcolana 2026 (11 ottobre, Trieste): mappa del percorso con le boe, vento live da Barcola, boa Mambo, boa Paloma e Muggia, andatura e vele lato per lato, previsioni, simulatore e classifiche. Anche in inglese." />
+  <meta name="description" content="Vento sul percorso della Barcolana 2026 (11 ottobre, Trieste): mappa del percorso con le boe, vento live da Barcola, boa Mambo, boa Paloma e Muggia, andatura e vele lato per lato, previsioni e classifiche. Anche in inglese." />
   <meta name="keywords" content="barcolana 2026, vento barcolana, meteo barcolana, percorso barcolana, barcolana 58, classifica barcolana, barcolana wind, barcolana weather, vento golfo di trieste, bora barcolana" />
   <link rel="canonical" href="https://ventotrieste.info/barcolana2026/" />
   <link rel="alternate" hreflang="it" href="https://ventotrieste.info/barcolana2026/" />
@@ -905,6 +905,8 @@
     .bc-lang button { margin: 0; min-height: 30px; padding: .2rem .55rem; border: 0; border-radius: 999px; background: transparent; color: var(--slate-2); font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer; }
     .bc-lang button[aria-pressed="true"] { background: var(--signal); color: #0b0d10; }
     :root[data-theme="light"] .bc-lang button[aria-pressed="true"] { background: var(--sea); color: #fff; }
+    #vento.hero { grid-template-columns: minmax(0, 1fr); }
+    .bc-regata { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
     .bc-lead { margin: .35rem 0 0; max-width: 760px; color: var(--slate-2); font-size: 1rem; line-height: 1.55; }
     .bc-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .75rem; }
     .bc-chip { display: inline-flex; align-items: center; gap: .35rem; padding: .32rem .7rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); color: var(--ink); font-size: .78rem; font-weight: 700; }
@@ -928,7 +930,7 @@
     :root[data-theme="light"] .bc-now-nome { color: var(--sea-dark); }
     .bc-now-raffica { font-size: .92rem; color: var(--slate-2); font-weight: 650; }
     .bc-now-fonti { margin: .45rem 0 .6rem; font-size: .78rem; color: var(--label); line-height: 1.45; }
-    .bc-staz-list { list-style: none; margin: 0 0 .7rem; padding: 0; display: grid; gap: .3rem; }
+    .bc-staz-list { list-style: none; margin: 0 0 .7rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: .35rem; }
     .bc-staz-list li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: .5rem; align-items: center; padding: .38rem .55rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-soft); font-size: .82rem; color: var(--ink); }
     .bc-staz-list .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bc-off); }
     .bc-staz-list .dot.ok { background: var(--bc-ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bc-ok) 25%, transparent); }
@@ -954,6 +956,7 @@
     :root[data-theme="light"] .bc-countdown strong { color: var(--sea-dark); }
     .bc-share { display: flex; flex-wrap: wrap; gap: .45rem; }
     .bc-share a, .bc-share button { flex: 1 1 auto; justify-content: center; text-align: center; margin: 0; }
+    .seo-spot-links .spot-btn[aria-current="page"] { border-color: var(--signal); }
     .bc-indip { margin: .75rem 0 0; font-size: .74rem; color: var(--label); line-height: 1.4; }
 
     /* --- mappa + lati --- */
@@ -1025,18 +1028,6 @@
     .bc-links { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .75rem; }
     .bc-links a { margin: 0; }
 
-    /* --- simulatore --- */
-    .bc-scen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .6rem; margin-bottom: 1rem; }
-    .bc-scen { border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem; background: var(--surface-soft); display: flex; flex-direction: column; gap: .4rem; cursor: pointer; text-align: left; font: inherit; color: var(--ink); margin: 0; }
-    .bc-scen:hover { border-color: var(--signal); }
-    .bc-scen[aria-pressed="true"] { border-color: var(--signal); box-shadow: 0 0 0 2px var(--signal) inset; }
-    :root[data-theme="light"] .bc-scen[aria-pressed="true"], :root[data-theme="light"] .bc-scen:hover { border-color: var(--sea); box-shadow: 0 0 0 2px var(--sea) inset; }
-    .bc-scen strong { font-size: .98rem; display: flex; justify-content: space-between; gap: .4rem; align-items: baseline; }
-    .bc-scen strong small { font-size: .74rem; color: var(--label); font-weight: 700; }
-    .bc-scen .bc-scen-txt { display: block; margin: 0; font-size: .8rem; font-weight: 500; color: var(--slate-2); line-height: 1.45; flex: 1; }
-    .bc-scen-lati { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .25rem; }
-    .bc-scen-lati span { font-size: .64rem; font-weight: 800; text-align: center; padding: .22rem .1rem; border-radius: 6px; background: color-mix(in srgb, var(--c) 22%, transparent); color: var(--ink); border-bottom: 3px solid var(--c); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
     /* --- classifiche --- */
     .bc-cl-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; margin: .2rem 0 .7rem; }
     .bc-cl-sum { margin: 0 0 .7rem; font-size: .88rem; color: var(--slate-2); line-height: 1.5; }
@@ -1063,7 +1054,7 @@
     .bc-avviso strong { color: var(--ink); }
 
     @media (max-width: 900px) {
-      .bc-layout, .bc-cl-grid { grid-template-columns: 1fr; }
+      .bc-layout, .bc-cl-grid, .bc-regata { grid-template-columns: 1fr; }
     }
     @media (max-width: 560px) {
       .bc-now-kt { font-size: 4.2rem; }
@@ -1072,9 +1063,6 @@
       .bc-barca { width: 44px; height: 44px; }
       .bc-seg button { padding: .34rem .62rem; font-size: .76rem; }
       .topbar-actions .topbar-live { display: none; }
-      /* scenari in riga scorrevole: la mappa del simulatore resta vicina */
-      .bc-scen-grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 84%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .35rem; -webkit-overflow-scrolling: touch; }
-      .bc-scen { scroll-snap-align: start; }
     }
   </style>
   <script type="application/ld+json">
@@ -1086,7 +1074,7 @@
         "name": "Vento Barcolana 2026 – il vento sul percorso in tempo reale",
         "url": "https://ventotrieste.info/barcolana2026/",
         "inLanguage": ["it", "en"],
-        "description": "Mappa del percorso della Barcolana 2026 con vento live da centraline e boe del Golfo di Trieste, andatura e vele lato per lato, previsioni per l'11 ottobre 2026, simulatore e classifiche delle edizioni passate.",
+        "description": "Mappa del percorso della Barcolana 2026 con vento live da centraline e boe del Golfo di Trieste, andatura e vele lato per lato, previsioni per l'11 ottobre 2026 e classifiche delle edizioni passate.",
         "isPartOf": { "@type": "WebSite", "name": "Vento Trieste", "url": "https://ventotrieste.info/" }
       },
       {
@@ -1121,7 +1109,6 @@
       <a href="#vento"><span class="l-it">Vento ora</span><span class="l-en">Wind now</span></a>
       <a href="#mappaVento"><span class="l-it">Percorso</span><span class="l-en">Course</span></a>
       <a href="#previsioni-gara"><span class="l-it">Previsioni</span><span class="l-en">Forecast</span></a>
-      <a href="#simulatore"><span class="l-it">Simulatore</span><span class="l-en">Simulator</span></a>
       <a href="#classifiche"><span class="l-it">Classifiche</span><span class="l-en">Results</span></a>
       <a href="/">Vento Trieste</a>
     </nav>
@@ -1131,15 +1118,9 @@
     <!-- 1. VENTO SUL CAMPO DI REGATA -->
     <section class="hero" id="vento">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="l-it">Barcolana 58 · domenica 11 ottobre 2026 · partenza 10:30</span><span class="l-en">Barcolana 58 · Sunday 11 October 2026 · start 10:30</span></p>
+        <p class="eyebrow">Barcolana 58 - 11.10.2026</p>
         <h1 class="site-page-title"><span class="l-it">Il vento sul percorso della Barcolana 2026</span><span class="l-en">Barcolana 2026: the wind on the race course</span></h1>
         <p class="bc-lead"><span class="l-it">Mappa del percorso, vento in tempo reale dalle centraline e dalle boe del Golfo, andatura e vele lato per lato, previsioni e classifiche. Gratis, per chi regata e per chi la segue da riva.</span><span class="l-en">Course map, live wind from the Gulf's weather stations and buoys, point of sail and sail choice for every leg, forecasts and past results. Free, for every crew and for everyone watching from the shore.</span></p>
-        <div class="bc-chips">
-          <span class="bc-chip"><b>13</b> <span class="l-it">miglia</span><span class="l-en">nautical miles</span></span>
-          <span class="bc-chip"><b>5</b> <span class="l-it">lati</span><span class="l-en">legs</span> · <b>4</b> <span class="l-it">boe</span><span class="l-en">marks</span></span>
-          <span class="bc-chip"><span class="l-it">Partenza Barcola–Miramare</span><span class="l-en">Start Barcola–Miramare</span></span>
-          <span class="bc-chip"><span class="l-it">Arrivo davanti a piazza Unità</span><span class="l-en">Finish off Piazza Unità</span></span>
-        </div>
       </div>
 
       <div class="console-card" id="campoOra">
@@ -1161,21 +1142,6 @@
         <p class="stato" id="ultimoAggiornamento" style="margin:.6rem 0 0;"></p>
       </div>
 
-      <aside class="side-card" id="regata">
-        <h2><span class="l-it">La regata</span><span class="l-en">The race</span></h2>
-        <ul class="bc-fatti">
-          <li><span aria-hidden="true">🗓️</span><span class="l-it"><strong>Domenica 11 ottobre 2026</strong>, partenza alle <strong>10:30</strong></span><span class="l-en"><strong>Sunday 11 October 2026</strong>, start at <strong>10:30</strong></span></li>
-          <li><span aria-hidden="true">🧭</span><span class="l-it">Quadrilatero a <strong>vertici fissi</strong> nel Golfo di Trieste, <strong>13 miglia</strong></span><span class="l-en">Fixed-mark quadrilateral course in the Gulf of Trieste, <strong>13 nautical miles</strong></span></li>
-          <li><span aria-hidden="true">🚩</span><span class="l-it">Linea di partenza tra le boe <strong>P1</strong> e <strong>P/4</strong>, tra la sede della SVBG a Barcola e Miramare</span><span class="l-en">Start line between marks <strong>P1</strong> and <strong>P/4</strong>, between the SVBG club at Barcola and Miramare</span></li>
-          <li><span aria-hidden="true">🏁</span><span class="l-it">Arrivo alla <strong>Diga del Porto Vecchio</strong>, davanti a piazza Unità</span><span class="l-en">Finish at the <strong>Porto Vecchio breakwater</strong>, off Piazza Unità</span></li>
-        </ul>
-        <div class="bc-countdown"><small id="countLabel">–</small><strong id="countVal">–</strong></div>
-        <div class="bc-share">
-          <a class="dona-btn" id="shareWa" href="#" target="_blank" rel="noopener">📲 <span class="l-it">Mandala all'equipaggio</span><span class="l-en">Send to your crew</span></a>
-          <button type="button" id="shareCopy">🔗 <span class="l-it">Copia link</span><span class="l-en">Copy link</span></button>
-        </div>
-        <p class="bc-indip"><span class="l-it">Pagina indipendente di ventotrieste.info: non è affiliata né approvata dall'organizzazione della regata. Per tutto ciò che è ufficiale fa fede</span><span class="l-en">Independent page by ventotrieste.info, not affiliated with or endorsed by the race organisers. For anything official, refer to</span> <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.</p>
-      </aside>
     </section>
 
     <!-- 2. PERCORSO -->
@@ -1185,10 +1151,6 @@
       <div class="bc-layout">
         <div>
           <div class="bc-map-head">
-            <div class="bc-seg" role="group" aria-label="Zoom">
-              <button type="button" data-vista="golfo" aria-pressed="true"><span class="l-it">Tutto il Golfo</span><span class="l-en">Whole Gulf</span></button>
-              <button type="button" data-vista="percorso" aria-pressed="false"><span class="l-it">Zoom percorso</span><span class="l-en">Zoom course</span></button>
-            </div>
             <p id="mappaModo"></p>
           </div>
           <div class="bc-mappa" id="bcMappa">
@@ -1231,29 +1193,28 @@
       </div>
     </section>
 
-    <!-- 4. SIMULATORE -->
-    <section class="section" id="simulatore">
-      <h2><span class="l-it">Simulatore · Che regata sarà? I venti tipici di ottobre</span><span class="l-en">Simulator · What kind of race? Typical October winds</span></h2>
-      <p class="stato" style="margin:.1rem 0 .8rem;"><span class="l-it">Ogni vento del Golfo ridisegna il percorso. Scegli uno scenario o regola direzione e intensità: la mappa e i lati si aggiornano subito.</span><span class="l-en">Every wind in the Gulf redraws the course. Pick a scenario or set direction and strength: the map and the legs update instantly.</span></p>
-      <div class="bc-scen-grid" id="bcScenari"></div>
-      <div class="bc-layout">
+    <!-- LA REGATA -->
+    <section class="section" id="regata">
+      <h2><span class="l-it">La regata</span><span class="l-en">The race</span></h2>
+      <div class="bc-regata">
+        <ul class="bc-fatti">
+          <li><span aria-hidden="true">🗓️</span><span class="l-it"><strong>Domenica 11 ottobre 2026</strong>, partenza alle <strong>10:30</strong></span><span class="l-en"><strong>Sunday 11 October 2026</strong>, start at <strong>10:30</strong></span></li>
+          <li><span aria-hidden="true">🧭</span><span class="l-it">Quadrilatero a <strong>vertici fissi</strong> nel Golfo di Trieste, <strong>13 miglia</strong></span><span class="l-en">Fixed-mark quadrilateral course in the Gulf of Trieste, <strong>13 nautical miles</strong></span></li>
+          <li><span aria-hidden="true">🚩</span><span class="l-it">Linea di partenza tra le boe <strong>P1</strong> e <strong>P/4</strong>, tra la sede della SVBG a Barcola e Miramare</span><span class="l-en">Start line between marks <strong>P1</strong> and <strong>P/4</strong>, between the SVBG club at Barcola and Miramare</span></li>
+          <li><span aria-hidden="true">🏁</span><span class="l-it">Arrivo alla <strong>Diga del Porto Vecchio</strong>, davanti a piazza Unità</span><span class="l-en">Finish at the <strong>Porto Vecchio breakwater</strong>, off Piazza Unità</span></li>
+        </ul>
         <div>
-          <div class="bc-mappa"><svg id="simSvg" role="img" xmlns="http://www.w3.org/2000/svg"></svg></div>
+        <div class="bc-countdown"><small id="countLabel">–</small><strong id="countVal">–</strong></div>
+        <div class="bc-share">
+          <a class="dona-btn" id="shareWa" href="#" target="_blank" rel="noopener">📲 <span class="l-it">Mandala all'equipaggio</span><span class="l-en">Send to your crew</span></a>
+          <button type="button" id="shareCopy">🔗 <span class="l-it">Copia link</span><span class="l-en">Copy link</span></button>
         </div>
-        <div class="bc-pannello">
-          <div class="bc-ctrl">
-            <label for="simDir"><span class="l-it">Vento da</span><span class="l-en">Wind from</span> <output id="simDirOut"></output></label>
-            <input type="range" id="simDir" min="0" max="355" step="5" value="65" />
-            <label for="simKt"><span class="l-it">Intensità</span><span class="l-en">Strength</span> <output id="simKtOut"></output></label>
-            <input type="range" id="simKt" min="0" max="40" step="1" value="24" />
-          </div>
-          <div class="bc-somma" id="simSomma"></div>
-          <ol class="bc-lati" id="simLati"></ol>
+        <p class="bc-indip"><span class="l-it">Pagina indipendente di ventotrieste.info: non è affiliata né approvata dall'organizzazione della regata. Per tutto ciò che è ufficiale fa fede</span><span class="l-en">Independent page by ventotrieste.info, not affiliated with or endorsed by the race organisers. For anything official, refer to</span> <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.</p>
         </div>
       </div>
     </section>
 
-    <!-- 5. CLASSIFICHE -->
+    <!-- CLASSIFICHE -->
     <section class="section" id="classifiche">
       <h2><span class="l-it">Classifiche delle edizioni passate</span><span class="l-en">Results of past editions</span></h2>
       <div class="bc-cl-head">
@@ -1282,6 +1243,7 @@
         <div class="bc-record" id="clRecord" style="margin:.1rem .9rem .7rem;"></div>
         <div class="bc-tab-wrap"><table class="bc-tab bc-tab-wrapok" id="clAlbo"></table></div>
       </details>
+      <div class="bc-links" id="clLink"></div>
       <p class="bc-nota"><span class="l-it">Fonti: albo d'oro dal Bando di Regata 2026, classifiche 2021–2025 da barcolana.it (qui solo top 10 e vincitori di categoria: la classifica completa è sul sito ufficiale).</span><span class="l-en">Sources: roll of honour from the 2026 Notice of Race, 2021–2025 results from barcolana.it (only top 10 and class winners here: full results on the official website).</span></p>
     </section>
 
@@ -1297,7 +1259,7 @@
       <section class="seo-spot-pages" aria-labelledby="pagineSpotBarcolanaSeo">
         <h2 id="pagineSpotBarcolanaSeo"><span class="l-it">Le altre pagine di Vento Trieste</span><span class="l-en">More from Vento Trieste</span></h2>
         <nav class="seo-spot-links" aria-label="Pagine meteo per spot">
-          <a class="spot-btn" href="/">🏠 Trieste · Barcola</a><a class="spot-btn" href="/mappa/">🗺️ <span class="l-it">Mappa del vento</span><span class="l-en">Wind map</span></a><a class="spot-btn" href="/muggia/">📍 Muggia</a><a class="spot-btn" href="/grado/">📍 Grado</a><a class="spot-btn" href="/lignano/">📍 Lignano</a>
+          <a class="spot-btn" href="/barcolana2026/" aria-current="page">⛵ Barcolana 58</a><a class="spot-btn" href="/">🏠 Trieste · Barcola</a><a class="spot-btn" href="/muggia/">📍 Muggia</a><a class="spot-btn" href="/zusterna/">📍 Žusterna</a><a class="spot-btn" href="/marinajulia/">📍 Marina Julia</a><a class="spot-btn" href="/grado/">📍 Grado</a><a class="spot-btn" href="/lignano/">📍 Lignano</a><a class="spot-btn" href="/lago-di-cavazzo/">📍 Lago di Cavazzo</a><a class="spot-btn" href="/mappa/">🗺️ <span class="l-it">Mappa del vento</span><span class="l-en">Wind map</span></a>
         </nav>
       </section>
     </section>
@@ -1389,8 +1351,6 @@
     const LUOGHI = [
       { nome: ["Miramare", "Miramare"], lat: 45.7026, lon: 13.7124, dx: 10, dy: -2 },
       { nome: ["Grignano", "Grignano"], lat: 45.7097, lon: 13.7108, dx: 10, dy: -8 },
-      { nome: ["Faro della Vittoria", "Victory Lighthouse"], lat: 45.6742, lon: 13.7600, dx: 9, dy: 5, punto: true, soloZoom: true },
-      { nome: ["Piazza Unità", "Piazza Unità"], lat: 45.6505, lon: 13.7672, dx: 8, dy: 12, punto: true, soloZoom: true },
       { nome: ["Trieste", "Trieste"], lat: 45.6405, lon: 13.7760, dx: 0, dy: 0, grande: true },
       { nome: ["SLOVENIJA", "SLOVENIA"], lat: 45.579, lon: 13.752, dx: 0, dy: 0, stato: true },
       { nome: ["Golfo di Trieste", "Gulf of Trieste"], lat: 45.690, lon: 13.590, dx: 0, dy: 0, golfo: true }
@@ -1504,7 +1464,7 @@
     }
 
     /* ---------- stato ---------- */
-    const stato = { modo: "live", vista: "golfo", live: {}, prev: null, prevOra: 11, sim: { deg: 65, kt: 24 }, simScen: 0, sel: null };
+    const stato = { modo: "live", live: {}, prev: null, prevOra: 11, sel: null };
 
     /* vento stimato in un punto: media pesata 1/d² delle stazioni a mare disponibili */
     function stimaVento(punto) {
@@ -1546,11 +1506,10 @@
       return { kt: sk / n, raffica: ng ? sg / ng : NaN, deg: (sx || sy) ? norm360(Math.atan2(sx, sy) * 180 / Math.PI) : null, fonti: nomi };
     }
     const ventoPrincipale = i => stato.modo === "prev" ? mediaModelli(i, stato.prevOra) : stimaVento(LATI[i].mid);
-    const ventoSim = () => ({ kt: stato.sim.kt, raffica: NaN, deg: stato.sim.deg, fonti: [] });
 
-    /* ---------- mappa (condivisa tra percorso e simulatore) ---------- */
+    /* ---------- mappa del percorso ---------- */
     const SVG_NS = "http://www.w3.org/2000/svg";
-    const VISTE = { golfo: { x: 0, y: 0, w: 1000, h: COSTA.h }, percorso: { x: 395, y: 30, w: 600, h: 625 } };
+    const VISTA = { x: 0, y: 0, w: 1000, h: COSTA.h };   // tutto il Golfo: boe, Paloma, Muggia e costa slovena
     function el(tag, attrs, testo) {
       const n = document.createElementNS(SVG_NS, tag);
       for (const k in attrs) n.setAttribute(k, attrs[k]);
@@ -1578,7 +1537,7 @@
     }
 
     function disegnaMappa(svg, opt) {
-      const vb = VISTE[opt.vista];
+      const vb = VISTA;
       const s = vb.w / 590;                               // simboli di dimensione costante a schermo
       svg.setAttribute("viewBox", vb.x + " " + vb.y + " " + vb.w + " " + vb.h);
       svg.setAttribute("aria-label", tr("Mappa del percorso della Barcolana con boe, centraline e vento", "Barcolana course map with marks, stations and wind"));
@@ -1590,7 +1549,6 @@
 
       const gL = el("g", {});
       LUOGHI.forEach(l => {
-        if (l.soloZoom && opt.vista === "golfo") return;   // sul golfo intero si accavallerebbero a Barcola
         const x = px(l.lon), y = py(l.lat), nome = tr(l.nome[0], l.nome[1]);
         if (l.punto) gL.appendChild(el("circle", { cx: x, cy: y, r: 2.4 * s, fill: "var(--bc-etichetta)" }));
         const extra = l.grande ? { "font-weight": 800, "letter-spacing": 1 } :
@@ -1660,7 +1618,6 @@
         STAZIONI.forEach(st => disegnaStazione(gS, st, stato.live[st.id], vb, s, opt));
         svg.appendChild(gS);
       }
-      if (opt.rosa) disegnaRosa(svg, vb, s, opt.rosa);
 
       // nord e scala (1 miglio = 1/60 di grado di latitudine)
       const unitaMiglio = KY / 60;
@@ -1671,20 +1628,6 @@
       const nx0 = sx0 + unitaMiglio + 26 * s, ny0 = vb.y + 22 * s;
       svg.appendChild(el("path", { d: "M" + nx0 + "," + (ny0 - 12 * s) + " l" + (6 * s) + "," + (16 * s) + " l" + (-6 * s) + "," + (-4.5 * s) + " l" + (-6 * s) + "," + (4.5 * s) + "z", fill: "var(--bc-etichetta)", opacity: .85 }));
       testo(svg, nx0, ny0 + 17 * s, "N", s * .9, { "text-anchor": "middle", "font-weight": 900 });
-    }
-
-    /* rosa del vento del simulatore: freccia grande in alto a destra */
-    function disegnaRosa(svg, vb, s, v) {
-      const cx = vb.x + vb.w - 58 * s, cy = vb.y + 62 * s, R = 40 * s;
-      const g = el("g", {});
-      g.appendChild(el("circle", { cx, cy, r: R, fill: "var(--bc-alone)", "fill-opacity": .72, stroke: "var(--bc-etichetta)", "stroke-width": 1.2 * s, "stroke-opacity": .5 }));
-      const col = coloreKt(v.kt);
-      const fr = el("g", { transform: "translate(" + cx + " " + cy + ") rotate(" + norm360(v.deg + 180) + ")" });
-      fr.appendChild(el("line", { x1: 0, y1: R * .78, x2: 0, y2: -R * .45, stroke: col, "stroke-width": 5 * s, "stroke-linecap": "round" }));
-      fr.appendChild(el("path", { d: "M0," + (-R * .82) + " L" + (-9 * s) + "," + (-R * .38) + " L" + (9 * s) + "," + (-R * .38) + "Z", fill: col }));
-      g.appendChild(fr);
-      testo(g, cx, cy + R + 16 * s, Math.round(v.kt) + " kt " + cardinale(v.deg), s, { "text-anchor": "middle", "font-weight": 850 });
-      svg.appendChild(g);
     }
 
     /* simbolo stazione: cerchio con i nodi + freccia verso dove VA il vento;
@@ -1765,7 +1708,7 @@
           corpo = '<div class="bc-lato-vento">' + (opt.modo === "prev" ? tr("Previsione non ancora disponibile per quest'ora.", "Forecast not yet available for this time.") : tr("In attesa dei dati delle centraline…", "Waiting for station data…")) + "</div>";
         } else {
           corpo = '<div class="bc-lato-and">' + a.an.testo + ' <small>· ' + [Math.round(a.twa) + tr("° dal vento", "° off the wind"), a.mure, a.an.nota].filter(Boolean).join(" · ") + "</small></div>" +
-            (opt.modo === "sim" ? "" : '<div class="bc-lato-vento">' + Math.round(a.v.kt) + " kt" + (!isNaN(a.v.raffica) ? " (" + tr("raff. ", "gust ") + Math.round(a.v.raffica) + ")" : "") +
+            ('<div class="bc-lato-vento">' + Math.round(a.v.kt) + " kt" + (!isNaN(a.v.raffica) ? " (" + tr("raff. ", "gust ") + Math.round(a.v.raffica) + ")" : "") +
               tr(" da ", " from ") + cardinale(a.v.deg) + " " + Math.round(a.v.deg) + "° · " + nomeVento(a.v.deg, a.v.kt) +
               (a.v.fonti && a.v.fonti.length ? " · " + a.v.fonti.join(", ") : "") + "</div>") +
             '<div class="bc-lato-vele">⛵ ' + a.vele.v + (a.vele.nota ? "<em>" + a.vele.nota + "</em>" : "") + "</div>";
@@ -1803,7 +1746,7 @@
     svgMappa.addEventListener("click", () => { if (stato.sel) { stato.sel = null; aggiornaPercorso(); } });
     function aggiornaPercorso() {
       const an = analisi(ventoPrincipale);
-      disegnaMappa(svgMappa, { vista: stato.vista, an, stazioni: true, sel: stato.sel, onLato: n => seleziona("l" + n), onStaz: id => seleziona("s" + id) });
+      disegnaMappa(svgMappa, { an, stazioni: true, sel: stato.sel, onLato: n => seleziona("l" + n), onStaz: id => seleziona("s" + id) });
       document.getElementById("bcMappa").classList.toggle("bc-ha-sel", !!(stato.sel && stato.sel[0] === "l"));
       disegnaLati(document.getElementById("bcLati"), an, { modo: stato.modo, sel: stato.sel, onLato: n => seleziona("l" + n) });
       disegnaSomma(document.getElementById("bcSomma"), an, stato.modo === "live" ? tr("Con il vento di adesso il percorso è:", "With the current wind the course is:") :
@@ -1860,47 +1803,6 @@
         document.getElementById("mappaVento").scrollIntoView({ behavior: "smooth" });
       }));
     }
-
-    /* ---------- simulatore ---------- */
-    const SCENARI = [
-      { nome: ["Bora", "Bora"], deg: 65, kt: 24, testo: ["Da ENE, a raffiche, più forte sotto costa tra Barcola e Miramare. Si parte al lasco verso la boa 1, poi bolina dura dalla boa 2 fino a Miramare.", "From ENE, gusty, strongest along the shore between Barcola and Miramare. A broad reach to mark 1, then a hard beat from mark 2 up to Miramare."] },
-      { nome: ["Borino", "Light Bora"], deg: 70, kt: 9, testo: ["La Bora leggera del mattino: stessa geometria della Bora con meno pressione. Nelle giornate serene tende a calare verso mezzogiorno, quando entra la brezza.", "The light morning Bora: same geometry, less pressure. On clear days it tends to fade around midday, when the sea breeze fills in."] },
-      { nome: ["Scirocco", "Sirocco"], deg: 135, kt: 14, testo: ["Da SE, umido e con onda formata. Lati 1 e 3 veloci, ma il ritorno lungo costa verso Barcola e l'arrivo diventano di bolina.", "From SE, humid, with a building sea. Legs 1 and 3 are fast, but the run back along the shore to Barcola and the finish become upwind."] },
-      { nome: ["Maestral", "Maestral"], deg: 290, kt: 9, testo: ["La brezza da ONO delle giornate stabili. Primo lato al traverso, poi poppa lungo costa verso Barcola e arrivo al lasco.", "The WNW sea breeze of settled days. First leg on a reach, then downwind along the shore to Barcola and a broad reach to the finish."] },
-      { nome: ["Garbin", "Garbin (SW)"], deg: 225, kt: 12, testo: ["Da SO: primo lato tutto di bolina fino alla boa 1, poi risalita verso Miramare in poppa. Si respira in mezzo al Golfo.", "From SW: a full beat to mark 1, then downwind back up to Miramare. More pressure in the middle of the Gulf."] },
-      { nome: ["Bonaccia", "Calm"], deg: 240, kt: 3, testo: ["Aria leggerissima e a chiazze: conta leggere l'acqua per trovare pressione. Vele leggere e pazienza, i distacchi si fanno sui buchi d'aria.", "Very light, patchy air: read the water to find pressure. Light sails and patience, gaps open up in the holes."] }
-    ];
-    const svgSim = document.getElementById("simSvg");
-    function aggiornaSimulatore() {
-      const an = analisi(ventoSim);
-      disegnaMappa(svgSim, { vista: "percorso", an, stazioni: false, rosa: stato.sim });
-      disegnaLati(document.getElementById("simLati"), an, { modo: "sim" });
-      disegnaSomma(document.getElementById("simSomma"), an, tr("Con questo vento il percorso è:", "With this wind the course is:"));
-      document.getElementById("simDirOut").textContent = stato.sim.deg + "° (" + cardinale(stato.sim.deg) + " · " + nomeVento(stato.sim.deg, stato.sim.kt) + ")";
-      document.getElementById("simKtOut").textContent = stato.sim.kt + " kt";
-      document.querySelectorAll("[data-scen]").forEach(b => b.setAttribute("aria-pressed", String(+b.getAttribute("data-scen") === stato.simScen)));
-    }
-    function disegnaScenari() {
-      document.getElementById("bcScenari").innerHTML = SCENARI.map((sc, i) =>
-        '<button type="button" class="bc-scen" data-scen="' + i + '" aria-pressed="' + (i === stato.simScen) + '"><strong>' + tr(sc.nome[0], sc.nome[1]) + " <small>" + cardinale(sc.deg) + " · ~" + sc.kt + " kt</small></strong><span class=\"bc-scen-txt\">" + tr(sc.testo[0], sc.testo[1]) + "</span>" +
-        '<span class="bc-scen-lati">' + LATI.map(l => {
-          const an = andatura(angoloVento(l.rotta, sc.deg).twa);
-          return '<span style="--c:' + ANDATURE[an.k].c + '" title="' + tr("Lato ", "Leg ") + l.n + ": " + an.testo + '">' + l.n + " " + nomeAnd(an.k) + "</span>";
-        }).join("") + "</span></button>").join("");
-      document.querySelectorAll("[data-scen]").forEach(b => b.addEventListener("click", () => {
-        const sc = SCENARI[+b.getAttribute("data-scen")];
-        stato.simScen = +b.getAttribute("data-scen");
-        stato.sim = { deg: sc.deg, kt: sc.kt };
-        document.getElementById("simDir").value = sc.deg;
-        document.getElementById("simKt").value = sc.kt;
-        aggiornaSimulatore();
-      }));
-    }
-    ["simDir", "simKt"].forEach(id => document.getElementById(id).addEventListener("input", () => {
-      stato.sim = { deg: +document.getElementById("simDir").value, kt: +document.getElementById("simKt").value };
-      stato.simScen = -1;
-      aggiornaSimulatore();
-    }));
 
     /* ---------- dati live ---------- */
     function oraDiOggi(hhmm) {
@@ -2115,6 +2017,14 @@
 
       document.getElementById("clVentoLeg").innerHTML = Object.keys(ANDATURE).map(k => '<span style="--c:' + ANDATURE[k].c + '"><i></i>' + nomeAnd(k) + "</span>").join("");
 
+      // link alle classifiche ufficiali complete, edizione per edizione
+      document.getElementById("clLink").innerHTML = anni.map(a => '<a class="spot-btn" target="_blank" rel="noopener" href="' +
+          (LANG === "en" ? "https://www.barcolana.it/en/regatta/barcolana" + EDIZIONE[a] + "-results" : "https://www.barcolana.it/it/regata/classifica-barcolana" + EDIZIONE[a]) +
+          '">🏆 ' + tr("Classifica ", "Results ") + "Barcolana " + EDIZIONE[a] + " (" + a + ") ↗</a>").join("") +
+        '<a class="spot-btn" target="_blank" rel="noopener" href="' + tr("https://www.barcolana.it/it/regata/classifiche-edizioni-precedenti", "https://www.barcolana.it/en/regatta/previews-edition-s-results") + '">' +
+        tr("Tutte le classifiche", "All results") + " ↗</a>" +
+        '<a class="spot-btn" target="_blank" rel="noopener" href="https://www.barcolana.it/it/albo-d-oro">' + tr("Albo d'oro ufficiale", "Official roll of honour") + " ↗</a>";
+
       // albo d'oro e record
       const conta = {};
       ALBO.forEach(r => { if (r[1]) conta[r[1]] = (conta[r[1]] || 0) + 1; });
@@ -2131,11 +2041,6 @@
       document.getElementById("ctrlPrev").hidden = m !== "prev";
     }
     document.querySelectorAll("[data-modo]").forEach(b => b.addEventListener("click", () => { impostaModo(b.getAttribute("data-modo")); aggiornaPercorso(); }));
-    document.querySelectorAll("[data-vista]").forEach(b => b.addEventListener("click", () => {
-      stato.vista = b.getAttribute("data-vista");
-      document.querySelectorAll("[data-vista]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-      aggiornaPercorso();
-    }));
     (function () {
       const box = document.getElementById("prevOre");
       for (let o = 10; o <= 15; o++) {
@@ -2189,7 +2094,7 @@
 
     /* il dock mobile di footer-widgets.js ha etichette solo in italiano */
     function etichetteDock() {
-      const nomi = { "#vento": ["Ora", "Now"], "#mappaVento": ["Mappa", "Map"], "#previsioni-gara": ["Previsioni", "Forecast"], "#simulatore": ["Simulatore", "Simulator"], "#classifiche": ["Classifiche", "Results"] };
+      const nomi = { "#vento": ["Ora", "Now"], "#mappaVento": ["Mappa", "Map"], "#previsioni-gara": ["Previsioni", "Forecast"], "#classifiche": ["Classifiche", "Results"] };
       document.querySelectorAll(".ux-mobile-dock a").forEach(a => {
         const n = nomi[a.getAttribute("href")], lab = a.querySelector(".ux-dock-label");
         if (n && lab) lab.textContent = tr(n[0], n[1]);
@@ -2205,8 +2110,8 @@
       document.querySelectorAll("[data-lang-btn]").forEach(b => b.setAttribute("aria-pressed", String(b.getAttribute("data-lang-btn") === LANG)));
       document.title = tr("Vento Barcolana 2026 – il vento sul percorso in tempo reale", "Barcolana 2026 wind – live wind on the race course");
       CAT.P = tr("Passere", "Passere");
-      disegnaLegenda(); disegnaScenari(); disegnaClassifiche(); disegnaPrevisioni();
-      aggiornaHero(); aggiornaPercorso(); aggiornaSimulatore(); countdown(); aggiornaCondivisione(); etichetteDock();
+      disegnaLegenda(); disegnaClassifiche(); disegnaPrevisioni();
+      aggiornaHero(); aggiornaPercorso(); countdown(); aggiornaCondivisione(); etichetteDock();
       const agg = document.getElementById("ultimoAggiornamento");
       if (!caricamentoInCorso && Object.keys(stato.live).length) {
         const n = STAZIONI.filter(s => stato.live[s.id]).length;
