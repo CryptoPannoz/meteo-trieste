@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vento Barcolana – ventotrieste.info</title>
+  <meta name="robots" content="noindex" />
+  <link rel="canonical" href="https://ventotrieste.info/barcolana2026/" />
+  <!-- Indirizzo breve stampato su adesivi e poster: punta sempre alla pagina dell'edizione
+       in corso (l'anno prossimo basta cambiare la destinazione). ?s= dice da dove arriva
+       la visita, e finisce come sorgente utm nelle statistiche GoatCounter. -->
+  <meta http-equiv="refresh" content="0; url=/barcolana2026/?utm_source=link-barcolana" />
+  <script>
+    (function () {
+      var sorgenti = { a: "qr-adesivo", p: "qr-poster", c: "qr-biglietto" };
+      var s = null;
+      try { s = new URLSearchParams(location.search).get("s"); } catch (e) {}
+      location.replace("/barcolana2026/?utm_source=" + (sorgenti[s] || "link-barcolana"));
+    })();
+  </script>
+</head>
+<body>
+  <p><a href="/barcolana2026/">Vento Barcolana 2026 →</a></p>
+</body>
+</html>
