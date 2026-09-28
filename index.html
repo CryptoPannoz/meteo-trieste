@@ -1581,6 +1581,35 @@
   </header>
 
   <main>
+    <!-- BANNER BARCOLANA 2026: si nasconde da solo dal 12 ottobre 2026 -->
+    <a class="barcolana-banner" id="barcolanaBanner" href="/barcolana2026/">
+      <span class="bb-kicker">⛵ Barcolana 2026 · dom 11 ottobre</span>
+      <span class="bb-titolo">Il vento sul percorso della Barcolana, lato per lato</span>
+      <span class="bb-sub">Mappa con le boe, vento live da Barcola, boa Mambo e boa Paloma, previsioni e classifiche <b id="bbCount"></b></span>
+      <span class="bb-cta">Apri →</span>
+    </a>
+    <style>
+      .barcolana-banner { display: grid; grid-template-columns: 1fr auto; gap: .15rem 1rem; align-items: center; max-width: 1160px; margin: .9rem auto 0; padding: .85rem 1rem; border: 1px solid var(--line, #2a343d); border-left: 5px solid var(--signal, #f0f43c); border-radius: 14px; background: var(--surface, #10151a); color: var(--ink, #f4f7f8); text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+      .barcolana-banner:hover { border-color: var(--signal, #f0f43c); }
+      .barcolana-banner .bb-kicker { grid-column: 1; font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--signal, #f0f43c); }
+      :root[data-theme="light"] .barcolana-banner .bb-kicker { color: var(--sea-dark, #0c5868); }
+      .barcolana-banner .bb-titolo { grid-column: 1; font-size: 1.08rem; font-weight: 800; line-height: 1.25; }
+      .barcolana-banner .bb-sub { grid-column: 1; font-size: .8rem; color: var(--slate-2, #b1bcc4); line-height: 1.4; }
+      .barcolana-banner .bb-sub b { color: var(--ink, #f4f7f8); white-space: nowrap; }
+      .barcolana-banner .bb-cta { grid-column: 2; grid-row: 1 / span 3; padding: .55rem .95rem; border-radius: 999px; background: var(--signal, #f0f43c); color: #0b0d10; font-weight: 800; font-size: .85rem; white-space: nowrap; }
+      :root[data-theme="light"] .barcolana-banner .bb-cta { background: var(--sea, #176f80); color: #fff; }
+      @media (max-width: 560px) { .barcolana-banner { grid-template-columns: 1fr; } .barcolana-banner .bb-cta { grid-column: 1; grid-row: auto; justify-self: start; margin-top: .35rem; } }
+    </style>
+    <script>
+      (function () {
+        var fine = Date.parse("2026-10-12T00:00:00+02:00"), partenza = Date.parse("2026-10-11T10:30:00+02:00");
+        var b = document.getElementById("barcolanaBanner");
+        if (!b) return;
+        if (Date.now() >= fine) { b.remove(); return; }
+        var g = Math.ceil((partenza - Date.now()) / 86400000), c = document.getElementById("bbCount");
+        if (c) c.textContent = g > 1 ? "· mancano " + g + " giorni" : g === 1 ? "· è domani!" : "· è oggi!";
+      })();
+    </script>
     <h1 class="site-page-title">Vento a Trieste in tempo reale</h1>
     <section class="hero" id="vento">
       <!-- SURFOMETRO (scheda a parte) -->
@@ -3646,6 +3675,7 @@
         <h2 id="pagineSpotSeo">Pagine meteo dedicate agli spot del Golfo di Trieste</h2>
         <p>Vento Trieste offre pagine dedicate con vento in tempo reale, raffiche, direzione e previsioni per gli spot di Trieste e Barcola, Muggia, Žusterna, Marina Julia, Grado, Lignano e il Lago di Cavazzo.</p>
         <nav class="seo-spot-links" aria-label="Pagine meteo per spot">
+          <a class="spot-btn" href="./barcolana2026/">⛵ Barcolana 2026</a>
           <a class="spot-btn" href="./">🏠 Trieste</a>
           <a class="spot-btn" href="./muggia/">📍 Muggia</a>
           <a class="spot-btn" href="./zusterna/">📍 Žusterna</a>

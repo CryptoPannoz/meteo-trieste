@@ -3,7 +3,7 @@
 
 Stessa idea di mappa/genera-costa.py ma molto piu' zoomata: OSM natural=coastline +
 dighe (man_made=breakwater) + moli lunghi (man_made=pier), proiettati nel viewBox
-1000 x 732 della mappa del percorso. Output: costa.js (window.BARCOLANA_COSTA).
+1000 x 842 della mappa del percorso. Output: costa.js (window.BARCOLANA_COSTA).
 Costa: dati (c) OpenStreetMap contributors (ODbL).
 
 Uso:  python3 genera-costa.py            (scarica da Overpass, cache in overpass.json)
@@ -14,7 +14,7 @@ import json, math, os, sys, urllib.parse, urllib.request
 # bbox della query (piu' larga della mappa, cosi' la catena costiera entra ed esce lontano)
 QS, QW, QN, QE = 45.50, 13.40, 45.80, 13.95
 # bbox della mappa: DEVE combaciare con LON0/LAT1/KX/KY in index.html
-LON0, LON1, LAT0, LAT1 = 13.54, 13.80, 45.595, 45.728
+LON0, LON1, LAT0, LAT1 = 13.54, 13.80, 45.575, 45.728
 KX = 1000 / (LON1 - LON0)                       # 3846.15 unita' per grado di longitudine
 KY = KX / math.cos(math.radians((LAT0 + LAT1) / 2))   # stessa scala metrica in latitudine
 W, H = 1000.0, round((LAT1 - LAT0) * KY)

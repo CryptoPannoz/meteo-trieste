@@ -7,19 +7,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
   <title>Vento Barcolana 2026 – il vento sul percorso in tempo reale</title>
-  <meta name="description" content="Vento sul percorso della Barcolana 2026 (11 ottobre, Trieste): mappa del percorso con boe, vento live da Barcola, boa Mambo e boa Paloma, andatura e vele lato per lato, previsioni per il giorno della regata." />
-  <meta name="keywords" content="barcolana 2026, vento barcolana, meteo barcolana, percorso barcolana, barcolana 58, vento golfo di trieste, bora barcolana, previsioni barcolana" />
+  <meta name="description" content="Vento sul percorso della Barcolana 2026 (11 ottobre, Trieste): mappa del percorso con le boe, vento live da Barcola, boa Mambo, boa Paloma e Muggia, andatura e vele lato per lato, previsioni, simulatore e classifiche. Anche in inglese." />
+  <meta name="keywords" content="barcolana 2026, vento barcolana, meteo barcolana, percorso barcolana, barcolana 58, classifica barcolana, barcolana wind, barcolana weather, vento golfo di trieste, bora barcolana" />
   <link rel="canonical" href="https://ventotrieste.info/barcolana2026/" />
+  <link rel="alternate" hreflang="it" href="https://ventotrieste.info/barcolana2026/" />
+  <link rel="alternate" hreflang="en" href="https://ventotrieste.info/barcolana2026/?lang=en" />
   <meta name="robots" content="index, follow" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Vento Trieste" />
   <meta property="og:title" content="Vento Barcolana 2026 – il vento sul percorso, live" />
-  <meta property="og:description" content="Mappa del percorso, vento live dalle centraline e dalle boe del Golfo, andatura e vele lato per lato. Gratis, per tutti i regatanti." />
+  <meta property="og:description" content="Mappa del percorso, vento live dalle centraline e dalle boe del Golfo, andatura e vele lato per lato. Gratis, per tutti i regatanti. Also in English." />
   <meta property="og:url" content="https://ventotrieste.info/barcolana2026/" />
-  <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
+  <meta property="og:image" content="https://ventotrieste.info/barcolana2026/og-barcolana2026.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Barche ormeggiate sulle Rive di Trieste davanti a piazza Unità nella settimana della Barcolana" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ventotrieste.info/barcolana2026/og-barcolana2026.jpg" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E⛵%3C/text%3E%3C/svg%3E" />
-  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}
+    /* lingua: ?lang= > scelta salvata > lingua del browser (italiano o inglese) */
+    var l=null;try{var q=new URLSearchParams(location.search).get("lang");if(q==="it"||q==="en"){l=q;localStorage.setItem("vento-trieste-lang",q);}else{l=localStorage.getItem("vento-trieste-lang");}}catch(e){}
+    if(l!=="it"&&l!=="en")l=/^it\b/i.test(navigator.language||"it")?"it":"en";
+    document.documentElement.setAttribute("data-lang",l);document.documentElement.lang=l;})();</script>
   <style>
     :root {
       --slate: #1f2d3d;
@@ -878,16 +888,23 @@
     /* ================= Barcolana 2026 =================
        Base (topbar, hero, card, footer) copiata dalle pagine spot; palette scura e tema
        chiaro da footer-widgets.css. Qui solo i pezzi della pagina regata (prefisso bc-). */
+    :root[data-lang="it"] .l-en, :root[data-lang="en"] .l-it { display: none !important; }
     :root {
       --bc-bolina: #ff6b6b; --bc-traverso: #f0f43c; --bc-lasco: #43d39e; --bc-poppa: #5cb8ff; --bc-neutro: #8fa0ab;
       --bc-mare: #0a1a22; --bc-terra: #1a2228; --bc-costa: #4d606b; --bc-diga: #66747d;
-      --bc-etichetta: #c3cdd4; --bc-alone: #07090c; --bc-boa: #ff9f1c; --bc-rotta-casing: rgba(0,0,0,.55);
+      --bc-etichetta: #c3cdd4; --bc-alone: #07090c; --bc-boa: #ff5a6e; --bc-rotta-casing: rgba(0,0,0,.55);
+      --bc-ok: #3ddc84; --bc-warn: #f5a524; --bc-off: #6b7780;
     }
     :root[data-theme="light"] {
       --bc-bolina: #c92b3a; --bc-traverso: #8c7400; --bc-lasco: #0e8a5f; --bc-poppa: #1f6fd1; --bc-neutro: #6a7a84;
       --bc-mare: #d3ecf2; --bc-terra: #f5f1e7; --bc-costa: #7d9ba4; --bc-diga: #9fabb0;
-      --bc-etichetta: #2d4149; --bc-alone: #ffffff; --bc-boa: #d85f00; --bc-rotta-casing: rgba(255,255,255,.85);
+      --bc-etichetta: #2d4149; --bc-alone: #ffffff; --bc-boa: #d61f45; --bc-rotta-casing: rgba(255,255,255,.85);
+      --bc-ok: #12924a; --bc-warn: #b86e00; --bc-off: #8a969d;
     }
+    .bc-lang { display: inline-flex; gap: .15rem; padding: .15rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); }
+    .bc-lang button { margin: 0; min-height: 30px; padding: .2rem .55rem; border: 0; border-radius: 999px; background: transparent; color: var(--slate-2); font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer; }
+    .bc-lang button[aria-pressed="true"] { background: var(--signal); color: #0b0d10; }
+    :root[data-theme="light"] .bc-lang button[aria-pressed="true"] { background: var(--sea); color: #fff; }
     .bc-lead { margin: .35rem 0 0; max-width: 760px; color: var(--slate-2); font-size: 1rem; line-height: 1.55; }
     .bc-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .75rem; }
     .bc-chip { display: inline-flex; align-items: center; gap: .35rem; padding: .32rem .7rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); color: var(--ink); font-size: .78rem; font-weight: 700; }
@@ -895,7 +912,13 @@
     :root[data-theme="light"] .bc-chip b { color: var(--sea-dark); }
 
     /* --- vento sul campo, ora --- */
-    .bc-now { display: flex; align-items: center; gap: 1.1rem; margin: .4rem 0 .2rem; flex-wrap: wrap; }
+    .bc-card-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; }
+    .bc-card-head h2 { margin: 0; }
+    .bc-refresh { margin: 0; min-height: 38px; padding: .4rem .85rem; font-weight: 800; border-radius: 999px; }
+    .bc-refresh[aria-busy="true"] { opacity: .7; cursor: progress; }
+    .bc-refresh[aria-busy="true"] .bc-giro { display: inline-block; animation: bc-giro 1s linear infinite; }
+    @keyframes bc-giro { to { transform: rotate(360deg); } }
+    .bc-now { display: flex; align-items: center; gap: 1.1rem; margin: .5rem 0 .2rem; flex-wrap: wrap; }
     .bc-now-kt { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 5.2rem; line-height: .9; color: var(--ink); letter-spacing: -.02em; }
     .bc-now-kt small { font-size: 1.6rem; margin-left: .2rem; color: var(--label); font-weight: 600; }
     .bc-now-info { display: grid; gap: .15rem; min-width: 0; }
@@ -904,17 +927,26 @@
     .bc-now-nome { font-size: .95rem; font-weight: 800; color: var(--signal); text-transform: uppercase; letter-spacing: .06em; }
     :root[data-theme="light"] .bc-now-nome { color: var(--sea-dark); }
     .bc-now-raffica { font-size: .92rem; color: var(--slate-2); font-weight: 650; }
-    .bc-now-fonti { margin: .55rem 0 .7rem; font-size: .8rem; color: var(--label); line-height: 1.45; }
+    .bc-now-fonti { margin: .45rem 0 .6rem; font-size: .78rem; color: var(--label); line-height: 1.45; }
+    .bc-staz-list { list-style: none; margin: 0 0 .7rem; padding: 0; display: grid; gap: .3rem; }
+    .bc-staz-list li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: .5rem; align-items: center; padding: .38rem .55rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-soft); font-size: .82rem; color: var(--ink); }
+    .bc-staz-list .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bc-off); }
+    .bc-staz-list .dot.ok { background: var(--bc-ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bc-ok) 25%, transparent); }
+    .bc-staz-list .dot.warn { background: var(--bc-warn); }
+    .bc-staz-list b { font-weight: 800; }
+    .bc-staz-list .v { font-weight: 700; color: var(--slate-2); white-space: nowrap; }
+    .bc-staz-list .v svg { width: 1rem; height: 1rem; vertical-align: -.2rem; }
+    .bc-staz-list small { display: block; color: var(--label); font-size: .7rem; font-weight: 650; }
     .bc-mini-lati { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .35rem; }
-    .bc-mini-lato { border: 1px solid var(--line); border-top: 4px solid var(--c, var(--bc-neutro)); border-radius: 10px; padding: .4rem .3rem; text-align: center; background: var(--surface-soft); min-width: 0; cursor: pointer; color: var(--ink); font: inherit; }
+    .bc-mini-lato { border: 1px solid var(--line); border-top: 4px solid var(--c, var(--bc-neutro)); border-radius: 10px; padding: .4rem .3rem; text-align: center; background: var(--surface-soft); min-width: 0; cursor: pointer; color: var(--ink); font: inherit; margin: 0; }
     .bc-mini-lato:hover { border-color: var(--c, var(--line)); background: var(--surface-soft); }
     .bc-mini-lato b { display: block; font-size: .7rem; color: var(--label); font-weight: 800; }
     .bc-mini-lato span { display: block; font-size: .76rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* --- card regata (lato destro dell'hero) --- */
+    /* --- card regata --- */
     .bc-fatti { list-style: none; margin: .1rem 0 .8rem; padding: 0; display: grid; gap: .5rem; }
     .bc-fatti li { display: grid; grid-template-columns: 1.6rem 1fr; gap: .45rem; font-size: .9rem; line-height: 1.4; color: var(--ink); }
-    .bc-fatti li span:first-child { font-size: 1.05rem; line-height: 1.3; }
+    .bc-fatti li > span:first-child { font-size: 1.05rem; line-height: 1.3; }
     .bc-fatti strong { font-weight: 800; }
     .bc-countdown { border: 1px solid var(--line); border-radius: 12px; padding: .65rem .8rem; background: var(--surface-soft); margin-bottom: .75rem; }
     .bc-countdown small { display: block; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--label); }
@@ -925,7 +957,7 @@
     .bc-indip { margin: .75rem 0 0; font-size: .74rem; color: var(--label); line-height: 1.4; }
 
     /* --- mappa + lati --- */
-    .bc-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .95fr); gap: 1rem; align-items: start; }
+    .bc-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(300px, .9fr); gap: 1rem; align-items: start; }
     .bc-seg { display: inline-flex; gap: .2rem; padding: .2rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); flex-wrap: wrap; }
     .bc-seg button { margin: 0; padding: .38rem .8rem; border: 0; border-radius: 999px; background: transparent; color: var(--slate-2); font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; min-height: 34px; }
     .bc-seg button:hover { background: rgba(127,127,127,.12); color: var(--ink); }
@@ -943,11 +975,11 @@
     .bc-mappa .bc-staz-g:focus .bc-halo, .bc-mappa .bc-staz-g.sel .bc-halo { stroke-opacity: 1; }
     .bc-info { margin-top: .55rem; min-height: 2.9rem; padding: .55rem .75rem; border: 1px dashed var(--line); border-radius: 12px; font-size: .84rem; color: var(--slate-2); line-height: 1.45; }
     .bc-info strong { color: var(--ink); }
-    .bc-legenda { display: flex; flex-wrap: wrap; gap: .35rem .5rem; margin-top: .55rem; font-size: .72rem; font-weight: 700; color: var(--slate-2); }
+    .bc-legenda { display: flex; flex-wrap: wrap; gap: .35rem .6rem; margin-top: .55rem; font-size: .72rem; font-weight: 700; color: var(--slate-2); }
     .bc-legenda span { display: inline-flex; align-items: center; gap: .3rem; }
     .bc-legenda i { width: 18px; height: 5px; border-radius: 3px; display: inline-block; background: var(--c); }
     .bc-legenda .bc-leg-sep { flex-basis: 100%; height: 0; }
-    .bc-legenda .bc-leg-dot i { width: 10px; height: 10px; border-radius: 50%; }
+    .bc-legenda svg { width: 14px; height: 14px; }
 
     .bc-pannello h3 { margin: 0 0 .5rem; font-size: 1.02rem; }
     .bc-ctrl { margin: .65rem 0 .2rem; display: grid; gap: .55rem; }
@@ -956,8 +988,6 @@
     .bc-ctrl label output { color: var(--ink); }
     .bc-ctrl input[type="range"] { width: 100%; accent-color: var(--signal); }
     :root[data-theme="light"] .bc-ctrl input[type="range"] { accent-color: var(--sea); }
-    .bc-preset { display: flex; flex-wrap: wrap; gap: .3rem; }
-    .bc-preset button { margin: 0; padding: .3rem .6rem; font-size: .76rem; font-weight: 800; border-radius: 999px; min-height: 32px; }
     .bc-nota { font-size: .76rem; color: var(--label); line-height: 1.45; margin: .45rem 0 0; }
     .bc-somma { margin: .75rem 0 .55rem; }
     .bc-somma-bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--surface-soft); border: 1px solid var(--line); }
@@ -965,7 +995,7 @@
     .bc-somma p { margin: .35rem 0 0; font-size: .8rem; color: var(--slate-2); line-height: 1.45; }
     .bc-somma p b { color: var(--ink); }
     .bc-lati { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
-    .bc-lato { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: .65rem; padding: .65rem .7rem; border: 1px solid var(--line); border-left: 5px solid var(--c, var(--bc-neutro)); border-radius: 12px; background: var(--surface-soft); cursor: pointer; transition: border-color .15s ease, transform .15s ease; }
+    .bc-lato { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: .65rem; padding: .65rem .7rem; border: 1px solid var(--line); border-left: 5px solid var(--c, var(--bc-neutro)); border-radius: 12px; background: var(--surface-soft); cursor: pointer; transition: border-color .15s ease; }
     .bc-lato:hover { border-color: var(--c, var(--line)); }
     .bc-lato.sel { border-color: var(--c, var(--signal)); box-shadow: 0 0 0 2px var(--c, var(--signal)) inset; }
     .bc-barca { width: 52px; height: 52px; }
@@ -977,19 +1007,6 @@
     .bc-lato-vento { font-size: .78rem; color: var(--slate-2); margin-top: .1rem; }
     .bc-lato-vele { font-size: .82rem; color: var(--ink); margin-top: .3rem; line-height: 1.4; }
     .bc-lato-vele em { display: block; font-style: normal; color: var(--label); font-size: .76rem; margin-top: .15rem; }
-
-    /* --- centraline --- */
-    .bc-staz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: .6rem; }
-    .bc-staz { border: 1px solid var(--line); border-top: 4px solid var(--c, var(--line)); border-radius: 12px; padding: .7rem .8rem; background: var(--surface-soft); }
-    .bc-staz h3 { margin: 0; font-size: .95rem; }
-    .bc-staz .bc-ruolo { margin: .1rem 0 .45rem; font-size: .74rem; color: var(--label); line-height: 1.35; min-height: 2em; }
-    .bc-staz .bc-val { display: flex; align-items: baseline; gap: .3rem; flex-wrap: wrap; }
-    .bc-staz .bc-val b { font-family: "Barlow Condensed", sans-serif; font-size: 2.3rem; line-height: 1; color: var(--ink); }
-    .bc-staz .bc-val span { font-size: .82rem; color: var(--slate-2); font-weight: 700; }
-    .bc-staz .bc-dir { display: flex; align-items: center; gap: .3rem; font-size: .85rem; font-weight: 800; margin-top: .25rem; color: var(--ink); }
-    .bc-staz .bc-dir svg { width: 1.2rem; height: 1.2rem; }
-    .bc-staz .bc-agg { margin: .35rem 0 0; font-size: .72rem; color: var(--label); }
-    .bc-staz.off .bc-val b { color: var(--label); }
 
     /* --- previsioni --- */
     .bc-affid { display: inline-block; padding: .25rem .6rem; border-radius: 999px; font-size: .74rem; font-weight: 800; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); margin: .1rem 0 .6rem; }
@@ -1003,23 +1020,50 @@
     .bc-tab td small { color: var(--label); }
     .bc-tab td .wind-arrow { width: 1.05rem; height: 1.05rem; vertical-align: -.2rem; margin: 0 .1rem 0 .3rem; }
     .bc-tab td.media { font-weight: 800; }
+    .bc-tab.bc-tab-wrapok { min-width: 0; }
+    .bc-tab.bc-tab-wrapok td { white-space: normal; }
     .bc-links { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .75rem; }
-    .bc-links .button, .bc-links a { margin: 0; }
+    .bc-links a { margin: 0; }
 
-    /* --- scenari --- */
-    .bc-scen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .6rem; }
-    .bc-scen { border: 1px solid var(--line); border-radius: 12px; padding: .75rem .8rem; background: var(--surface-soft); display: flex; flex-direction: column; gap: .45rem; }
-    .bc-scen h3 { margin: 0; font-size: .98rem; display: flex; justify-content: space-between; gap: .4rem; align-items: baseline; }
-    .bc-scen h3 small { font-size: .74rem; color: var(--label); font-weight: 700; }
-    .bc-scen p { margin: 0; font-size: .82rem; color: var(--slate-2); line-height: 1.45; flex: 1; }
+    /* --- simulatore --- */
+    .bc-scen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .6rem; margin-bottom: 1rem; }
+    .bc-scen { border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem; background: var(--surface-soft); display: flex; flex-direction: column; gap: .4rem; cursor: pointer; text-align: left; font: inherit; color: var(--ink); margin: 0; }
+    .bc-scen:hover { border-color: var(--signal); }
+    .bc-scen[aria-pressed="true"] { border-color: var(--signal); box-shadow: 0 0 0 2px var(--signal) inset; }
+    :root[data-theme="light"] .bc-scen[aria-pressed="true"], :root[data-theme="light"] .bc-scen:hover { border-color: var(--sea); box-shadow: 0 0 0 2px var(--sea) inset; }
+    .bc-scen strong { font-size: .98rem; display: flex; justify-content: space-between; gap: .4rem; align-items: baseline; }
+    .bc-scen strong small { font-size: .74rem; color: var(--label); font-weight: 700; }
+    .bc-scen .bc-scen-txt { display: block; margin: 0; font-size: .8rem; font-weight: 500; color: var(--slate-2); line-height: 1.45; flex: 1; }
     .bc-scen-lati { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .25rem; }
-    .bc-scen-lati span { font-size: .66rem; font-weight: 800; text-align: center; padding: .22rem .1rem; border-radius: 6px; background: color-mix(in srgb, var(--c) 22%, transparent); color: var(--ink); border-bottom: 3px solid var(--c); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .bc-scen button { margin: 0; align-self: flex-start; font-size: .78rem; padding: .35rem .7rem; }
+    .bc-scen-lati span { font-size: .64rem; font-weight: 800; text-align: center; padding: .22rem .1rem; border-radius: 6px; background: color-mix(in srgb, var(--c) 22%, transparent); color: var(--ink); border-bottom: 3px solid var(--c); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* --- classifiche --- */
+    .bc-cl-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; margin: .2rem 0 .7rem; }
+    .bc-cl-sum { margin: 0 0 .7rem; font-size: .88rem; color: var(--slate-2); line-height: 1.5; }
+    .bc-cl-sum b { color: var(--ink); }
+    .bc-cl-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+    .bc-cl-grid h3, #classifiche h3 { font-size: .98rem; margin: .2rem 0 .5rem; }
+    .bc-pos { display: inline-grid; place-items: center; min-width: 1.7rem; height: 1.7rem; border-radius: 999px; font-weight: 900; font-size: .78rem; background: var(--surface-soft); border: 1px solid var(--line); }
+    .bc-pos.p1 { background: #f0c419; color: #1b1400; border-color: #f0c419; }
+    .bc-pos.p2 { background: #c9d1d6; color: #111; border-color: #c9d1d6; }
+    .bc-pos.p3 { background: #d08a4e; color: #1d0e02; border-color: #d08a4e; }
+    .bc-cat { display: inline-block; padding: .08rem .4rem; border-radius: 6px; font-size: .68rem; font-weight: 800; border: 1px solid var(--line); color: var(--slate-2); white-space: nowrap; }
+    .bc-yacht { font-weight: 800; }
+    .bc-sub { display: block; font-size: .72rem; color: var(--label); font-weight: 600; }
+    .bc-dots { display: inline-flex; gap: 3px; }
+    .bc-dots i { width: 20px; height: 20px; border-radius: 5px; background: var(--c); color: #0b0d10; font-style: normal; font-size: .68rem; font-weight: 900; display: grid; place-items: center; }
+    .bc-record { display: flex; flex-wrap: wrap; gap: .4rem; margin: .2rem 0 .8rem; }
+    details.bc-albo { margin-top: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-soft); }
+    details.bc-albo > summary { cursor: pointer; padding: .7rem .9rem; font-weight: 800; color: var(--ink); list-style: none; }
+    details.bc-albo > summary::-webkit-details-marker { display: none; }
+    details.bc-albo > summary::after { content: " ▾"; color: var(--label); }
+    details.bc-albo[open] > summary::after { content: " ▴"; }
+    details.bc-albo .bc-tab-wrap { margin: 0 .6rem .7rem; }
     .bc-avviso { border: 1px solid var(--line); border-left: 4px solid var(--bc-boa); border-radius: 10px; padding: .6rem .8rem; font-size: .8rem; color: var(--slate-2); line-height: 1.5; margin-top: .8rem; background: var(--surface-soft); }
     .bc-avviso strong { color: var(--ink); }
 
     @media (max-width: 900px) {
-      .bc-layout { grid-template-columns: 1fr; }
+      .bc-layout, .bc-cl-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 560px) {
       .bc-now-kt { font-size: 4.2rem; }
@@ -1027,6 +1071,10 @@
       .bc-lato { grid-template-columns: 44px minmax(0, 1fr); padding: .6rem; }
       .bc-barca { width: 44px; height: 44px; }
       .bc-seg button { padding: .34rem .62rem; font-size: .76rem; }
+      .topbar-actions .topbar-live { display: none; }
+      /* scenari in riga scorrevole: la mappa del simulatore resta vicina */
+      .bc-scen-grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 84%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .35rem; -webkit-overflow-scrolling: touch; }
+      .bc-scen { scroll-snap-align: start; }
     }
   </style>
   <script type="application/ld+json">
@@ -1037,8 +1085,8 @@
         "@type": "WebPage",
         "name": "Vento Barcolana 2026 – il vento sul percorso in tempo reale",
         "url": "https://ventotrieste.info/barcolana2026/",
-        "inLanguage": "it",
-        "description": "Mappa del percorso della Barcolana 2026 con vento live da centraline e boe del Golfo di Trieste, andatura e vele lato per lato, previsioni per l'11 ottobre 2026.",
+        "inLanguage": ["it", "en"],
+        "description": "Mappa del percorso della Barcolana 2026 con vento live da centraline e boe del Golfo di Trieste, andatura e vele lato per lato, previsioni per l'11 ottobre 2026, simulatore e classifiche delle edizioni passate.",
         "isPartOf": { "@type": "WebSite", "name": "Vento Trieste", "url": "https://ventotrieste.info/" }
       },
       {
@@ -1058,142 +1106,183 @@
   <header class="topbar">
     <a class="brand" href="/">
       <strong>Vento Trieste</strong>
-      <span>Barcolana 2026 · Golfo di Trieste</span>
+      <span>Barcolana 2026 · <span class="l-it">Golfo di Trieste</span><span class="l-en">Gulf of Trieste</span></span>
     </a>
     <div class="topbar-actions">
       <span class="topbar-live">Dati live</span>
+      <div class="bc-lang" role="group" aria-label="Lingua / Language">
+        <button type="button" data-lang-btn="it" aria-pressed="true" title="Italiano">IT</button>
+        <button type="button" data-lang-btn="en" aria-pressed="false" title="English">EN</button>
+      </div>
       <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-label">Chiaro</span></button>
       <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav"><span class="menu-toggle-icon" aria-hidden="true">☰</span>Menu</button>
     </div>
     <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" hidden>
-      <a href="#vento">Vento ora</a>
-      <a href="#mappaVento">Mappa e lati</a>
-      <a href="#centraline">Centraline</a>
-      <a href="#previsioni-gara">Previsioni 11/10</a>
-      <a href="#scenari">Scenari</a>
+      <a href="#vento"><span class="l-it">Vento ora</span><span class="l-en">Wind now</span></a>
+      <a href="#mappaVento"><span class="l-it">Percorso</span><span class="l-en">Course</span></a>
+      <a href="#previsioni-gara"><span class="l-it">Previsioni</span><span class="l-en">Forecast</span></a>
+      <a href="#simulatore"><span class="l-it">Simulatore</span><span class="l-en">Simulator</span></a>
+      <a href="#classifiche"><span class="l-it">Classifiche</span><span class="l-en">Results</span></a>
       <a href="/">Vento Trieste</a>
     </nav>
   </header>
 
   <main>
+    <!-- 1. VENTO SUL CAMPO DI REGATA -->
     <section class="hero" id="vento">
       <div class="hero-copy">
-        <p class="eyebrow">Barcolana 58 · domenica 11 ottobre 2026 · partenza 10:30</p>
-        <h1 class="site-page-title">Il vento sul percorso della Barcolana 2026</h1>
-        <p class="bc-lead">Mappa del percorso, vento in tempo reale dalle centraline e dalle boe del Golfo, andatura e vele lato per lato. Gratis, per chi regata e per chi la segue da riva.</p>
-        <div class="bc-chips" aria-label="Il percorso in breve">
-          <span class="bc-chip"><b>13</b> miglia</span>
-          <span class="bc-chip"><b>5</b> lati · <b>4</b> boe</span>
-          <span class="bc-chip">Partenza Barcola–Miramare</span>
-          <span class="bc-chip">Arrivo davanti a piazza Unità</span>
+        <p class="eyebrow"><span class="l-it">Barcolana 58 · domenica 11 ottobre 2026 · partenza 10:30</span><span class="l-en">Barcolana 58 · Sunday 11 October 2026 · start 10:30</span></p>
+        <h1 class="site-page-title"><span class="l-it">Il vento sul percorso della Barcolana 2026</span><span class="l-en">Barcolana 2026: the wind on the race course</span></h1>
+        <p class="bc-lead"><span class="l-it">Mappa del percorso, vento in tempo reale dalle centraline e dalle boe del Golfo, andatura e vele lato per lato, previsioni e classifiche. Gratis, per chi regata e per chi la segue da riva.</span><span class="l-en">Course map, live wind from the Gulf's weather stations and buoys, point of sail and sail choice for every leg, forecasts and past results. Free, for every crew and for everyone watching from the shore.</span></p>
+        <div class="bc-chips">
+          <span class="bc-chip"><b>13</b> <span class="l-it">miglia</span><span class="l-en">nautical miles</span></span>
+          <span class="bc-chip"><b>5</b> <span class="l-it">lati</span><span class="l-en">legs</span> · <b>4</b> <span class="l-it">boe</span><span class="l-en">marks</span></span>
+          <span class="bc-chip"><span class="l-it">Partenza Barcola–Miramare</span><span class="l-en">Start Barcola–Miramare</span></span>
+          <span class="bc-chip"><span class="l-it">Arrivo davanti a piazza Unità</span><span class="l-en">Finish off Piazza Unità</span></span>
         </div>
       </div>
 
       <div class="console-card" id="campoOra">
-        <h2>Vento sul campo di regata · adesso</h2>
+        <div class="bc-card-head">
+          <h2><span class="l-it">Vento sul campo di regata · adesso</span><span class="l-en">Wind on the race course · now</span></h2>
+          <button type="button" class="bc-refresh" id="bcAggiorna"><span class="bc-giro" aria-hidden="true">🔄</span> <span class="l-it">Aggiorna</span><span class="l-en">Refresh</span></button>
+        </div>
         <div class="bc-now">
           <div class="bc-now-kt" aria-live="polite"><span id="nowKt">–</span><small>kt</small></div>
           <div class="bc-now-info">
-            <div class="bc-now-dir"><span id="nowFreccia"></span><span id="nowDir">in arrivo…</span></div>
+            <div class="bc-now-dir"><span id="nowFreccia"></span><span id="nowDir">…</span></div>
             <div class="bc-now-nome" id="nowNome"></div>
             <div class="bc-now-raffica" id="nowRaffica"></div>
           </div>
         </div>
-        <p class="bc-now-fonti" id="nowFonti">Carico i dati di Barcola, boa Mambo, boa Paloma e Muggia…</p>
-        <div class="bc-mini-lati" id="nowLati" aria-label="Andatura attuale lato per lato"></div>
+        <p class="bc-now-fonti" id="nowFonti"></p>
+        <ul class="bc-staz-list" id="nowStazioni" aria-label="Centraline"></ul>
+        <div class="bc-mini-lati" id="nowLati"></div>
+        <p class="stato" id="ultimoAggiornamento" style="margin:.6rem 0 0;"></p>
       </div>
 
       <aside class="side-card" id="regata">
-        <h2>La regata</h2>
+        <h2><span class="l-it">La regata</span><span class="l-en">The race</span></h2>
         <ul class="bc-fatti">
-          <li><span aria-hidden="true">🗓️</span><span><strong>Domenica 11 ottobre 2026</strong>, partenza alle <strong>10:30</strong></span></li>
-          <li><span aria-hidden="true">🧭</span><span>Quadrilatero a <strong>vertici fissi</strong> nel Golfo di Trieste, <strong>13 miglia</strong></span></li>
-          <li><span aria-hidden="true">🚩</span><span>Linea di partenza tra la sede della <strong>SVBG</strong> a Barcola e il <strong>Castello di Miramare</strong></span></li>
-          <li><span aria-hidden="true">🏁</span><span>Arrivo alla <strong>Diga del Porto Vecchio</strong>, davanti a piazza Unità</span></li>
+          <li><span aria-hidden="true">🗓️</span><span class="l-it"><strong>Domenica 11 ottobre 2026</strong>, partenza alle <strong>10:30</strong></span><span class="l-en"><strong>Sunday 11 October 2026</strong>, start at <strong>10:30</strong></span></li>
+          <li><span aria-hidden="true">🧭</span><span class="l-it">Quadrilatero a <strong>vertici fissi</strong> nel Golfo di Trieste, <strong>13 miglia</strong></span><span class="l-en">Fixed-mark quadrilateral course in the Gulf of Trieste, <strong>13 nautical miles</strong></span></li>
+          <li><span aria-hidden="true">🚩</span><span class="l-it">Linea di partenza tra le boe <strong>P1</strong> e <strong>P/4</strong>, tra la sede della SVBG a Barcola e Miramare</span><span class="l-en">Start line between marks <strong>P1</strong> and <strong>P/4</strong>, between the SVBG club at Barcola and Miramare</span></li>
+          <li><span aria-hidden="true">🏁</span><span class="l-it">Arrivo alla <strong>Diga del Porto Vecchio</strong>, davanti a piazza Unità</span><span class="l-en">Finish at the <strong>Porto Vecchio breakwater</strong>, off Piazza Unità</span></li>
         </ul>
-        <div class="bc-countdown"><small id="countLabel">Alla partenza mancano</small><strong id="countVal">–</strong></div>
+        <div class="bc-countdown"><small id="countLabel">–</small><strong id="countVal">–</strong></div>
         <div class="bc-share">
-          <a class="dona-btn" id="shareWa" href="https://wa.me/?text=Il%20vento%20sul%20percorso%20della%20Barcolana%202026%2C%20live%20e%20lato%20per%20lato%3A%20https%3A%2F%2Fventotrieste.info%2Fbarcolana2026%2F" target="_blank" rel="noopener">📲 Mandala all'equipaggio</a>
-          <button type="button" id="shareCopy">🔗 Copia link</button>
+          <a class="dona-btn" id="shareWa" href="#" target="_blank" rel="noopener">📲 <span class="l-it">Mandala all'equipaggio</span><span class="l-en">Send to your crew</span></a>
+          <button type="button" id="shareCopy">🔗 <span class="l-it">Copia link</span><span class="l-en">Copy link</span></button>
         </div>
-        <p class="bc-indip">Pagina indipendente di ventotrieste.info: non è affiliata né approvata dall'organizzazione della regata. Per tutto ciò che è ufficiale fa fede <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.</p>
+        <p class="bc-indip"><span class="l-it">Pagina indipendente di ventotrieste.info: non è affiliata né approvata dall'organizzazione della regata. Per tutto ciò che è ufficiale fa fede</span><span class="l-en">Independent page by ventotrieste.info, not affiliated with or endorsed by the race organisers. For anything official, refer to</span> <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.</p>
       </aside>
     </section>
 
-    <!-- PERCORSO + LATI -->
+    <!-- 2. PERCORSO -->
     <section class="section" id="mappaVento">
-      <h2>Il percorso e il vento, lato per lato</h2>
-      <p class="stato" style="margin:.1rem 0 .8rem;">Ogni lato si colora secondo l'andatura che avrà con il vento scelto: <strong>live</strong> (stimato lato per lato dalle centraline più vicine), <strong>previsto</strong> per domenica o <strong>simulato</strong> da te. Tocca un lato o una centralina per i dettagli.</p>
+      <h2><span class="l-it">Il percorso e il vento, lato per lato</span><span class="l-en">The course and the wind, leg by leg</span></h2>
+      <p class="stato" style="margin:.1rem 0 .8rem;"><span class="l-it">Ogni lato si colora secondo l'andatura che avrà: con il vento <strong>live</strong>, stimato lato per lato dalle centraline più vicine, oppure con la <strong>previsione</strong> per domenica. Tocca un lato o una centralina per i dettagli.</span><span class="l-en">Each leg is coloured by its point of sail: with the <strong>live</strong> wind, estimated leg by leg from the nearest stations, or with Sunday's <strong>forecast</strong>. Tap a leg or a station for details.</span></p>
       <div class="bc-layout">
         <div>
           <div class="bc-map-head">
-            <div class="bc-seg" role="group" aria-label="Inquadratura della mappa">
-              <button type="button" data-vista="percorso" aria-pressed="true">Percorso</button>
-              <button type="button" data-vista="golfo" aria-pressed="false">Tutto il Golfo</button>
+            <div class="bc-seg" role="group" aria-label="Zoom">
+              <button type="button" data-vista="golfo" aria-pressed="true"><span class="l-it">Tutto il Golfo</span><span class="l-en">Whole Gulf</span></button>
+              <button type="button" data-vista="percorso" aria-pressed="false"><span class="l-it">Zoom percorso</span><span class="l-en">Zoom course</span></button>
             </div>
-            <p id="mappaModo">Vento: live</p>
+            <p id="mappaModo"></p>
           </div>
           <div class="bc-mappa" id="bcMappa">
-            <svg id="bcSvg" role="img" aria-labelledby="bcSvgTitolo" xmlns="http://www.w3.org/2000/svg"><title id="bcSvgTitolo">Mappa del percorso della Barcolana con boe, centraline e vento</title></svg>
+            <svg id="bcSvg" role="img" xmlns="http://www.w3.org/2000/svg"></svg>
           </div>
-          <div class="bc-info" id="bcInfo" aria-live="polite">Tocca un lato del percorso o una centralina.</div>
+          <div class="bc-info" id="bcInfo" aria-live="polite"></div>
           <div class="bc-legenda" id="bcLegenda"></div>
         </div>
 
         <div class="bc-pannello" id="lati">
-          <h3>Andatura e vele</h3>
-          <div class="bc-seg" role="group" aria-label="Quale vento usare">
+          <h3><span class="l-it">Andatura e vele</span><span class="l-en">Point of sail and sails</span></h3>
+          <div class="bc-seg" role="group" aria-label="Vento">
             <button type="button" data-modo="live" aria-pressed="true">Live</button>
-            <button type="button" data-modo="prev" aria-pressed="false">Previsione 11/10</button>
-            <button type="button" data-modo="sim" aria-pressed="false">Simula</button>
+            <button type="button" data-modo="prev" aria-pressed="false"><span class="l-it">Previsione 11/10</span><span class="l-en">Forecast 11 Oct</span></button>
           </div>
           <div class="bc-ctrl" id="ctrlPrev" hidden>
-            <label>Ora (domenica 11 ottobre) <output id="prevOraOut">11:00</output></label>
-            <div class="bc-seg" role="group" aria-label="Ora della previsione" id="prevOre"></div>
+            <label><span><span class="l-it">Ora (domenica 11 ottobre)</span><span class="l-en">Time (Sunday 11 October)</span></span> <output id="prevOraOut">11:00</output></label>
+            <div class="bc-seg" role="group" id="prevOre"></div>
             <p class="bc-nota" id="prevNota"></p>
-          </div>
-          <div class="bc-ctrl" id="ctrlSim" hidden>
-            <div class="bc-preset" id="simPreset"></div>
-            <label for="simDir">Vento da <output id="simDirOut">65°</output></label>
-            <input type="range" id="simDir" min="0" max="355" step="5" value="65" />
-            <label for="simKt">Intensità <output id="simKtOut">20 kt</output></label>
-            <input type="range" id="simKt" min="0" max="40" step="1" value="20" />
           </div>
           <div class="bc-somma" id="bcSomma"></div>
           <ol class="bc-lati" id="bcLati"></ol>
-          <p class="bc-nota">Rotte e distanze dei lati 1, 2 e 5 sono quelle del percorso ufficiale; le rotte dei lati 3 e 4 (≈) e le posizioni delle boe sono ricostruite da distanze e punti di riferimento. I suggerimenti sulle vele sono generici: ogni barca e ogni equipaggio fanno storia a sé. Classe Crociera: niente Code Zero né drifter (sì gennaker e spi).</p>
+          <p class="bc-nota"><span class="l-it">Rotte e distanze dalla mappa ufficiale del percorso; posizioni delle boe ricavate dalla stessa mappa. I suggerimenti sulle vele sono generici: ogni barca e ogni equipaggio fanno storia a sé. Classe Crociera: niente Code Zero né drifter (sì gennaker e spi).</span><span class="l-en">Courses and distances from the official course map; mark positions derived from the same map. Sail suggestions are generic: every boat and crew is different. Cruising class: no Code Zero or drifter (gennakers and spinnakers allowed).</span></p>
         </div>
       </div>
-      <div class="bc-avviso"><strong>Non per la navigazione.</strong> Le boe sulla mappa sono indicative, ricostruite dal percorso pubblicato. Coordinate, lati da lasciare e segnali li trovi solo nelle Istruzioni di Regata del Comitato.</div>
+      <div class="bc-avviso"><span class="l-it"><strong>Non per la navigazione.</strong> Le boe sulla mappa sono ricavate dalla mappa del percorso pubblicata su barcolana.it (precisione di qualche decina di metri). Coordinate, lati da lasciare e segnali ufficiali sono solo nelle Istruzioni di Regata del Comitato.</span><span class="l-en"><strong>Not for navigation.</strong> Marks are derived from the course map published on barcolana.it (accurate to a few tens of metres). Official coordinates, rounding sides and signals are only in the Sailing Instructions.</span></div>
     </section>
 
-    <!-- CENTRALINE -->
-    <section class="section" id="centraline">
-      <h2>Centraline e boe sul campo di regata</h2>
-      <p class="stato" style="margin:.1rem 0 .8rem;">Le cinque stazioni che raccontano il vento del percorso. Si aggiornano da sole ogni 5 minuti (la boa Mambo è oraria).</p>
-      <div class="bc-staz-grid" id="bcStazioni"></div>
-      <p class="stato" id="bcAgg" style="margin:.7rem 0 0;"></p>
-    </section>
-
-    <!-- PREVISIONI -->
+    <!-- 3. PREVISIONI -->
     <section class="section" id="previsioni-gara">
-      <h2>Previsioni per domenica 11 ottobre</h2>
-      <span class="bc-affid" id="prevAffid">Carico i modelli…</span>
-      <div class="bc-tab-wrap"><table class="bc-tab" id="prevTab"><tbody><tr><td>Carico le previsioni…</td></tr></tbody></table></div>
-      <p class="bc-nota">Vento a 10 m sul centro del percorso (nodi, raffica dopo la barra). <strong>Media</strong> = media dei modelli disponibili. In evidenza le ore di regata. Più ci si avvicina alla data, più modelli ad alta risoluzione entrano nella tabella (ICON-2I e AROME solo negli ultimi 2–3 giorni). Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>.</p>
+      <h2><span class="l-it">Previsioni per domenica 11 ottobre</span><span class="l-en">Forecast for Sunday 11 October</span></h2>
+      <span class="bc-affid" id="prevAffid">…</span>
+      <div class="bc-tab-wrap"><table class="bc-tab" id="prevTab"><tbody><tr><td>…</td></tr></tbody></table></div>
+      <p class="bc-nota"><span class="l-it">Vento a 10 m sul centro del percorso (nodi, raffica dopo la barra). <strong>Media</strong> = media dei modelli disponibili. In evidenza le ore di regata. Più ci si avvicina alla data, più modelli ad alta risoluzione entrano nella tabella (ICON-2I e AROME solo negli ultimi 2–3 giorni).</span><span class="l-en">10 m wind at the centre of the course (knots, gust after the slash). <strong>Mean</strong> = average of the available models. Race hours highlighted. The closer the race, the more high-resolution models appear (ICON-2I and AROME only in the last 2–3 days).</span> <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>.</p>
       <div class="bc-links">
-        <a class="spot-btn" href="https://www.windy.com/45.665/13.715?45.665,13.715,12" target="_blank" rel="noopener">Windy sul Golfo</a>
-        <a class="spot-btn" href="/modelli-vento-trieste/">Guida ai modelli</a>
-        <a class="spot-btn" href="/bora-trieste/">Come si legge la Bora</a>
-        <a class="spot-btn" href="https://www.meteo.fvg.it/" target="_blank" rel="noopener">Bollettino OSMER</a>
+        <a class="spot-btn" href="https://www.windy.com/45.665/13.715?45.665,13.715,12" target="_blank" rel="noopener">Windy</a>
+        <a class="spot-btn" href="/modelli-vento-trieste/"><span class="l-it">Guida ai modelli</span><span class="l-en">Model guide (IT)</span></a>
+        <a class="spot-btn" href="/bora-trieste/"><span class="l-it">Come si legge la Bora</span><span class="l-en">Reading the Bora (IT)</span></a>
+        <a class="spot-btn" href="https://www.meteo.fvg.it/" target="_blank" rel="noopener"><span class="l-it">Bollettino OSMER</span><span class="l-en">OSMER bulletin</span></a>
       </div>
     </section>
 
-    <!-- SCENARI -->
-    <section class="section" id="scenari">
-      <h2>Che regata sarà? I venti tipici di ottobre</h2>
-      <p class="stato" style="margin:.1rem 0 .8rem;">Ogni vento del Golfo ridisegna il percorso: ecco come cambiano le andature dei cinque lati. Tocca "Prova sul percorso" per vederlo sulla mappa.</p>
+    <!-- 4. SIMULATORE -->
+    <section class="section" id="simulatore">
+      <h2><span class="l-it">Simulatore · Che regata sarà? I venti tipici di ottobre</span><span class="l-en">Simulator · What kind of race? Typical October winds</span></h2>
+      <p class="stato" style="margin:.1rem 0 .8rem;"><span class="l-it">Ogni vento del Golfo ridisegna il percorso. Scegli uno scenario o regola direzione e intensità: la mappa e i lati si aggiornano subito.</span><span class="l-en">Every wind in the Gulf redraws the course. Pick a scenario or set direction and strength: the map and the legs update instantly.</span></p>
       <div class="bc-scen-grid" id="bcScenari"></div>
+      <div class="bc-layout">
+        <div>
+          <div class="bc-mappa"><svg id="simSvg" role="img" xmlns="http://www.w3.org/2000/svg"></svg></div>
+        </div>
+        <div class="bc-pannello">
+          <div class="bc-ctrl">
+            <label for="simDir"><span class="l-it">Vento da</span><span class="l-en">Wind from</span> <output id="simDirOut"></output></label>
+            <input type="range" id="simDir" min="0" max="355" step="5" value="65" />
+            <label for="simKt"><span class="l-it">Intensità</span><span class="l-en">Strength</span> <output id="simKtOut"></output></label>
+            <input type="range" id="simKt" min="0" max="40" step="1" value="24" />
+          </div>
+          <div class="bc-somma" id="simSomma"></div>
+          <ol class="bc-lati" id="simLati"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. CLASSIFICHE -->
+    <section class="section" id="classifiche">
+      <h2><span class="l-it">Classifiche delle edizioni passate</span><span class="l-en">Results of past editions</span></h2>
+      <div class="bc-cl-head">
+        <div class="bc-seg" role="group" id="clAnni"></div>
+        <a class="spot-btn" id="clUfficiale" href="#" target="_blank" rel="noopener"></a>
+      </div>
+      <p class="bc-cl-sum" id="clSum"></p>
+      <div class="bc-cl-grid">
+        <div>
+          <h3><span class="l-it">Top 10 assoluti</span><span class="l-en">Overall top 10</span></h3>
+          <div class="bc-tab-wrap"><table class="bc-tab bc-tab-wrapok" id="clTop"></table></div>
+        </div>
+        <div>
+          <h3><span class="l-it">Vincitori di categoria</span><span class="l-en">Class winners</span></h3>
+          <div class="bc-tab-wrap"><table class="bc-tab bc-tab-wrapok" id="clVinc"></table></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:1.3rem;"><span class="l-it">Che vento c'era? Le ultime edizioni</span><span class="l-en">What was the wind like? Recent editions</span></h3>
+      <p class="bc-nota" style="margin:0 0 .6rem;"><span class="l-it">Vento medio tra le 10 e le 14 al centro del percorso, ricostruito dal modello ECMWF IFS (analisi, via Open-Meteo): è una ricostruzione, non una misura, e le raffiche dei modelli tendono a essere alte. Sotto, le andature dei 5 lati con quel vento.</span><span class="l-en">Mean wind between 10:00 and 14:00 at the centre of the course, reconstructed by the ECMWF IFS model (analysis, via Open-Meteo): a reconstruction, not a measurement, and model gusts tend to run high. Below, the points of sail of the 5 legs with that wind.</span></p>
+      <div class="bc-legenda" id="clVentoLeg" style="margin:0 0 .5rem;"></div>
+      <div class="bc-tab-wrap"><table class="bc-tab bc-tab-wrapok" id="clVento"></table></div>
+
+      <details class="bc-albo">
+        <summary><span class="l-it">Albo d'oro 1969–2025: tutti i vincitori assoluti</span><span class="l-en">Roll of honour 1969–2025: every overall winner</span></summary>
+        <div class="bc-record" id="clRecord" style="margin:.1rem .9rem .7rem;"></div>
+        <div class="bc-tab-wrap"><table class="bc-tab bc-tab-wrapok" id="clAlbo"></table></div>
+      </details>
+      <p class="bc-nota"><span class="l-it">Fonti: albo d'oro dal Bando di Regata 2026, classifiche 2021–2025 da barcolana.it (qui solo top 10 e vincitori di categoria: la classifica completa è sul sito ufficiale).</span><span class="l-en">Sources: roll of honour from the 2026 Notice of Race, 2021–2025 results from barcolana.it (only top 10 and class winners here: full results on the official website).</span></p>
     </section>
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
@@ -1202,22 +1291,22 @@
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoBarcolanaSeo">
-      <span class="story-kicker">⛵ Perché questa pagina</span>
-      <h2 class="seo-footer-title" id="ventoBarcolanaSeo">Vento Barcolana 2026 in tempo reale</h2>
-      <p>La Barcolana è la regata più grande del mondo: migliaia di barche sulla stessa linea di partenza nel Golfo di Trieste. Questa pagina mette insieme ciò che serve a chi regata per leggere il vento sul percorso: le centraline di Barcola e Monte Grisa, la boa Mambo davanti a Miramare, la boa Paloma in mezzo al Golfo, Muggia e i modelli meteo per la domenica della regata.</p>
+      <span class="story-kicker">⛵ <span class="l-it">Perché questa pagina</span><span class="l-en">Why this page</span></span>
+      <h2 class="seo-footer-title" id="ventoBarcolanaSeo"><span class="l-it">Vento Barcolana 2026 in tempo reale</span><span class="l-en">Barcolana 2026 live wind</span></h2>
+      <p><span class="l-it">La Barcolana è la regata più grande del mondo: quasi duemila barche sulla stessa linea di partenza nel Golfo di Trieste. Questa pagina mette insieme ciò che serve a chi regata per leggere il vento sul percorso: le centraline di Barcola e Monte Grisa, la boa Mambo davanti a Miramare, la boa Paloma in mezzo al Golfo, Muggia e i modelli meteo per la domenica della regata.</span><span class="l-en">The Barcolana is the world's largest sailing race: almost two thousand boats on the same start line in the Gulf of Trieste. This page brings together what crews need to read the wind on the course: the Barcola and Monte Grisa stations, the Mambo buoy off Miramare, the Paloma buoy in the middle of the Gulf, Muggia and the weather models for race day.</span></p>
       <section class="seo-spot-pages" aria-labelledby="pagineSpotBarcolanaSeo">
-        <h2 id="pagineSpotBarcolanaSeo">Le altre pagine di Vento Trieste</h2>
+        <h2 id="pagineSpotBarcolanaSeo"><span class="l-it">Le altre pagine di Vento Trieste</span><span class="l-en">More from Vento Trieste</span></h2>
         <nav class="seo-spot-links" aria-label="Pagine meteo per spot">
-          <a class="spot-btn" href="/">🏠 Trieste · Barcola</a><a class="spot-btn" href="/mappa/">🗺️ Mappa del vento</a><a class="spot-btn" href="/muggia/">📍 Muggia</a><a class="spot-btn" href="/grado/">📍 Grado</a><a class="spot-btn" href="/lignano/">📍 Lignano</a>
+          <a class="spot-btn" href="/">🏠 Trieste · Barcola</a><a class="spot-btn" href="/mappa/">🗺️ <span class="l-it">Mappa del vento</span><span class="l-en">Wind map</span></a><a class="spot-btn" href="/muggia/">📍 Muggia</a><a class="spot-btn" href="/grado/">📍 Grado</a><a class="spot-btn" href="/lignano/">📍 Lignano</a>
         </nav>
       </section>
     </section>
     <p class="credits-meta">
-      Dati: centralina Barcola (Windguru), Monte Grisa e Muggia (rete Vetercek), boa MAMBO1 (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>), boa Paloma (<a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile FVG</a>, dati ARPA FVG – OSMER, licenza IODL 2.0), previsioni <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, costa © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>.<br>
-      Pagina indipendente, non affiliata alla Barcolana né alla Società Velica di Barcola e Grignano. I nomi citati appartengono ai rispettivi titolari.<br>
-      Suggerimenti e migliorie: <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a> ·
+      <span class="l-it">Dati</span><span class="l-en">Data</span>: Barcola (Windguru), Monte Grisa &amp; Muggia (Vetercek), MAMBO1 (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>), Paloma (<a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile FVG</a>, ARPA FVG – OSMER, IODL 2.0), <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <span class="l-it">percorso e classifiche</span><span class="l-en">course and results</span>: <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.<br>
+      <span class="l-it">Pagina indipendente, non affiliata alla Barcolana né alla Società Velica di Barcola e Grignano. I nomi citati appartengono ai rispettivi titolari.</span><span class="l-en">Independent page, not affiliated with the Barcolana or the Società Velica di Barcola e Grignano. All names belong to their respective owners.</span><br>
+      <span class="l-it">Suggerimenti e migliorie</span><span class="l-en">Suggestions</span>: <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a> ·
       <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a><br>
-      <span class="credits-signoff">Buon vento!</span>
+      <span class="credits-signoff"><span class="l-it">Buon vento!</span><span class="l-en">Fair winds!</span></span>
     </p>
   </div>
   </footer>
@@ -1227,10 +1316,14 @@
   <!-- GoatCounter (statistiche anonime, senza cookie) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
-  <script src="./costa.js?v=1"></script>
+  <script src="./costa.js?v=2"></script>
   <script>
   (function () {
     "use strict";
+
+    /* ---------- lingua ---------- */
+    let LANG = document.documentElement.getAttribute("data-lang") === "en" ? "en" : "it";
+    const tr = (it, en) => LANG === "en" ? en : it;
 
     // Endpoint Apps Script del progetto (cartella apps-script/ nel repo): Barcola,
     // Monte Grisa e Muggia arrivano da li'. Mambo (OGS) e Paloma (Prot. Civile) hanno CORS.
@@ -1238,99 +1331,95 @@
     const MS_IN_KT = 1.94384;
     const PARTENZA_ORA = Date.parse("2026-10-11T10:30:00+02:00");
     const GIORNO_GARA = "2026-10-11";
+    const URL_PAGINA = "https://ventotrieste.info/barcolana2026/";
 
     /* ---------- proiezione: identica a genera-costa.py ---------- */
-    const COSTA = window.BARCOLANA_COSTA || { w: 1000, h: 732, terra: "", dighe: "", moli: "" };
+    const COSTA = window.BARCOLANA_COSTA || { w: 1000, h: 842, terra: "", dighe: "", moli: "" };
     const LON0 = 13.54, LAT1 = 45.728, KX = 1000 / 0.26;
-    const KY = KX / Math.cos((45.595 + 45.728) / 2 * Math.PI / 180);
+    const KY = KX / Math.cos((45.575 + 45.728) / 2 * Math.PI / 180);
     const px = lon => (lon - LON0) * KX;
     const py = lat => (LAT1 - lat) * KY;
     const rad = d => d * Math.PI / 180;
     const norm360 = d => ((d % 360) + 360) % 360;
-
-    /* avanza di nm miglia lungo una rotta (lossodromia piana: sul golfo basta e avanza) */
-    function avanza(p, rotta, nm) {
-      return { lat: p.lat + nm * Math.cos(rad(rotta)) / 60,
-               lon: p.lon + nm * Math.sin(rad(rotta)) / (60 * Math.cos(rad(p.lat))) };
-    }
     function distNm(a, b) {
       const dy = (b.lat - a.lat) * 60, dx = (b.lon - a.lon) * 60 * Math.cos(rad((a.lat + b.lat) / 2));
       return Math.hypot(dx, dy);
     }
+    const media = (a, b) => ({ lat: (a.lat + b.lat) / 2, lon: (a.lon + b.lon) / 2 });
 
     /* ---------- percorso ----------
-       Dal percorso ufficiale: partenza tra SVBG e Miramare, 210° per 4,3 mn (boa 1),
-       332° per 0,9 mn (boa 2), 4 mn fino alla boa 3 al largo di Miramare, 2,3 mn lungo
-       costa verso Barcola (boa 4, al largo del Faro della Vittoria), 160° per 1,5 mn fino
-       all'arrivo alla testata sud della Diga del Porto Vecchio. Risalendo dall'arrivo con
-       rotte e distanze ufficiali, la boa 3 cade sulla boa MAMBO1 e la partenza a ~0,8 mn
-       dalla costa di Viale Miramare: le rotte dei lati 3 e 4 sono ricavate cosi'. */
-    const CENTRO_PARTENZA = { lat: 45.6867, lon: 13.7189 };
+       Boe georeferenziate sulla mappa ufficiale "B58" di barcolana.it (triangoli rossi),
+       usando come punti di controllo le dighe del porto (coordinate OSM): scarto ~15 m.
+       Rotte e distanze dei lati sono quelle stampate sulla stessa mappa. P/4 e' sia
+       l'estremo sud-est della linea di partenza sia la boa 4. 2bis e 3bis (cerchi) sono
+       boe alternative: il loro uso lo stabiliscono le Istruzioni di Regata. */
+    const BOA = {
+      P1:   { lat: 45.68722, lon: 13.69994 }, P4: { lat: 45.67327, lon: 13.73856 },
+      B1:   { lat: 45.62219, lon: 13.67103 }, B2: { lat: 45.63473, lon: 13.66177 },
+      B3:   { lat: 45.69656, lon: 13.69842 },
+      A1:   { lat: 45.65205, lon: 13.75168 }, A:  { lat: 45.65416, lon: 13.76076 },
+      B2BIS: { lat: 45.63463, lon: 13.65331 }, B3BIS: { lat: 45.70364, lon: 13.69587 }
+    };
+    const CENTRO_PARTENZA = media(BOA.P1, BOA.P4);
+    const ARRIVO = media(BOA.A1, BOA.A);
     const LATI = [
-      { n: 1, da: "Partenza", a: "Boa 1", rotta: 210, nm: 4.3, uff: true,  nome: "Il lungo verso sud-ovest" },
-      { n: 2, da: "Boa 1",    a: "Boa 2", rotta: 332, nm: 0.9, uff: true,  nome: "Il disimpegno" },
-      { n: 3, da: "Boa 2",    a: "Boa 3", rotta: 26,  nm: 4.0, uff: false, nome: "La risalita verso Miramare" },
-      { n: 4, da: "Boa 3",    a: "Boa 4", rotta: 121, nm: 2.3, uff: false, nome: "Lungo costa verso Barcola" },
-      { n: 5, da: "Boa 4",    a: "Arrivo", rotta: 160, nm: 1.5, uff: true,  nome: "Il finale lungo la diga" }
+      { n: 1, da: ["Partenza", "Start"], a: ["Boa 1", "Mark 1"], p0: CENTRO_PARTENZA, p1: BOA.B1, rotta: 210, nm: 4.2 },
+      { n: 2, da: ["Boa 1", "Mark 1"], a: ["Boa 2", "Mark 2"], p0: BOA.B1, p1: BOA.B2, rotta: 332, nm: 1.0 },
+      { n: 3, da: ["Boa 2", "Mark 2"], a: ["Boa 3", "Mark 3"], p0: BOA.B2, p1: BOA.B3, rotta: 23, nm: 4.1 },
+      { n: 4, da: ["Boa 3", "Mark 3"], a: ["Boa 4 (P/4)", "Mark 4 (P/4)"], p0: BOA.B3, p1: BOA.P4, rotta: 128, nm: 2.3 },
+      { n: 5, da: ["Boa 4", "Mark 4"], a: ["Arrivo", "Finish"], p0: BOA.P4, p1: ARRIVO, rotta: 153, nm: 1.4 }
     ];
-    (function () {
-      let p = CENTRO_PARTENZA;
-      LATI.forEach(l => {
-        l.p0 = p; l.p1 = avanza(p, l.rotta, l.nm);
-        l.mid = avanza(p, l.rotta, l.nm / 2);
-        p = l.p1;
-      });
-    })();
-    const BOE = LATI.slice(0, 4).map(l => ({ n: l.n, p: l.p1 }));
-    const ARRIVO = LATI[4].p1;
-    const LINEA_PARTENZA = [avanza(CENTRO_PARTENZA, 300, 0.6), avanza(CENTRO_PARTENZA, 120, 0.6)];
-    const LINEA_ARRIVO = [avanza(ARRIVO, 70, 0.12), avanza(ARRIVO, 250, 0.12)];
-    const CENTRO_CAMPO = { lat: 45.665, lon: 13.712 };
+    LATI.forEach(l => { l.mid = media(l.p0, l.p1); });
+    const CENTRO_CAMPO = { lat: 45.662, lon: 13.705 };
+    const nomeLato = l => tr(l.da[0], l.da[1]) + " → " + tr(l.a[0], l.a[1]);
 
     /* ---------- stazioni ---------- */
     const STAZIONI = [
-      { id: "barcola", nome: "Barcola", lat: 45.680, lon: 13.754, interp: true,
-        ruolo: "Porticciolo di Barcola: linea di partenza, boa 4 e ultimo lato." },
-      { id: "mambo", nome: "Boa Mambo", lat: 45.6983, lon: 13.7000, interp: true, sposta: [-30, -30],
-        ruolo: "Boa OGS davanti a Miramare: praticamente sulla boa 3. Dato orario." },
-      { id: "paloma", nome: "Boa Paloma", lat: 45.619, lon: 13.565, interp: true,
-        ruolo: "In mezzo al Golfo, a ovest delle boe 1 e 2: vento di mare aperto." },
-      { id: "monteGrisa", nome: "Monte Grisa", lat: 45.712, lon: 13.757, interp: false,
-        ruolo: "In quota sopra Barcola: con la Bora segna prima e più forte del mare." },
-      { id: "muggia", nome: "Muggia", lat: 45.602, lon: 13.768, interp: true,
-        ruolo: "Sud del Golfo: dice quanto vento c'è verso la zona della boa 1." }
+      { id: "barcola", nome: "Barcola", lat: 45.680, lon: 13.754, interp: true, fresco: 20,
+        ruolo: ["Porticciolo di Barcola: zona di partenza, boa 4 e ultimo lato.", "Barcola harbour: start area, mark 4 and the last leg."] },
+      { id: "mambo", nome: "Boa Mambo", lat: 45.6983, lon: 13.7000, interp: true, fresco: 90, sposta: [-26, -26],
+        ruolo: ["Boa OGS davanti a Miramare, a 250 m dalla boa 3. Dato orario.", "OGS buoy off Miramare, 250 m from mark 3. Hourly data."] },
+      { id: "paloma", nome: "Boa Paloma", lat: 45.619, lon: 13.565, interp: true, fresco: 30,
+        ruolo: ["In mezzo al Golfo, a ovest delle boe 1 e 2: vento di mare aperto.", "Mid-Gulf, west of marks 1 and 2: open-sea wind."] },
+      { id: "monteGrisa", nome: "Monte Grisa", lat: 45.712, lon: 13.757, interp: false, fresco: 20,
+        ruolo: ["In quota sopra Barcola: con la Bora segna prima e più forte del mare.", "High above Barcola: in Bora it reads earlier and stronger than at sea."] },
+      { id: "muggia", nome: "Muggia", lat: 45.602, lon: 13.768, interp: true, fresco: 30,
+        ruolo: ["Sud del Golfo: dice quanto vento c'è verso la zona della boa 1.", "Southern Gulf: tells you how much wind there is towards mark 1."] }
     ];
     const LUOGHI = [
-      { nome: "Miramare", lat: 45.7026, lon: 13.7124, dx: 10, dy: -4 },
-      { nome: "Grignano", lat: 45.7097, lon: 13.7108, dx: 10, dy: -8 },
-      { nome: "Faro della Vittoria", lat: 45.6742, lon: 13.7600, dx: 10, dy: 4, punto: true },
-      { nome: "Piazza Unità", lat: 45.6505, lon: 13.7672, dx: 8, dy: 12, punto: true },
-      { nome: "Trieste", lat: 45.6440, lon: 13.7720, dx: 0, dy: 0, grande: true }
+      { nome: ["Miramare", "Miramare"], lat: 45.7026, lon: 13.7124, dx: 10, dy: -2 },
+      { nome: ["Grignano", "Grignano"], lat: 45.7097, lon: 13.7108, dx: 10, dy: -8 },
+      { nome: ["Faro della Vittoria", "Victory Lighthouse"], lat: 45.6742, lon: 13.7600, dx: 9, dy: 5, punto: true, soloZoom: true },
+      { nome: ["Piazza Unità", "Piazza Unità"], lat: 45.6505, lon: 13.7672, dx: 8, dy: 12, punto: true, soloZoom: true },
+      { nome: ["Trieste", "Trieste"], lat: 45.6405, lon: 13.7760, dx: 0, dy: 0, grande: true },
+      { nome: ["SLOVENIJA", "SLOVENIA"], lat: 45.579, lon: 13.752, dx: 0, dy: 0, stato: true },
+      { nome: ["Golfo di Trieste", "Gulf of Trieste"], lat: 45.690, lon: 13.590, dx: 0, dy: 0, golfo: true }
     ];
 
     /* ---------- utilità ---------- */
-    const CARD = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
+    const CARD_IT = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
+    const CARD_EN = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
     const GRADI_CARDINALE = { N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
       S:180, SSW:202.5, SW:225, WSW:247.5, W:270, WNW:292.5, NW:315, NNW:337.5,
       SSO:202.5, SO:225, OSO:247.5, O:270, ONO:292.5, NO:315, NNO:337.5 };
-    const cardinale = d => CARD[Math.round(norm360(d) / 22.5) % 16];
+    const cardinale = d => (LANG === "en" ? CARD_EN : CARD_IT)[Math.round(norm360(d) / 22.5) % 16];
     function nomeVento(d, kt) {
       if (d == null) return "";
       d = norm360(d);
-      if (kt != null && kt < 3) return "Bonaccia";
-      if (d >= 20 && d < 90) return (kt != null && kt < 12) ? "Borino" : "Bora";
+      if (kt != null && kt < 3) return tr("Bonaccia", "Calm");
+      if (d >= 20 && d < 90) return (kt != null && kt < 12) ? tr("Borino", "Light Bora (Borino)") : "Bora";
       if (d >= 90 && d < 110) return "Levante";
-      if (d >= 110 && d < 160) return "Scirocco";
+      if (d >= 110 && d < 160) return tr("Scirocco", "Sirocco");
       if (d >= 160 && d < 200) return "Ostro";
-      if (d >= 200 && d < 250) return "Garbin";
+      if (d >= 200 && d < 250) return tr("Garbin", "Garbin (SW)");
       if (d >= 250 && d < 290) return "Ponente";
-      if (d >= 290 && d < 340) return "Maestral";
+      if (d >= 290 && d < 340) return tr("Maestral", "Maestral (breeze)");
       return "Tramontana";
     }
-    const fmt = (v, dec) => (typeof v === "number" && !isNaN(v)) ? v.toFixed(dec || 0).replace(".", ",") : "–";
+    const fmt = (v, dec) => (typeof v === "number" && !isNaN(v)) ? (LANG === "en" ? v.toFixed(dec || 0) : v.toFixed(dec || 0).replace(".", ",")) : "–";
     function frecciaSvg(deg, cls) {
       if (deg == null || isNaN(deg)) return "";
-      // la freccia punta dove VA il vento (da deg verso deg+180)
+      // il path punta in basso: ruotato di "da" gradi punta dove VA il vento
       return '<svg class="wind-arrow' + (cls ? " " + cls : "") + '" aria-hidden="true" viewBox="0 0 24 24" style="--wind-deg:' + Math.round(norm360(deg)) + 'deg">' +
         '<path d="M12 3v17m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     }
@@ -1339,71 +1428,94 @@
       { max: 35, c: "#d9364a" }, { max: Infinity, c: "#a2358f" }
     ];
     const coloreKt = kt => (FASCE.find(f => kt < f.max) || FASCE[0]).c;
-    function oraHHMM(d) { return d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }); }
+    const oraHHMM = d => d.toLocaleTimeString(LANG === "en" ? "en-GB" : "it-IT", { hour: "2-digit", minute: "2-digit" });
     function fetchTimeout(url, ms) {
       const ctl = new AbortController();
       const t = setTimeout(() => ctl.abort(), ms);
       return fetch(url, { signal: ctl.signal }).finally(() => clearTimeout(t));
     }
+    /* un secondo tentativo assorbe i blip: OGS rate-limita con 403, il proxy Apps Script
+       ogni tanto risponde con un 404 HTML transitorio */
+    function fetchJson(url, ms, tentativi) {
+      return fetchTimeout(url, ms)
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .catch(err => {
+          if (tentativi > 1) return new Promise(ok => setTimeout(ok, 1500)).then(() => fetchJson(url.replace(/([?&]ts=)\d+/, "$1" + Date.now()), ms, tentativi - 1));
+          throw err;
+        });
+    }
 
     /* ---------- andatura e vele ---------- */
     const ANDATURE = {
-      bolina:   { nome: "Bolina",   c: "var(--bc-bolina)" },
-      traverso: { nome: "Traverso", c: "var(--bc-traverso)" },
-      lasco:    { nome: "Lasco",    c: "var(--bc-lasco)" },
-      poppa:    { nome: "Poppa",    c: "var(--bc-poppa)" }
+      bolina:   { nome: ["Bolina", "Upwind"],     c: "var(--bc-bolina)" },
+      traverso: { nome: ["Traverso", "Reach"],    c: "var(--bc-traverso)" },
+      lasco:    { nome: ["Lasco", "Broad reach"], c: "var(--bc-lasco)" },
+      poppa:    { nome: ["Poppa", "Downwind"],    c: "var(--bc-poppa)" }
     };
+    const nomeAnd = k => tr(ANDATURE[k].nome[0], ANDATURE[k].nome[1]);
     /* angolo al vento reale (0 = prua al vento) e lato da cui arriva il vento */
     function angoloVento(rotta, daDeg) {
       const rel = norm360(daDeg - rotta);
-      return { twa: rel > 180 ? 360 - rel : rel, mure: rel < 180 ? "mure a dritta" : "mure a sinistra" };
+      return { twa: rel > 180 ? 360 - rel : rel, rel, dritta: rel < 180 };
     }
     function andatura(twa) {
-      if (twa < 45) return { k: "bolina", testo: "Bolina stretta", nota: "rotta diretta impossibile: si bordeggia" };
-      if (twa < 70) return { k: "bolina", testo: "Bolina larga", nota: "" };
-      if (twa < 110) return { k: "traverso", testo: "Traverso", nota: "" };
-      if (twa < 150) return { k: "lasco", testo: "Lasco", nota: "" };
-      return { k: "poppa", testo: "Poppa", nota: "in VMG conviene strambare" };
+      if (twa < 45) return { k: "bolina", testo: tr("Bolina stretta", "Close-hauled"), nota: tr("rotta diretta impossibile: si bordeggia", "can't lay the mark: tacking") };
+      if (twa < 70) return { k: "bolina", testo: tr("Bolina larga", "Close reach"), nota: "" };
+      if (twa < 110) return { k: "traverso", testo: tr("Traverso", "Beam reach"), nota: "" };
+      if (twa < 150) return { k: "lasco", testo: tr("Lasco", "Broad reach"), nota: "" };
+      return { k: "poppa", testo: tr("Poppa", "Run"), nota: tr("in VMG conviene strambare", "gybe downwind for VMG") };
     }
     function vele(twa, kt, raffica) {
       let v;
       if (kt < 4) {
-        v = "Aria leggerissima: vele leggere, peso sottovento e pazienza" + (twa >= 45 && twa < 120 ? "; Code 0 / drifter per chi li ha" : "") + ".";
+        v = tr("Aria leggerissima: vele leggere, peso sottovento e pazienza", "Very light air: light sails, weight to leeward and patience") +
+          (twa >= 45 && twa < 120 ? tr("; Code 0 / drifter per chi li ha", "; Code 0 / drifter if you have one") : "") + ".";
       } else if (twa < 70) {
-        v = kt <= 16 ? "Randa piena + genoa." : kt <= 22 ? "Randa + fiocco o genoa ridotto, twist aperto." :
-            kt <= 30 ? "Una mano di terzaroli + fiocco piccolo." : "Due mani di terzaroli e tormentina.";
+        v = kt <= 16 ? tr("Randa piena + genoa.", "Full main + genoa.") :
+            kt <= 22 ? tr("Randa + fiocco o genoa ridotto, twist aperto.", "Main + jib or reefed genoa, open the twist.") :
+            kt <= 30 ? tr("Una mano di terzaroli + fiocco piccolo.", "One reef + small jib.") : tr("Due mani di terzaroli e tormentina.", "Two reefs and storm jib.");
       } else if (twa < 110) {
-        v = kt < 12 ? "Code 0 o genoa, randa lascata." : kt <= 20 ? "Genoa (Code 0 solo per chi è attrezzato), vang lasco." :
-            kt <= 28 ? "Genoa ridotto, randa terzarolata e scotte in mano." : "Vele ridotte al minimo, attenzione alle straorzate.";
+        v = kt < 12 ? tr("Code 0 o genoa, randa lascata.", "Code 0 or genoa, main eased.") :
+            kt <= 20 ? tr("Genoa (Code 0 solo per chi è attrezzato), vang lasco.", "Genoa (Code 0 only if well set up), vang eased.") :
+            kt <= 28 ? tr("Genoa ridotto, randa terzarolata e scotte in mano.", "Reefed genoa, reefed main, sheets in hand.") : tr("Vele ridotte al minimo, attenzione alle straorzate.", "Minimum sail, watch out for broaching.");
       } else if (twa < 150) {
-        v = kt < 18 ? "Gennaker asimmetrico (o spi)." : kt <= 25 ? "Gennaker solo con equipaggio rodato, altrimenti genoa." :
-            "Niente vele volanti: genoa ridotto.";
+        v = kt < 18 ? tr("Gennaker asimmetrico (o spi).", "Asymmetric gennaker (or spinnaker).") :
+            kt <= 25 ? tr("Gennaker solo con equipaggio rodato, altrimenti genoa.", "Gennaker only with a seasoned crew, otherwise genoa.") :
+            tr("Niente vele volanti: genoa ridotto.", "No flying sails: reefed genoa.");
       } else {
-        v = kt < 18 ? "Spinnaker o gennaker, strambando sui salti." : kt <= 25 ? "Spi solo con equipaggio rodato; in alternativa genoa tangonato a farfalla." :
-            "Randa terzarolata e genoa ridotto, occhio alle strambate involontarie.";
+        v = kt < 18 ? tr("Spinnaker o gennaker, strambando sui salti.", "Spinnaker or gennaker, gybing on the shifts.") :
+            kt <= 25 ? tr("Spi solo con equipaggio rodato; in alternativa genoa tangonato a farfalla.", "Spinnaker only with a seasoned crew; otherwise poled-out genoa, wing on wing.") :
+            tr("Randa terzarolata e genoa ridotto, occhio alle strambate involontarie.", "Reefed main and reefed genoa, beware of accidental gybes.");
       }
       let nota = "";
-      if (!isNaN(raffica) && raffica >= kt * 1.45 && raffica - kt >= 7) nota = "Vento a raffiche (fino a " + Math.round(raffica) + " kt): regola le vele per le raffiche, non per il medio.";
+      if (!isNaN(raffica) && raffica >= kt * 1.45 && raffica - kt >= 7) nota = tr("Vento a raffiche (fino a ", "Gusty wind (up to ") + Math.round(raffica) + tr(" kt): regola le vele per le raffiche, non per il medio.", " kt): trim for the gusts, not for the mean.");
       return { v, nota };
+    }
+    function analisi(ventoDi) {
+      return LATI.map((l, i) => {
+        const v = ventoDi(i);
+        if (!v || v.deg == null) return { l, v: null };
+        const a = angoloVento(l.rotta, v.deg);
+        const an = andatura(a.twa);
+        // di bolina stretta si va a bordi: le mure si alternano, non ha senso indicarne una
+        const mure = a.twa < 45 ? "" : (a.dritta ? tr("mure a dritta", "starboard tack") : tr("mure a sinistra", "port tack"));
+        return { l, v, twa: a.twa, rel: a.rel, mure, an, vele: vele(a.twa, v.kt, v.raffica) };
+      });
     }
 
     /* ---------- stato ---------- */
-    const stato = {
-      modo: "live", vista: "percorso",
-      live: {}, prev: null, prevOra: 11, sim: { deg: 65, kt: 20 }, sel: null
-    };
+    const stato = { modo: "live", vista: "golfo", live: {}, prev: null, prevOra: 11, sim: { deg: 65, kt: 24 }, simScen: 0, sel: null };
 
     /* vento stimato in un punto: media pesata 1/d² delle stazioni a mare disponibili */
     function stimaVento(punto) {
       const fonti = STAZIONI.filter(s => s.interp && stato.live[s.id]);
-      let usa = fonti.length ? fonti : STAZIONI.filter(s => stato.live[s.id]);
+      const usa = fonti.length ? fonti : STAZIONI.filter(s => stato.live[s.id]);
       if (!usa.length) return null;
       let sw = 0, sk = 0, sg = 0, sgw = 0, sx = 0, sy = 0;
       const pesi = [];
       usa.forEach(s => {
         const v = stato.live[s.id];
-        const d = Math.max(distNm(punto, s), 0.4);
-        const w = 1 / (d * d);
+        const w = 1 / Math.pow(Math.max(distNm(punto, s), 0.4), 2);
         pesi.push({ nome: s.nome, w });
         sw += w; sk += w * v.kt;
         if (!isNaN(v.raffica)) { sg += w * v.raffica; sgw += w; }
@@ -1433,30 +1545,12 @@
       if (!n) return null;
       return { kt: sk / n, raffica: ng ? sg / ng : NaN, deg: (sx || sy) ? norm360(Math.atan2(sx, sy) * 180 / Math.PI) : null, fonti: nomi };
     }
+    const ventoPrincipale = i => stato.modo === "prev" ? mediaModelli(i, stato.prevOra) : stimaVento(LATI[i].mid);
+    const ventoSim = () => ({ kt: stato.sim.kt, raffica: NaN, deg: stato.sim.deg, fonti: [] });
 
-    function ventoLato(i) {
-      const l = LATI[i];
-      if (stato.modo === "sim") return { kt: stato.sim.kt, raffica: NaN, deg: stato.sim.deg, fonti: ["simulazione"] };
-      if (stato.modo === "prev") return mediaModelli(i, stato.prevOra);
-      return stimaVento(l.mid);
-    }
-
-    function analisiLati() {
-      return LATI.map((l, i) => {
-        const v = ventoLato(i);
-        if (!v || v.deg == null) return { l, v: null };
-        const a = angoloVento(l.rotta, v.deg);
-        const an = andatura(a.twa);
-        // di bolina stretta si va a bordi: le mure si alternano, non ha senso indicarne una
-        return { l, v, twa: a.twa, mure: a.twa < 45 ? "" : a.mure, an, vele: vele(a.twa, v.kt, v.raffica) };
-      });
-    }
-
-    /* ---------- mappa ---------- */
+    /* ---------- mappa (condivisa tra percorso e simulatore) ---------- */
     const SVG_NS = "http://www.w3.org/2000/svg";
-    const svg = document.getElementById("bcSvg");
-    const boxMappa = document.getElementById("bcMappa");
-    const VISTE = { percorso: { x: 400, y: 60, w: 585, h: 570 }, golfo: { x: 0, y: 0, w: 1000, h: COSTA.h } };
+    const VISTE = { golfo: { x: 0, y: 0, w: 1000, h: COSTA.h }, percorso: { x: 395, y: 30, w: 600, h: 625 } };
     function el(tag, attrs, testo) {
       const n = document.createElementNS(SVG_NS, tag);
       for (const k in attrs) n.setAttribute(k, attrs[k]);
@@ -1468,13 +1562,27 @@
         fill: "var(--bc-etichetta)", stroke: "var(--bc-alone)", "stroke-width": 3 * s, "paint-order": "stroke",
         "stroke-linejoin": "round" }, extra || {}), t));
     }
+    function triangolo(g, p, s, etichetta, lab, titolo) {
+      const x = px(p.lon), y = py(p.lat), r = 8.5 * s;
+      const gg = el("g", {});
+      gg.appendChild(el("path", { d: "M" + x + "," + (y - r) + " L" + (x + r * .95) + "," + (y + r * .65) + " L" + (x - r * .95) + "," + (y + r * .65) + "Z",
+        fill: "var(--bc-boa)", stroke: "var(--bc-alone)", "stroke-width": 1.8 * s, "stroke-linejoin": "round" }));
+      gg.appendChild(el("title", {}, titolo));
+      g.appendChild(gg);
+      if (etichetta) testo(g, x + lab[0] * s, y + lab[1] * s, etichetta, s * .95, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": lab[2] });
+    }
+    function cerchio(g, p, s, etichetta, lab) {
+      const x = px(p.lon), y = py(p.lat);
+      g.appendChild(el("circle", { cx: x, cy: y, r: 4.8 * s, fill: "var(--bc-boa)", "fill-opacity": .75, stroke: "var(--bc-alone)", "stroke-width": 1.4 * s }));
+      testo(g, x + lab[0] * s, y + lab[1] * s, etichetta, s * .8, { fill: "var(--bc-boa)", "font-weight": 800, "text-anchor": lab[2], opacity: .9 });
+    }
 
-    function disegnaMappa() {
-      const vb = VISTE[stato.vista];
-      const s = vb.w / 565;                           // scala dei simboli: costanti a schermo
+    function disegnaMappa(svg, opt) {
+      const vb = VISTE[opt.vista];
+      const s = vb.w / 590;                               // simboli di dimensione costante a schermo
       svg.setAttribute("viewBox", vb.x + " " + vb.y + " " + vb.w + " " + vb.h);
+      svg.setAttribute("aria-label", tr("Mappa del percorso della Barcolana con boe, centraline e vento", "Barcolana course map with marks, stations and wind"));
       svg.innerHTML = "";
-      svg.appendChild(el("title", { id: "bcSvgTitolo" }, "Mappa del percorso della Barcolana con boe, centraline e vento"));
       svg.appendChild(el("rect", { x: 0, y: 0, width: COSTA.w, height: COSTA.h, fill: "var(--bc-mare)" }));
       svg.appendChild(el("path", { d: COSTA.terra, fill: "var(--bc-terra)", stroke: "var(--bc-costa)", "stroke-width": 1.1 * s, "stroke-linejoin": "round" }));
       if (COSTA.dighe) svg.appendChild(el("path", { d: COSTA.dighe, fill: "var(--bc-diga)" }));
@@ -1482,109 +1590,118 @@
 
       const gL = el("g", {});
       LUOGHI.forEach(l => {
-        const x = px(l.lon), y = py(l.lat);
+        if (l.soloZoom && opt.vista === "golfo") return;   // sul golfo intero si accavallerebbero a Barcola
+        const x = px(l.lon), y = py(l.lat), nome = tr(l.nome[0], l.nome[1]);
         if (l.punto) gL.appendChild(el("circle", { cx: x, cy: y, r: 2.4 * s, fill: "var(--bc-etichetta)" }));
-        testo(gL, x + l.dx * s, y + l.dy * s, l.nome, l.grande ? s * 1.25 : s * .92,
-          l.grande ? { "font-weight": 800, "letter-spacing": 1 } : { "font-style": "italic", "font-weight": 650 });
+        const extra = l.grande ? { "font-weight": 800, "letter-spacing": 1 } :
+          l.stato ? { "font-weight": 800, "letter-spacing": 3 * s, "text-anchor": "middle", opacity: .6 } :
+          l.golfo ? { "font-style": "italic", "font-weight": 700, "text-anchor": "middle", opacity: .7 } :
+          { "font-style": "italic", "font-weight": 650 };
+        testo(gL, x + l.dx * s, y + l.dy * s, nome, l.grande ? s * 1.25 : l.golfo ? s * 1.3 : l.stato ? s * .95 : s * .92, extra);
       });
-      testo(gL, px(13.60), py(45.690), "Golfo di Trieste", s * 1.3, { "font-style": "italic", "font-weight": 700, opacity: .75 });
       svg.appendChild(gL);
 
-      const an = analisiLati();
+      const an = opt.an;
       const gR = el("g", {});
-      // rotta: casing scuro sotto, poi un gruppo per lato (colore = andatura)
-      LATI.forEach((l, i) => {
-        const x0 = px(l.p0.lon), y0 = py(l.p0.lat), x1 = px(l.p1.lon), y1 = py(l.p1.lat);
-        gR.appendChild(el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: "var(--bc-rotta-casing)", "stroke-width": 8 * s, "stroke-linecap": "round" }));
+      LATI.forEach(l => {
+        gR.appendChild(el("line", { x1: px(l.p0.lon), y1: py(l.p0.lat), x2: px(l.p1.lon), y2: py(l.p1.lat),
+          stroke: "var(--bc-rotta-casing)", "stroke-width": 8 * s, "stroke-linecap": "round" }));
       });
       LATI.forEach((l, i) => {
         const a = an[i];
         const col = a.v ? ANDATURE[a.an.k].c : "var(--bc-neutro)";
-        const g = el("g", { "class": "bc-lato-g" + (stato.sel === "l" + l.n ? " sel" : ""), "data-lato": l.n });
+        const g = el("g", { "class": "bc-lato-g" + (opt.sel === "l" + l.n ? " sel" : ""), "data-lato": l.n });
         const x0 = px(l.p0.lon), y0 = py(l.p0.lat), x1 = px(l.p1.lon), y1 = py(l.p1.lat);
         g.appendChild(el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: col, "stroke-width": 4.2 * s, "stroke-linecap": "round",
           "stroke-dasharray": a.v ? "none" : (7 * s) + " " + (6 * s) }));
-        // chevron di direzione al 58% del lato
         const t = 0.58, cx = x0 + (x1 - x0) * t, cy = y0 + (y1 - y0) * t;
-        const ch = el("path", { d: "M" + (-6 * s) + "," + (4 * s) + " L0," + (-5 * s) + " L" + (6 * s) + "," + (4 * s),
+        g.appendChild(el("path", { d: "M" + (-6 * s) + "," + (4 * s) + " L0," + (-5 * s) + " L" + (6 * s) + "," + (4 * s),
           fill: "none", stroke: col, "stroke-width": 3 * s, "stroke-linecap": "round", "stroke-linejoin": "round",
-          transform: "translate(" + cx + " " + cy + ") rotate(" + l.rotta + ")" });
-        g.appendChild(ch);
-        // numero del lato: di fianco al lato, dalla parte esterna
-        const mx = x0 + (x1 - x0) * 0.35, my = y0 + (y1 - y0) * 0.35;
-        const nx = Math.cos(rad(l.rotta)), ny = Math.sin(rad(l.rotta));   // normale destra in coordinate schermo
+          transform: "translate(" + cx + " " + cy + ") rotate(" + l.rotta + ")" }));
+        // numero del lato, di fianco, verso l'esterno del percorso
+        const mx = x0 + (x1 - x0) * 0.36, my = y0 + (y1 - y0) * 0.36;
+        const nx = Math.cos(rad(l.rotta)), ny = Math.sin(rad(l.rotta));
         const off = (l.n === 4 || l.n === 5 ? -1 : 1) * 15 * s;
         const bx = mx + nx * off, by = my + ny * off;
         g.appendChild(el("circle", { cx: bx, cy: by, r: 9 * s, fill: col, stroke: "var(--bc-alone)", "stroke-width": 1.5 * s }));
         g.appendChild(el("text", { x: bx, y: by + 4 * s, "text-anchor": "middle", "font-size": 11.5 * s, "font-weight": 900, fill: "#0b0d10" }, String(l.n)));
-        // area di tocco larga
-        const hit = el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: "transparent", "stroke-width": 26 * s, "class": "bc-hit" });
-        g.appendChild(hit);
-        g.appendChild(el("title", {}, "Lato " + l.n + ": " + l.da + " → " + l.a + ", " + (l.uff ? "" : "≈") + String(l.rotta).padStart(3, "0") + "°, " + fmt(l.nm, 1) + " mn"));
-        g.addEventListener("click", ev => { ev.stopPropagation(); seleziona("l" + l.n); });
+        g.appendChild(el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: "transparent", "stroke-width": 26 * s, "class": "bc-hit" }));
+        g.appendChild(el("title", {}, tr("Lato ", "Leg ") + l.n + ": " + nomeLato(l) + ", " + String(l.rotta).padStart(3, "0") + "°, " + fmt(l.nm, 1) + tr(" mn", " nm")));
+        if (opt.onLato) g.addEventListener("click", ev => { ev.stopPropagation(); opt.onLato(l.n); });
         gR.appendChild(g);
       });
       svg.appendChild(gR);
 
-      // linea di partenza e di arrivo
-      const lp = LINEA_PARTENZA.map(p => [px(p.lon), py(p.lat)]);
-      svg.appendChild(el("line", { x1: lp[0][0], y1: lp[0][1], x2: lp[1][0], y2: lp[1][1], stroke: "var(--bc-alone)", "stroke-width": 5 * s, "stroke-linecap": "round" }));
-      svg.appendChild(el("line", { x1: lp[0][0], y1: lp[0][1], x2: lp[1][0], y2: lp[1][1], stroke: "var(--bc-boa)", "stroke-width": 2.6 * s, "stroke-dasharray": (5 * s) + " " + (3 * s) }));
-      lp.forEach(p => svg.appendChild(el("circle", { cx: p[0], cy: p[1], r: 3.6 * s, fill: "var(--bc-boa)", stroke: "var(--bc-alone)", "stroke-width": 1.3 * s })));
-      const pl = avanza(CENTRO_PARTENZA, 300, 0.32);
-      testo(svg, px(pl.lon) - 8 * s, py(pl.lat) + 16 * s, "Partenza", s, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": "end" });
-      const la = LINEA_ARRIVO.map(p => [px(p.lon), py(p.lat)]);
-      svg.appendChild(el("line", { x1: la[0][0], y1: la[0][1], x2: la[1][0], y2: la[1][1], stroke: "var(--bc-alone)", "stroke-width": 6 * s, "stroke-linecap": "round" }));
-      svg.appendChild(el("line", { x1: la[0][0], y1: la[0][1], x2: la[1][0], y2: la[1][1], stroke: "var(--bc-boa)", "stroke-width": 3.2 * s, "stroke-dasharray": (2.5 * s) + " " + (2.5 * s) }));
-      testo(svg, la[1][0] - 8 * s, la[1][1] + 17 * s, "Arrivo", s, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": "end" });
+      // linee di partenza (P1 - P/4) e di arrivo (A1 - A)
+      const linea = (a, b, dash, w) => {
+        const x1 = px(a.lon), y1 = py(a.lat), x2 = px(b.lon), y2 = py(b.lat);
+        svg.appendChild(el("line", { x1, y1, x2, y2, stroke: "var(--bc-alone)", "stroke-width": (w + 2.4) * s, "stroke-linecap": "round" }));
+        svg.appendChild(el("line", { x1, y1, x2, y2, stroke: "var(--bc-boa)", "stroke-width": w * s, "stroke-dasharray": dash.map(d => d * s).join(" ") }));
+      };
+      linea(BOA.P1, BOA.P4, [5, 3], 2.6);
+      linea(BOA.A1, BOA.A, [2.5, 2.5], 3.2);
+      testo(svg, px(BOA.A1.lon) - 10 * s, py(BOA.A1.lat) + 18 * s, tr("Arrivo", "Finish"), s, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": "end" });
 
-      // boe
-      BOE.forEach(b => {
-        const x = px(b.p.lon), y = py(b.p.lat);
-        const g = el("g", {});
-        g.appendChild(el("circle", { cx: x, cy: y, r: 7.5 * s, fill: "var(--bc-boa)", stroke: "var(--bc-alone)", "stroke-width": 2 * s }));
-        g.appendChild(el("text", { x, y: y + 3.6 * s, "text-anchor": "middle", "font-size": 9.5 * s, "font-weight": 900, fill: "#0b0d10" }, String(b.n)));
-        g.appendChild(el("title", {}, "Boa " + b.n + " (posizione indicativa)"));
-        svg.appendChild(g);
-        const lab = { 1: [12, 16, "start"], 2: [-12, -4, "end"], 3: [-12, 20, "end"], 4: [-12, 16, "end"] }[b.n];
-        testo(svg, x + lab[0] * s, y + lab[1] * s, "Boa " + b.n, s * .95, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": lab[2] });
-      });
+      // boe: triangoli (come sulla mappa ufficiale), boe alternative 2bis/3bis come cerchi
+      const gB = el("g", {});
+      cerchio(gB, BOA.B2BIS, s, "2bis", [-8, 4, "end"]);
+      cerchio(gB, BOA.B3BIS, s, "3bis", [-8, -4, "end"]);
+      triangolo(gB, BOA.B1, s, tr("Boa 1", "Mark 1"), [12, 16, "start"], tr("Boa 1 (posizione dalla mappa ufficiale)", "Mark 1 (position from the official map)"));
+      triangolo(gB, BOA.B2, s, tr("Boa 2", "Mark 2"), [-8, 22, "end"], tr("Boa 2", "Mark 2"));
+      triangolo(gB, BOA.B3, s, tr("Boa 3", "Mark 3"), [-12, 16, "end"], tr("Boa 3", "Mark 3"));
+      triangolo(gB, BOA.P1, s, tr("Partenza · P1", "Start · P1"), [-11, 4, "end"], tr("P1: estremo ovest della linea di partenza", "P1: west end of the start line"));
+      triangolo(gB, BOA.P4, s, "P/4", [-12, 18, "end"], tr("P/4: estremo est della partenza e boa 4", "P/4: east end of the start line and mark 4"));
+      triangolo(gB, BOA.A1, s, "", null, tr("A1: arrivo", "A1: finish"));
+      triangolo(gB, BOA.A, s, "", null, tr("A: arrivo, testata della diga", "A: finish, breakwater head"));
+      svg.appendChild(gB);
 
-      // stazioni (sopra a tutto)
-      const gS = el("g", {});
-      STAZIONI.forEach(st => disegnaStazione(gS, st, stato.live[st.id], vb, s));
-      svg.appendChild(gS);
+      if (opt.stazioni) {
+        const gS = el("g", {});
+        STAZIONI.forEach(st => disegnaStazione(gS, st, stato.live[st.id], vb, s, opt));
+        svg.appendChild(gS);
+      }
+      if (opt.rosa) disegnaRosa(svg, vb, s, opt.rosa);
 
-      // nord e scala (1 miglio)
-      const nx0 = vb.x + 26 * s, ny0 = vb.y + 64 * s;   // sotto la scala, lontano dalle stazioni
-      const gN = el("g", { opacity: .85 });
-      gN.appendChild(el("path", { d: "M" + nx0 + "," + (ny0 - 14 * s) + " l" + (7 * s) + "," + (18 * s) + " l" + (-7 * s) + "," + (-5 * s) + " l" + (-7 * s) + "," + (5 * s) + "z", fill: "var(--bc-etichetta)" }));
-      testo(gN, nx0, ny0 + 18 * s, "N", s, { "text-anchor": "middle", "font-weight": 900 });
-      svg.appendChild(gN);
-      const unitaMiglio = KY / 60;                     // 1 miglio = 1/60 di grado di latitudine
-      const sx0 = vb.x + 16 * s, sy0 = vb.y + 26 * s;
+      // nord e scala (1 miglio = 1/60 di grado di latitudine)
+      const unitaMiglio = KY / 60;
+      const sx0 = vb.x + 16 * s, sy0 = vb.y + 24 * s;
       svg.appendChild(el("line", { x1: sx0, y1: sy0, x2: sx0 + unitaMiglio, y2: sy0, stroke: "var(--bc-etichetta)", "stroke-width": 2.4 * s }));
       [0, unitaMiglio].forEach(d => svg.appendChild(el("line", { x1: sx0 + d, y1: sy0 - 5 * s, x2: sx0 + d, y2: sy0 + 1 * s, stroke: "var(--bc-etichetta)", "stroke-width": 2 * s })));
-      testo(svg, sx0 + unitaMiglio / 2, sy0 + 15 * s, "1 miglio", s * .9, { "text-anchor": "middle" });
+      testo(svg, sx0 + unitaMiglio / 2, sy0 + 15 * s, tr("1 miglio", "1 nm"), s * .9, { "text-anchor": "middle" });
+      const nx0 = sx0 + unitaMiglio + 26 * s, ny0 = vb.y + 22 * s;
+      svg.appendChild(el("path", { d: "M" + nx0 + "," + (ny0 - 12 * s) + " l" + (6 * s) + "," + (16 * s) + " l" + (-6 * s) + "," + (-4.5 * s) + " l" + (-6 * s) + "," + (4.5 * s) + "z", fill: "var(--bc-etichetta)", opacity: .85 }));
+      testo(svg, nx0, ny0 + 17 * s, "N", s * .9, { "text-anchor": "middle", "font-weight": 900 });
+    }
 
-      boxMappa.classList.toggle("bc-ha-sel", !!(stato.sel && stato.sel[0] === "l"));
+    /* rosa del vento del simulatore: freccia grande in alto a destra */
+    function disegnaRosa(svg, vb, s, v) {
+      const cx = vb.x + vb.w - 58 * s, cy = vb.y + 62 * s, R = 40 * s;
+      const g = el("g", {});
+      g.appendChild(el("circle", { cx, cy, r: R, fill: "var(--bc-alone)", "fill-opacity": .72, stroke: "var(--bc-etichetta)", "stroke-width": 1.2 * s, "stroke-opacity": .5 }));
+      const col = coloreKt(v.kt);
+      const fr = el("g", { transform: "translate(" + cx + " " + cy + ") rotate(" + norm360(v.deg + 180) + ")" });
+      fr.appendChild(el("line", { x1: 0, y1: R * .78, x2: 0, y2: -R * .45, stroke: col, "stroke-width": 5 * s, "stroke-linecap": "round" }));
+      fr.appendChild(el("path", { d: "M0," + (-R * .82) + " L" + (-9 * s) + "," + (-R * .38) + " L" + (9 * s) + "," + (-R * .38) + "Z", fill: col }));
+      g.appendChild(fr);
+      testo(g, cx, cy + R + 16 * s, Math.round(v.kt) + " kt " + cardinale(v.deg), s, { "text-anchor": "middle", "font-weight": 850 });
+      svg.appendChild(g);
     }
 
     /* simbolo stazione: cerchio con i nodi + freccia verso dove VA il vento;
-       fuori inquadratura -> etichetta sul bordo che indica la direzione */
-    function disegnaStazione(dest, st, v, vb, s) {
-      let x = px(st.lon), y = py(st.lat);
+       fuori inquadratura -> etichetta sul bordo */
+    function disegnaStazione(dest, st, v, vb, s, opt) {
+      const x = px(st.lon), y = py(st.lat);
       const dentro = x > vb.x + 8 * s && x < vb.x + vb.w - 8 * s && y > vb.y + 8 * s && y < vb.y + vb.h - 8 * s;
-      const g = el("g", { "class": "bc-staz-g" + (stato.sel === "s" + st.id ? " sel" : ""), role: "button", tabindex: "0" });
+      const g = el("g", { "class": "bc-staz-g" + (opt.sel === "s" + st.id ? " sel" : ""), role: "button", tabindex: "0" });
       const kt = v ? Math.round(v.kt) : null;
       const col = v ? coloreKt(v.kt) : "#6b7780";
-      const titolo = st.nome + (v ? ": " + kt + " kt" + (v.deg != null ? " da " + cardinale(v.deg) : "") : ": dato non disponibile");
-      g.setAttribute("aria-label", titolo + ". Dettagli");
+      const titolo = st.nome + (v ? ": " + kt + " kt" + (v.deg != null ? tr(" da ", " from ") + cardinale(v.deg) : "") : tr(": dato non disponibile", ": no data"));
+      g.setAttribute("aria-label", titolo);
       if (!dentro) {
         const pad = 16 * s;
-        const cx = Math.min(Math.max(x, vb.x + pad + 40 * s), vb.x + vb.w - pad - 40 * s);
-        const cy = Math.min(Math.max(y, vb.y + pad), vb.y + vb.h - pad);
         const lato = x < vb.x ? "sx" : x > vb.x + vb.w ? "dx" : y < vb.y ? "su" : "giu";
+        const cx = Math.min(Math.max(x, vb.x + pad + 50 * s), vb.x + vb.w - pad - 50 * s);
+        const cy = Math.min(Math.max(y, vb.y + pad + 30 * s), vb.y + vb.h - pad);
         const ex = lato === "sx" ? vb.x + pad : lato === "dx" ? vb.x + vb.w - pad : cx;
         const ey = lato === "su" ? vb.y + pad : lato === "giu" ? vb.y + vb.h - pad : cy;
         const lab = (lato === "sx" ? "◀ " : "") + st.nome + (v ? " " + kt + " kt" : " –") + (lato === "dx" ? " ▶" : lato === "giu" ? " ▼" : lato === "su" ? " ▲" : "");
@@ -1612,219 +1729,233 @@
         }
         g.appendChild(el("circle", { cx: sx, cy: sy, r: 11 * s, fill: "#15313a", stroke: col, "stroke-width": 2.4 * s }));
         g.appendChild(el("text", { x: sx, y: sy + 3.8 * s, "text-anchor": "middle", "font-size": 10.5 * s, "font-weight": 900, fill: "#fff" }, v ? String(kt) : "–"));
-        const ds = st.id === "barcola" ? [14, 20, "start"] : st.id === "monteGrisa" ? [14, -8, "start"] : st.id === "mambo" ? [-14, -12, "end"] : [14, 4, "start"];
+        const ds = { barcola: [14, 18, "start"], monteGrisa: [14, -8, "start"], mambo: [-14, -10, "end"], paloma: [14, 4, "start"], muggia: [14, 4, "start"] }[st.id];
         testo(g, sx + ds[0] * s, sy + ds[1] * s, st.nome, s * .9, { "text-anchor": ds[2], "font-weight": 800 });
       }
       g.appendChild(el("title", {}, titolo));
-      const apri = ev => { ev.stopPropagation(); seleziona("s" + st.id); };
-      g.addEventListener("click", apri);
-      g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); apri(e); } });
+      if (opt.onStaz) {
+        const apri = ev => { ev.stopPropagation(); opt.onStaz(st.id); };
+        g.addEventListener("click", apri);
+        g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); apri(e); } });
+      }
       dest.appendChild(g);
     }
 
-    function seleziona(id) {
-      stato.sel = stato.sel === id ? null : id;
-      aggiornaTutto();
-      if (stato.sel && stato.sel[0] === "l") {
-        const card = document.querySelector('.bc-lato[data-lato="' + stato.sel.slice(1) + '"]');
-        if (card && window.innerWidth >= 900) card.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      }
-    }
-    svg.addEventListener("click", () => { if (stato.sel) { stato.sel = null; aggiornaTutto(); } });
-
-    function aggiornaInfo(an) {
-      const box = document.getElementById("bcInfo");
-      if (!stato.sel) { box.innerHTML = "Tocca un lato del percorso o una centralina."; return; }
-      if (stato.sel[0] === "l") {
-        const a = an[+stato.sel.slice(1) - 1], l = a.l;
-        let h = "<strong>Lato " + l.n + " · " + l.da + " → " + l.a + "</strong> · " + (l.uff ? "" : "≈") + String(l.rotta).padStart(3, "0") + "°, " + fmt(l.nm, 1) + " mn — " + l.nome + ".";
-        if (a.v) h += "<br>" + a.an.testo + " (vento a " + Math.round(a.twa) + "° dalla prua" + (a.mure ? ", " + a.mure : "") + ") con " + Math.round(a.v.kt) + " kt da " + cardinale(a.v.deg) + ".";
-        box.innerHTML = h;
-      } else {
-        const st = STAZIONI.find(s => "s" + s.id === stato.sel), v = stato.live[st.id];
-        box.innerHTML = "<strong>" + st.nome + "</strong> — " + st.ruolo + (v ? "<br>" + Math.round(v.kt) + " kt" +
-          (!isNaN(v.raffica) ? ", raffica " + Math.round(v.raffica) + " kt" : "") + (v.deg != null ? ", da " + cardinale(v.deg) + " (" + Math.round(v.deg) + "°)" : "") +
-          (v.ora ? " · agg. " + v.ora : "") : "<br>Dato al momento non disponibile.");
-      }
-    }
-
-    /* ---------- pannello lati ---------- */
-    function barcaSvg(twa, rel, col) {
+    /* ---------- elenco lati (condiviso) ---------- */
+    function barcaSvg(rel, col) {
       // barca con la prua in alto; il vento arriva dall'angolo relativo "rel" (0 = da prua)
       const r = rad(rel), R = 21;
       const wx = 26 + Math.sin(r) * R, wy = 26 - Math.cos(r) * R;
       const tx = 26 + Math.sin(r) * 9, ty = 26 - Math.cos(r) * 9;
-      const ang = Math.atan2(ty - wy, tx - wx);
-      const hx = tx - Math.cos(ang) * 1, hy = ty - Math.sin(ang) * 1;
-      const a1 = ang + 2.6, a2 = ang - 2.6;
+      const ang = Math.atan2(ty - wy, tx - wx), a1 = ang + 2.6, a2 = ang - 2.6;
       return '<svg class="bc-barca" viewBox="0 0 52 52" aria-hidden="true">' +
         '<circle cx="26" cy="26" r="24" fill="none" stroke="var(--line)" stroke-width="1.2"/>' +
         '<path d="M26 12 C31 18 31 30 29.5 40 L22.5 40 C21 30 21 18 26 12Z" fill="' + col + '" opacity=".9"/>' +
-        '<line x1="' + wx.toFixed(1) + '" y1="' + wy.toFixed(1) + '" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round"/>' +
+        '<line x1="' + wx.toFixed(1) + '" y1="' + wy.toFixed(1) + '" x2="' + (tx - Math.cos(ang)).toFixed(1) + '" y2="' + (ty - Math.sin(ang)).toFixed(1) + '" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round"/>' +
         '<path d="M' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ' L' + (tx + Math.cos(a1) * 6).toFixed(1) + ' ' + (ty + Math.sin(a1) * 6).toFixed(1) +
         ' L' + (tx + Math.cos(a2) * 6).toFixed(1) + ' ' + (ty + Math.sin(a2) * 6).toFixed(1) + 'Z" fill="var(--ink)"/></svg>';
     }
-
-    function aggiornaPannello(an) {
-      const lista = document.getElementById("bcLati");
+    function disegnaLati(lista, an, opt) {
       lista.innerHTML = an.map(a => {
         const l = a.l;
         const col = a.v ? ANDATURE[a.an.k].c : "var(--bc-neutro)";
-        const rotta = (l.uff ? "" : "≈") + String(l.rotta).padStart(3, "0") + "° · " + fmt(l.nm, 1) + " mn";
+        const rotta = String(l.rotta).padStart(3, "0") + "° · " + fmt(l.nm, 1) + tr(" mn", " nm");
         let corpo;
         if (!a.v) {
-          corpo = '<div class="bc-lato-vento">' + (stato.modo === "prev" ? "Previsione non ancora disponibile per quest'ora." : "In attesa dei dati delle centraline…") + "</div>";
+          corpo = '<div class="bc-lato-vento">' + (opt.modo === "prev" ? tr("Previsione non ancora disponibile per quest'ora.", "Forecast not yet available for this time.") : tr("In attesa dei dati delle centraline…", "Waiting for station data…")) + "</div>";
         } else {
-          const rel = norm360(a.v.deg - l.rotta);
-          corpo = '<div class="bc-lato-and">' + a.an.testo + ' <small>· ' + [Math.round(a.twa) + "° dal vento", a.mure, a.an.nota].filter(Boolean).join(" · ") + '</small></div>' +
-            '<div class="bc-lato-vento">' + Math.round(a.v.kt) + " kt" + (!isNaN(a.v.raffica) ? " (raff. " + Math.round(a.v.raffica) + ")" : "") +
-            " da " + cardinale(a.v.deg) + " " + Math.round(a.v.deg) + "° · " + nomeVento(a.v.deg, a.v.kt) +
-            (a.v.fonti && a.v.fonti.length && stato.modo !== "sim" ? " · " + a.v.fonti.join(", ") : "") + "</div>" +
+          corpo = '<div class="bc-lato-and">' + a.an.testo + ' <small>· ' + [Math.round(a.twa) + tr("° dal vento", "° off the wind"), a.mure, a.an.nota].filter(Boolean).join(" · ") + "</small></div>" +
+            (opt.modo === "sim" ? "" : '<div class="bc-lato-vento">' + Math.round(a.v.kt) + " kt" + (!isNaN(a.v.raffica) ? " (" + tr("raff. ", "gust ") + Math.round(a.v.raffica) + ")" : "") +
+              tr(" da ", " from ") + cardinale(a.v.deg) + " " + Math.round(a.v.deg) + "° · " + nomeVento(a.v.deg, a.v.kt) +
+              (a.v.fonti && a.v.fonti.length ? " · " + a.v.fonti.join(", ") : "") + "</div>") +
             '<div class="bc-lato-vele">⛵ ' + a.vele.v + (a.vele.nota ? "<em>" + a.vele.nota + "</em>" : "") + "</div>";
-          a.rel = rel;
         }
-        return '<li class="bc-lato' + (stato.sel === "l" + l.n ? " sel" : "") + '" data-lato="' + l.n + '" style="--c:' + col + '" tabindex="0">' +
-          (a.v ? barcaSvg(a.twa, a.rel, col) : '<svg class="bc-barca" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none" stroke="var(--line)" stroke-width="1.2"/><text x="26" y="33" text-anchor="middle" font-size="20" font-weight="900" fill="var(--label)">' + l.n + '</text></svg>') +
-          '<div><div class="bc-lato-titolo"><strong>' + l.n + ". " + l.da + " → " + l.a + "</strong><span>" + rotta + "</span></div>" + corpo + "</div></li>";
+        return '<li class="bc-lato' + (opt.sel === "l" + l.n ? " sel" : "") + '" data-lato="' + l.n + '" style="--c:' + col + '"' + (opt.onLato ? ' tabindex="0"' : "") + ">" +
+          (a.v ? barcaSvg(a.rel, col) : '<svg class="bc-barca" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none" stroke="var(--line)" stroke-width="1.2"/><text x="26" y="33" text-anchor="middle" font-size="20" font-weight="900" fill="var(--label)">' + l.n + "</text></svg>") +
+          '<div><div class="bc-lato-titolo"><strong>' + l.n + ". " + nomeLato(l) + "</strong><span>" + rotta + "</span></div>" + corpo + "</div></li>";
       }).join("");
-      Array.prototype.forEach.call(lista.children, li => {
-        const vai = () => seleziona("l" + li.getAttribute("data-lato"));
+      if (opt.onLato) Array.prototype.forEach.call(lista.children, li => {
+        const vai = () => opt.onLato(+li.getAttribute("data-lato"));
         li.addEventListener("click", vai);
         li.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); vai(); } });
       });
-
-      // somma per andatura
+    }
+    function disegnaSomma(box, an, chi) {
       const somma = { bolina: 0, traverso: 0, lasco: 0, poppa: 0 };
       let tot = 0;
       an.forEach(a => { if (a.v) { somma[a.an.k] += a.l.nm; tot += a.l.nm; } });
-      const box = document.getElementById("bcSomma");
       if (!tot) { box.innerHTML = ""; return; }
-      const chi = stato.modo === "live" ? "Con il vento di adesso" : stato.modo === "prev" ? "Con la previsione delle " + stato.prevOra + ":00" : "Con questo vento";
-      box.innerHTML = '<div class="bc-somma-bar">' + Object.keys(somma).filter(k => somma[k]).map(k =>
-          '<div style="--c:' + ANDATURE[k].c + ';flex:' + somma[k] + '" title="' + ANDATURE[k].nome + '"></div>').join("") + "</div>" +
-        "<p>" + chi + " il percorso è: " + Object.keys(somma).filter(k => somma[k]).map(k =>
-          "<b>" + fmt(somma[k], 1) + " mn</b> di " + ANDATURE[k].nome.toLowerCase()).join(" · ") + ".</p>";
+      const k = Object.keys(somma).filter(x => somma[x]);
+      box.innerHTML = '<div class="bc-somma-bar">' + k.map(x => '<div style="--c:' + ANDATURE[x].c + ";flex:" + somma[x] + '" title="' + nomeAnd(x) + '"></div>').join("") + "</div>" +
+        "<p>" + chi + " " + k.map(x => "<b>" + fmt(somma[x], 1) + tr(" mn</b> di ", " nm</b> ") + nomeAnd(x).toLowerCase()).join(" · ") + ".</p>";
     }
 
-    /* ---------- hero: vento sul campo ---------- */
+    /* ---------- sezione percorso ---------- */
+    const svgMappa = document.getElementById("bcSvg");
+    function seleziona(id) {
+      stato.sel = stato.sel === id ? null : id;
+      aggiornaPercorso();
+      if (stato.sel && stato.sel[0] === "l" && window.innerWidth >= 900) {
+        const card = document.querySelector('#bcLati .bc-lato[data-lato="' + stato.sel.slice(1) + '"]');
+        if (card) card.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    }
+    svgMappa.addEventListener("click", () => { if (stato.sel) { stato.sel = null; aggiornaPercorso(); } });
+    function aggiornaPercorso() {
+      const an = analisi(ventoPrincipale);
+      disegnaMappa(svgMappa, { vista: stato.vista, an, stazioni: true, sel: stato.sel, onLato: n => seleziona("l" + n), onStaz: id => seleziona("s" + id) });
+      document.getElementById("bcMappa").classList.toggle("bc-ha-sel", !!(stato.sel && stato.sel[0] === "l"));
+      disegnaLati(document.getElementById("bcLati"), an, { modo: stato.modo, sel: stato.sel, onLato: n => seleziona("l" + n) });
+      disegnaSomma(document.getElementById("bcSomma"), an, stato.modo === "live" ? tr("Con il vento di adesso il percorso è:", "With the current wind the course is:") :
+        tr("Con la previsione delle " + stato.prevOra + ":00 il percorso è:", "With the " + stato.prevOra + ":00 forecast the course is:"));
+      document.getElementById("mappaModo").textContent = tr("Vento: ", "Wind: ") + (stato.modo === "live" ? "live" : tr("previsto dom. 11/10 ore ", "forecast Sun 11 Oct ") + stato.prevOra + ":00");
+      // riquadro info
+      const box = document.getElementById("bcInfo");
+      if (!stato.sel) box.textContent = tr("Tocca un lato del percorso o una centralina.", "Tap a leg of the course or a station.");
+      else if (stato.sel[0] === "l") {
+        const a = an[+stato.sel.slice(1) - 1], l = a.l;
+        box.innerHTML = "<strong>" + tr("Lato ", "Leg ") + l.n + " · " + nomeLato(l) + "</strong> · " + String(l.rotta).padStart(3, "0") + "°, " + fmt(l.nm, 1) + tr(" mn", " nm") +
+          (a.v ? "<br>" + a.an.testo + " (" + Math.round(a.twa) + tr("° dal vento", "° off the wind") + (a.mure ? ", " + a.mure : "") + ")" + tr(" con ", " with ") + Math.round(a.v.kt) + " kt" + tr(" da ", " from ") + cardinale(a.v.deg) + "." : "");
+      } else {
+        const st = STAZIONI.find(x => "s" + x.id === stato.sel), v = stato.live[st.id];
+        box.innerHTML = "<strong>" + st.nome + "</strong> — " + tr(st.ruolo[0], st.ruolo[1]) + (v ? "<br>" + Math.round(v.kt) + " kt" +
+          (!isNaN(v.raffica) ? ", " + tr("raffica ", "gust ") + Math.round(v.raffica) + " kt" : "") + (v.deg != null ? tr(", da ", ", from ") + cardinale(v.deg) + " (" + Math.round(v.deg) + "°)" : "") +
+          (v.ora ? " · " + tr("agg. ", "updated ") + v.ora : "") : "<br>" + tr("Dato al momento non disponibile.", "No data right now."));
+      }
+    }
+
+    /* ---------- hero: vento sul campo + stato centraline ---------- */
+    function etaMin(v) { return v && v.t ? Math.max(0, Math.round((Date.now() - v.t) / 60000)) : null; }
     function aggiornaHero() {
-      const v = stimaVento(CENTRO_CAMPO);
       const $ = id => document.getElementById(id);
-      if (!v) return;
-      $("nowKt").textContent = Math.round(v.kt);
-      $("nowFreccia").innerHTML = frecciaSvg(v.deg, "");
-      $("nowDir").textContent = v.deg != null ? "da " + cardinale(v.deg) + " · " + Math.round(v.deg) + "°" : "direzione n.d.";
-      $("nowNome").textContent = nomeVento(v.deg, v.kt);
-      $("nowRaffica").textContent = !isNaN(v.raffica) ? "raffiche fino a " + Math.round(v.raffica) + " kt" : "";
-      const attive = STAZIONI.filter(s => s.interp && stato.live[s.id]).map(s => s.nome);
-      $("nowFonti").textContent = "Stima al centro del percorso da " + (attive.length ? attive.join(", ") : "Monte Grisa") + ", pesata sulla distanza.";
-      const live = LATI.map((l, i) => {
+      const v = stimaVento(CENTRO_CAMPO);
+      if (v) {
+        $("nowKt").textContent = Math.round(v.kt);
+        $("nowFreccia").innerHTML = frecciaSvg(v.deg, "");
+        $("nowDir").textContent = v.deg != null ? tr("da ", "from ") + cardinale(v.deg) + " · " + Math.round(v.deg) + "°" : "–";
+        $("nowNome").textContent = nomeVento(v.deg, v.kt);
+        $("nowRaffica").textContent = !isNaN(v.raffica) ? tr("raffiche fino a ", "gusts up to ") + Math.round(v.raffica) + " kt" : "";
+        $("nowFonti").textContent = tr("Stima al centro del percorso dalle centraline a mare in linea, pesata sulla distanza.", "Estimate at the centre of the course from the live sea-level stations, weighted by distance.");
+      } else {
+        $("nowFonti").textContent = tr("Carico le centraline…", "Loading stations…");
+      }
+      $("nowStazioni").innerHTML = STAZIONI.map(st => {
+        const w = stato.live[st.id], eta = etaMin(w);
+        const cls = !w ? "" : (eta != null && eta > st.fresco ? "warn" : "ok");
+        const quando = !w ? tr("offline o dato vecchio", "offline or stale") :
+          (w.ora || "") + (eta != null ? " · " + (eta < 1 ? tr("adesso", "just now") : eta + tr(" min fa", " min ago")) : "");
+        return '<li><i class="dot ' + cls + '"></i><span><b>' + st.nome + "</b><small>" + quando + '</small></span><span class="v">' +
+          (w ? Math.round(w.kt) + " kt" + (!isNaN(w.raffica) ? " / " + Math.round(w.raffica) : "") + " " + frecciaSvg(w.deg, "") + (w.deg != null ? " " + cardinale(w.deg) : "") : "–") + "</span></li>";
+      }).join("");
+      $("nowLati").innerHTML = LATI.map(l => {
         const w = stimaVento(l.mid);
-        if (!w || w.deg == null) return '<button type="button" class="bc-mini-lato"><b>Lato ' + l.n + "</b><span>–</span></button>";
+        if (!w || w.deg == null) return '<button type="button" class="bc-mini-lato"><b>' + tr("Lato ", "Leg ") + l.n + "</b><span>–</span></button>";
         const an = andatura(angoloVento(l.rotta, w.deg).twa);
-        return '<button type="button" class="bc-mini-lato" data-lato="' + l.n + '" style="--c:' + ANDATURE[an.k].c + '"><b>Lato ' + l.n + "</b><span>" + ANDATURE[an.k].nome + "</span></button>";
-      });
-      $("nowLati").innerHTML = live.join("");
+        return '<button type="button" class="bc-mini-lato" data-lato="' + l.n + '" style="--c:' + ANDATURE[an.k].c + '"><b>' + tr("Lato ", "Leg ") + l.n + "</b><span>" + nomeAnd(an.k) + "</span></button>";
+      }).join("");
       Array.prototype.forEach.call($("nowLati").querySelectorAll("[data-lato]"), b => b.addEventListener("click", () => {
         impostaModo("live");
         stato.sel = "l" + b.getAttribute("data-lato");
-        aggiornaTutto();
+        aggiornaPercorso();
         document.getElementById("mappaVento").scrollIntoView({ behavior: "smooth" });
       }));
     }
 
-    /* ---------- card centraline ---------- */
-    function aggiornaStazioni() {
-      document.getElementById("bcStazioni").innerHTML = STAZIONI.map(st => {
-        const v = stato.live[st.id];
-        return '<article class="bc-staz' + (v ? "" : " off") + '" style="--c:' + (v ? coloreKt(v.kt) : "var(--line)") + '">' +
-          "<h3>" + st.nome + '</h3><p class="bc-ruolo">' + st.ruolo + "</p>" +
-          '<div class="bc-val"><b>' + (v ? Math.round(v.kt) : "–") + "</b><span>kt" + (v && !isNaN(v.raffica) ? " · raffica " + Math.round(v.raffica) : "") + "</span></div>" +
-          '<div class="bc-dir">' + (v && v.deg != null ? frecciaSvg(v.deg, "") + " da " + cardinale(v.deg) + " · " + nomeVento(v.deg, v.kt) : (v ? "direzione n.d." : "offline o dato vecchio")) + "</div>" +
-          '<p class="bc-agg">' + (v && v.ora ? "agg. " + v.ora : "&nbsp;") + "</p></article>";
-      }).join("");
+    /* ---------- simulatore ---------- */
+    const SCENARI = [
+      { nome: ["Bora", "Bora"], deg: 65, kt: 24, testo: ["Da ENE, a raffiche, più forte sotto costa tra Barcola e Miramare. Si parte al lasco verso la boa 1, poi bolina dura dalla boa 2 fino a Miramare.", "From ENE, gusty, strongest along the shore between Barcola and Miramare. A broad reach to mark 1, then a hard beat from mark 2 up to Miramare."] },
+      { nome: ["Borino", "Light Bora"], deg: 70, kt: 9, testo: ["La Bora leggera del mattino: stessa geometria della Bora con meno pressione. Nelle giornate serene tende a calare verso mezzogiorno, quando entra la brezza.", "The light morning Bora: same geometry, less pressure. On clear days it tends to fade around midday, when the sea breeze fills in."] },
+      { nome: ["Scirocco", "Sirocco"], deg: 135, kt: 14, testo: ["Da SE, umido e con onda formata. Lati 1 e 3 veloci, ma il ritorno lungo costa verso Barcola e l'arrivo diventano di bolina.", "From SE, humid, with a building sea. Legs 1 and 3 are fast, but the run back along the shore to Barcola and the finish become upwind."] },
+      { nome: ["Maestral", "Maestral"], deg: 290, kt: 9, testo: ["La brezza da ONO delle giornate stabili. Primo lato al traverso, poi poppa lungo costa verso Barcola e arrivo al lasco.", "The WNW sea breeze of settled days. First leg on a reach, then downwind along the shore to Barcola and a broad reach to the finish."] },
+      { nome: ["Garbin", "Garbin (SW)"], deg: 225, kt: 12, testo: ["Da SO: primo lato tutto di bolina fino alla boa 1, poi risalita verso Miramare in poppa. Si respira in mezzo al Golfo.", "From SW: a full beat to mark 1, then downwind back up to Miramare. More pressure in the middle of the Gulf."] },
+      { nome: ["Bonaccia", "Calm"], deg: 240, kt: 3, testo: ["Aria leggerissima e a chiazze: conta leggere l'acqua per trovare pressione. Vele leggere e pazienza, i distacchi si fanno sui buchi d'aria.", "Very light, patchy air: read the water to find pressure. Light sails and patience, gaps open up in the holes."] }
+    ];
+    const svgSim = document.getElementById("simSvg");
+    function aggiornaSimulatore() {
+      const an = analisi(ventoSim);
+      disegnaMappa(svgSim, { vista: "percorso", an, stazioni: false, rosa: stato.sim });
+      disegnaLati(document.getElementById("simLati"), an, { modo: "sim" });
+      disegnaSomma(document.getElementById("simSomma"), an, tr("Con questo vento il percorso è:", "With this wind the course is:"));
+      document.getElementById("simDirOut").textContent = stato.sim.deg + "° (" + cardinale(stato.sim.deg) + " · " + nomeVento(stato.sim.deg, stato.sim.kt) + ")";
+      document.getElementById("simKtOut").textContent = stato.sim.kt + " kt";
+      document.querySelectorAll("[data-scen]").forEach(b => b.setAttribute("aria-pressed", String(+b.getAttribute("data-scen") === stato.simScen)));
     }
-
-    function aggiornaTutto() {
-      const an = analisiLati();
-      disegnaMappa();
-      aggiornaPannello(an);
-      aggiornaInfo(an);
-      aggiornaHero();
-      aggiornaStazioni();
-      aggiornaLegenda();
-      document.getElementById("mappaModo").textContent = "Vento: " +
-        (stato.modo === "live" ? "live" : stato.modo === "prev" ? "previsto dom. 11/10 ore " + stato.prevOra + ":00" :
-         "simulato " + Math.round(stato.sim.kt) + " kt da " + cardinale(stato.sim.deg));
+    function disegnaScenari() {
+      document.getElementById("bcScenari").innerHTML = SCENARI.map((sc, i) =>
+        '<button type="button" class="bc-scen" data-scen="' + i + '" aria-pressed="' + (i === stato.simScen) + '"><strong>' + tr(sc.nome[0], sc.nome[1]) + " <small>" + cardinale(sc.deg) + " · ~" + sc.kt + " kt</small></strong><span class=\"bc-scen-txt\">" + tr(sc.testo[0], sc.testo[1]) + "</span>" +
+        '<span class="bc-scen-lati">' + LATI.map(l => {
+          const an = andatura(angoloVento(l.rotta, sc.deg).twa);
+          return '<span style="--c:' + ANDATURE[an.k].c + '" title="' + tr("Lato ", "Leg ") + l.n + ": " + an.testo + '">' + l.n + " " + nomeAnd(an.k) + "</span>";
+        }).join("") + "</span></button>").join("");
+      document.querySelectorAll("[data-scen]").forEach(b => b.addEventListener("click", () => {
+        const sc = SCENARI[+b.getAttribute("data-scen")];
+        stato.simScen = +b.getAttribute("data-scen");
+        stato.sim = { deg: sc.deg, kt: sc.kt };
+        document.getElementById("simDir").value = sc.deg;
+        document.getElementById("simKt").value = sc.kt;
+        aggiornaSimulatore();
+      }));
     }
-
-    function aggiornaLegenda() {
-      const leg = document.getElementById("bcLegenda");
-      if (leg.childElementCount) return;
-      leg.innerHTML = Object.keys(ANDATURE).map(k => '<span style="--c:' + ANDATURE[k].c + '"><i></i>' + ANDATURE[k].nome + "</span>").join("") +
-        '<span style="--c:var(--bc-neutro)"><i style="background:repeating-linear-gradient(90deg,var(--c) 0 5px,transparent 5px 9px)"></i>senza dati</span>' +
-        '<span class="bc-leg-sep"></span>' +
-        '<span class="bc-leg-dot" style="--c:var(--bc-boa)"><i></i>Boe e linee (indicative)</span>' +
-        '<span>Nei cerchi: nodi medi · la freccia va dove va il vento</span>';
-    }
+    ["simDir", "simKt"].forEach(id => document.getElementById(id).addEventListener("input", () => {
+      stato.sim = { deg: +document.getElementById("simDir").value, kt: +document.getElementById("simKt").value };
+      stato.simScen = -1;
+      aggiornaSimulatore();
+    }));
 
     /* ---------- dati live ---------- */
-    function etaMinuti(ora) {
-      const m = String(ora || "").match(/^(\d{1,2}):(\d{2})/);
-      if (!m) return 0;
+    function oraDiOggi(hhmm) {
+      // "HH:MM" senza data: un orario nel futuro e' di ieri
+      const m = String(hhmm || "").match(/^(\d{1,2}):(\d{2})/);
+      if (!m) return null;
       const ad = new Date();
-      let eta = (ad - new Date(ad.getFullYear(), ad.getMonth(), ad.getDate(), +m[1], +m[2])) / 60000;
-      if (eta < -5) eta += 1440;
-      return Math.max(eta, 0);
+      let d = new Date(ad.getFullYear(), ad.getMonth(), ad.getDate(), +m[1], +m[2]);
+      if (d - ad > 5 * 60000) d = new Date(d.getTime() - 86400000);
+      return d;
     }
     function leggiProxy(d) {
       const b = d.barcola;
       stato.live.barcola = null;
       if (b && b.wind_avg != null) {
-        const m = String(b.datetime || "").match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
-        const eta = m ? (Date.now() - new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]).getTime()) / 60000 : 0;
+        const t = typeof b.unixtime === "number" ? new Date(b.unixtime * 1000) : null;
         const avg = parseFloat(b.wind_avg), max = parseFloat(b.wind_max);
-        if (eta <= 45 && !(avg === 0 && (isNaN(max) || max === 0))) {
-          stato.live.barcola = { kt: avg, raffica: max, deg: typeof b.wind_direction === "number" ? b.wind_direction : null,
-            ora: m ? m[4] + ":" + m[5] : "" };
+        const fresco = t && (Date.now() - t) / 60000 <= 45;
+        // la centralina di Barcola ogni tanto si ferma: vecchia o piatta a zero -> spenta
+        if (fresco && !(avg === 0 && (isNaN(max) || max === 0))) {
+          stato.live.barcola = { kt: avg, raffica: max, deg: typeof b.wind_direction === "number" ? b.wind_direction : null, t, ora: oraHHMM(t) };
         }
       }
       ["monteGrisa", "muggia"].forEach(id => {
         const r = Array.isArray(d[id]) && d[id][0];
         stato.live[id] = null;
-        if (!r || etaMinuti(r.ora) > 45) return;
+        const t = r && oraDiOggi(r.ora);
+        if (!t || (Date.now() - t) / 60000 > 45) return;
         const deg = GRADI_CARDINALE[String(r.direzione || "").toUpperCase().trim()];
         const kt = parseFloat(r.kt);
         if (isNaN(kt)) return;
-        stato.live[id] = { kt, raffica: parseFloat(r.sunki), deg: deg === undefined ? null : deg, ora: r.ora || "" };
+        stato.live[id] = { kt, raffica: parseFloat(r.sunki), deg: deg === undefined ? null : deg, t, ora: r.ora };
       });
     }
     function caricaProxy() {
-      return fetchTimeout(PROXY + "?ts=" + Date.now(), 30000)
-        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      return fetchJson(PROXY + "?ts=" + Date.now(), 30000, 2)
         .then(leggiProxy)
         .catch(() => {});
     }
     function caricaMambo() {
       const url = "https://nodc.ogs.it/erddap/tabledap/MAMBO1_TS.json?" + encodeURIComponent("time,WSPD,GSPD,WDIR") + "&" + encodeURIComponent("time>=now-6hours");
-      return fetchTimeout(url, 20000)
-        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      return fetchJson(url, 20000, 2)
         .then(j => {
           const t = j.table;
           const rows = t.rows.map(r => Object.fromEntries(t.columnNames.map((c, i) => [c, r[i]])))
             .filter(r => r.WSPD != null).sort((a, b) => a.time < b.time ? -1 : 1);
           const m = rows.pop();
-          if (!m) { stato.live.mambo = null; return; }
-          const d = new Date(m.time);
-          const vecchio = isNaN(d) || (Date.now() - d) / 60000 > 150;
-          stato.live.mambo = vecchio ? null : { kt: m.WSPD * MS_IN_KT, raffica: m.GSPD != null ? m.GSPD * MS_IN_KT : NaN,
-            deg: typeof m.WDIR === "number" ? m.WDIR : null, ora: oraHHMM(d) };
+          const d = m ? new Date(m.time) : null;
+          stato.live.mambo = (!d || isNaN(d) || (Date.now() - d) / 60000 > 150) ? null :
+            { kt: m.WSPD * MS_IN_KT, raffica: m.GSPD != null ? m.GSPD * MS_IN_KT : NaN, deg: typeof m.WDIR === "number" ? m.WDIR : null, t: d, ora: oraHHMM(d) };
         })
         .catch(() => {});
     }
     function caricaPaloma() {
-      return fetchTimeout("https://monitor.protezionecivile.fvg.it/api/stations/574/measures/latest", 20000)
-        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      return fetchJson("https://monitor.protezionecivile.fvg.it/api/stations/574/measures/latest", 20000, 2)
         .then(j => {
           const per = {}; let dt = null;
           (j.measures || []).forEach(m => {
@@ -1832,22 +1963,28 @@
             if ([5, 6, 7].indexOf(m.sensor_id) !== -1 && (!dt || m.dt > dt)) dt = m.dt;
           });
           const d = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(String(dt || "").trim()) ? new Date(String(dt).trim().replace(" ", "T") + "Z") : null;
-          if (per[6] == null || !d || isNaN(d) || (Date.now() - d) / 60000 > 45) { stato.live.paloma = null; return; }
-          stato.live.paloma = { kt: per[6] * MS_IN_KT, raffica: per[7] != null ? per[7] * MS_IN_KT : NaN,
-            deg: typeof per[5] === "number" ? per[5] : null, ora: oraHHMM(d) };
+          stato.live.paloma = (per[6] == null || !d || isNaN(d) || (Date.now() - d) / 60000 > 45) ? null :
+            { kt: per[6] * MS_IN_KT, raffica: per[7] != null ? per[7] * MS_IN_KT : NaN, deg: typeof per[5] === "number" ? per[5] : null, t: d, ora: oraHHMM(d) };
         })
         .catch(() => {});
     }
+    let caricamentoInCorso = null;
     function caricaLive() {
-      const agg = document.getElementById("bcAgg");
-      agg.textContent = "Aggiorno le centraline…";
+      if (caricamentoInCorso) return caricamentoInCorso;
+      const btn = document.getElementById("bcAggiorna"), agg = document.getElementById("ultimoAggiornamento");
+      btn.setAttribute("aria-busy", "true"); btn.disabled = true;
+      agg.textContent = tr("Aggiornamento in corso…", "Updating…");
       // ognuna ridisegna appena arriva: il proxy Apps Script puo' metterci decine di secondi
-      const tutte = [caricaMambo(), caricaPaloma(), caricaProxy()].map(p => p.then(aggiornaTutto));
-      Promise.all(tutte).then(() => {
+      const tutte = [caricaMambo(), caricaPaloma(), caricaProxy()].map(p => p.then(() => { aggiornaHero(); aggiornaPercorso(); }));
+      caricamentoInCorso = Promise.all(tutte).then(() => {
         const n = STAZIONI.filter(s => stato.live[s.id]).length;
-        agg.textContent = n + " stazioni su " + STAZIONI.length + " in linea · ultimo controllo " + oraHHMM(new Date());
+        agg.textContent = n + "/" + STAZIONI.length + tr(" centraline in linea · aggiornato alle ", " stations live · updated at ") + oraHHMM(new Date());
+        btn.removeAttribute("aria-busy"); btn.disabled = false;
+        caricamentoInCorso = null;
       });
+      return caricamentoInCorso;
     }
+    document.getElementById("bcAggiorna").addEventListener("click", caricaLive);
 
     /* ---------- previsioni (Open-Meteo, multi-punto e multi-modello) ---------- */
     const MODELLI = [
@@ -1865,27 +2002,29 @@
         "&start_date=" + GIORNO_GARA + "&end_date=" + GIORNO_GARA + "&models=" + MODELLI.map(m => m.id).join(",");
       return fetchTimeout(url, 20000)
         .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-        .then(j => { stato.prev = Array.isArray(j) ? j : [j]; disegnaPrevisioni(); aggiornaTutto(); })
-        .catch(() => {
-          document.getElementById("prevAffid").textContent = "Previsioni non disponibili in questo momento";
-          document.getElementById("prevTab").innerHTML = "<tbody><tr><td>Riprova tra poco: il servizio dei modelli non ha risposto.</td></tr></tbody>";
-        });
+        .then(j => { stato.prev = Array.isArray(j) ? j : [j]; disegnaPrevisioni(); aggiornaPercorso(); })
+        .catch(() => { stato.prevErr = true; disegnaPrevisioni(); });
     }
     function disegnaPrevisioni() {
+      const aff = document.getElementById("prevAffid"), tab = document.getElementById("prevTab");
+      if (!stato.prev) {
+        aff.textContent = stato.prevErr ? tr("Previsioni non disponibili in questo momento", "Forecast unavailable right now") : tr("Carico i modelli…", "Loading models…");
+        tab.innerHTML = "<tbody><tr><td>" + (stato.prevErr ? tr("Riprova tra poco: il servizio dei modelli non ha risposto.", "Try again shortly: the model service did not respond.") : "…") + "</td></tr></tbody>";
+        return;
+      }
       const giorni = Math.floor((PARTENZA_ORA - Date.now()) / 86400000);
-      const aff = document.getElementById("prevAffid");
-      aff.textContent = giorni < 0 ? "Regata conclusa: previsioni della giornata" :
-        giorni > 7 ? "A " + giorni + " giorni: tendenza, affidabilità bassa. Guarda la direzione più dei nodi" :
-        giorni > 3 ? "A " + giorni + " giorni: affidabilità media" :
-        giorni >= 1 ? "A " + giorni + (giorni === 1 ? " giorno" : " giorni") + ": entrano i modelli ad alta risoluzione" : "Ultime ore: affidabilità buona, confronta con il live";
+      aff.textContent = giorni < 0 ? tr("Regata conclusa: previsioni della giornata", "Race over: forecast for the day") :
+        giorni > 7 ? tr("A " + giorni + " giorni: tendenza, affidabilità bassa. Guarda la direzione più dei nodi", giorni + " days out: a trend, low reliability. Trust the direction more than the knots") :
+        giorni > 3 ? tr("A " + giorni + " giorni: affidabilità media", giorni + " days out: medium reliability") :
+        giorni >= 1 ? tr("A " + giorni + (giorni === 1 ? " giorno" : " giorni") + ": entrano i modelli ad alta risoluzione", giorni + (giorni === 1 ? " day" : " days") + " out: high-resolution models kick in") :
+        tr("Ultime ore: affidabilità buona, confronta con il live", "Final hours: good reliability, compare with the live data");
       const c = stato.prev[LATI.length].hourly;
       const disp = MODELLI.filter(m => (c["wind_speed_10m_" + m.id] || []).some(v => v != null));
-      const tab = document.getElementById("prevTab");
-      if (!disp.length) { tab.innerHTML = "<tbody><tr><td>Nessun modello arriva ancora all'11 ottobre: torna nei prossimi giorni.</td></tr></tbody>"; return; }
+      if (!disp.length) { tab.innerHTML = "<tbody><tr><td>" + tr("Nessun modello arriva ancora all'11 ottobre: torna nei prossimi giorni.", "No model reaches 11 October yet: check back in a few days.") + "</td></tr></tbody>"; return; }
       const cella = (k, g, d, cls) => k == null ? "<td>–</td>" :
         '<td class="' + (cls || "") + '"><b>' + Math.round(k) + "</b>" + (g != null && !isNaN(g) ? "<small>/" + Math.round(g) + "</small>" : "") +
         frecciaSvg(d) + "<small>" + (d != null ? cardinale(d) : "") + "</small></td>";
-      let h = "<thead><tr><th>Ora</th><th>Media</th>" + disp.map(m => "<th>" + m.nome + "</th>").join("") + "</tr></thead><tbody>";
+      let h = "<thead><tr><th>" + tr("Ora", "Time") + "</th><th>" + tr("Media", "Mean") + "</th>" + disp.map(m => "<th>" + m.nome + "</th>").join("") + "</tr></thead><tbody>";
       for (let ora = 8; ora <= 17; ora++) {
         const i = c.time.findIndex(t => t.endsWith("T" + String(ora).padStart(2, "0") + ":00"));
         if (i < 0) continue;
@@ -1895,21 +2034,107 @@
           disp.map(m => cella(c["wind_speed_10m_" + m.id][i], (c["wind_gusts_10m_" + m.id] || [])[i], (c["wind_direction_10m_" + m.id] || [])[i])).join("") + "</tr>";
       }
       tab.innerHTML = h + "</tbody>";
-      document.getElementById("prevNota").textContent = "Media di " + disp.map(m => m.nome).join(", ") + " sul punto medio di ogni lato. " + aff.textContent + ".";
+      document.getElementById("prevNota").textContent = tr("Media di ", "Mean of ") + disp.map(m => m.nome).join(", ") + tr(" sul punto medio di ogni lato. ", " at the midpoint of each leg. ") + aff.textContent + ".";
     }
 
-    /* ---------- controlli ---------- */
+    /* ---------- classifiche ---------- */
+    const CLASSIFICHE = {"2025":{"n":1865,"top":[[1,"N","Arca sgr","Don Jones turbo maxi 100","30,48","Yacht Club Adriaco ASD"],[2,"N","Marta 07","Maxi Z86","26,22","Yacht Club Adriaco ASD"],[3,"N","PROSECCO.DOC SHOCKWAVE 3","RAICHEL PUG 90","27,43","Yacht Club Monfalcone ASD"],[4,"N","FIAMME GIALLE NICE","ILC MAXI","24,03","Sez.Vela GuardiadiFinanza"],[5,"0","BLUE","TP52","15,84","Yacht Club Rimini ASD"],[6,"M","SHINING Marina Portorož","Open 60","18,95",""],[7,"S","ANEMOS II / ALLIANZ SPA","FARR 80","23,99","Soc.Velica di Barcola e Grignano ASD"],[8,"S","EDIL GROUP ANCILLA DOMINI","FARR 80","23,99","Yacht Club Adriaco ASD"],[9,"M","TUTTA TRIESTE 2","Cicarelli 53","18,2",""],[10,"M","Adriatic Europa","Vallicelli 60","18,98",""]],"vinc":[[1,"N","Arca sgr","Don Jones turbo maxi 100","30,48","Yacht Club Adriaco ASD"],[7,"S","ANEMOS II / ALLIANZ SPA","FARR 80","23,99","Soc.Velica di Barcola e Grignano ASD"],[6,"M","SHINING Marina Portorož","Open 60","18,95",""],[5,"0","BLUE","TP52","15,84","Yacht Club Rimini ASD"],[16,"1","RIEDL AEROSPACE","VALICELLI SUPER STAG 40 MOD","12,99",""],[15,"2","BarraondaGo2025","Fres open 40","11,99","SV Cosulich Ass Velica Sport Dil"],[29,"3","LO RE","SOLARIS 36OD","11","Circ Velico Riminese AssSportDil"],[33,"4","MSC","PSAROS 33","10",""],[32,"5","Code X - CROZ","CODE X","9,2",""],[39,"6","ESCO MATTO","THOMPSON T830","8,3","S.T.Sport del Mare Ass Sport Dil"],[76,"7","LUCIFER","MURPHY 25","7,7",""],[133,"8","FIFTY 2","J 70","7",""],[158,"9","Viktor","Share 640","6,4","Sirena C.N.Triestino Ass Sport Dil"],[321,"T","Senza inToppi","Meteor","6","A Velica Trentina-ASD"],[387,"P","NIBBIO","PASSERE","6,06","Soc.Triestina Vela Ass Sport Dil"]]},"2024":{"n":1757,"top":[[1,"N","Arca sgr","Don Jones turbo maxi 100","30,48","Yacht Club Adriaco ASD"],[2,"N","PROSECCO.DOC SHOCKWAVE 3","RAICHEL PUG 90","27,43","Yacht Club Monfalcone ASD"],[3,"N","FIAMME GIALLE NICE","ILC MAXI","24,03","GUARDIA DI FINANZA"],[4,"N","WOODPECKER CUBE - GENERALI","SWAN90","27,71","cca"],[5,"M","SHINING Marina Portorož","Open 60","18,95",""],[6,"S","ANYWAVE SAFILENS","FRERS 63","19,21","Diporto Nautico Sistiana As.Sport.Dil"],[7,"S","ANEMOS II / ALLIANZ SPA","FARR 80","23,99","Soc.Velica di Barcola e Grignano ASD"],[8,"S","IL MORO DI VENEZIA","COPPA AMERICA - IACC","23,23","Compagnia Vela Ass Sport Dil"],[9,"0","BLUE","TP52","15,84","Yacht Club Rimini ASD"],[10,"M","PEGASO","PROGETTO CORI62","18,7","LNI Sez.Vela La Spezia"]],"vinc":[[1,"N","Arca sgr","Don Jones turbo maxi 100","30,48","Yacht Club Adriaco ASD"],[6,"S","ANYWAVE SAFILENS","FRERS 63","19,21","Diporto Nautico Sistiana As.Sport.Dil"],[5,"M","SHINING Marina Portorož","Open 60","18,95",""],[9,"0","BLUE","TP52","15,84","Yacht Club Rimini ASD"],[15,"1","Riedl Aerospace","Super Stag 40 mod.","12,99",""],[12,"2","BarraondaGo2025","Fres open 40","11,99","SV Cosulich Ass Velica Sport Dil"],[46,"3","CANNIBALE - UGO DRUGO - TRIESTE GAS E LUCE - TECNOVALORE","BONIN 358","10,6","Soc.Velica di Barcola e Grignano ASD"],[11,"4","MSC","PSAROS 33","10",""],[44,"5","moretta","corsa 915","9,15","C.N.Fanese'G.Vivani' Ass Sport Dil"],[57,"6","TIBURON","DELTA 84","8,4","Sistiana 89 Assoc.Sportiva Dilett."],[56,"7","RiDeCoSì 2","Este 24","7,5","Circ Canottieri Aniene AssSport.Dil"],[188,"8","KM ZERO","ZERO ONE DESIGN","6,6","Polisportiva San Marco Assoc.Sport Dil"],[202,"9","Viktor","Share 640","6,4","Sirena C.N.Triestino Ass Sport Dil"],[294,"T","Senza inToppi","Meteor","6","A Velica Trentina-ASD"],[567,"P","NIBBIO","PASSERE","6,06","Soc.Triestina Vela Ass Sport Dil"]]},"2023":{"n":1773,"top":[[1,"N","Arca sgr","Don Jones turbo maxi 100","30,48","Yacht Club Adriaco ASD"],[2,"N","PROSECCO.DOC SHOCKWAVE 3","RAICHEL PUG 90","27,43","Yacht Club Monfalcone ASD"],[3,"N","Way of Life","MAX Z86","26,6",""],[4,"M","MOLO LONGO TUTTA TRIESTE","CECARELLI OPEN 53","16,2","Sistiana 89 Assoc.Sportiva Dilett."],[5,"2","BARRAONDA Go2025","FRERS 40","11,98","SV Cosulich Ass Velica Sport Dil"],[6,"S","Anywave Safilens","FRERS 64","19,16","Diporto Nautico Sistiana As.Sport.Dil"],[7,"2","SAYONARA","MILLENNIUM 40","12",""],[8,"M","Adriatic Europa","Vallicelli 60","18,98","JK Pirat Portorož"],[9,"6","TIBURON","DELTA 84","8,4","Sistiana 89 Assoc.Sportiva Dilett."],[10,"M","PEGASO","CORI 62","18,7","Yacht Club Rimini ASD"]],"vinc":[[1,"N","Arca sgr","Don Jones turbo maxi 100","30,48","Yacht Club Adriaco ASD"],[6,"S","Anywave Safilens","FRERS 64","19,16","Diporto Nautico Sistiana As.Sport.Dil"],[4,"M","MOLO LONGO TUTTA TRIESTE","CECARELLI OPEN 53","16,2","Sistiana 89 Assoc.Sportiva Dilett."],[38,"0","QQ7","FARR53","15,91","C V Ravennate Ass Sport Dil"],[15,"1","CCIAA VG / CASSA RURALE FVG","Farr 40","12,41","Yacht Club Monfalcone ASD"],[5,"2","BARRAONDA Go2025","FRERS 40","11,98","SV Cosulich Ass Velica Sport Dil"],[20,"3","MSC","Psaros 33","10,9",""],[11,"4","MATARAN MK3","ICE 33","9,99","Yacht Club Monfalcone"],[13,"5","Code X - CROZ","CODE X","9,2",""],[9,"6","TIBURON","DELTA 84","8,4","Sistiana 89 Assoc.Sportiva Dilett."],[39,"7","STRAMBAPAPA’","Melges 24","7,5","S.Naut Pietas Julia Ass Sport Dil"],[45,"8","incubo","proto","6,5","Yacht Club Adriaco ASD"],[31,"9","Viktor","Share 640","6,4","Sirena C.N.Triestino Ass Sport Dil"],[317,"T","SUPERNOVA","METEOR","6","C V La Spezia Ass Sport Dil"],[150,"P","BARCOLANA 50","PASSERE","6,2","Soc.Velica di Barcola e Grignano ASD"]]},"2022":{"n":1614,"top":[[1,"N","Deep Blue","Botin 85","26",""],[2,"N","PORTOPICCOLO PROSECCO.DOC / LA BETE","MCCONAGHTY PTY / REICHEL PUG 2002","27,43","Yacht Club Porto Piccolo A.S.D."],[3,"S","Maxi Jena MM","KEY - 80","23,99",""],[4,"N","WOODPECKER CUBE GENERALI THSN","SWAN 90","27,7","Cca"],[5,"S","ANYWAVE SAFILENS","Frers 63","19,16","Diporto Nautico Sistiana As.Sport.Dil"],[6,"N","BAMAR ANCILLA DOMINI","FARR 80","24,5","Yacht Club Adriaco ASD"],[7,"M","Adriatic Europa","Vallicelli 60","18,98",""],[8,"N","IDRUSA","MISTRAL MAXI ONE","24,5","Circ Vela Brindisi Ass Sport Dil"],[9,"S","e_vai","MYLIUS 76","23,4","Yacht Club Porto Piccolo A.S.D."],[10,"S","CleanSport One - Step Impianti","VOR60","19,42",""]],"vinc":[[1,"N","Deep Blue","Botin 85","26",""],[3,"S","Maxi Jena MM","KEY - 80","23,99",""],[7,"M","Adriatic Europa","Vallicelli 60","18,98",""],[13,"0","GENERALI","TP52","15,84",""],[18,"1","Karnak","Class 40","12,18","CIRCOLO VELICO SAN mARINO"],[22,"2","BARRAONDA","FRERS 40","11,98","SV Cosulich Ass Velica Sport Dil"],[70,"3","Mayflower","solaris 36 od","10,98","S.Naut Pietas Julia Ass Sport Dil"],[30,"4","MATARAN MK3","ICE 33","9,99","Yacht Club Monfalcone"],[43,"5","CODE X","CODE X","9,2",""],[95,"6","MR. HYDE","HYDE 27","8,1","Circolo Nautico del Savio"],[61,"7","STRAMBAPAPÁ","MELGES 24","7,32","Soc.Velica di Barcola e Grignano ASD"],[231,"8","ZEfiRO","ZERO","6,6","Yacht Club Adriaco ASD"],[357,"9","Viktor","Share 640","6,4","Sirena C.N.Triestino Ass Sport Dil"],[378,"T","Aglio e Olio","Meteor","6","Soc.Velica di Barcola e Grignano ASD"],[802,"P","ALETTO","PASSERE","7","fipsas"]]},"2021":{"n":1650,"top":[[1,"N","Arca Sgr","custom 100","30,48","YACHT CLUB ADRIACO ASS.SPORT.DIL"],[2,"N","way of life- powered by Seven Refractories","Maxi racer","27,8",""],[3,"S","Maxi Jena MM","K-80","23,99",""],[4,"M","Adriatic Europa","Vallicelli 60","18,98",""],[5,"N","Woodpecker cube","Swan90","27","CIRCOLO CANOTTIERI ANIENE A.S.D."],[6,"S","E_ vai Pertot","Mylius 76","23,43","SOCIETA' VELICA BARCOLA GRIGNANO"],[7,"S","KIWI","Southern Wind 78","23,5","ASSOCIAZIONE SPORT.DIL.DELL'ASSONAUTICA PROVINCIALE DI ANCONA"],[8,"M","SHINING TEAM11","FRERS 60 ONE OFF","18,95",""],[9,"S","ANEMOS II / ALLIANZ SPA","FARR 80","23,99","SOCIETA' VELICA BARCOLA GRIGNANO"],[10,"S","CleanSportOne","VOR 60","19,42",""]],"vinc":[[1,"N","Arca Sgr","custom 100","30,48","YACHT CLUB ADRIACO ASS.SPORT.DIL"],[3,"S","Maxi Jena MM","K-80","23,99",""],[4,"M","Adriatic Europa","Vallicelli 60","18,98",""],[16,"0","BRAVA","FARR 49 IMS","14,86","LEGA NAVALE ITALIANA SEZIONE MONFALCONE"],[18,"1","Karnak","Class 40","12,18","CIRCOLO VELICO RAVENNATE"]]}};
+    const EDIZIONE = { 2025: 57, 2024: 56, 2023: 55, 2022: 54, 2021: 53 };
+    const CAT = { N: "Mega Yacht", S: "Super Maxi", M: "Maxi", "0": "0", "1": "I", "2": "II", "3": "III", "4": "IV", "5": "V", "6": "VI", "7": "VII", "8": "VIII", "9": "IX", T: "Meteor", P: tr("Passere", "Passere") };
+    /* albo d'oro dal Bando di Regata 2026: [anno, yacht, skipper/timoniere, club] */
+    const ALBO = [
+      [2025,"Arca Sgr","Benussi/Benussi","Yacht Club Adriaco"],[2024,"Arca Sgr","Benussi/Benussi","Yacht Club Adriaco"],
+      [2023,"Arca Sgr","Benussi/Benussi","Yacht Club Adriaco"],[2022,"Deep Blue","Schmidt","New York Yacht Club"],
+      [2021,"Arca Sgr","Benussi","Yacht Club Adriaco"],[2020,null,null,null],
+      [2019,"Way of Life","Vinčec","Sailing Planet"],[2018,"Spirit of Portopiccolo","Benussi/Benussi","Yacht Club Portopiccolo"],
+      [2017,"Spirit of Portopiccolo","Benussi/Benussi","Yacht Club Portopiccolo"],[2016,"Alfa Romeo","Benussi/Benussi","Yacht Club Adriaco"],
+      [2015,"Robertissima III","Tomasini Grinover/Vascotto","Yacht Club de Monaco"],[2014,"Esimit Europa 2","Simčič/Schümann","Yacht Club de Monaco"],
+      [2013,"Esimit Europa 2","Simčič/Schümann","Yacht Club de Monaco"],[2012,"Esimit Europa 2","Simčič/Schümann","Yacht Club de Monaco"],
+      [2011,"Esimit Europa 2","Simčič/Schümann","Yacht Club de Monaco"],[2010,"Esimit Europa 2","Simčič/Favini","Yacht Club de Monaco"],
+      [2009,"Maxi Jena","Kosmina","Jahtni Klub"],[2008,"Alfa Romeo 2","Crichton","Royal New Zealand Yacht Squadron"],
+      [2007,"Alfa Romeo 2","Crichton","Royal New Zealand Yacht Squadron"],[2006,"Alfa Romeo 2","Crichton","Royal New Zealand Yacht Squadron"],
+      [2005,"Skandia Trieste…","Benussi/Spangaro/Bressani","Società Velica di Barcola e Grignano"],[2004,"Alfa Romeo","Crichton","Cruising Yacht Club Australia"],
+      [2003,"Alfa Romeo","Crichton","Cruising Yacht Club Australia"],[2002,"Uniflair","Cilenti/Bressani","Circolo della Vela Venezia"],
+      [2001,"Cometa","Pfizer/Favini","Circolo Velico Marina di Massa"],[2000,"@dria.com","Cilenti","Circolo della Vela Padova"],
+      [1999,"@dria.com","Cilenti","Circolo della Vela Padova"],[1998,"Riviera di Rimini","Benvenuti/Cian","Circolo Velico Rimini"],
+      [1997,"Gaia Legend","Kosmina","Yacht Club Jadro Koper"],[1996,"Gaia Legend","Kosmina","Yacht Club Jadro Koper"],
+      [1995,"Gaia Legend","Kosmina","Yacht Club Jadro Koper"],[1994,"Fanatic","Zizala/Puh","Yacht Club Lignano"],
+      [1993,"Fanatic","Zizala/Battiston","Yacht Club Lignano"],[1992,"Il Moro di Venezia 2","Ferruzzi/Chieffi","Yacht Club Italiano"],
+      [1991,"Satanasso Calibre","Gaburri/Poli","Associazione Nautica Sebino"],[1990,"Fanatic","Zizala/Battiston","Yacht Club Lignano"],
+      [1989,"Il Moro di Venezia 2","Ferruzzi/Nava","Circolo Velico Ravennate"],[1988,"Uragan","Battiston","Yacht Club Lignano"],
+      [1987,"Il Moro di Venezia","Ferruzzi/Nava","Circolo Velico Ravennate"],[1986,"La Fenice di Venezia","Venerucci","Circolo Nautico Chioggia"],
+      [1985,"Blue Eyed Princess","Bardelli/Paoletti","Società Velica di Barcola e Grignano"],[1984,"Condornonsisamai","Becchetti","Yacht Club Lignano"],
+      [1983,"White Shadow","Drioli","Società Velica di Barcola e Grignano"],[1982,"Condor","Battiston","Yacht Club Lignano"],
+      [1981,"White Shadow","Drioli","Società Velica di Barcola e Grignano"],[1980,"Rupe","Hoffmeister/Stadler","Yacht Club Monaco"],
+      [1979,"El Cid","Bartoli/Zago","Società Triestina della Vela"],[1978,"El Cid","Bartoli/Zago","Società Triestina della Vela"],
+      [1977,"Papillon","Drioli","Yacht Club Adriaco"],[1976,"El Raguseo","Colonna","Società Triestina della Vela"],
+      [1975,"El Raguseo","Colonna","Società Triestina della Vela"],[1974,"Kaiten","Zalukar","Società Velica di Barcola e Grignano"],
+      [1973,"Vento di mare","Rizzi","Società Triestina della Vela"],[1972,"Sandra","Toffaloni","Yacht Club Adriaco"],
+      [1971,"Carla","Sigovich","Circolo Velico Torri del Benaco"],[1970,"Marie","Pesle","Yacht Club Adriaco"],
+      [1969,"Betelgeuse","Napp","Società Triestina della Vela"]
+    ];
+    /* vento medio 10-14 al centro del percorso, analisi ECMWF IFS via Open-Meteo archive:
+       [anno, data, nodi medi, direzione media, raffica max del modello] */
+    const VENTO_STORICO = [
+      [2025, "2025-10-12", 5.2, 87, 16.5], [2024, "2024-10-13", 5.3, 224, 17.7], [2023, "2023-10-08", 1.2, 216, 7.0],
+      [2022, "2022-10-09", 12.9, 69, 30.3], [2021, "2021-10-10", 15.2, 51, 38.9], [2020, "2020-10-11", 21.0, 71, 46.5],
+      [2019, "2019-10-13", 2.5, 241, 11.7], [2018, "2018-10-14", 10.6, 69, 29.5], [2017, "2017-10-08", 6.3, 165, 18.3]
+    ];
+    let annoCl = 2025;
+    function disegnaClassifiche() {
+      const anni = Object.keys(CLASSIFICHE).map(Number).sort((a, b) => b - a);
+      const boxAnni = document.getElementById("clAnni");
+      boxAnni.innerHTML = anni.map(a => '<button type="button" data-anno="' + a + '" aria-pressed="' + (a === annoCl) + '">' + a + "</button>").join("");
+      boxAnni.querySelectorAll("[data-anno]").forEach(b => b.addEventListener("click", () => { annoCl = +b.getAttribute("data-anno"); disegnaClassifiche(); }));
+      const d = CLASSIFICHE[annoCl], ed = EDIZIONE[annoCl];
+      const link = document.getElementById("clUfficiale");
+      link.href = LANG === "en" ? "https://www.barcolana.it/en/regatta/barcolana" + ed + "-results" : "https://www.barcolana.it/it/regata/classifica-barcolana" + ed;
+      link.textContent = tr("Classifica completa ", "Full results ") + annoCl + " ↗";
+      const vinc = d.top[0];
+      document.getElementById("clSum").innerHTML = "<b>Barcolana " + ed + "</b> · " + (LANG === "en" ? d.n.toLocaleString("en-GB") : d.n.toLocaleString("it-IT")) + tr(" barche in classifica · vince ", " boats in the results · won by ") + "<b>" + vinc[2] + "</b> (" + vinc[3] + (vinc[5] ? ", " + vinc[5] : "") + ").";
+      const pos = p => '<span class="bc-pos' + (p <= 3 ? " p" + p : "") + '">' + p + "</span>";
+      const yacht = r => '<span class="bc-yacht">' + r[2] + '</span><span class="bc-sub">' + [r[3], r[4] ? r[4] + " m" : "", r[5]].filter(Boolean).join(" · ") + "</span>";
+      document.getElementById("clTop").innerHTML = "<thead><tr><th>#</th><th>Yacht</th><th>" + tr("Cat.", "Class") + "</th></tr></thead><tbody>" +
+        d.top.map(r => "<tr><td>" + pos(r[0]) + "</td><td>" + yacht(r) + '</td><td><span class="bc-cat">' + (CAT[r[1]] || r[1]) + "</span></td></tr>").join("") + "</tbody>";
+      document.getElementById("clVinc").innerHTML = "<thead><tr><th>" + tr("Categoria", "Class") + "</th><th>Yacht</th><th>" + tr("Ass.", "Overall") + "</th></tr></thead><tbody>" +
+        d.vinc.map(r => '<tr><td><span class="bc-cat">' + (CAT[r[1]] || r[1]) + "</span></td><td>" + yacht(r) + "</td><td>" + (LANG === "en" ? "#" + r[0] : r[0] + "°") + "</td></tr>").join("") + "</tbody>" +
+        (d.vinc.length < 8 ? '<tfoot><tr><td colspan="3"><small>' + tr("Per questa edizione i dati ufficiali riportano il primo posto solo per alcune categorie.", "For this edition the official data list first place for some classes only.") + "</small></td></tr></tfoot>" : "");
+
+      // vento delle ultime edizioni
+      const vincitore = a => { const r = ALBO.find(x => x[0] === a); return r && r[1] ? "🏆 " + r[1] : tr("regata non disputata", "race not held"); };
+      document.getElementById("clVento").innerHTML = "<thead><tr><th>" + tr("Anno", "Year") + "</th><th>" + tr("Vento 10–14", "Wind 10–14") + "</th><th>" + tr("Lati 1–5", "Legs 1–5") + "</th></tr></thead><tbody>" +
+        VENTO_STORICO.map(v => {
+          const lati = v[2] < 3 ? '<small>' + tr("bonaccia", "calm") + "</small>" : '<span class="bc-dots">' + LATI.map(l => {
+            const an = andatura(angoloVento(l.rotta, v[3]).twa);
+            return '<i style="--c:' + ANDATURE[an.k].c + '" title="' + tr("Lato ", "Leg ") + l.n + ": " + an.testo + '">' + l.n + "</i>";
+          }).join("") + "</span>";
+          return "<tr><td><b>" + v[0] + "</b> <small>" + new Date(v[1] + "T12:00:00").toLocaleDateString(LANG === "en" ? "en-GB" : "it-IT", { day: "numeric", month: "short" }) + "</small><span class=\"bc-sub\">" + vincitore(v[0]) + "</span></td>" +
+            "<td><b>" + fmt(v[2], 0) + " kt</b> " + frecciaSvg(v[3]) + "<small>" + cardinale(v[3]) + "</small><span class=\"bc-sub\">" + nomeVento(v[3], v[2]) + " · " + tr("raff. ", "gust ") + Math.round(v[4]) + "</span></td>" +
+            "<td>" + lati + "</td></tr>";
+        }).join("") + "</tbody>";
+
+      document.getElementById("clVentoLeg").innerHTML = Object.keys(ANDATURE).map(k => '<span style="--c:' + ANDATURE[k].c + '"><i></i>' + nomeAnd(k) + "</span>").join("");
+
+      // albo d'oro e record
+      const conta = {};
+      ALBO.forEach(r => { if (r[1]) conta[r[1]] = (conta[r[1]] || 0) + 1; });
+      document.getElementById("clRecord").innerHTML = Object.keys(conta).filter(k => conta[k] >= 3).sort((a, b) => conta[b] - conta[a])
+        .map(k => '<span class="bc-chip"><b>' + conta[k] + "×</b> " + k + "</span>").join("");
+      document.getElementById("clAlbo").innerHTML = "<thead><tr><th>" + tr("Anno", "Year") + "</th><th>Yacht</th><th>" + tr("Skipper / timoniere", "Skipper / helm") + "</th><th>Club</th></tr></thead><tbody>" +
+        ALBO.map(r => "<tr><td><b>" + r[0] + "</b></td>" + (r[1] ? '<td class="bc-yacht">' + r[1] + "</td><td>" + r[2] + "</td><td>" + r[3] + "</td>" : '<td colspan="3"><small>' + tr("Regata non disputata", "Race not held") + "</small></td>") + "</tr>").join("") + "</tbody>";
+    }
+
+    /* ---------- controlli, lingua, legenda ---------- */
     function impostaModo(m) {
       stato.modo = m;
       document.querySelectorAll("[data-modo]").forEach(b => b.setAttribute("aria-pressed", String(b.getAttribute("data-modo") === m)));
       document.getElementById("ctrlPrev").hidden = m !== "prev";
-      document.getElementById("ctrlSim").hidden = m !== "sim";
     }
-    document.querySelectorAll("[data-modo]").forEach(b => b.addEventListener("click", () => { impostaModo(b.getAttribute("data-modo")); aggiornaTutto(); }));
+    document.querySelectorAll("[data-modo]").forEach(b => b.addEventListener("click", () => { impostaModo(b.getAttribute("data-modo")); aggiornaPercorso(); }));
     document.querySelectorAll("[data-vista]").forEach(b => b.addEventListener("click", () => {
       stato.vista = b.getAttribute("data-vista");
       document.querySelectorAll("[data-vista]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-      disegnaMappa();
+      aggiornaPercorso();
     }));
     (function () {
       const box = document.getElementById("prevOre");
@@ -1920,72 +2145,41 @@
           stato.prevOra = o;
           box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
           document.getElementById("prevOraOut").textContent = o + ":00";
-          aggiornaTutto();
+          aggiornaPercorso();
         });
         box.appendChild(b);
       }
     })();
 
-    const SCENARI = [
-      { nome: "Bora", deg: 65, kt: 24, testo: "Da ENE, a raffiche, più forte sotto costa tra Barcola e Miramare. Si parte al lasco verso la boa 1, poi bolina dura dalla boa 2 fino a Miramare." },
-      { nome: "Borino", deg: 70, kt: 9, testo: "La Bora leggera del mattino: stessa geometria della Bora con meno pressione. Nelle giornate serene tende a calare verso mezzogiorno, quando entra la brezza." },
-      { nome: "Scirocco", deg: 135, kt: 14, testo: "Da SE, umido e con onda formata. Lati 1 e 3 veloci, ma il ritorno lungo costa verso Barcola e l'arrivo diventano di bolina." },
-      { nome: "Maestral", deg: 290, kt: 9, testo: "La brezza da ONO delle giornate stabili. Primo lato al traverso, poi poppa lungo costa verso Barcola e arrivo al lasco." },
-      { nome: "Garbin", deg: 225, kt: 12, testo: "Da SO: primo lato tutto di bolina fino alla boa 1, poi risalita verso Miramare in poppa. Si respira in mezzo al Golfo." },
-      { nome: "Bonaccia", deg: 240, kt: 3, testo: "Aria leggerissima e a chiazze: conta leggere l'acqua per trovare pressione. Vele leggere e pazienza, i distacchi si fanno sui buchi d'aria." }
-    ];
-    function impostaSim(deg, kt) {
-      stato.sim = { deg, kt };
-      document.getElementById("simDir").value = deg;
-      document.getElementById("simKt").value = kt;
-      document.getElementById("simDirOut").textContent = deg + "° (" + cardinale(deg) + " · " + nomeVento(deg, kt) + ")";
-      document.getElementById("simKtOut").textContent = kt + " kt";
+    function disegnaLegenda() {
+      const tri = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1.5 L12.5 11.5 L1.5 11.5Z" fill="var(--bc-boa)"/></svg>';
+      document.getElementById("bcLegenda").innerHTML = Object.keys(ANDATURE).map(k => '<span style="--c:' + ANDATURE[k].c + '"><i></i>' + nomeAnd(k) + "</span>").join("") +
+        '<span style="--c:var(--bc-neutro)"><i style="background:repeating-linear-gradient(90deg,var(--c) 0 5px,transparent 5px 9px)"></i>' + tr("senza dati", "no data") + "</span>" +
+        '<span class="bc-leg-sep"></span><span>' + tri + tr("Boe (dalla mappa ufficiale)", "Marks (from the official map)") + "</span>" +
+        "<span>" + tr("Nei cerchi: nodi medi · la freccia va dove va il vento", "In the circles: mean knots · the arrow points where the wind blows to") + "</span>";
     }
-    (function () {
-      const pre = document.getElementById("simPreset");
-      SCENARI.forEach(sc => {
-        const b = document.createElement("button");
-        b.type = "button"; b.textContent = sc.nome;
-        b.addEventListener("click", () => { impostaSim(sc.deg, sc.kt); aggiornaTutto(); });
-        pre.appendChild(b);
-      });
-      ["simDir", "simKt"].forEach(id => document.getElementById(id).addEventListener("input", () => {
-        impostaSim(+document.getElementById("simDir").value, +document.getElementById("simKt").value);
-        aggiornaTutto();
-      }));
-      impostaSim(stato.sim.deg, stato.sim.kt);
 
-      document.getElementById("bcScenari").innerHTML = SCENARI.map((sc, i) =>
-        '<article class="bc-scen"><h3>' + sc.nome + " <small>" + cardinale(sc.deg) + " · ~" + sc.kt + " kt</small></h3><p>" + sc.testo + "</p>" +
-        '<div class="bc-scen-lati">' + LATI.map(l => {
-          const an = andatura(angoloVento(l.rotta, sc.deg).twa);
-          return '<span style="--c:' + ANDATURE[an.k].c + '" title="Lato ' + l.n + ": " + an.testo + '">' + l.n + " " + ANDATURE[an.k].nome + "</span>";
-        }).join("") + "</div>" +
-        '<button type="button" data-scen="' + i + '">Prova sul percorso</button></article>').join("");
-      document.querySelectorAll("[data-scen]").forEach(b => b.addEventListener("click", () => {
-        const sc = SCENARI[+b.getAttribute("data-scen")];
-        impostaSim(sc.deg, sc.kt); impostaModo("sim"); aggiornaTutto();
-        document.getElementById("mappaVento").scrollIntoView({ behavior: "smooth" });
-      }));
-    })();
-
-    /* ---------- countdown e condivisione ---------- */
     function countdown() {
       const ms = PARTENZA_ORA - Date.now();
       const lab = document.getElementById("countLabel"), val = document.getElementById("countVal");
       if (ms > 0) {
         const g = Math.floor(ms / 86400000), h = Math.floor(ms / 3600000) % 24, m = Math.floor(ms / 60000) % 60;
-        lab.textContent = "Alla partenza mancano";
-        val.textContent = (g ? g + " g " : "") + h + " h " + String(m).padStart(2, "0") + " min";
+        lab.textContent = tr("Alla partenza mancano", "Time to the start");
+        val.textContent = (g ? g + tr(" g ", " d ") : "") + h + " h " + String(m).padStart(2, "0") + " min";
       } else if (ms > -7 * 3600000) {
-        lab.textContent = "Barcolana 58"; val.textContent = "Regata in corso ⛵";
+        lab.textContent = "Barcolana 58"; val.textContent = tr("Regata in corso ⛵", "Race in progress ⛵");
       } else {
-        lab.textContent = "Barcolana 58"; val.textContent = "Regata conclusa";
+        lab.textContent = "Barcolana 58"; val.textContent = tr("Regata conclusa", "Race over");
       }
     }
+    function aggiornaCondivisione() {
+      const url = URL_PAGINA + (LANG === "en" ? "?lang=en" : "");
+      const msg = tr("Il vento sul percorso della Barcolana 2026, live e lato per lato: ", "Barcolana 2026: live wind on the race course, leg by leg: ") + url;
+      document.getElementById("shareWa").href = "https://wa.me/?text=" + encodeURIComponent(msg);
+    }
     document.getElementById("shareCopy").addEventListener("click", function () {
-      const url = "https://ventotrieste.info/barcolana2026/", btn = this;
-      const fatto = () => { btn.textContent = "✅ Link copiato"; setTimeout(() => { btn.textContent = "🔗 Copia link"; }, 2200); };
+      const url = URL_PAGINA + (LANG === "en" ? "?lang=en" : ""), btn = this, orig = btn.innerHTML;
+      const fatto = () => { btn.textContent = tr("✅ Link copiato", "✅ Link copied"); setTimeout(() => { btn.innerHTML = orig; }, 2200); };
       if (navigator.share && window.matchMedia("(pointer: coarse)").matches) {
         navigator.share({ title: "Vento Barcolana 2026", url }).catch(() => {});
       } else if (navigator.clipboard) {
@@ -1993,10 +2187,38 @@
       }
     });
 
+    /* il dock mobile di footer-widgets.js ha etichette solo in italiano */
+    function etichetteDock() {
+      const nomi = { "#vento": ["Ora", "Now"], "#mappaVento": ["Mappa", "Map"], "#previsioni-gara": ["Previsioni", "Forecast"], "#simulatore": ["Simulatore", "Simulator"], "#classifiche": ["Classifiche", "Results"] };
+      document.querySelectorAll(".ux-mobile-dock a").forEach(a => {
+        const n = nomi[a.getAttribute("href")], lab = a.querySelector(".ux-dock-label");
+        if (n && lab) lab.textContent = tr(n[0], n[1]);
+      });
+      const altro = document.querySelector(".ux-mobile-dock button .ux-dock-label");
+      if (altro) altro.textContent = tr("Altro", "More");
+    }
+    function impostaLingua(l) {
+      LANG = l === "en" ? "en" : "it";
+      document.documentElement.setAttribute("data-lang", LANG);
+      document.documentElement.lang = LANG;
+      try { localStorage.setItem("vento-trieste-lang", LANG); } catch (e) {}
+      document.querySelectorAll("[data-lang-btn]").forEach(b => b.setAttribute("aria-pressed", String(b.getAttribute("data-lang-btn") === LANG)));
+      document.title = tr("Vento Barcolana 2026 – il vento sul percorso in tempo reale", "Barcolana 2026 wind – live wind on the race course");
+      CAT.P = tr("Passere", "Passere");
+      disegnaLegenda(); disegnaScenari(); disegnaClassifiche(); disegnaPrevisioni();
+      aggiornaHero(); aggiornaPercorso(); aggiornaSimulatore(); countdown(); aggiornaCondivisione(); etichetteDock();
+      const agg = document.getElementById("ultimoAggiornamento");
+      if (!caricamentoInCorso && Object.keys(stato.live).length) {
+        const n = STAZIONI.filter(s => stato.live[s.id]).length;
+        agg.textContent = n + "/" + STAZIONI.length + tr(" centraline in linea", " stations live");
+      }
+    }
+    document.querySelectorAll("[data-lang-btn]").forEach(b => b.addEventListener("click", () => impostaLingua(b.getAttribute("data-lang-btn"))));
+
     /* ---------- avvio ---------- */
-    aggiornaTutto();
-    countdown();
+    impostaLingua(LANG);
     setInterval(countdown, 30000);
+    setInterval(() => { aggiornaHero(); }, 60000);          // eta' "min fa" delle centraline
     caricaLive();
     caricaPrevisioni();
     setInterval(caricaLive, 5 * 60 * 1000);
