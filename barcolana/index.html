@@ -11,7 +11,7 @@
   <meta http-equiv="refresh" content="0; url=/barcolana2026/?utm_source=link-barcolana" />
   <script>
     (function () {
-      var sorgenti = { a: "qr-adesivo", p: "qr-poster", c: "qr-biglietto" };
+      var sorgenti = { a: "qr-adesivo", p: "qr-poster", c: "qr-biglietto", b: "qr-circoli" };
       var s = null;
       try { s = new URLSearchParams(location.search).get("s"); } catch (e) {}
       location.replace("/barcolana2026/?utm_source=" + (sorgenti[s] || "link-barcolana"));
