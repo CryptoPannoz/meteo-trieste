@@ -33,11 +33,13 @@ var STATIONS = {
   // Dajla (id 39) ferma dal 20 ago 2026: sostituita da Antenal (Cittanova), 4 km a sud
   antenal:    { id: 127, postaja: 'antenal' },
   liznjan:    { id: 74,  postaja: 'liznjan' },
-  savudrija:  { id: 124, postaja: 'savudrija' },
-  premantura: { id: 86,  postaja: 'stupice' },
+  // savudrija, porec e rovinj: spente su vetercek dal 24 ago 2026, tolte il 29 set
+  // (3 letture in meno per giro). Per riattivarle basta togliere il commento.
+  // savudrija:  { id: 124, postaja: 'savudrija' },
+  premantura: { id: 86,  postaja: 'stupice' }
   // costa ovest tra Dajla e Premantura (stazioni DHMZ via vetercek, ogni 10-20 min)
-  porec:      { postaja: 'porec' },
-  rovinj:     { postaja: 'rovinj' }
+  // porec:      { postaja: 'porec' },
+  // rovinj:     { postaja: 'rovinj' },
 };
 
 var BARCOLA_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data_current&id_station=5307';

@@ -1352,7 +1352,7 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>🏖️ Spot Istria</strong>
-      <span>Žusterna, Salvore, Antenal, Preluka, Ližnjan e Premantura</span>
+      <span>Žusterna, Antenal, Preluka, Ližnjan e Premantura</span>
     </span>
   </summary>
 
@@ -1378,7 +1378,8 @@
     </div>
   </div>
 
-  <div class="section" id="savudrija">
+  <!-- Stazione spenta su vetercek dal 24 ago 2026: sezione nascosta (29 set). Per riattivarla togliere display:none e rimetterla in SPOT_ISTRIA. -->
+  <div class="section" id="savudrija" style="display:none">
     <h2>Punta Salvore (Savudrija)</h2>
     <div id="savudrijaCards"></div>
     <div class="trend" id="savudrijaTrend"></div>
@@ -1470,7 +1471,7 @@
   </details>
 
   <!-- JS -->
-  <script src="/dati-live.js?v=20260929"></script>
+  <script src="/dati-live.js?v=20260929b"></script>
   <script>
     // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
     const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
@@ -1480,7 +1481,7 @@
       marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4",
       grado: "https://vetercek.com/danes/index.php?id=24&postaja=grado"
     };
-    const SPOT_ISTRIA = ["zusterna", "savudrija", "antenal", "preluka", "liznjan", "premantura"];
+    const SPOT_ISTRIA = ["zusterna", "antenal", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
       zusterna:   "https://vetercek.com/danes/index.php?id=147&postaja=kjdbum",
       preluka:    "https://vetercek.com/danes/index.php?id=149&postaja=preluka",

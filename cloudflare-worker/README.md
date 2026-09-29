@@ -1,3 +1,16 @@
+# Cloudflare Worker del progetto
+
+Due worker sull'account Cloudflare **bebroggi@gmail.com** (`*.bebroggi.workers.dev`):
+
+- **`vetercek-relay`** (questa cartella): ponte verso vetercek.com, descritto sotto.
+- **`ventotrieste-dati`** ([`dati/`](dati/), set 2026): copia del payload del proxy Apps
+  Script, aggiornata ogni minuto da un cron e salvata in KV, servita alle pagine in ~0,15s
+  (Apps Script ci mette 2-18s e a volte fallisce). Le pagine lo leggono tramite
+  [`/dati-live.js`](../dati-live.js) e tornano al proxy se il worker non risponde o ha una
+  copia di più di 9 minuti. Stato: `https://ventotrieste-dati.bebroggi.workers.dev/?diag=1`.
+  Deploy: `cd cloudflare-worker/dati && npx wrangler deploy` (serve `npx wrangler login`).
+  Windguru (Barcola) risponde 403 alle richieste da Cloudflare: Barcola resta quella del proxy.
+
 # vetercek-relay (Cloudflare Worker)
 
 Ponte che permette al proxy Apps Script di rileggere **vetercek.com**, che blocca

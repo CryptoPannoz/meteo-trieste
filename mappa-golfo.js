@@ -41,12 +41,10 @@
     /* boa Paloma: rete Protezione Civile FVG, fetch autonomo (API aperta, vedi caricaPaloma) */
     { id: "paloma",      nome: "Boa Paloma",   lon: 13.565, lat: 45.619, lato: "sinistra", tipo: "paloma" },
     { id: "muggia",      nome: "Muggia",       lon: 13.768, lat: 45.602, lato: "destra"   },
+    /* Savudrija, Poreč e Rovinj tolte il 29 set 2026: spente su vetercek dal 24 ago */
     { id: "zusterna",    nome: "Zusterna",     lon: 13.712, lat: 45.543, lato: "destra"   },
     { id: "piran",       nome: "Boa Piran",    lon: 13.551, lat: 45.549, lato: "sinistra", tipo: "piran" },
-    { id: "savudrija",   nome: "Savudrija",    lon: 13.499, lat: 45.492, lato: "sinistra" },
     { id: "antenal",     nome: "Antenal",      lon: 13.574, lat: 45.314, lato: "destra"   },
-    { id: "porec",       nome: "Poreč",        lon: 13.604, lat: 45.222, lato: "destra"   },
-    { id: "rovinj",      nome: "Rovinj",       lon: 13.614, lat: 45.043, lato: "destra"   },
     { id: "preluka",     nome: "Preluka",      lon: 14.288, lat: 45.377, lato: "sinistra" },
     { id: "premantura",  nome: "Premantura",   lon: 13.908, lat: 44.797, lato: "sinistra" },
     { id: "liznjan",     nome: "Ližnjan", lon: 13.955, lat: 44.824, lato: "destra"   }

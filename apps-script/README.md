@@ -84,9 +84,13 @@ senza mail di "failure". Al peggio salta un giro e la cache resta di 5 minuti pi
 
 Anche con la cache pronta, Apps Script risponde in modo irregolare: misurato il 29 set 2026
 su 10 richieste, da 2 a 18 secondi, e 2 finite con una pagina HTML 404 dopo 11 e 39 secondi.
-Per questo tutte le pagine leggono il proxy tramite [`/dati-live.js`](../dati-live.js):
-richieste "a staffetta" (la seconda parte a 3s, la terza a 7s, vince la prima risposta JSON
-valida, timeout 30s). Non costa quota: il proxy serve la copia in cache.
+Per questo le pagine NON leggono più il proxy direttamente: [`/dati-live.js`](../dati-live.js)
+chiede il payload al Worker Cloudflare `ventotrieste-dati` (vedi
+[`cloudflare-worker/README.md`](../cloudflare-worker/README.md)), che ogni minuto ne copia
+l'ultima versione dal proxy e risponde in ~0,15s. Solo se il Worker non risponde o ha una
+copia di più di 9 minuti si torna al proxy, con richieste "a staffetta" (la seconda parte a
+3s, la terza a 7s, vince la prima risposta JSON valida, timeout 30s). Non costa quota: il
+proxy serve la copia in cache.
 
 ## Risposta JSON
 

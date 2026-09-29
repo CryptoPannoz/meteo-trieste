@@ -1,4 +1,10 @@
-/* dati-live.js — lettura del payload del proxy (Apps Script) per tutte le pagine.
+/* dati-live.js — lettura del payload dati per tutte le pagine.
+
+   1) Prima il Worker Cloudflare ventotrieste-dati (cloudflare-worker/dati/): tiene
+      una copia del payload del proxy, aggiornata ogni minuto, e risponde in ~0,15s.
+   2) Se il Worker non risponde entro 5s, o la sua copia ha più di 9 minuti (il
+      proxy la rifà ogni 5), si va dal proxy Apps Script come prima (sotto).
+      Il sito quindi non dipende da Cloudflare: al peggio torna lento come prima.
 
    Perché esiste (29 set 2026): il proxy Apps Script ha una latenza molto irregolare
    che NON dipende dal nostro codice (la copia in cache è già pronta): la stessa
@@ -14,12 +20,15 @@
    cache, non riscarica le fonti (il ritmo delle letture lo decide il trigger
    ogni 5 minuti, come da accordo con vetercek).
 
-   Chiamate contemporanee (auto-refresh + tasto Aggiorna) condividono la stessa corsa. */
+   Chiamate contemporanee (auto-refresh + tasto Aggiorna) condividono la stessa lettura. */
 (function () {
   "use strict";
   var PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
   var PARTENZE_MS = [0, 3000, 7000];    // quando parte ciascun tentativo (max 3: il proxy ha un tetto di esecuzioni contemporanee)
   var TIMEOUT_MS = 30000;               // oltre: errore, la pagina mostra la cache e riprova
+  var WORKER = "https://ventotrieste-dati.bebroggi.workers.dev/";
+  var WORKER_TIMEOUT_MS = 5000;
+  var WORKER_MAX_ETA_MIN = 9;           // copia più vecchia: il trigger del proxy ha saltato un giro
   var inCorso = null;
 
   function payloadValido(d) {
@@ -67,6 +76,24 @@
     });
   }
 
+  function daWorker() {
+    var ac = ("AbortController" in window) ? new AbortController() : null;
+    var t = ac ? setTimeout(function () { ac.abort(); }, WORKER_TIMEOUT_MS) : null;
+    return fetch(WORKER + "?ts=" + Date.now(), ac ? { signal: ac.signal } : undefined)
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) { if (!payloadValido(d)) throw new Error("payload worker non valido"); return d; })
+      .finally(function () { if (t) clearTimeout(t); });
+  }
+
+  function leggi() {
+    return daWorker().then(function (d) {
+      if (etaMin(d.updated) <= WORKER_MAX_ETA_MIN) return d;
+      // copia vecchia: provo il proxy; tengo la più recente delle due, e questa se il proxy fallisce
+      return corsa().then(function (p) { return Date.parse(p.updated) >= Date.parse(d.updated) ? p : d; },
+                          function () { return d; });
+    }, function () { return corsa(); });
+  }
+
   /* minuti trascorsi da un istante (Date, ms o ISO) */
   function etaMin(t) {
     var ms = (t instanceof Date) ? t.getTime() : (typeof t === "number" ? t : Date.parse(t));
@@ -77,7 +104,7 @@
     PROXY: PROXY,
     fetch: function () {
       if (!inCorso) {
-        inCorso = corsa();
+        inCorso = leggi();
         inCorso.then(function () { inCorso = null; }, function () { inCorso = null; });
       }
       return inCorso;

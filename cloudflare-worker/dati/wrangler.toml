@@ -1,0 +1,14 @@
+# Worker ventotrieste-dati: payload del proxy Apps Script servito da Cloudflare.
+# Deploy: npx wrangler deploy  (da questa cartella, account bebroggi@gmail.com)
+name = "ventotrieste-dati"
+main = "ventotrieste-dati.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "DATI"
+id = "68193427366a461cbac52b1512d487f1"
+
+# ogni minuto: copia il payload dal proxy se è cambiato (vedi il commento nel .js)
+[triggers]
+crons = ["* * * * *"]
