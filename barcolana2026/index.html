@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Sans+Condensed:wght@600;700&amp;display=swap" rel="stylesheet" />
   <title>Vento Barcolana 2026 – il vento sul percorso in tempo reale</title>
   <meta name="description" content="Vento sul percorso della Barcolana 2026 (11 ottobre, Trieste): mappa del percorso con le boe, vento live da Barcola, Trieste molo, boa Mambo, boa Paloma e Muggia, andatura e vele lato per lato, previsioni e classifiche. Anche in inglese." />
   <meta name="keywords" content="barcolana 2026, vento barcolana, meteo barcolana, percorso barcolana, barcolana 58, classifica barcolana, barcolana wind, barcolana weather, vento golfo di trieste, bora barcolana" />
@@ -25,7 +25,9 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://ventotrieste.info/barcolana2026/og-barcolana2026.jpg" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E⛵%3C/text%3E%3C/svg%3E" />
-  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}
+  <script>(function(){var t=null;try{t=localStorage.getItem("vento-trieste-theme");}catch(e){}
+    /* pagina Barcolana: senza una scelta salvata parte chiara (colori ufficiali su bianco) */
+    document.documentElement.setAttribute("data-theme",(t==="light"||t==="dark")?t:"light");
     /* lingua: ?lang= > scelta salvata > lingua del browser (italiano o inglese) */
     var l=null;try{var q=new URLSearchParams(location.search).get("lang");if(q==="it"||q==="en"){l=q;localStorage.setItem("vento-trieste-lang",q);}else{l=localStorage.getItem("vento-trieste-lang");}}catch(e){}
     if(l!=="it"&&l!=="en")l=/^it\b/i.test(navigator.language||"it")?"it":"en";
@@ -893,7 +895,7 @@
       --bc-bolina: #ff6b6b; --bc-traverso: #f0f43c; --bc-lasco: #43d39e; --bc-poppa: #5cb8ff; --bc-neutro: #8fa0ab;
       --bc-mare: #0a1a22; --bc-terra: #1a2228; --bc-costa: #4d606b; --bc-diga: #66747d;
       --bc-etichetta: #c3cdd4; --bc-alone: #07090c; --bc-boa: #ff5a6e; --bc-rotta-casing: rgba(0,0,0,.55);
-      --bc-ok: #3ddc84; --bc-warn: #f5a524; --bc-off: #6b7780;
+      --bc-ok: #3ddc84; --bc-warn: #f5a524; --bc-off: #6b7780; --bc-staz: #15313a;
     }
     :root[data-theme="light"] {
       --bc-bolina: #c92b3a; --bc-traverso: #8c7400; --bc-lasco: #0e8a5f; --bc-poppa: #1f6fd1; --bc-neutro: #6a7a84;
@@ -1088,8 +1090,164 @@
   }
   </script>
   <link rel="stylesheet" href="/footer-widgets.css?v=20260822-ux2" />
+  <!-- Tema Barcolana (set 2026): SOLO questa pagina. Colori e font presi dal sito ufficiale
+       barcolana.it (blu #003770, rosso #e30613, azzurro #00b1eb, grigio-azzurro #d2dbe7,
+       testo #282828; font IBM Plex Sans, libero su Google Fonts). Niente loghi, immagini o
+       impaginazione del sito ufficiale: la pagina resta di Vento Trieste, indipendente.
+       Sta DOPO footer-widgets.css (tema nero/giallo di tutto il sito) e lo sovrascrive solo
+       qui: ogni regola passa da "html[data-theme] body.bcn". -->
+  <style id="tema-barcolana">
+    html[data-theme] body.bcn {
+      --bcn-navy: #003770; --bcn-navy-2: #00284f; --bcn-red: #e30613; --bcn-red-2: #b10914;
+      --bcn-sky: #00b1eb; --bcn-mist: #d2dbe7;
+      --bcn-font: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bcn-font-num: "IBM Plex Sans Condensed", "IBM Plex Sans", sans-serif;
+    }
+    /* chiaro (predefinito su questa pagina): bianco, blu notte, rosso */
+    html[data-theme="light"] body.bcn {
+      --ink: #282828; --testo: #282828; --slate: #282828; --slate-2: #46566b; --label: #5d6e83;
+      --paper: #f1f4f8; --sfondo: #f1f4f8; --surface: #ffffff; --surface-soft: #f2f5fa;
+      --line: #d2dbe7; --bordo: #d2dbe7;
+      --sea: #003770; --sea-dark: #003770; --azzurro: #003770; --azzurro-scuro: #003770; --teal: #003770;
+      --signal: #e30613;
+      --bcn-title: #003770; --bcn-accent: #e30613; --bcn-btn: #003770; --bcn-btn-ink: #fff;
+      --bcn-btn-hover: #e30613; --bcn-hero: #003770; --bcn-hero-ink: #fff; --bcn-hero-soft: #c6d4e5;
+      --bcn-th: #eaf0f7; --bcn-gara: rgba(227,6,19,.06); --bcn-arrow: #003770;
+      --bcn-topbar: rgba(255,255,255,.97); --bcn-dock: rgba(255,255,255,.96); --bcn-shadow: 0 6px 22px rgba(0,40,90,.08);
+      --bc-bolina: #e2412f; --bc-traverso: #d99a00; --bc-lasco: #13935f; --bc-poppa: #0090d4; --bc-neutro: #7b8ba0;
+      --bc-mare: #dcebf6; --bc-terra: #f7f6f1; --bc-costa: #93a9bf; --bc-diga: #9aabbd;
+      --bc-etichetta: #0d2c4f; --bc-alone: #ffffff; --bc-boa: #e30613; --bc-rotta-casing: rgba(255,255,255,.9);
+      --bc-ok: #17a36b; --bc-warn: #d98a00; --bc-off: #9aa8b8; --bc-staz: #003770;
+    }
+    /* scuro: blu notte */
+    html[data-theme="dark"] body.bcn {
+      --ink: #eef3f9; --testo: #eef3f9; --slate: #eef3f9; --slate-2: #b7c6d8; --label: #8fa6c0;
+      --paper: #001428; --sfondo: #001428; --surface: #04203d; --surface-soft: #0a2b4e;
+      --line: #1d4170; --bordo: #1d4170;
+      --sea: #00b1eb; --sea-dark: #5ccdf3; --azzurro: #00b1eb; --azzurro-scuro: #5ccdf3; --teal: #00b1eb;
+      --signal: #ff4b55;
+      --bcn-title: #ffffff; --bcn-accent: #ff4b55; --bcn-btn: #00b1eb; --bcn-btn-ink: #001428;
+      --bcn-btn-hover: #ff4b55; --bcn-hero: #003770; --bcn-hero-ink: #fff; --bcn-hero-soft: #b9cbe0;
+      --bcn-th: #0a2b4e; --bcn-gara: rgba(255,75,85,.1); --bcn-arrow: #5ccdf3;
+      --bcn-topbar: rgba(0,20,40,.96); --bcn-dock: rgba(4,32,61,.96); --bcn-shadow: 0 8px 26px rgba(0,0,0,.35);
+      --bc-bolina: #ff6a5c; --bc-traverso: #ffc93d; --bc-lasco: #32d296; --bc-poppa: #33c3f0; --bc-neutro: #7e93ab;
+      --bc-mare: #03203d; --bc-terra: #0f3157; --bc-costa: #3d6690; --bc-diga: #4d73a0;
+      --bc-etichetta: #cfdcea; --bc-alone: #001428; --bc-boa: #ff4b55; --bc-rotta-casing: rgba(0,10,25,.6);
+      --bc-ok: #32d296; --bc-warn: #ffb020; --bc-off: #5d7592; --bc-staz: #003770;
+    }
+
+    /* font: IBM Plex Sans ovunque, Condensed per i numeri grandi */
+    html[data-theme] body.bcn, html[data-theme] body.bcn * { font-family: var(--bcn-font) !important; }
+    html[data-theme] body.bcn .bc-now-kt, html[data-theme] body.bcn .bc-countdown strong { font-family: var(--bcn-font-num) !important; }
+
+    html[data-theme] body.bcn { background: var(--paper); color: var(--ink); }
+    html[data-theme] body.bcn main a:not([class]), html[data-theme] body.bcn .site-footer a:not([class]) { color: var(--bcn-title); text-decoration-color: var(--bcn-accent); text-underline-offset: 2px; }
+    html[data-theme] body.bcn main a:not([class]):hover { color: var(--bcn-accent); }
+    html[data-theme] body.bcn :focus-visible { outline: 3px solid var(--bcn-sky) !important; outline-offset: 2px; }
+    html[data-theme] body.bcn h1, html[data-theme] body.bcn h2, html[data-theme] body.bcn h3 { color: var(--bcn-title); letter-spacing: -.01em; }
+
+    /* barra in alto: Vento Trieste resta com'è, con i colori della pagina */
+    html[data-theme] body.bcn .topbar { background: var(--bcn-topbar); border-bottom: 3px solid var(--bcn-red); box-shadow: var(--bcn-shadow); }
+    html[data-theme] body.bcn .brand, html[data-theme] body.bcn .brand strong { color: var(--bcn-title); }
+    html[data-theme] body.bcn .brand span { color: var(--label); }
+    html[data-theme] body.bcn .theme-toggle, html[data-theme] body.bcn .menu-toggle,
+    html[data-theme] body.bcn .topbar-live, html[data-theme] body.bcn .topbar-live[data-state] {
+      background: var(--surface-soft); border: 1px solid var(--line); color: var(--bcn-title); border-radius: 3px;
+    }
+    html[data-theme] body.bcn .theme-toggle:hover, html[data-theme] body.bcn .menu-toggle:hover {
+      background: var(--bcn-btn); border-color: var(--bcn-btn); color: var(--bcn-btn-ink);
+    }
+    html[data-theme] body.bcn .topbar > #topnav { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; box-shadow: var(--bcn-shadow); }
+    html[data-theme] body.bcn .topbar > #topnav a { background: var(--surface-soft); border-color: var(--line); color: var(--bcn-title); border-radius: 3px; }
+    html[data-theme] body.bcn .topbar > #topnav a:hover, html[data-theme] body.bcn .topbar > #topnav a.is-active {
+      background: var(--bcn-btn); border-color: var(--bcn-btn); color: var(--bcn-btn-ink); box-shadow: none;
+    }
+    html[data-theme] body.bcn .ux-scroll-progress { background: transparent; }
+    html[data-theme] body.bcn .ux-scroll-progress > span { background: var(--bcn-sky); }
+    html[data-theme] body.bcn .bc-lang { border-radius: 3px; background: var(--surface-soft); border-color: var(--line); }
+    html[data-theme] body.bcn .bc-lang button { border-radius: 2px; background: transparent; border: 0; color: var(--slate-2); }
+    html[data-theme] body.bcn .bc-lang button[aria-pressed="true"] { background: var(--bcn-btn); color: var(--bcn-btn-ink); }
+
+    /* intestazione su fascia blu, come i riquadri istituzionali della regata */
+    html[data-theme] body.bcn #vento.hero {
+      background: var(--bcn-hero); color: var(--bcn-hero-ink); border-radius: 4px;
+      padding: clamp(1rem, 3vw, 1.9rem); box-shadow: var(--bcn-shadow);
+      border-bottom: 4px solid var(--bcn-red);
+    }
+    html[data-theme] body.bcn #vento .eyebrow { display: inline-flex; align-items: center; gap: .55rem; color: var(--bcn-hero-ink); letter-spacing: .14em; font-weight: 700; }
+    html[data-theme] body.bcn #vento .eyebrow::before { content: ""; width: 26px; height: 4px; background: var(--bcn-red); }
+    html[data-theme] body.bcn #vento .site-page-title { color: var(--bcn-hero-ink); font-weight: 700; letter-spacing: -.02em !important; }
+    html[data-theme] body.bcn #vento .bc-lead { color: var(--bcn-hero-soft); }
+
+    /* schede */
+    html[data-theme] body.bcn .console-card, html[data-theme] body.bcn .section {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 4px; box-shadow: var(--bcn-shadow); color: var(--ink);
+    }
+    html[data-theme] body.bcn .console-card { border-top: 4px solid var(--bcn-red); }
+    html[data-theme] body.bcn .console-card h2 { color: var(--bcn-accent); letter-spacing: .1em; }
+    html[data-theme] body.bcn .section > h2 { font-weight: 700; }
+    html[data-theme] body.bcn .section > h2::before { content: ""; display: block; width: 34px; height: 4px; margin-bottom: .6rem; background: var(--bcn-red); }
+    html[data-theme] body.bcn .section:hover, html[data-theme] body.bcn .console-card:hover { border-color: var(--line); box-shadow: var(--bcn-shadow); }
+    html[data-theme] body.bcn .stato, html[data-theme] body.bcn .bc-nota { color: var(--slate-2); }
+
+    /* pulsanti: angoli netti, blu pieno per l'azione principale */
+    html[data-theme] body.bcn button, html[data-theme] body.bcn .spot-btn, html[data-theme] body.bcn .dona-btn {
+      background: var(--surface-soft); border: 1px solid var(--line); color: var(--bcn-title); border-radius: 3px;
+    }
+    html[data-theme] body.bcn button:hover, html[data-theme] body.bcn .spot-btn:hover, html[data-theme] body.bcn .dona-btn:hover {
+      background: var(--bcn-btn); border-color: var(--bcn-btn); color: var(--bcn-btn-ink);
+    }
+    html[data-theme] body.bcn .bc-refresh { background: var(--bcn-btn); border-color: var(--bcn-btn); color: var(--bcn-btn-ink); border-radius: 3px; }
+    html[data-theme] body.bcn .bc-refresh:hover { background: var(--bcn-btn-hover); border-color: var(--bcn-btn-hover); color: #fff; }
+    html[data-theme] body.bcn .seo-spot-links .spot-btn[aria-current="page"] { border-color: var(--bcn-red); box-shadow: inset 0 -3px 0 var(--bcn-red); }
+    html[data-theme] body.bcn .bc-seg { border-radius: 3px; background: var(--surface-soft); border-color: var(--line); }
+    html[data-theme] body.bcn .bc-seg button { border: 0; border-radius: 2px; background: transparent; color: var(--slate-2); }
+    html[data-theme] body.bcn .bc-seg button:hover { background: var(--bcn-th); color: var(--bcn-title); }
+    html[data-theme] body.bcn .bc-seg button[aria-pressed="true"] { background: var(--bcn-btn); color: var(--bcn-btn-ink); }
+
+    /* vento adesso */
+    html[data-theme] body.bcn .bc-now-kt { color: var(--bcn-title); font-weight: 700; }
+    html[data-theme] body.bcn .bc-now-nome, html[data-theme] body.bcn .bc-countdown strong { color: var(--bcn-accent); }
+    html[data-theme] body.bcn .wind-arrow { color: var(--bcn-arrow) !important; }
+    html[data-theme] body.bcn .bc-staz-list li, html[data-theme] body.bcn .bc-countdown, html[data-theme] body.bcn .bc-info,
+    html[data-theme] body.bcn .bc-avviso, html[data-theme] body.bcn details.bc-albo, html[data-theme] body.bcn .bc-affid,
+    html[data-theme] body.bcn .bc-cat { border-radius: 3px; }
+    html[data-theme] body.bcn .bc-mini-lato { border: 1px solid var(--line); border-top: 4px solid var(--c, var(--bc-neutro)); border-radius: 3px; background: var(--surface-soft); color: var(--ink); }
+    html[data-theme] body.bcn .bc-mini-lato:hover { border-color: var(--c, var(--line)); background: var(--surface-soft); color: var(--ink); }
+    html[data-theme] body.bcn .bc-lato { border-radius: 3px; background: var(--surface-soft); }
+    html[data-theme] body.bcn .bc-mappa { border-radius: 3px; }
+    html[data-theme] body.bcn .bc-somma-bar { border-radius: 2px; }
+    html[data-theme] body.bcn .bc-avviso { border-left-color: var(--bcn-red); }
+
+    /* tabelle */
+    html[data-theme] body.bcn .bc-tab-wrap { border-radius: 3px; border-color: var(--line); }
+    html[data-theme] body.bcn .bc-tab th { background: var(--bcn-th); color: var(--bcn-title); }
+    html[data-theme] body.bcn .bc-tab th, html[data-theme] body.bcn .bc-tab td { border-bottom-color: var(--line); }
+    html[data-theme] body.bcn .bc-tab tr.gara td { background: var(--bcn-gara); }
+
+    /* piede (Vento Trieste): stessi contenuti, superfici nei colori della pagina */
+    html[data-theme] body.bcn .site-footer { background: var(--surface-soft); border-color: var(--line); border-radius: 4px; box-shadow: none; }
+    html[data-theme] body.bcn .footer-widget, html[data-theme] body.bcn .site-credits { background: var(--surface); border-color: var(--line); border-radius: 4px; box-shadow: none; }
+    html[data-theme] body.bcn .seo-spot-pages, html[data-theme] body.bcn .origin-story { background: var(--surface-soft); border-color: var(--line); border-radius: 3px; }
+    html[data-theme] body.bcn .supporters, html[data-theme] body.bcn .sources, html[data-theme] body.bcn .site-credits .seo-footer-copy { border-color: var(--line); }
+    html[data-theme] body.bcn .supporter-total, html[data-theme] body.bcn .supporter-name { background: var(--surface-soft); border-color: var(--line); color: var(--ink); }
+    html[data-theme] body.bcn .supporters-marquee { background: transparent; }
+    html[data-theme] body.bcn .footer-request select, html[data-theme] body.bcn .footer-request textarea { background: var(--surface-soft); border-color: var(--line); color: var(--ink); border-radius: 3px; }
+    html[data-theme] body.bcn .credits-signoff { background: var(--bcn-btn); color: var(--bcn-btn-ink); border-radius: 3px; }
+    html[data-theme] body.bcn .support-hero { background: linear-gradient(145deg, var(--surface), var(--surface-soft) 72%); }
+    html[data-theme] body.bcn .support-kicker { color: var(--bcn-accent); border-color: var(--line); border-radius: 3px; }
+    html[data-theme] body.bcn .support-kicker::before { background: var(--bcn-accent); box-shadow: none; }
+    html[data-theme] body.bcn .support-primary { background: var(--bcn-btn) !important; border-color: var(--bcn-btn) !important; color: var(--bcn-btn-ink) !important; border-radius: 4px !important; box-shadow: var(--bcn-shadow); }
+    html[data-theme] body.bcn .support-primary:hover { background: var(--bcn-btn-hover) !important; border-color: var(--bcn-btn-hover) !important; color: #fff !important; box-shadow: var(--bcn-shadow) !important; }
+    html[data-theme] body.bcn .visitor-total, html[data-theme] body.bcn .supporter-total strong { color: var(--bcn-accent); }
+
+    /* barra in basso su telefono */
+    html[data-theme] body.bcn .ux-mobile-dock { background: var(--bcn-dock); border-color: var(--line); border-radius: 6px; }
+    html[data-theme] body.bcn .ux-mobile-dock a, html[data-theme] body.bcn .ux-mobile-dock button { background: transparent; border: 0; color: var(--slate-2); border-radius: 3px; }
+    html[data-theme] body.bcn .ux-mobile-dock a.is-active { background: var(--bcn-btn); color: var(--bcn-btn-ink); }
+  </style>
 </head>
-<body>
+<body class="bcn">
 
   <header class="topbar">
     <a class="brand" href="/">
@@ -1250,6 +1408,16 @@
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
   <script src="/footer-widgets.js?v=20260822-ux1"></script>
+  <script>/* footer-widgets.js mette il tema scuro se non c'è una scelta salvata: su questa pagina
+     il predefinito è chiaro. Allineo anche il pulsante (che offre "Scuro"). */
+    (function(){var s=null;try{s=localStorage.getItem("vento-trieste-theme");}catch(e){}
+      if(s==="light"||s==="dark")return;
+      document.documentElement.setAttribute("data-theme","light");
+      var t=document.getElementById("themeToggle");if(!t)return;
+      var az=t.getAttribute("data-dark-label")||"Scuro";
+      t.setAttribute("aria-pressed","true");t.setAttribute("aria-label",az);t.setAttribute("title",az);
+      var i=t.querySelector(".theme-toggle-icon"),l=t.querySelector(".theme-toggle-label");
+      if(i)i.textContent="\u263E";if(l)l.textContent=az;})();</script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoBarcolanaSeo">
@@ -1687,7 +1855,7 @@
             fill: col, stroke: "var(--bc-alone)", "stroke-width": 1.2 * s, "stroke-linejoin": "round" }));
           g.appendChild(fr);
         }
-        g.appendChild(el("circle", { cx: sx, cy: sy, r: 11 * s, fill: "#15313a", stroke: col, "stroke-width": 2.4 * s }));
+        g.appendChild(el("circle", { cx: sx, cy: sy, r: 11 * s, fill: "var(--bc-staz)", stroke: col, "stroke-width": 2.4 * s }));
         g.appendChild(el("text", { x: sx, y: sy + 3.8 * s, "text-anchor": "middle", "font-size": 10.5 * s, "font-weight": 900, fill: "#fff" }, v ? String(kt) : "–"));
         const ds = { barcola: [14, 18, "start"], monteGrisa: [14, -8, "start"], mambo: [-14, -10, "end"], paloma: [14, 4, "start"], muggia: [14, 4, "start"], trieste: [-14, 4, "end"] }[st.id];
         testo(g, sx + ds[0] * s, sy + ds[1] * s, st.nome, s * .9, { "text-anchor": ds[2], "font-weight": 800 });
