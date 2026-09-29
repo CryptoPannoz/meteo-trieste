@@ -1581,33 +1581,64 @@
   </header>
 
   <main>
-    <!-- BANNER BARCOLANA 2026: si nasconde da solo dal 12 ottobre 2026 -->
-    <a class="barcolana-banner" id="barcolanaBanner" href="/barcolana2026/">
-      <span class="bb-kicker">⛵ Barcolana 58 · 11.10.2026</span>
-      <span class="bb-titolo">Il vento sul percorso della Barcolana, lato per lato</span>
-      <span class="bb-sub">Mappa con le boe, vento live da Barcola, boa Mambo e boa Paloma, previsioni e classifiche <b id="bbCount"></b></span>
-      <span class="bb-cta">Apri →</span>
-    </a>
+    <!-- POPUP BARCOLANA 58 (29 set 2026, al posto del banner fisso in alto): sale dal basso
+         dopo un attimo, con i colori e il font della pagina /barcolana2026/. Si chiude con la X
+         (resta chiuso 24 ore, localStorage) e sparisce da solo dal 12 ottobre 2026. -->
+    <aside class="bc58-pop" id="bc58Pop" aria-label="Barcolana 58" hidden>
+      <button type="button" class="bc58-x" id="bc58X" aria-label="Chiudi" title="Chiudi">✕</button>
+      <a class="bc58-link" href="/barcolana2026/">
+        <span class="bc58-kicker">Barcolana 58 · 11.10.2026</span>
+        <span class="bc58-titolo">Il vento sul percorso della Barcolana, lato per lato</span>
+        <span class="bc58-sub">Mappa con le boe, vento live dalle centraline, previsioni e classifiche<b id="bbCount"></b></span>
+        <span class="bc58-cta">Apri la pagina →</span>
+      </a>
+    </aside>
     <style>
-      .barcolana-banner { display: grid; grid-template-columns: 1fr auto; gap: .15rem 1rem; align-items: center; max-width: 1160px; margin: .9rem auto 0; padding: .85rem 1rem; border: 1px solid var(--line, #2a343d); border-left: 5px solid var(--signal, #f0f43c); border-radius: 14px; background: var(--surface, #10151a); color: var(--ink, #f4f7f8); text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
-      .barcolana-banner:hover { border-color: var(--signal, #f0f43c); }
-      .barcolana-banner .bb-kicker { grid-column: 1; font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--signal, #f0f43c); }
-      :root[data-theme="light"] .barcolana-banner .bb-kicker { color: var(--sea-dark, #0c5868); }
-      .barcolana-banner .bb-titolo { grid-column: 1; font-size: 1.08rem; font-weight: 800; line-height: 1.25; }
-      .barcolana-banner .bb-sub { grid-column: 1; font-size: .8rem; color: var(--slate-2, #b1bcc4); line-height: 1.4; }
-      .barcolana-banner .bb-sub b { color: var(--ink, #f4f7f8); white-space: nowrap; }
-      .barcolana-banner .bb-cta { grid-column: 2; grid-row: 1 / span 3; padding: .55rem .95rem; border-radius: 999px; background: var(--signal, #f0f43c); color: #0b0d10; font-weight: 800; font-size: .85rem; white-space: nowrap; }
-      :root[data-theme="light"] .barcolana-banner .bb-cta { background: var(--sea, #176f80); color: #fff; }
-      @media (max-width: 560px) { .barcolana-banner { grid-template-columns: 1fr; } .barcolana-banner .bb-cta { grid-column: 1; grid-row: auto; justify-self: start; margin-top: .35rem; } }
+      .bc58-pop { position: fixed; z-index: 1200; left: 50%; bottom: 18px; width: min(560px, calc(100vw - 20px));
+        transform: translate(-50%, calc(100% + 40px)); opacity: 0; transition: transform .5s cubic-bezier(.2,.8,.25,1), opacity .35s ease;
+        background: #003770; color: #fff; border-top: 4px solid #e30613; border-radius: 4px;
+        box-shadow: 0 18px 48px rgba(0,20,50,.45); font-family: "IBM Plex Sans", "Manrope", -apple-system, BlinkMacSystemFont, sans-serif; }
+      .bc58-pop.aperto { transform: translate(-50%, 0); opacity: 1; }
+      .bc58-pop[hidden] { display: none; }
+      .bc58-link { display: grid; gap: .2rem; padding: .95rem 3.2rem 1rem 1.1rem; color: #fff !important; text-decoration: none; }
+      .bc58-kicker { display: inline-flex; align-items: center; gap: .5rem; font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #fff; }
+      .bc58-kicker::before { content: ""; width: 22px; height: 3px; background: #e30613; }
+      .bc58-titolo { font-size: 1.12rem; font-weight: 700; line-height: 1.25; letter-spacing: -.01em; }
+      .bc58-sub { font-size: .8rem; line-height: 1.4; color: #c6d4e5; }
+      .bc58-sub b { color: #fff; white-space: nowrap; }
+      .bc58-cta { justify-self: start; margin-top: .45rem; padding: .5rem .95rem; border-radius: 3px; background: #e30613; color: #fff; font-size: .85rem; font-weight: 700; transition: background .15s ease; }
+      .bc58-link:hover .bc58-cta { background: #b10914; }
+      #bc58Pop .bc58-x { position: absolute; top: .45rem; right: .45rem; width: 38px; height: 38px; min-height: 0; min-width: 0; margin: 0; padding: 0;
+        display: grid; place-items: center; border: 0; border-radius: 3px; background: transparent; color: #fff; font-size: 1rem; line-height: 1; cursor: pointer; box-shadow: none; transform: none; }
+      #bc58Pop .bc58-x:hover { background: rgba(255,255,255,.14); color: #fff; }
+      #bc58Pop .bc58-x:focus-visible, .bc58-link:focus-visible { outline: 3px solid #00b1eb; outline-offset: 2px; }
+      /* sopra la barra di navigazione in basso dei telefoni (footer-widgets.css, <= 700px) */
+      @media (max-width: 700px) { .bc58-pop { bottom: calc(84px + env(safe-area-inset-bottom)); } }
+      @media (prefers-reduced-motion: reduce) { .bc58-pop { transition: none; } }
     </style>
     <script>
       (function () {
         var fine = Date.parse("2026-10-12T00:00:00+02:00"), partenza = Date.parse("2026-10-11T10:30:00+02:00");
-        var b = document.getElementById("barcolanaBanner");
-        if (!b) return;
-        if (Date.now() >= fine) { b.remove(); return; }
+        var pop = document.getElementById("bc58Pop");
+        if (!pop) return;
+        if (Date.now() >= fine) { pop.remove(); return; }
+        var CHIAVE = "vt-bc58-pop-chiuso", chiuso = 0;
+        try { chiuso = Number(localStorage.getItem(CHIAVE)) || 0; } catch (e) {}
+        if (Date.now() - chiuso < 24 * 3600000) { pop.remove(); return; }
         var g = Math.ceil((partenza - Date.now()) / 86400000), c = document.getElementById("bbCount");
-        if (c) c.textContent = g > 1 ? "· mancano " + g + " giorni" : g === 1 ? "· è domani!" : "· è oggi!";
+        if (c) c.textContent = g > 1 ? " · mancano " + g + " giorni" : g === 1 ? " · è domani!" : " · è oggi!";
+        // font della pagina Barcolana, caricato solo quando il popup serve
+        var f = document.createElement("link");
+        f.rel = "stylesheet";
+        f.href = "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;700&display=swap";
+        document.head.appendChild(f);
+        pop.hidden = false;
+        setTimeout(function () { pop.classList.add("aperto"); }, 1200);
+        document.getElementById("bc58X").addEventListener("click", function () {
+          pop.classList.remove("aperto");
+          try { localStorage.setItem(CHIAVE, String(Date.now())); } catch (e) {}
+          setTimeout(function () { pop.remove(); }, 550);
+        });
       })();
     </script>
     <h1 class="site-page-title">Vento a Trieste in tempo reale</h1>

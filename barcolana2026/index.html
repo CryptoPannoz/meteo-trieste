@@ -896,6 +896,7 @@
       --bc-mare: #0a1a22; --bc-terra: #1a2228; --bc-costa: #4d606b; --bc-diga: #66747d;
       --bc-etichetta: #c3cdd4; --bc-alone: #07090c; --bc-boa: #ff5a6e; --bc-rotta-casing: rgba(0,0,0,.55);
       --bc-ok: #3ddc84; --bc-warn: #f5a524; --bc-off: #6b7780; --bc-staz: #15313a;
+      --bc-urbano: #20292f; --bc-strada: #2b353c; --bc-strada1: #36424a; --bc-ferrovia: #44505a;
     }
     :root[data-theme="light"] {
       --bc-bolina: #c92b3a; --bc-traverso: #8c7400; --bc-lasco: #0e8a5f; --bc-poppa: #1f6fd1; --bc-neutro: #6a7a84;
@@ -972,6 +973,9 @@
     .bc-map-head p { margin: 0; font-size: .8rem; color: var(--label); font-weight: 650; }
     .bc-mappa { position: relative; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--bc-mare); }
     .bc-mappa svg { display: block; width: 100%; height: auto; border-radius: 0 !important; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+    /* base cartografica (mare, terra, città, strade): disegnata una volta, sotto il percorso */
+    .bc-mappa .bc-base { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .bc-mappa #bcSvg { position: relative; }
     .bc-mappa .bc-hit { cursor: pointer; }
     .bc-mappa .bc-lato-g { transition: opacity .15s ease; }
     .bc-mappa.bc-ha-sel .bc-lato-g:not(.sel) { opacity: .3; }
@@ -985,6 +989,11 @@
     .bc-legenda i { width: 18px; height: 5px; border-radius: 3px; display: inline-block; background: var(--c); }
     .bc-legenda .bc-leg-sep { flex-basis: 100%; height: 0; }
     .bc-legenda svg { width: 14px; height: 14px; }
+    .bc-legenda b.bc-leg-tit { flex-basis: 100%; margin-top: .35rem; font-size: .66rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--label); }
+    .bc-legenda b.bc-leg-tit:first-child { margin-top: 0; }
+    .bc-legenda svg.bc-leg-staz { width: 30px; height: 26px; }
+    .bc-legenda .bc-scala { display: inline-flex; gap: 2px; }
+    .bc-legenda .bc-scala em { font-style: normal; font-size: .64rem; font-weight: 800; padding: .08rem .3rem; border-radius: 2px; color: #fff; background: var(--c); }
 
     .bc-pannello h3 { margin: 0 0 .5rem; font-size: 1.02rem; }
     .bc-ctrl { margin: .65rem 0 .2rem; display: grid; gap: .55rem; }
@@ -1115,7 +1124,8 @@
       --bcn-th: #eaf0f7; --bcn-gara: rgba(227,6,19,.06); --bcn-arrow: #003770;
       --bcn-topbar: rgba(255,255,255,.97); --bcn-dock: rgba(255,255,255,.96); --bcn-shadow: 0 6px 22px rgba(0,40,90,.08);
       --bc-bolina: #e2412f; --bc-traverso: #d99a00; --bc-lasco: #13935f; --bc-poppa: #0090d4; --bc-neutro: #7b8ba0;
-      --bc-mare: #dcebf6; --bc-terra: #f7f6f1; --bc-costa: #93a9bf; --bc-diga: #9aabbd;
+      --bc-mare: #d3e3f1; --bc-terra: #eceef0; --bc-urbano: #e0e3e8; --bc-strada: #ffffff; --bc-strada1: #ffffff; --bc-ferrovia: #a7b1bd;
+      --bc-costa: #8ea5bc; --bc-diga: #98a9bb;
       --bc-etichetta: #0d2c4f; --bc-alone: #ffffff; --bc-boa: #e30613; --bc-rotta-casing: rgba(255,255,255,.9);
       --bc-ok: #17a36b; --bc-warn: #d98a00; --bc-off: #9aa8b8; --bc-staz: #003770;
     }
@@ -1131,7 +1141,8 @@
       --bcn-th: #0a2b4e; --bcn-gara: rgba(255,75,85,.1); --bcn-arrow: #5ccdf3;
       --bcn-topbar: rgba(0,20,40,.96); --bcn-dock: rgba(4,32,61,.96); --bcn-shadow: 0 8px 26px rgba(0,0,0,.35);
       --bc-bolina: #ff6a5c; --bc-traverso: #ffc93d; --bc-lasco: #32d296; --bc-poppa: #33c3f0; --bc-neutro: #7e93ab;
-      --bc-mare: #03203d; --bc-terra: #0f3157; --bc-costa: #3d6690; --bc-diga: #4d73a0;
+      --bc-mare: #0b2c55; --bc-terra: #c6cbd1; --bc-urbano: #b6bcc4; --bc-strada: #dfe2e6; --bc-strada1: #f0f2f4; --bc-ferrovia: #8a95a1;
+      --bc-costa: #7e8a97; --bc-diga: #a3adb8;
       --bc-etichetta: #cfdcea; --bc-alone: #001428; --bc-boa: #ff4b55; --bc-rotta-casing: rgba(0,10,25,.6);
       --bc-ok: #32d296; --bc-warn: #ffb020; --bc-off: #5d7592; --bc-staz: #003770;
     }
@@ -1312,6 +1323,7 @@
             <p id="mappaModo"></p>
           </div>
           <div class="bc-mappa" id="bcMappa">
+            <svg class="bc-base" id="bcBase" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"></svg>
             <svg id="bcSvg" role="img" xmlns="http://www.w3.org/2000/svg"></svg>
           </div>
           <div class="bc-info" id="bcInfo" aria-live="polite"></div>
@@ -1448,6 +1460,7 @@
           async src="//gc.zgo.at/count.js"></script>
   <script src="/dati-live.js?v=20260929b"></script>
   <script src="./costa.js?v=2"></script>
+  <script src="./strade.js?v=1" defer onload="window.disegnaBaseBarcolana && window.disegnaBaseBarcolana()"></script>
   <script>
   (function () {
     "use strict";
@@ -1515,9 +1528,11 @@
     const STAZIONI = [
       { id: "barcola", nome: "Barcola", lat: 45.680, lon: 13.754, interp: true, fresco: 10, max: 20,
         ruolo: ["Porticciolo di Barcola: zona di partenza, boa 4 e ultimo lato.", "Barcola harbour: start area, mark 4 and the last leg."] },
-      { id: "mambo", nome: "Boa Mambo", lat: 45.6983, lon: 13.7000, interp: true, fresco: 30, max: 30, sposta: [-26, -26],
+      // Mambo NON va in mappa (29 set 2026): sta a 250 m dalla boa 3 e andava spostata con una
+      // linea tratteggiata che confondeva; in più il suo dato è quasi sempre vecchio. Resta nell'elenco.
+      { id: "mambo", nome: "Boa Mambo", lat: 45.6983, lon: 13.7000, interp: true, fresco: 30, max: 30, mappa: false,
         ruolo: ["Boa OGS davanti a Miramare, a 250 m dalla boa 3. Pubblica un dato all'ora con 1-2 ore di ritardo: se è vecchio non entra nella stima.", "OGS buoy off Miramare, 250 m from mark 3. It publishes hourly, 1-2 hours late: when stale it is left out of the estimate."] },
-      { id: "paloma", nome: "Boa Paloma", lat: 45.619, lon: 13.565, interp: true, fresco: 20, max: 30,
+      { id: "paloma", nome: "Boa Paloma", lat: 45.619, lon: 13.565, interp: true, fresco: 20, max: 30, bordo: 45.601,
         ruolo: ["In mezzo al Golfo, a ovest delle boe 1 e 2: vento di mare aperto.", "Mid-Gulf, west of marks 1 and 2: open-sea wind."] },
       { id: "trieste", nome: "Trieste molo", lat: 45.636806, lon: 13.750556, interp: true, fresco: 20, max: 30,
         ruolo: ["Stazione OSMER sul molo F.lli Bandiera, a sud dell'arrivo: il vento in porto, ogni 15 minuti.", "OSMER station on the F.lli Bandiera pier, south of the finish: the wind in the harbour, every 15 minutes."] },
@@ -1530,8 +1545,7 @@
       { nome: ["Miramare", "Miramare"], lat: 45.7026, lon: 13.7124, dx: 10, dy: -2 },
       { nome: ["Grignano", "Grignano"], lat: 45.7097, lon: 13.7108, dx: 10, dy: -8 },
       { nome: ["Trieste", "Trieste"], lat: 45.6405, lon: 13.7760, dx: 0, dy: 0, grande: true },
-      { nome: ["SLOVENIJA", "SLOVENIA"], lat: 45.579, lon: 13.752, dx: 0, dy: 0, stato: true },
-      { nome: ["Golfo di Trieste", "Gulf of Trieste"], lat: 45.690, lon: 13.590, dx: 0, dy: 0, golfo: true }
+      { nome: ["Golfo di Trieste", "Gulf of Trieste"], lat: 45.672, lon: 13.638, dx: 0, dy: 0, golfo: true }
     ];
 
     /* ---------- utilità ---------- */
@@ -1694,7 +1708,13 @@
 
     /* ---------- mappa del percorso ---------- */
     const SVG_NS = "http://www.w3.org/2000/svg";
-    const VISTA = { x: 0, y: 0, w: 1000, h: COSTA.h };   // tutto il Golfo: boe, Paloma, Muggia e costa slovena
+    /* Inquadratura come la mappa ufficiale del percorso (29 set 2026): il campo di regata
+       riempie la mappa. Fino ad allora era tutto il Golfo, col percorso schiacciato a destra;
+       Paloma, fuori quadro, compare come etichetta sul bordo (disegnaStazione). */
+    const VISTA = (() => {
+      const x0 = px(13.612), x1 = px(13.80), y0 = py(45.718), y1 = py(45.594);
+      return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+    })();
     function el(tag, attrs, testo) {
       const n = document.createElementNS(SVG_NS, tag);
       for (const k in attrs) n.setAttribute(k, attrs[k]);
@@ -1702,72 +1722,113 @@
       return n;
     }
     function testo(g, x, y, t, s, extra) {
-      g.appendChild(el("text", Object.assign({ x, y, "font-size": 12.5 * s, "font-weight": 750,
+      g.appendChild(el("text", Object.assign({ x, y, "font-size": 12.5 * s, "font-weight": 700,
         fill: "var(--bc-etichetta)", stroke: "var(--bc-alone)", "stroke-width": 3 * s, "paint-order": "stroke",
         "stroke-linejoin": "round" }, extra || {}), t));
     }
+    /* boa: triangolo rosso con etichetta corta, come sulla mappa ufficiale (1, 2, 3, P1, P/4, A1, A) */
     function triangolo(g, p, s, etichetta, lab, titolo) {
-      const x = px(p.lon), y = py(p.lat), r = 8.5 * s;
+      const x = px(p.lon), y = py(p.lat), r = 7 * s;
       const gg = el("g", {});
       gg.appendChild(el("path", { d: "M" + x + "," + (y - r) + " L" + (x + r * .95) + "," + (y + r * .65) + " L" + (x - r * .95) + "," + (y + r * .65) + "Z",
-        fill: "var(--bc-boa)", stroke: "var(--bc-alone)", "stroke-width": 1.8 * s, "stroke-linejoin": "round" }));
+        fill: "var(--bc-boa)", stroke: "var(--bc-alone)", "stroke-width": 1.4 * s, "stroke-linejoin": "round" }));
       gg.appendChild(el("title", {}, titolo));
       g.appendChild(gg);
-      if (etichetta) testo(g, x + lab[0] * s, y + lab[1] * s, etichetta, s * .95, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": lab[2] });
+      if (etichetta) testo(g, x + lab[0] * s, y + lab[1] * s, etichetta, s * .95, { fill: "var(--bc-boa)", "font-weight": 700, "text-anchor": lab[2] });
     }
-    function cerchio(g, p, s, etichetta, lab) {
+    function cerchio(g, p, s, etichetta, lab, titolo) {
       const x = px(p.lon), y = py(p.lat);
-      g.appendChild(el("circle", { cx: x, cy: y, r: 4.8 * s, fill: "var(--bc-boa)", "fill-opacity": .75, stroke: "var(--bc-alone)", "stroke-width": 1.4 * s }));
-      testo(g, x + lab[0] * s, y + lab[1] * s, etichetta, s * .8, { fill: "var(--bc-boa)", "font-weight": 800, "text-anchor": lab[2], opacity: .9 });
+      const c = el("circle", { cx: x, cy: y, r: 4.6 * s, fill: "var(--bc-boa)", stroke: "var(--bc-alone)", "stroke-width": 1.3 * s });
+      c.appendChild(el("title", {}, titolo));
+      g.appendChild(c);
+      testo(g, x + lab[0] * s, y + lab[1] * s, etichetta, s * .82, { fill: "var(--bc-boa)", "font-weight": 700, "text-anchor": lab[2] });
     }
+    /* testo parallelo a un segmento, sempre dritto (mai a testa in giù) */
+    function testoLungo(g, a, b, t, s, off, extra) {
+      const x0 = px(a.lon), y0 = py(a.lat), x1 = px(b.lon), y1 = py(b.lat);
+      let ang = Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI;
+      if (ang > 90) ang -= 180; else if (ang < -90) ang += 180;
+      const L = Math.hypot(x1 - x0, y1 - y0) || 1, nx = -(y1 - y0) / L, ny = (x1 - x0) / L;
+      const cx = (x0 + x1) / 2 + nx * off * s, cy = (y0 + y1) / 2 + ny * off * s;
+      testo(g, cx, cy, t, s * .82, Object.assign({ "text-anchor": "middle", "dominant-baseline": "central",
+        transform: "rotate(" + ang.toFixed(1) + " " + cx.toFixed(1) + " " + cy.toFixed(1) + ")" }, extra || {}));
+    }
+
+    /* Base cartografica (29 set 2026): mare, terra, zone urbane, strade e ferrovia da OSM
+       (costa.js + strade.js), come la trama grigia della mappa ufficiale. Sta in un SVG a
+       parte, SOTTO quello del percorso: si disegna una volta sola (e di nuovo quando arriva
+       strade.js, caricato in differita), non a ogni ridisegno del percorso. I colori sono
+       variabili CSS, quindi il cambio tema non richiede di ridisegnare. */
+    const svgBase = document.getElementById("bcBase");
+    function disegnaBase() {
+      const vb = VISTA, ST = window.BARCOLANA_STRADE || {};
+      svgBase.setAttribute("viewBox", vb.x + " " + vb.y + " " + vb.w + " " + vb.h);
+      svgBase.innerHTML = "";
+      svgBase.appendChild(el("rect", { x: 0, y: 0, width: COSTA.w, height: COSTA.h, fill: "var(--bc-mare)" }));
+      svgBase.appendChild(el("path", { d: COSTA.terra, fill: "var(--bc-terra)" }));
+      if (ST.urbano) svgBase.appendChild(el("path", { d: ST.urbano, fill: "var(--bc-urbano)" }));
+      const tratto = (d, w, col, extra) => { if (d) svgBase.appendChild(el("path", Object.assign({ d, fill: "none", stroke: col,
+        "stroke-width": w, "stroke-linecap": "round", "stroke-linejoin": "round" }, extra || {}))); };
+      tratto(ST.strade3, .45, "var(--bc-strada)");
+      tratto(ST.strade2, .7, "var(--bc-strada)");
+      tratto(ST.strade1, 1.5, "var(--bc-strada1)");
+      tratto(ST.ferrovia, .8, "var(--bc-ferrovia)", { "stroke-dasharray": "2.4 1.6", "stroke-linecap": "butt" });
+      svgBase.appendChild(el("path", { d: COSTA.terra, fill: "none", stroke: "var(--bc-costa)", "stroke-width": .9, "stroke-linejoin": "round" }));
+      if (COSTA.dighe) svgBase.appendChild(el("path", { d: COSTA.dighe, fill: "var(--bc-diga)" }));
+      if (COSTA.moli) svgBase.appendChild(el("path", { d: COSTA.moli, fill: "none", stroke: "var(--bc-diga)", "stroke-width": 1.6, "stroke-linecap": "round" }));
+    }
+    window.disegnaBaseBarcolana = disegnaBase;
+    disegnaBase();
 
     function disegnaMappa(svg, opt) {
       const vb = VISTA;
-      const s = vb.w / 590;                               // simboli di dimensione costante a schermo
+      /* simboli e scritte di dimensione (quasi) costante a schermo: sulla mappa larga ~590 px
+         valgono 1; su telefono (mappa ~320 px) restano leggibili invece di rimpicciolirsi */
+      const larg = svg.getBoundingClientRect().width || 590;
+      const s = vb.w / (larg < 520 ? larg * 1.25 : 590);
       svg.setAttribute("viewBox", vb.x + " " + vb.y + " " + vb.w + " " + vb.h);
       svg.setAttribute("aria-label", tr("Mappa del percorso della Barcolana con boe, centraline e vento", "Barcolana course map with marks, stations and wind"));
       svg.innerHTML = "";
-      svg.appendChild(el("rect", { x: 0, y: 0, width: COSTA.w, height: COSTA.h, fill: "var(--bc-mare)" }));
-      svg.appendChild(el("path", { d: COSTA.terra, fill: "var(--bc-terra)", stroke: "var(--bc-costa)", "stroke-width": 1.1 * s, "stroke-linejoin": "round" }));
-      if (COSTA.dighe) svg.appendChild(el("path", { d: COSTA.dighe, fill: "var(--bc-diga)" }));
-      if (COSTA.moli) svg.appendChild(el("path", { d: COSTA.moli, fill: "none", stroke: "var(--bc-diga)", "stroke-width": 1.6 * s, "stroke-linecap": "round" }));
 
       const gL = el("g", {});
       LUOGHI.forEach(l => {
         const x = px(l.lon), y = py(l.lat), nome = tr(l.nome[0], l.nome[1]);
         if (l.punto) gL.appendChild(el("circle", { cx: x, cy: y, r: 2.4 * s, fill: "var(--bc-etichetta)" }));
-        const extra = l.grande ? { "font-weight": 800, "letter-spacing": 1 } :
-          l.stato ? { "font-weight": 800, "letter-spacing": 3 * s, "text-anchor": "middle", opacity: .6 } :
-          l.golfo ? { "font-style": "italic", "font-weight": 700, "text-anchor": "middle", opacity: .7 } :
-          { "font-style": "italic", "font-weight": 650 };
-        testo(gL, x + l.dx * s, y + l.dy * s, nome, l.grande ? s * 1.25 : l.golfo ? s * 1.3 : l.stato ? s * .95 : s * .92, extra);
+        const extra = l.grande ? { "font-weight": 700, "letter-spacing": 1 } :
+          l.golfo ? { "font-style": "italic", "font-weight": 600, "text-anchor": "middle", opacity: .75 } :
+          { "font-style": "italic", "font-weight": 600 };
+        testo(gL, x + l.dx * s, y + l.dy * s, nome, l.grande ? s * 1.25 : l.golfo ? s * 1.2 : s * .92, extra);
       });
       svg.appendChild(gL);
 
+      /* percorso: tratto sottile con bordino, colore = andatura col vento live o previsto.
+         Accanto a ogni lato, come sulla mappa ufficiale, rotta × distanza; sul lato il numero. */
       const an = opt.an;
       const gR = el("g", {});
+      // lato del tratto su cui scrivere rotta × lunghezza, come sulla mappa ufficiale (x a est, y a sud)
+      const LATO_SCRITTA = { 1: [1, 0], 2: [-1, 1], 3: [-1, 0], 4: [1, -1], 5: [1, 0] };
       LATI.forEach(l => {
         gR.appendChild(el("line", { x1: px(l.p0.lon), y1: py(l.p0.lat), x2: px(l.p1.lon), y2: py(l.p1.lat),
-          stroke: "var(--bc-rotta-casing)", "stroke-width": 8 * s, "stroke-linecap": "round" }));
+          stroke: "var(--bc-rotta-casing)", "stroke-width": 6 * s, "stroke-linecap": "round" }));
       });
       LATI.forEach((l, i) => {
         const a = an[i];
         const col = a.v ? ANDATURE[a.an.k].c : "var(--bc-neutro)";
         const g = el("g", { "class": "bc-lato-g" + (opt.sel === "l" + l.n ? " sel" : ""), "data-lato": l.n });
         const x0 = px(l.p0.lon), y0 = py(l.p0.lat), x1 = px(l.p1.lon), y1 = py(l.p1.lat);
-        g.appendChild(el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: col, "stroke-width": 4.2 * s, "stroke-linecap": "round",
-          "stroke-dasharray": a.v ? "none" : (7 * s) + " " + (6 * s) }));
-        const t = 0.58, cx = x0 + (x1 - x0) * t, cy = y0 + (y1 - y0) * t;
-        g.appendChild(el("path", { d: "M" + (-6 * s) + "," + (4 * s) + " L0," + (-5 * s) + " L" + (6 * s) + "," + (4 * s),
-          fill: "none", stroke: col, "stroke-width": 3 * s, "stroke-linecap": "round", "stroke-linejoin": "round",
-          transform: "translate(" + cx + " " + cy + ") rotate(" + l.rotta + ")" }));
-        // numero del lato, di fianco, verso l'esterno del percorso
-        const mx = x0 + (x1 - x0) * 0.36, my = y0 + (y1 - y0) * 0.36;
-        const nx = Math.cos(rad(l.rotta)), ny = Math.sin(rad(l.rotta));
-        const off = (l.n === 4 || l.n === 5 ? -1 : 1) * 15 * s;
-        const bx = mx + nx * off, by = my + ny * off;
-        g.appendChild(el("circle", { cx: bx, cy: by, r: 9 * s, fill: col, stroke: "var(--bc-alone)", "stroke-width": 1.5 * s }));
-        g.appendChild(el("text", { x: bx, y: by + 4 * s, "text-anchor": "middle", "font-size": 11.5 * s, "font-weight": 900, fill: "#0b0d10" }, String(l.n)));
+        g.appendChild(el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: col, "stroke-width": 3 * s, "stroke-linecap": "round",
+          "stroke-dasharray": a.v ? "none" : (6 * s) + " " + (5 * s) }));
+        // rotta × distanza parallela al lato, dal lato esterno del percorso
+        const L = Math.hypot(x1 - x0, y1 - y0) || 1, dir = LATO_SCRITTA[l.n];
+        const fuori = ((-(y1 - y0) / L) * dir[0] + ((x1 - x0) / L) * dir[1]) >= 0 ? 1 : -1;
+        // la scritta va solo se ci sta accanto al lato (su telefono i lati corti la perdono: c'è nell'elenco)
+        const scritta = String(l.rotta).padStart(3, "0") + "° × " + fmt(l.nm, 1) + tr(" mn", " nm");
+        if (scritta.length * 12.5 * .82 * s * .55 <= L * 1.3)
+          testoLungo(g, l.p0, l.p1, scritta, s, fuori * 13, { "font-weight": 600, fill: "var(--bc-etichetta)" });
+        // numero del lato sul tratto (collega la mappa all'elenco dei lati)
+        const t = l.n === 2 ? .72 : .27, bx = x0 + (x1 - x0) * t, by = y0 + (y1 - y0) * t;   // lontano dalla scritta, che sta a metà
+        g.appendChild(el("circle", { cx: bx, cy: by, r: 7.5 * s, fill: col, stroke: "var(--bc-alone)", "stroke-width": 1.5 * s }));
+        g.appendChild(el("text", { x: bx, y: by + 3.6 * s, "text-anchor": "middle", "font-size": 10 * s, "font-weight": 800, fill: "#0b0d10" }, String(l.n)));
         g.appendChild(el("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: "transparent", "stroke-width": 26 * s, "class": "bc-hit" }));
         g.appendChild(el("title", {}, tr("Lato ", "Leg ") + l.n + ": " + nomeLato(l) + ", " + String(l.rotta).padStart(3, "0") + "°, " + fmt(l.nm, 1) + tr(" mn", " nm")));
         if (opt.onLato) g.addEventListener("click", ev => { ev.stopPropagation(); opt.onLato(l.n); });
@@ -1775,32 +1836,33 @@
       });
       svg.appendChild(gR);
 
-      // linee di partenza (P1 - P/4) e di arrivo (A1 - A)
+      // linee di partenza (P1 - P/4) e di arrivo (A1 - A), tratteggiate come sull'originale
       const linea = (a, b, dash, w) => {
         const x1 = px(a.lon), y1 = py(a.lat), x2 = px(b.lon), y2 = py(b.lat);
-        svg.appendChild(el("line", { x1, y1, x2, y2, stroke: "var(--bc-alone)", "stroke-width": (w + 2.4) * s, "stroke-linecap": "round" }));
+        svg.appendChild(el("line", { x1, y1, x2, y2, stroke: "var(--bc-alone)", "stroke-width": (w + 2) * s, "stroke-linecap": "round", opacity: .8 }));
         svg.appendChild(el("line", { x1, y1, x2, y2, stroke: "var(--bc-boa)", "stroke-width": w * s, "stroke-dasharray": dash.map(d => d * s).join(" ") }));
       };
-      linea(BOA.P1, BOA.P4, [5, 3], 2.6);
-      linea(BOA.A1, BOA.A, [2.5, 2.5], 3.2);
-      testo(svg, px(BOA.A1.lon) - 10 * s, py(BOA.A1.lat) + 18 * s, tr("Arrivo", "Finish"), s, { fill: "var(--bc-boa)", "font-weight": 850, "text-anchor": "end" });
+      linea(BOA.P1, BOA.P4, [4, 3], 2);
+      linea(BOA.A1, BOA.A, [2.5, 2.5], 2.4);
+      testoLungo(svg, BOA.P1, BOA.P4, tr("Partenza", "Start"), s, 10, { fill: "var(--bc-boa)", "font-weight": 700 });
+      testo(svg, px(BOA.A1.lon) - 9 * s, py(BOA.A1.lat) + 16 * s, tr("Arrivo", "Finish"), s * .9, { fill: "var(--bc-boa)", "font-weight": 700, "text-anchor": "end" });
 
-      // boe: triangoli (come sulla mappa ufficiale), boe alternative 2bis/3bis come cerchi
+      // boe: triangoli con etichetta corta, boe alternative 2BIS/3BIS come cerchi
       const gB = el("g", {});
-      cerchio(gB, BOA.B2BIS, s, "2bis", [-8, 4, "end"]);
-      cerchio(gB, BOA.B3BIS, s, "3bis", [-8, -4, "end"]);
-      triangolo(gB, BOA.B1, s, tr("Boa 1", "Mark 1"), [12, 16, "start"], tr("Boa 1 (posizione dalla mappa ufficiale)", "Mark 1 (position from the official map)"));
-      triangolo(gB, BOA.B2, s, tr("Boa 2", "Mark 2"), [-8, 22, "end"], tr("Boa 2", "Mark 2"));
-      triangolo(gB, BOA.B3, s, tr("Boa 3", "Mark 3"), [-12, 16, "end"], tr("Boa 3", "Mark 3"));
-      triangolo(gB, BOA.P1, s, tr("Partenza · P1", "Start · P1"), [-11, 4, "end"], tr("P1: estremo ovest della linea di partenza", "P1: west end of the start line"));
-      triangolo(gB, BOA.P4, s, "P/4", [-12, 18, "end"], tr("P/4: estremo est della partenza e boa 4", "P/4: east end of the start line and mark 4"));
-      triangolo(gB, BOA.A1, s, "", null, tr("A1: arrivo", "A1: finish"));
-      triangolo(gB, BOA.A, s, "", null, tr("A: arrivo, testata della diga", "A: finish, breakwater head"));
+      cerchio(gB, BOA.B2BIS, s, "2BIS", [-8, -7, "end"], tr("2BIS: boa alternativa (la stabiliscono le Istruzioni di Regata)", "2BIS: alternative mark (set by the Sailing Instructions)"));
+      cerchio(gB, BOA.B3BIS, s, "3BIS", [-8, 4, "end"], tr("3BIS: boa alternativa (la stabiliscono le Istruzioni di Regata)", "3BIS: alternative mark (set by the Sailing Instructions)"));
+      triangolo(gB, BOA.B1, s, "1", [0, 19, "middle"], tr("Boa 1 (posizione dalla mappa ufficiale)", "Mark 1 (position from the official map)"));
+      triangolo(gB, BOA.B2, s, "2", [9, -7, "start"], tr("Boa 2", "Mark 2"));
+      triangolo(gB, BOA.B3, s, "3", [0, 19, "middle"], tr("Boa 3", "Mark 3"));
+      triangolo(gB, BOA.P1, s, "P1", [0, 19, "middle"], tr("P1: estremo ovest della linea di partenza", "P1: west end of the start line"));
+      triangolo(gB, BOA.P4, s, "P/4", [-9, 15, "end"], tr("P/4: estremo est della partenza e boa 4", "P/4: east end of the start line and mark 4"));
+      triangolo(gB, BOA.A1, s, "A1", [-9, -6, "end"], tr("A1: arrivo", "A1: finish"));
+      triangolo(gB, BOA.A, s, "A", [8, -6, "start"], tr("A: arrivo, testata della diga", "A: finish, breakwater head"));
       svg.appendChild(gB);
 
       if (opt.stazioni) {
         const gS = el("g", {});
-        STAZIONI.forEach(st => disegnaStazione(gS, st, vivo(st), vb, s, opt));
+        STAZIONI.filter(st => st.mappa !== false).forEach(st => disegnaStazione(gS, st, vivo(st), vb, s, opt));
         svg.appendChild(gS);
       }
 
@@ -1829,7 +1891,8 @@
         const pad = 16 * s;
         const lato = x < vb.x ? "sx" : x > vb.x + vb.w ? "dx" : y < vb.y ? "su" : "giu";
         const cx = Math.min(Math.max(x, vb.x + pad + 50 * s), vb.x + vb.w - pad - 50 * s);
-        const cy = Math.min(Math.max(y, vb.y + pad + 30 * s), vb.y + vb.h - pad);
+        // fuori mappa: etichetta sul bordo, alla quota "bordo" se indicata (Paloma: in basso, lontano dalla boa 1)
+        const cy = Math.min(Math.max(st.bordo ? py(st.bordo) : y, vb.y + pad + 30 * s), vb.y + vb.h - pad);
         const ex = lato === "sx" ? vb.x + pad : lato === "dx" ? vb.x + vb.w - pad : cx;
         const ey = lato === "su" ? vb.y + pad : lato === "giu" ? vb.y + vb.h - pad : cy;
         const lab = (lato === "sx" ? "◀ " : "") + st.nome + (v ? " " + kt + " kt" : " –") + (lato === "dx" ? " ▶" : lato === "giu" ? " ▼" : lato === "su" ? " ▲" : "");
@@ -1929,6 +1992,15 @@
       }
     }
     svgMappa.addEventListener("click", () => { if (stato.sel) { stato.sel = null; aggiornaPercorso(); } });
+    // telefono ruotato / finestra ridimensionata: i simboli si ricalcolano sulla nuova larghezza
+    let larghezzaMappa = 0, timerResize = null;
+    window.addEventListener("resize", () => {
+      clearTimeout(timerResize);
+      timerResize = setTimeout(() => {
+        const w = Math.round(svgMappa.getBoundingClientRect().width);
+        if (w && Math.abs(w - larghezzaMappa) > 20) { larghezzaMappa = w; aggiornaPercorso(); }
+      }, 200);
+    });
     function aggiornaPercorso() {
       const an = analisi(ventoPrincipale);
       disegnaMappa(svgMappa, { an, stazioni: true, sel: stato.sel, onLato: n => seleziona("l" + n), onStaz: id => seleziona("s" + id) });
@@ -2249,10 +2321,28 @@
 
     function disegnaLegenda() {
       const tri = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1.5 L12.5 11.5 L1.5 11.5Z" fill="var(--bc-boa)"/></svg>';
-      document.getElementById("bcLegenda").innerHTML = Object.keys(ANDATURE).map(k => '<span style="--c:' + ANDATURE[k].c + '"><i></i>' + nomeAnd(k) + "</span>").join("") +
+      const cer = '<svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="var(--bc-boa)"/></svg>';
+      // simbolo centralina come in mappa: cerchio con i nodi, anello colorato, freccia verso dove va il vento
+      const staz = (kt, col, freccia) => '<svg class="bc-leg-staz" viewBox="0 0 30 26" aria-hidden="true">' +
+        '<circle cx="11" cy="13" r="9" fill="var(--bc-staz)" stroke="' + col + '" stroke-width="2.2"/>' +
+        (freccia ? '<path d="M21 13h7m-3-3 3 3-3 3" fill="none" stroke="' + col + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' : "") +
+        '<text x="11" y="16.4" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">' + kt + "</text></svg>";
+      const fasce = ["< 8", "8–15", "15–25", "25–35", "35+"];
+      document.getElementById("bcLegenda").innerHTML =
+        '<b class="bc-leg-tit">' + tr("Percorso", "Course") + "</b>" +
+        Object.keys(ANDATURE).map(k => '<span style="--c:' + ANDATURE[k].c + '"><i></i>' + nomeAnd(k) + "</span>").join("") +
         '<span style="--c:var(--bc-neutro)"><i style="background:repeating-linear-gradient(90deg,var(--c) 0 5px,transparent 5px 9px)"></i>' + tr("senza dati", "no data") + "</span>" +
-        '<span class="bc-leg-sep"></span><span>' + tri + tr("Boe (dalla mappa ufficiale)", "Marks (from the official map)") + "</span>" +
-        "<span>" + tr("Nei cerchi: nodi medi · la freccia va dove va il vento", "In the circles: mean knots · the arrow points where the wind blows to") + "</span>";
+        '<span class="bc-leg-sep"></span>' +
+        "<span>" + tri + tr("Boe, partenza e arrivo (dalla mappa ufficiale)", "Marks, start and finish (from the official map)") + "</span>" +
+        "<span>" + cer + tr("Boe alternative 2BIS e 3BIS", "Alternative marks 2BIS and 3BIS") + "</span>" +
+        "<span>" + tr("Accanto a ogni lato: rotta × lunghezza", "Next to each leg: bearing × length") + "</span>" +
+        '<b class="bc-leg-tit">' + tr("Centraline", "Stations") + "</b>" +
+        "<span>" + staz("12", coloreKt(12), true) + tr("vento medio in nodi · la freccia va dove va il vento", "mean wind in knots · the arrow points where the wind blows to") + "</span>" +
+        "<span>" + staz("–", "#6b7780", false) + tr("offline o dato troppo vecchio", "offline or data too old") + "</span>" +
+        '<span class="bc-leg-sep"></span>' +
+        '<span><span class="bc-scala">' + FASCE.map((f, i) => '<em style="--c:' + f.c + '">' + fasce[i] + "</em>").join("") + "</span>" +
+        tr("colore dell'anello: forza del vento in nodi", "ring colour: wind strength in knots") + "</span>" +
+        "<span>" + tr("◀ Boa Paloma: chi è fuori mappa compare sul bordo", "◀ Paloma buoy: stations off the map are shown on the edge") + "</span>";
     }
 
     function countdown() {
