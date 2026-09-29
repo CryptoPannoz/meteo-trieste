@@ -3,8 +3,9 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { trieste, monteGrisa, muggia, grado, lignano, lignanoLive, cavazzo, preluka, antenal, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
+ * Endpoint: doGet -> { trieste, triesteFonte, monteGrisa, muggia, grado, lignano, lignanoLive, cavazzo, preluka, antenal, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
+ * trieste: righe a 15 min dalla Protezione Civile FVG (triesteFonte 'pcfvg'), orarie da vetercek se l'API è giù
  * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
  * gps: coordinate di ogni centralina (dal feed API, in parte stimate da vetercek)
  *
@@ -61,6 +62,15 @@ var LIGNANO_LIVE_URL = 'https://www.lignanosabbiadoro.com/meteo-lignano';
 // gradi (B), °C (T), mmHg (P). Se l'admin cambiasse le unità di default cambierebbe
 // anche il JSON: le sigle nelle chiavi restano uguali, i valori no.
 var CAVAZZO_URL = 'https://www.boranucleare.it/windstation/homepage/blocks/current/updater.php?interval=11';
+// Trieste molo a 15 minuti (set 2026). vetercek 'trst' ripubblica la stazione OSMER di
+// Trieste UNA volta all'ora: il dato arrivava vecchio fino a 60 minuti. La stessa
+// stazione (verificato: valori identici alle ore piene) esce ogni 15 minuti dall'API
+// pubblica della Protezione Civile FVG, stazione 212. Sensori: 5 direzione (°),
+// 6 velocità media (m/s), 7 raffica (m/s), 2 temperatura (°C). Orari in UTC.
+// Se l'API non risponde resta il dato orario di vetercek.
+var PCFVG_TRIESTE_URL = 'https://monitor.protezionecivile.fvg.it/api/stations/212/measures';
+var PCFVG_SENSORI = { dir: 5, vel: 6, raffica: 7, temp: 2 };
+var TRIESTE_RIGHE = 24;   // 6 ore a 15 minuti: la home mostra le ultime 6 ore
 var MAX_ROWS = 10;
 // NOTA (giu 2026): vetercek.com ha iniziato a bloccare le richieste senza User-Agent
 // da browser (la connessione resta appesa fino al timeout -> "Indirizzo non disponibile").
@@ -311,25 +321,35 @@ function salvaWarmStat(st) {
   try { PropertiesService.getScriptProperties().setProperty(WARM_PROP, JSON.stringify(st)); } catch (e) {}
 }
 
+/* Il trigger non deve MAI lanciare. 28 set 2026, 02:30: "We're sorry, a server error
+   occurred" — errore transitorio di Google (esecuzione appesa 60s, poi la mail di
+   "failure"). L'unico punto plausibile da cui poteva uscire era LockService, che stava
+   FUORI dal try: la ricostruzione vera e propria era già protetta. Ora ogni chiamata
+   ai servizi Google è dentro try/catch: al peggio salta un giro e la cache resta di
+   5 minuti più vecchia, il giro successivo la rinfresca. L'errore resta nel log
+   delle esecuzioni (console.warn), senza mail. */
 function riscaldaCache() {
-  var st = leggiWarmStat();
-  if (st.ms >= BUDGET_TRIGGER_MS) {          // budget quasi esaurito: una sì e una no
-    st.skip = !st.skip;
-    if (st.skip) { st.salti++; salvaWarmStat(st); return; }
-  }
-  var lock = LockService.getScriptLock();
-  if (!lock.tryLock(0)) return;              // una richiesta live sta già ricostruendo
-  var t0 = Date.now();
+  var st = null, lock = null, preso = false, t0 = Date.now();
   try {
+    st = leggiWarmStat();
+    if (st.ms >= BUDGET_TRIGGER_MS) {          // budget quasi esaurito: una sì e una no
+      st.skip = !st.skip;
+      if (st.skip) { st.salti++; salvaWarmStat(st); return; }
+    }
+    lock = LockService.getScriptLock();
+    preso = lock.tryLock(0);
+    if (!preso) return;                        // una richiesta live sta già ricostruendo
+    t0 = Date.now();
     aggiornaCacheDati(CacheService.getScriptCache());
   } catch (e) {
-    // il trigger non deve mai fallire rumorosamente: al peggio la cache resta vecchia
-    // e il primo visitatore la riceve comunque (stale-while-revalidate sopra).
+    console.warn('riscaldaCache: ' + e);
   } finally {
-    try { lock.releaseLock(); } catch (ignore) {}
-    st.ms += Date.now() - t0;
-    st.n++;
-    salvaWarmStat(st);
+    if (preso) { try { lock.releaseLock(); } catch (ignore) {} }
+    if (st && preso) {
+      st.ms += Date.now() - t0;
+      st.n++;
+      salvaWarmStat(st);
+    }
   }
 }
 
@@ -395,6 +415,14 @@ function buildData() {
   requests.push({ url: CAM_BARCOLA_URL, headers: { Range: 'bytes=0-0' }, muteHttpExceptions: true, followRedirects: true });
   // ultima+2: stazione Lago di Cavazzo (boranucleare.it)
   requests.push({ url: CAVAZZO_URL, muteHttpExceptions: true, followRedirects: true });
+  // in coda: Trieste molo a 15 minuti (Protezione Civile FVG), un sensore per richiesta
+  var iPcfvg = requests.length;
+  var daPcfvg = Utilities.formatDate(new Date(Date.now() - 6.5 * 3600000), 'UTC', 'yyyy-MM-dd HH:mm:ss');
+  var sensori = Object.keys(PCFVG_SENSORI);
+  sensori.forEach(function (s) {
+    requests.push({ url: PCFVG_TRIESTE_URL + '?sensor_id=' + PCFVG_SENSORI[s] + '&from=' + encodeURIComponent(daPcfvg),
+                    muteHttpExceptions: true, followRedirects: true });
+  });
 
   var responses = fetchAllResilient(requests);
 
@@ -480,6 +508,24 @@ function buildData() {
   } catch (e) {
     out.cavazzo = null;
     out.cavazzoError = String(e);
+  }
+
+  // Trieste molo: righe a 15 minuti se l'API PC FVG ha un dato recente, altrimenti
+  // restano quelle orarie di vetercek. triesteFonte dice al frontend quale soglia
+  // di "centralina ferma" usare (oraria = più larga).
+  out.triesteFonte = 'vetercek';
+  try {
+    var serie = {};
+    sensori.forEach(function (s, j) { serie[s] = JSON.parse(responses[iPcfvg + j].getContentText()); });
+    var righe = parsePcfvgRighe(serie, TRIESTE_RIGHE);   // [] se l'ultimo dato ha più di 90 min
+    if (righe.length) {
+      out.trieste = righe;
+      out.triesteFonte = 'pcfvg';
+      delete out.triesteError;
+      delete out.triesteHtmlError;
+    }
+  } catch (e) {
+    out.triestePcfvgError = String(e);
   }
 
   out.updated = new Date().toISOString();
@@ -759,6 +805,37 @@ function parseCavazzo(text) {
   };
   if (d.kt == null && d.sunki == null) throw new Error('nessun dato vento cavazzo');
   return d;
+}
+
+/* Serie PC FVG ({ dir, vel, raffica, temp } -> risposta API { measures:[{dt,value}] })
+   in righe formato vetercek, dalla più recente: { ora, direzione, kt, sunki, temp }.
+   dt è UTC ("2026-09-29 13:30:00"); ora in ora locale. Velocità m/s -> nodi. */
+var CARDINALI_16 = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+function parsePcfvgRighe(serie, max) {
+  var perDt = {};
+  Object.keys(serie).forEach(function (s) {
+    var m = (serie[s] && serie[s].measures) || [];
+    m.forEach(function (x) {
+      if (!x || !x.dt || typeof x.value !== 'number') return;
+      (perDt[x.dt] = perDt[x.dt] || {})[s] = x.value;
+    });
+  });
+  var dts = Object.keys(perDt).filter(function (dt) { return perDt[dt].vel != null; }).sort().reverse();
+  if (!dts.length) return [];
+  function quando(dt) { return new Date(String(dt).trim().replace(' ', 'T') + 'Z'); }
+  var ultimo = quando(dts[0]);
+  if (isNaN(ultimo) || Date.now() - ultimo.getTime() > 90 * 60000) return [];
+  function kt(v) { return v == null ? '-' : (Math.round(v * 1.94384 * 10) / 10).toFixed(1); }
+  return dts.slice(0, max).map(function (dt) {
+    var v = perDt[dt];
+    return {
+      ora: Utilities.formatDate(quando(dt), 'Europe/Rome', 'HH:mm'),
+      direzione: v.dir == null ? '-' : CARDINALI_16[Math.round(((v.dir % 360) + 360) % 360 / 22.5) % 16],
+      kt: kt(v.vel),
+      sunki: kt(v.raffica),
+      temp: v.temp == null ? '-' : (Math.round(v.temp * 10) / 10).toFixed(1)
+    };
+  });
 }
 
 function decodeEnt(s) {

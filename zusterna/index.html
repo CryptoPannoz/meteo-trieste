@@ -1420,6 +1420,7 @@
   </details>
 
   <!-- JS -->
+  <script src="/dati-live.js?v=20260929"></script>
   <script>
     // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
     const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
@@ -1902,7 +1903,7 @@
       const r0 = rows[0];
       /* Centralina ferma: vetercek lascia in tabella l'ultimo rilevamento anche per
          giorni. Senza avviso quel numero sembra il vento di adesso. */
-      const staleMin = 45;
+      const staleMin = 30;   // set 2026: era 45, un dato di 40 min fa non è "adesso"
       const eta = etaOraHHMM(r0.ora);
       const vecchio = !!(eta && eta.min > staleMin);
       // --- card vento principale (TWS grande + TWD + raffica) ---
@@ -2010,7 +2011,9 @@
     function renderDati(data) {
       ultimoPayload = data;
       renderOsmer(data.osmer);
-      vetercekGiu = ["monteGrisa", "muggia", "marinajulia"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
+      /* vetercek je res nedosegljiv le, ko hkrati molčita Monte Grisa in Muggia. Ena sama
+         ugasnjena postaja (Poreč, Rovinj, Savudrija od 24. 8. 2026) ne pomeni, da je vetercek down. */
+      vetercekGiu = ["monteGrisa", "muggia"].every(function (k) { return data[k + "Error"]; });
       renderStazione(data.monteGrisa, "grisa");
       renderStazione(data.muggia, "muggia");
       renderStazione(data.marinajulia, "marinajulia");
@@ -2019,27 +2022,15 @@
       aggiornaSurfometroAuto(data);
     }
 
-    /* fetch con retry: il primo colpo su Apps Script a freddo può fallire o
-       impiegare troppo; ritentiamo prima di dichiarare errore. */
-    function fetchDati(tentativi) {
-      return fetch(PROXY + "?ts=" + Date.now())
-        .then(res => {
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          return res.json();
-        })
-        .catch(err => {
-          if (tentativi > 0) {
-            return new Promise(r => setTimeout(r, 2500)).then(() => fetchDati(tentativi - 1));
-          }
-          throw err;
-        });
-    }
+    /* lettura del proxy: richieste a staffetta con timeout (vedi /dati-live.js),
+       cosi' un Apps Script lento o un 404 transitorio non bloccano l'aggiornamento */
+    function fetchDati() { return VTDati.fetch(); }
 
     let retryProgrammato = false;
     function caricaDati() {
       const btn = document.getElementById("btnAggiorna");
       btn.disabled = true;
-      return fetchDati(2)
+      return fetchDati()
         .then(data => {
           ultimoFetchOk = Date.now();
           renderDati(data);
@@ -2068,7 +2059,7 @@
           // nuovo tentativo automatico senza aspettare i 5 minuti dell'auto-refresh
           if (!retryProgrammato) {
             retryProgrammato = true;
-            setTimeout(() => { retryProgrammato = false; caricaDati(); }, 45000);
+            setTimeout(() => { retryProgrammato = false; caricaDati(); }, 15000);
           }
         })
         .finally(() => { btn.disabled = false; });

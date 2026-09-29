@@ -1539,7 +1539,7 @@
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
   <link rel="stylesheet" href="./footer-widgets.css?v=20260822-ux2" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
-  <script src="./mappa-golfo.js?v=20260822-ux1" defer></script>
+  <script src="./mappa-golfo.js?v=20260929" defer></script>
 </head>
 <body>
 
@@ -2223,6 +2223,7 @@
   </details>
 
   <!-- JS -->
+  <script src="/dati-live.js?v=20260929"></script>
   <script>
     // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
     const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
@@ -2415,8 +2416,11 @@
        Se anche Monte Grisa è ferma (agosto 2026: entrambe disattivate per giorni) il
        surfometro NON deve mostrare l'ultimo dato buono — che sembrerebbe attuale — ma
        dichiararsi offline. */
-    const BARCOLA_STALE_MIN = 45;   // dati più vecchi di così → centralina considerata ferma
-    const GRISA_STALE_MIN = 45;     // stessa soglia per il backup di Monte Grisa
+    /* set 2026: soglie strette. Barcola aggiorna ogni minuto e Monte Grisa ogni 5, il
+       proxy li rilegge ogni 5: un dato sano ha al massimo ~10 minuti. Oltre i 20 è una
+       centralina ferma, e un vento di 40 minuti fa mostrato come "adesso" è inutile. */
+    const BARCOLA_STALE_MIN = 20;   // dati più vecchi di così → centralina considerata ferma
+    const GRISA_STALE_MIN = 20;     // stessa soglia per il backup di Monte Grisa
     function barcolaMinutiFa(b) {
       if (!b || !b.datetime) return null;
       // "2026-07-17 09:37:02 CEST" → minuti trascorsi (ora locale italiana)
@@ -2501,11 +2505,14 @@
       if (Array.isArray(rows) && rows.length && rows[0].ora) return "Monte Grisa ore " + escHtml(rows[0].ora);
       return "";
     }
-    /* Terzo fallback: boa MAMBO1 (OGS), davanti al castello di Miramare. È oraria e pubblica con
-       ritardo, quindi la soglia è più larga delle centraline: 150 min = due cicli persi.
+    /* Terzo fallback: boa MAMBO1 (OGS), davanti al castello di Miramare. È oraria e pubblica
+       con 1-2 ore di ritardo. Fino a set 2026 la soglia era 150 min: il surfometro poteva
+       mostrare come vento attuale un dato di due ore prima. Ora 30 min, come le altre
+       fonti a 15 minuti: meglio "offline" che un numero vecchio. Oggi quindi entra in
+       gioco solo se OGS pubblica in orario.
        Il dato arriva da caricaMambo (fetch ERDDAP separato dal proxy), che dopo ogni
        aggiornamento rilancia aggiornaSurfometroAuto. */
-    const MAMBO_STALE_MIN = 150;
+    const MAMBO_STALE_MIN = 30;
     function mamboTws() {
       const m = window.__mamboSurf;
       if (!m || m.avg == null || isNaN(m.avg)) return null;
@@ -2691,6 +2698,7 @@
           if (meteo) {
             // stessa rilevazione anche sulla mappa del vento (beta)
             window.__mappaMambo = {
+              t: new Date(meteo.time),
               kt: meteo.WSPD * MS_IN_KT,
               raffica: (meteo.GSPD != null) ? meteo.GSPD * MS_IN_KT : NaN,
               deg: (typeof meteo.WDIR === "number") ? meteo.WDIR : null,
@@ -2990,7 +2998,7 @@
     }
 
     const cacheStazione = {};     // ultimi dati validi per stazione (se un refresh torna vuoto, li riusiamo)
-    function renderStazione(rows, prefix, winMin) {
+    function renderStazione(rows, prefix, winMin, oraria) {
       let stale = false;
       if (!Array.isArray(rows) || !rows.length) {
         if (cacheStazione[prefix]) { rows = cacheStazione[prefix]; stale = true; }
@@ -3002,8 +3010,9 @@
       const r0 = rows[0];
       /* Centralina ferma: vetercek lascia in tabella l'ultimo rilevamento anche per
          giorni. Senza avviso quel numero sembra il vento di adesso — stessa regola del
-         surfometro. Trieste è oraria, quindi ha una soglia più larga. */
-      const staleMin = (winMin && winMin >= 120) ? 120 : 45;
+         surfometro. Solo una fonte oraria (Trieste da vetercek, se l'API della
+         Protezione Civile è giù) ha una soglia più larga. */
+      const staleMin = oraria ? 120 : 30;
       const eta = etaOraHHMM(r0.ora);
       const vecchio = !!(eta && eta.min > staleMin);
       // --- card vento principale (TWS grande + TWD + raffica) ---
@@ -3041,7 +3050,8 @@
           ? "⚠️ Centralina non in linea: l'ultimo dato è delle " + escHtml(ora) + " (" + etaTesto(eta.min) + "), non rappresenta il vento attuale"
           : stale
           ? "⚠️ Ultimo dato disponibile" + (ora ? " (" + escHtml(ora) + ")" : "") + ", in attesa di aggiornamento"
-          : "Fonte: vetercek.com · " + finestraTxt + (ora ? " · agg. " + escHtml(ora) : ""))
+          : (prefix === "trieste" && !oraria ? "Fonte: Protezione Civile FVG (stazione OSMER, ogni 15 min)" : "Fonte: vetercek.com")
+            + " · " + finestraTxt + (ora ? " · agg. " + escHtml(ora) : ""))
           + gpsLinkHtml(prefix);
       }
     }
@@ -3116,8 +3126,12 @@
       ultimoPayload = data;
       renderOsmer(data.osmer);
       window.__gps = data.gps || {};   // coordinate centraline (dal feed API vetercek)
-      vetercekGiu = ["trieste", "monteGrisa", "muggia", "marinajulia", "grado"].concat(SPOT_ISTRIA).some(function (k) { return data[k + "Error"]; });
-      renderStazione(data.trieste, "trieste", 360);   // stazione oraria: finestra 6h, non 45 min
+      /* vetercek davvero giù = tacciono insieme Monte Grisa e Muggia, che sono sempre in linea.
+         Una singola stazione spenta (Poreč, Rovinj e Savudrija ferme dal 24 ago 2026) non è
+         "vetercek non raggiungibile": prima bastava lei per mostrare l'avviso su tutta la pagina. */
+      vetercekGiu = ["monteGrisa", "muggia"].every(function (k) { return data[k + "Error"]; });
+      // Trieste: finestra 6h. Dato a 15 min dalla Protezione Civile FVG; orario (vetercek) solo se quella fonte è giù
+      renderStazione(data.trieste, "trieste", 360, data.triesteFonte !== "pcfvg");
       renderStazione(data.monteGrisa, "grisa");
       renderStazione(data.muggia, "muggia");
       renderStazione(data.marinajulia, "marinajulia");
@@ -3131,43 +3145,15 @@
       if (window.MappaGolfo) MappaGolfo.render(data);
     }
 
-    /* fetch con timeout + retry: il primo colpo su Apps Script a freddo può fallire o
-       impiegare troppo. Il timeout (AbortController) evita che il browser resti appeso
-       per decine di secondi se il proxy è lento: meglio fallire in fretta e riprovare /
-       mostrare la cache. Un solo retry: più tentativi moltiplicherebbero il carico sul
-       proxy (e sulla quota UrlFetch di Apps Script). */
-    function fetchConTimeout(url, ms) {
-      if (!("AbortController" in window)) return fetch(url);
-      const ac = new AbortController();
-      const t = setTimeout(() => ac.abort(), ms);
-      return fetch(url, { signal: ac.signal }).finally(() => clearTimeout(t));
-    }
-    /* Timeout tarati sui tempi veri del proxy (misurati ago 2026): risposta da cache
-       ~1,5s, ricostruzione del payload ~16s, avvio a container freddo fino a ~26s.
-       Il vecchio timeout unico di 15s tagliava proprio il caso peggiore — e lo tagliava
-       a chi arrivava da un browser nuovo, senza cache in localStorage da mostrare al
-       suo posto: risultato "Dati non disponibili" alla prima visita. Primo tentativo
-       generoso (28s), retry corto (12s): a quel punto il container è caldo, se non
-       risponde è giù davvero e tanto vale passare alla cache. */
-    function fetchDati(tentativi) {
-      return fetchConTimeout(PROXY + "?ts=" + Date.now(), tentativi > 0 ? 28000 : 12000)
-        .then(res => {
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          return res.json();
-        })
-        .catch(err => {
-          if (tentativi > 0) {
-            return new Promise(r => setTimeout(r, 3000)).then(() => fetchDati(tentativi - 1));
-          }
-          throw err;
-        });
-    }
+    /* lettura del proxy: richieste a staffetta con timeout (vedi /dati-live.js),
+       cosi' un Apps Script lento o un 404 transitorio non bloccano l'aggiornamento */
+    function fetchDati() { return VTDati.fetch(); }
 
     let retryProgrammato = false;
     function caricaDati() {
       const btn = document.getElementById("btnAggiorna");
       btn.disabled = true;
-      return fetchDati(1)
+      return fetchDati()
         .then(data => {
           ultimoFetchOk = Date.now();
           renderDati(data);
@@ -3613,7 +3599,7 @@
     if (cacheAvvio) {
       renderDati(cacheAvvio.data);
       document.getElementById("ultimoAggiornamento").textContent =
-        "Dati delle " + new Date(cacheAvvio.t).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) + " · aggiornamento in corso…";
+        "⏳ Ultimi dati delle " + new Date(cacheAvvio.t).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) + " (" + VTDati.etaTesto(cacheAvvio.t) + ") · aggiornamento in corso…";
       nascondiLoader();
     } else {
       // browser nuovo, nessuna cache da mostrare: l'overlay sparisce dopo 8s ma i dati

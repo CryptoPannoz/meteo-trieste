@@ -32,6 +32,9 @@
     { id: "marinajulia", nome: "Marina Julia", lon: 13.565, lat: 45.782, lato: "sinistra" },
     { id: "monteGrisa",  nome: "Monte Grisa",  lon: 13.757, lat: 45.712, lato: "destra"   },
     { id: "barcola",     nome: "Barcola",      lon: 13.754, lat: 45.680, lato: "destra", dy: 16, tipo: "barcola" },
+    /* Trieste molo F.lli Bandiera: stazione OSMER, dal set 2026 a 15 minuti (Protezione
+       Civile FVG via proxy). Prima era oraria da vetercek, per questo non era in mappa. */
+    { id: "trieste",     nome: "Trieste molo", lon: 13.7506, lat: 45.6368, lato: "destra" },
     /* posizione reale 13.708/45.698 (davanti al castello di Miramare), spostata
        un po' al largo per non accavallarsi al gruppo Monte Grisa/Barcola */
     { id: "mambo",       nome: "Boa Mambo",    lon: 13.660, lat: 45.685, lato: "sopra",    tipo: "mambo" },
@@ -83,17 +86,23 @@
     return Math.max(eta, 0);
   }
 
+  /* Età massima di un dato in mappa (set 2026, era 45). Le stazioni più lente
+     pubblicano ogni 15 minuti e il proxy le rilegge ogni 5: un dato sano ha al
+     massimo ~25 minuti. Oltre è una centralina ferma o una boa in ritardo. */
+  var ETA_MAX = 30;
+
   /* dati normalizzati { kt, raffica, deg, ora } oppure null (centralina offline) */
   function normalizza(st, data) {
     var d = data[st.id];
     if (st.tipo === "barcola") {
       if (!d || d.wind_avg == null) return null;
-      /* la centralina di Barcola ogni tanto si ferma: dati piu' vecchi di 45
-         minuti (o piatti a zero = disattivata) -> punto spento */
+      /* la centralina di Barcola ogni tanto si ferma: dati piu' vecchi di 20
+         minuti (aggiorna ogni minuto, il proxy ogni 5) o piatti a zero = disattivata
+         -> punto spento */
       var m = String(d.datetime || "").match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
       if (m) {
         var eta = (Date.now() - new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]).getTime()) / 60000;
-        if (eta > 45) return null;
+        if (eta > 20) return null;
       }
       var avg = parseFloat(d.wind_avg), max = parseFloat(d.wind_max);
       if (avg === 0 && (isNaN(max) || max === 0)) return null;
@@ -103,6 +112,7 @@
     }
     if (st.tipo === "piran") {
       if (!d || d.wind == null) return null;
+      if (d.time && etaMinuti((d.time.split(" ")[1] || "").slice(0, 5)) > ETA_MAX) return null;
       return { kt: d.wind * MS_IN_KT, raffica: (d.gust != null) ? d.gust * MS_IN_KT : NaN,
         deg: (typeof d.dir === "number") ? d.dir : null,
         ora: d.time ? (d.time.split(" ")[1] || "").slice(0, 5) : "" };
@@ -110,9 +120,9 @@
     if (!Array.isArray(d) || !d.length) return null;
     var r0 = d[0];
     /* stessa regola di Barcola: le righe vetercek portano solo "HH:MM" e restano in
-       tabella anche a centralina spenta. Oltre 45 minuti -> punto spento, non un
+       tabella anche a centralina spenta. Oltre ETA_MAX minuti -> punto spento, non un
        vento vecchio disegnato come se fosse quello di adesso */
-    if (etaMinuti(r0.ora) > 45) return null;
+    if (etaMinuti(r0.ora) > ETA_MAX) return null;
     var deg = GRADI_CARDINALE[(r0.direzione || "").toUpperCase().trim()];
     return { kt: parseFloat(r0.kt), raffica: parseFloat(r0.sunki),
       deg: (deg === undefined) ? null : deg, ora: r0.ora || "" };
@@ -362,8 +372,11 @@
   }
   var invitoFatto = false;
 
+  /* v.t = istante della misura: la boa pubblica un dato all'ora con 1-2 ore di
+     ritardo, e un vento di due ore fa non va disegnato come attuale */
   function mambo(v) {
     if (!gMambo) return;
+    if (v && v.t instanceof Date && (Date.now() - v.t.getTime()) / 60000 > ETA_MAX) v = null;
     gMambo.innerHTML = "";
     var st = STAZIONI.filter(function (s) { return s.tipo === "mambo"; })[0];
     if (!st || escluso(st)) return;
@@ -394,10 +407,10 @@
           if ([5, 6, 7].indexOf(m.sensor_id) !== -1 && (!dt || m.dt > dt)) dt = m.dt;
         });
         if (per[6] == null) { paloma(null); return; }
-        // dt UTC → eta' reale; oltre 45 min (3 cicli persi) il punto si spegne
+        // dt UTC → eta' reale; oltre ETA_MAX (un ciclo da 15 min perso) il punto si spegne
         var d = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(String(dt || "").trim())
           ? new Date(String(dt).trim().replace(" ", "T") + "Z") : null;
-        if (!d || isNaN(d) || (Date.now() - d.getTime()) / 60000 > 45) { paloma(null); return; }
+        if (!d || isNaN(d) || (Date.now() - d.getTime()) / 60000 > ETA_MAX) { paloma(null); return; }
         paloma({ kt: per[6] * MS_IN_KT,
           raffica: (per[7] != null) ? per[7] * MS_IN_KT : NaN,
           deg: (typeof per[5] === "number") ? per[5] : null,
@@ -422,7 +435,7 @@
         var m = rows.pop();
         if (!m) return;
         var d = new Date(m.time);
-        mambo({ kt: m.WSPD * MS_IN_KT,
+        mambo({ t: d, kt: m.WSPD * MS_IN_KT,
           raffica: (m.GSPD != null) ? m.GSPD * MS_IN_KT : NaN,
           deg: (typeof m.WDIR === "number") ? m.WDIR : null,
           ora: isNaN(d) ? "" : d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) });

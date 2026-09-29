@@ -9,6 +9,10 @@ Web app che espone come JSON per `index.html`:
   vedi il commento nel codice); le pagine
   HTML `/danes/` servono solo per lo storico (tabella + trend). Il feed dà anche le
   coordinate delle stazioni, esposte nel payload come `gps`.
+- **Trieste molo** ogni 15 minuti dall'API pubblica della [Protezione Civile FVG](https://monitor.protezionecivile.fvg.it/)
+  (stazione OSMER 212, sensori 5/6/7/2; da set 2026, v45). vetercek pubblica la stessa stazione
+  solo una volta all'ora: resta come riserva se l'API non risponde (`triesteFonte` nel payload
+  dice quale fonte è stata usata: `pcfvg` o `vetercek`).
 - stazione **Terrapieno di Barcola** da Windguru (stazione 5307; l'API `iapi.php`
   accetta solo richieste con Referer windguru.cz, che il browser non può impostare)
 - stazione meteo **spiaggia di Lignano** da [lignanosabbiadoro.com/meteo-lignano](https://www.lignanosabbiadoro.com/meteo-lignano)
@@ -71,6 +75,18 @@ trigger consumati ed età della cache in secondi.
 ```
 
 `triggerAttivo: false` a giornata avviata = il trigger non è installato.
+
+Il trigger non lancia mai eccezioni (v45): gli errori transitori di Google ("We're sorry, a
+server error occurred", 28 set 2026) finiscono nel log delle esecuzioni con `console.warn`,
+senza mail di "failure". Al peggio salta un giro e la cache resta di 5 minuti più vecchia.
+
+## Latenza e frontend
+
+Anche con la cache pronta, Apps Script risponde in modo irregolare: misurato il 29 set 2026
+su 10 richieste, da 2 a 18 secondi, e 2 finite con una pagina HTML 404 dopo 11 e 39 secondi.
+Per questo tutte le pagine leggono il proxy tramite [`/dati-live.js`](../dati-live.js):
+richieste "a staffetta" (la seconda parte a 3s, la terza a 7s, vince la prima risposta JSON
+valida, timeout 30s). Non costa quota: il proxy serve la copia in cache.
 
 ## Risposta JSON
 

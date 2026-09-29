@@ -1056,6 +1056,7 @@
   </main>
 
   <!-- JS -->
+  <script src="/dati-live.js?v=20260929"></script>
   <script>
     // Endpoint Apps Script del progetto (cartella apps-script/ nel repo): il campo
     // "cavazzo" arriva dalla stazione boranucleare.it (niente CORS -> serve il proxy).
@@ -1240,27 +1241,15 @@
       return null;
     }
 
-    /* fetch con retry: il primo colpo su Apps Script a freddo può fallire o
-       impiegare troppo; ritentiamo prima di dichiarare errore. */
-    function fetchDati(tentativi) {
-      return fetch(PROXY + "?ts=" + Date.now())
-        .then(res => {
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          return res.json();
-        })
-        .catch(err => {
-          if (tentativi > 0) {
-            return new Promise(r => setTimeout(r, 2500)).then(() => fetchDati(tentativi - 1));
-          }
-          throw err;
-        });
-    }
+    /* lettura del proxy: richieste a staffetta con timeout (vedi /dati-live.js),
+       cosi' un Apps Script lento o un 404 transitorio non bloccano l'aggiornamento */
+    function fetchDati() { return VTDati.fetch(); }
 
     let retryProgrammato = false;
     function caricaDati() {
       const btn = document.getElementById("btnAggiorna");
       btn.disabled = true;
-      return fetchDati(2)
+      return fetchDati()
         .then(data => {
           renderCavazzo(data);
           salvaCacheDati(data);
@@ -1281,7 +1270,7 @@
           }
           if (!retryProgrammato) {
             retryProgrammato = true;
-            setTimeout(() => { retryProgrammato = false; caricaDati(); }, 45000);
+            setTimeout(() => { retryProgrammato = false; caricaDati(); }, 15000);
           }
         })
         .finally(() => { btn.disabled = false; });

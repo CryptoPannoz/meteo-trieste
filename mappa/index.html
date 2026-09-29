@@ -45,7 +45,7 @@
     {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Mappa vento","item":"https://ventotrieste.info/mappa/"}]}
   ]}
   </script>
-  <script src="/mappa-golfo.js?v=20260822-ux1" defer></script>
+  <script src="/mappa-golfo.js?v=20260929" defer></script>
 </head>
 <body>
   <header class="topbar"><a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a><nav class="toplinks" aria-label="Navigazione"><a href="/">Vento ora</a><a href="/spot/">Spot</a><a href="/bora-trieste/">Bora</a></nav></header>
@@ -59,37 +59,46 @@
       </section>
       <aside class="map-copy">
         <h2>Come si legge</h2><p>La freccia indica dove va il vento. Il numero nel punto è l'intensità media in nodi; colore e legenda identificano subito la fascia. Toccando il simbolo si apre il dettaglio con raffica, provenienza e aggiornamento.</p>
-        <h3>Dati non mostrati</h3><p>Una centralina ferma o troppo vecchia viene nascosta per non presentare come attuale una misura non aggiornata.</p>
+        <h3>Dati non mostrati</h3><p>Una centralina ferma o con un dato di più di 30 minuti viene nascosta per non presentare come attuale una misura non aggiornata.</p>
         <h3>Per approfondire</h3><ul><li><a href="/come-leggere-surfometro/">Media, raffica e direzione</a></li><li><a href="/bora-trieste/">Come leggere la Bora</a></li><li><a href="/modelli-vento-trieste/">Confrontare i modelli</a></li></ul>
         <p class="source-note">Dati: Vetercek, Barcola, OGS MAMBO1, Protezione Civile FVG, NIB Vida e altre fonti locali. Costa © OpenStreetMap contributors. Aggiornamento automatico ogni 5 minuti.</p>
       </aside>
     </div>
   </main>
   <footer class="page-footer"><nav><a href="/">Vento Trieste</a><a href="/spot/">Spot</a><a href="/bora-trieste/">Guida alla Bora</a></nav>Dati live e fonti attribuite · ventotrieste.info</footer>
+  <script src="/dati-live.js?v=20260929"></script>
   <script>
     "use strict";
-    var PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
-    function caricaMappa(retry) {
+    /* Lettura del proxy con richieste a staffetta e timeout (vedi /dati-live.js): il
+       tasto Aggiorna non resta più appeso decine di secondi se Apps Script è lento. */
+    var ultimoOk = 0;
+    function caricaMappa() {
       var btn = document.getElementById("btnAggiorna");
       var stato = document.getElementById("statoMappa");
       btn.disabled = true;
-      fetch(PROXY + "?ts=" + Date.now())
-        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      stato.textContent = "Aggiornamento in corso…";
+      return VTDati.fetch()
         .then(function (data) {
+          ultimoOk = Date.now();
           MappaGolfo.render(data);
           stato.textContent = "Aggiornato alle " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
         })
         .catch(function () {
-          if (retry) { setTimeout(function () { caricaMappa(false); }, 4000); return; }
-          stato.textContent = "⚠️ Servizio dati non raggiungibile, riprova tra poco.";
+          stato.textContent = "⚠️ Servizio dati lento, riprovo tra 15 secondi…";
+          setTimeout(caricaMappa, 15000);
         })
         .finally(function () { btn.disabled = false; });
     }
+    function aggiornaTutto() { caricaMappa(); MappaGolfo.caricaMambo(); MappaGolfo.caricaPaloma(); }
     window.addEventListener("DOMContentLoaded", function () {
-      caricaMappa(true);
+      caricaMappa();
       MappaGolfo.caricaMambo();
-      document.getElementById("btnAggiorna").addEventListener("click", function () { caricaMappa(false); });
-      setInterval(function () { if (!document.hidden) { caricaMappa(false); MappaGolfo.caricaMambo(); } }, 5 * 60 * 1000);
+      document.getElementById("btnAggiorna").addEventListener("click", aggiornaTutto);
+      setInterval(function () { if (!document.hidden) aggiornaTutto(); }, 5 * 60 * 1000);
+      // tab riaperta (telefono in tasca): i timer erano fermi, riscarico subito
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden && Date.now() - ultimoOk > 60 * 1000) aggiornaTutto();
+      });
     });
   </script>
 </body>
