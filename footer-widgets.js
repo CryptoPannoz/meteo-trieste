@@ -348,7 +348,7 @@
     supportKicker: "Neodvisen projekt", supportTitle: "Pomagaj, da Vento Trieste ostane brezplačen",
     supportText: "Podatki v živo, napovedi in vzdrževanje ostajajo dostopni vsem. Če ti je storitev uporabna, lahko podpreš njeno prihodnost.",
     supportCta: "Plačaj mi pivo", supportMethods: "Prostovoljni prispevek · PayPal, Revolut ali Bitcoin",
-    supporters: "Podporniki projekta", supporterCount: "podpornikov",
+    supporters: "Podporniki projekta",
     partners: "Partnerji in reference", partnersText: "Ljudje in ustanove, ki širijo kulturo vetra in deljenje podatkov.",
     dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri",
     guides: "Vodniki in orodja"
@@ -360,7 +360,7 @@
     supportKicker: "Progetto indipendente", supportTitle: "Aiuta Vento Trieste a restare gratuito",
     supportText: "Dati live, previsioni e manutenzione restano accessibili a tutti. Se il servizio ti è utile, puoi contribuire al suo futuro.",
     supportCta: "Offrimi una birra", supportMethods: "Donazione libera · PayPal, Revolut o Bitcoin",
-    supporters: "Chi sostiene il progetto", supporterCount: "sostenitori",
+    supporters: "Chi sostiene il progetto",
     partners: "Partner e riferimenti", partnersText: "Persone e realtà che valorizzano la cultura del vento e la condivisione dei dati.",
     dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali",
     guides: "Guide e strumenti"
@@ -445,8 +445,7 @@
       '<p>' + t.supportText + '</p><a class="dona-btn support-primary" href="#" id="footerSupportButton">' +
       '<span aria-hidden="true">♥</span><span>' + t.supportCta + '</span><span aria-hidden="true">→</span></a>' +
       '<span class="support-methods">' + t.supportMethods + '</span></div>' +
-      '<div class="supporters"><div class="supporters-heading"><h3>' + t.supporters + '</h3>' +
-      '<span class="supporter-total"><strong>' + supporters.length + '</strong> ' + t.supporterCount + '</span></div>' +
+      '<div class="supporters"><div class="supporters-heading"><h3>' + t.supporters + '</h3></div>' +
       '<div class="supporters-marquee" tabindex="0" aria-label="' + t.supporters + ': ' + supporters.join(', ') + '">' +
       '<div class="supporters-track"><div class="supporters-group">' + supporterNames + '</div>' +
       '<div class="supporters-group" aria-hidden="true">' + supporterNames + '</div></div></div></div>' +
