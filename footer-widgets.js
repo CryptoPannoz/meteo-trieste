@@ -431,9 +431,14 @@
     return '<a class="partner-card" href="' + partner.url + '" target="_blank" rel="noopener">' +
       '<span class="partner-mark" aria-hidden="true">↗</span><span><strong>' + partner.name + '</strong><small>' + partner.detail + '</small></span></a>';
   }).join("");
+  /* data-senza="visitatori richiesta" sul contenitore toglie quei box dalla pagina
+     (pagina Barcolana); senza l'attributo restano tutti. */
+  var senza = (root.dataset.senza || "").split(/\s+/);
+  var conVisitatori = senza.indexOf("visitatori") < 0;
+  var conRichiesta = senza.indexOf("richiesta") < 0;
   root.innerHTML =
-    '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' +
-    '<section class="footer-widget footer-request" aria-labelledby="footerRequestTitle"><h2 id="footerRequestTitle">💬 ' + t.request + '</h2><form id="footerRequestForm"><label class="visually-hidden" for="footerRequestType">' + t.request + '</label><select id="footerRequestType"><option>' + t.modify + '</option><option>' + t.integrate + '</option><option>' + t.problem + '</option><option>' + t.other + '</option></select><label class="visually-hidden" for="footerRequestText">' + t.placeholder + '</label><textarea id="footerRequestText" required maxlength="1500" placeholder="' + t.placeholder + '"></textarea><button class="dona-btn" type="submit">' + t.send + '</button></form><p class="stato">' + t.note + '</p></section>' +
+    (conVisitatori ? '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' : '') +
+    (conRichiesta ? '<section class="footer-widget footer-request" aria-labelledby="footerRequestTitle"><h2 id="footerRequestTitle">💬 ' + t.request + '</h2><form id="footerRequestForm"><label class="visually-hidden" for="footerRequestType">' + t.request + '</label><select id="footerRequestType"><option>' + t.modify + '</option><option>' + t.integrate + '</option><option>' + t.problem + '</option><option>' + t.other + '</option></select><label class="visually-hidden" for="footerRequestText">' + t.placeholder + '</label><textarea id="footerRequestText" required maxlength="1500" placeholder="' + t.placeholder + '"></textarea><button class="dona-btn" type="submit">' + t.send + '</button></form><p class="stato">' + t.note + '</p></section>' : '') +
     '<section class="footer-widget support-widget" aria-labelledby="footerSupportTitle">' +
       '<div class="support-hero"><span class="support-kicker">' + t.supportKicker + '</span>' +
       '<span class="support-symbol" aria-hidden="true">🍺</span><h2 id="footerSupportTitle">' + t.supportTitle + '</h2>' +
@@ -451,11 +456,11 @@
       '<h4>' + t.localSources + '</h4><div class="source-pills">' + sourcePills(localSources) + '</div></div>' +
     '</section>';
 
-  fetch(proxy + "?views=1&ts=" + Date.now()).then(function (r) { return r.json(); }).then(function (v) {
+  if (conVisitatori) fetch(proxy + "?views=1&ts=" + Date.now()).then(function (r) { return r.json(); }).then(function (v) {
     if (v && v.total != null) document.getElementById("footerVisitorTotal").textContent = Number(v.total).toLocaleString(sl ? "sl-SI" : "it-IT");
   }).catch(function () {});
 
-  document.getElementById("footerRequestForm").addEventListener("submit", function (e) {
+  if (conRichiesta) document.getElementById("footerRequestForm").addEventListener("submit", function (e) {
     e.preventDefault();
     var type = document.getElementById("footerRequestType").value;
     var msg = document.getElementById("footerRequestText").value.trim();
@@ -490,11 +495,14 @@
       var panel = stage.querySelector('[data-wg-panel="' + uid + '"]');
       if (panel) return;
 
+      /* Senza data-wg-lang segue la lingua della pagina (Barcolana: IT/EN). */
+      var lang = button.dataset.wgLang || (document.documentElement.lang === "en" ? "en" : "it");
+      var en = lang === "en";
       panel = document.createElement("div");
       panel.className = "windguru-panel";
       panel.dataset.wgPanel = uid;
       panel.setAttribute("role", "tabpanel");
-      panel.innerHTML = '<p class="windguru-loading" role="status">Carico il modello…</p>';
+      panel.innerHTML = '<p class="windguru-loading" role="status">' + (en ? "Loading model…" : "Carico il modello…") + '</p>';
       stage.appendChild(panel);
 
       var marker = document.createElement("script");
@@ -506,7 +514,7 @@
         "uid=" + uid,
         "wj=knots", "tj=c", "waj=m", "tij=cm", "odh=0", "doh=24",
         "fhours=240", "hrsm=2", "vt=forecasts",
-        "lng=" + (button.dataset.wgLang || "it"),
+        "lng=" + lang,
         "p=WINDSPD,GUST,MWINDSPD,SMER,TMP,CDC,APCP1s"
       ];
       var loader = document.createElement("script");
@@ -517,7 +525,7 @@
         if (loading) loading.remove();
       };
       loader.onerror = function () {
-        panel.innerHTML = '<p class="windguru-error">⚠️ Modello non disponibile. Riprova tra poco.</p>';
+        panel.innerHTML = '<p class="windguru-error">⚠️ ' + (en ? "Model unavailable. Try again shortly." : "Modello non disponibile. Riprova tra poco.") + '</p>';
       };
       marker.parentNode.insertBefore(loader, marker);
     }
@@ -539,6 +547,19 @@
         stage.dataset.started = "1";
         load(first);
       }
+    } else if ("IntersectionObserver" in window) {
+      /* Box fuori da un <details> (pagina Barcolana): il primo modello parte
+         quando il box si avvicina allo schermo, non al caricamento della pagina. */
+      var observer = new IntersectionObserver(function (entries) {
+        if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+        observer.disconnect();
+        stage.dataset.started = "1";
+        load(first);
+      }, { rootMargin: "300px 0px" });
+      observer.observe(section);
+    } else {
+      stage.dataset.started = "1";
+      load(first);
     }
   });
 
