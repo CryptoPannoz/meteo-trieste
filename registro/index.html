@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it" data-lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro del vento – Golfo di Trieste, ogni 15 minuti</title>
+  <meta name="description" content="Registro del vento nel Golfo di Trieste dalle 8 alle 18, un valore ogni 15 minuti: Barcola, Trieste molo, Muggia, boa Paloma, Monte Grisa e boa Mambo, con la media sul campo della Barcolana. Giorni passati e download CSV." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://ventotrieste.info/registro/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content="Registro del vento – Golfo di Trieste" />
+  <meta property="og:description" content="Dalle 8 alle 18, un valore ogni 15 minuti per le centraline del Golfo. Scegli il giorno e scarica il CSV." />
+  <meta property="og:url" content="https://ventotrieste.info/registro/" />
+  <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
+  <meta property="og:image:width" content="1080" />
+  <meta property="og:image:height" content="719" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/guide.css?v=20260815-seo1" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E📋%3C/text%3E%3C/svg%3E" />
+  <style>
+    .reg-card { margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow); }
+    .reg-card h2 { margin: 0 0 .4rem; font-size: 1.1rem; }
+    .reg-copy { margin-top: 1.25rem; padding: 1.15rem; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: 0 9px 28px rgba(24,51,60,.07); }
+    .reg-copy h2 { margin: 0 0 .55rem; font-size: 1.1rem; }
+    .reg-copy h3 { margin: 1.1rem 0 .35rem; font-size: .9rem; }
+    .reg-copy p, .reg-copy li { color: #405461; font-size: .82rem; }
+    .reg-copy ul { padding-left: 1.1rem; }
+  </style>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"WebPage","name":"Registro del vento – Golfo di Trieste","url":"https://ventotrieste.info/registro/","description":"Registro del vento dalle 8 alle 18, un valore ogni 15 minuti per le centraline del Golfo di Trieste.","inLanguage":"it-IT","isPartOf":{"@type":"WebSite","name":"Vento Trieste","url":"https://ventotrieste.info/"}},
+    {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Registro del vento","item":"https://ventotrieste.info/registro/"}]}
+  ]}
+  </script>
+  <script src="/registro-vento.js?v=20261001"></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a><nav class="toplinks" aria-label="Navigazione"><a href="/">Vento ora</a><a href="/mappa/">Mappa live</a><a href="/spot/">Spot</a></nav></header>
+  <main>
+    <nav class="breadcrumbs" aria-label="Percorso"><a href="/">Home</a> / Registro del vento</nav>
+    <header class="hero-guide"><span class="kicker">Storico</span><h1>Registro del vento</h1><p class="lead">Com'è andato il vento nel Golfo, quarto d'ora per quarto d'ora: dalle 8 alle 18, vento medio, raffica massima e direzione per ogni centralina. Scegli il giorno e scarica il CSV.</p></header>
+
+    <section class="reg-card" aria-label="Registro del vento">
+      <h2>Dalle 8 alle 18, ogni 15 minuti</h2>
+      <div id="registroVento"></div>
+    </section>
+
+    <section class="reg-copy">
+      <h2>Come si legge</h2>
+      <p>Ogni casella riassume i 15 minuti che finiscono a quell'ora: il numero grande è il <strong>vento medio</strong> in nodi, quello piccolo la <strong>raffica massima</strong>, la freccia indica <strong>dove va</strong> il vento e la sigla <strong>da dove viene</strong>. Le caselle colorate segnano il vento da 8 nodi in su.</p>
+      <h3>Media in golfo</h3>
+      <p>La prima colonna è una stima del vento al centro del golfo, sul campo di regata della Barcolana: la media delle centraline a mare (Barcola, Trieste molo, Muggia, boa Paloma), pesata sulla distanza. Monte Grisa è in quota e non entra nella media.</p>
+      <h3>Giorni passati</h3>
+      <p>Barcola, Trieste molo, Muggia, Paloma e Mambo hanno lo storico anche per i giorni passati. Monte Grisa la registriamo noi dal 30 settembre 2026: prima di quella data la colonna resta vuota.</p>
+      <h3>Per approfondire</h3>
+      <ul><li><a href="/mappa/">Mappa del vento in tempo reale</a></li><li><a href="/come-leggere-surfometro/">Media, raffica e direzione</a></li><li><a href="/barcolana2026/">Il vento sul percorso della Barcolana</a></li></ul>
+    </section>
+  </main>
+  <footer class="page-footer"><nav><a href="/">Vento Trieste</a><a href="/mappa/">Mappa live</a><a href="/spot/">Spot</a></nav>Dati live e fonti attribuite · ventotrieste.info</footer>
+  <script>
+    // il registro di oggi si riempie dalle 8; si apre subito su oggi
+    RegistroVento.monta(document.getElementById("registroVento"), { nomeCampo: ["Media in golfo", "Gulf average"] });
+  </script>
+  <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
+  <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script src="/eventi.js?v=20261001" defer></script>
+</body>
+</html>

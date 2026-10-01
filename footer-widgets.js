@@ -399,12 +399,14 @@
   ];
   var guides = sl ? [
     { name: "Zemljevid vetra", url: "/mappa/" },
+    { name: "Dnevnik vetra", url: "/registro/" },
     { name: "Burja v Trstu", url: "/bora-trieste/" },
     { name: "Kako brati surfometer", url: "/come-leggere-surfometro/" },
     { name: "Modeli vetra", url: "/modelli-vento-trieste/" },
     { name: "Spoti v zalivu", url: "/spot/" }
   ] : [
     { name: "Mappa vento live", url: "/mappa/" },
+    { name: "Registro del vento", url: "/registro/" },
     { name: "Guida alla Bora", url: "/bora-trieste/" },
     { name: "Come leggere il surfometro", url: "/come-leggere-surfometro/" },
     { name: "Modelli vento", url: "/modelli-vento-trieste/" },
