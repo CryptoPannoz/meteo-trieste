@@ -1072,7 +1072,7 @@
   <div class="section" id="osmer">
     <h2>Opisna napoved – OSMER FVG</h2>
     <div id="osmerBollettino"><p class="stato">Nalaganje…</p></div>
-    <p class="stato">Vir: <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">OSMER – Arpa FVG</a></p>
+    <p class="stato">Vir: <a href="https://www.meteo.fvg.it/" target="_blank" rel="noopener">ARPA FVG - S.O.C. OSMER e GRN</a> · <a href="https://creativecommons.org/licenses/by/3.0/it/" target="_blank" rel="noopener">CC BY 3.0 IT</a></p>
   </div>
 
   <!-- RADAR ARSO -->
@@ -1425,10 +1425,17 @@
   <script>
     // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
     const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
+    /* Stazioni della rete idrometeorologica regionale FVG (1 ott 2026): dati della Protezione
+       Civile della Regione, licenza CC BY 4.0. La licenza chiede la dicitura esatta della fonte,
+       il link alla licenza e di dire che i dati sono elaborati (nodi, medie). Vedi apps-script. */
+    const PCFVG = ["trieste", "muggia", "marinajulia", "lignano"];
+    const LINK_PCFVG = "https://monitor.protezionecivile.fvg.it/";
+    const FONTE_PCFVG_TESTO = '<a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · obdelani podatki';
+    const FONTE_PCFVG = "Vir: " + FONTE_PCFVG_TESTO;
     const LINK_VETERCEK = {
       grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
-      muggia: "https://vetercek.com/danes/index.php?postaja=muggia",
-      marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4"
+      muggia: LINK_PCFVG,
+      marinajulia: LINK_PCFVG
     };
     const SPOT_ISTRIA = ["zusterna", "antenal", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
@@ -1934,32 +1941,33 @@
       // --- nota stato ---
       const st = document.getElementById("stato" + cap(prefix));
       if (st) {
-        const ora = r0.ora || "";
-        st.textContent = vecchio
+        const ora = String(r0.ora || "").replace(/[<>&"']/g, "");
+        st.innerHTML = vecchio
           ? "⚠️ Postaja ni v omrežju: zadnji podatek je z " + ora + " (" + etaTesto(eta.min) + ") in ne prikazuje trenutnega vetra"
           : stale
           ? "⚠️ Zadnji razpoložljivi podatek" + (ora ? " (" + ora + ")" : "") + ", čaka na posodobitev"
-          : "Vir: vetercek.com · zadnjih ~45 min" + (ora ? " · posod. " + ora : "");
+          : (PCFVG.indexOf(prefix) !== -1 ? FONTE_PCFVG : "Vir: vetercek.com") + " · zadnjih ~45 min" + (ora ? " · posod. " + ora : "");
       }
     }
 
     let vetercekGiu = false;   // true ko proxy javi, da je vetercek.com nedosegljiv (zunanji vir je down)
     function mostraNoData(prefix) {
+      const pc = PCFVG.indexOf(prefix) !== -1, giu = vetercekGiu && !pc;   // le regionali non vengono da vetercek
       const cards = document.getElementById(prefix + "Cards");
-      if (cards) cards.innerHTML = vetercekGiu
+      if (cards) cards.innerHTML = giu
         ? '<div class="pannello"><div class="tws-dir" style="color:#b35c00">Podatki vetercek niso dosegljivi</div>'
           + '<div style="font-size:.82rem;color:#7a5230;margin-top:6px;font-weight:600;line-height:1.4">⚠️ Vir te postaje ne odgovarja.<br>Preostali del strani deluje normalno.</div></div>'
         : '<div class="pannello"><div class="tws-dir">Podatki niso na voljo</div></div>';
       const tr = document.getElementById(prefix + "Trend");
       if (tr) tr.innerHTML = "";
       const body = document.getElementById(prefix + "Body");
-      if (body) body.innerHTML = vetercekGiu
+      if (body) body.innerHTML = giu
         ? '<tr><td colspan="5">vetercek.com ne odgovarja — postaja trenutno ni na voljo</td></tr>'
         : '<tr><td colspan="5">Podatki o vetru trenutno niso na voljo</td></tr>';
       const st = document.getElementById("stato" + cap(prefix));
-      const link = LINK_SPOT[prefix] || LINK_VETERCEK[prefix] || "https://vetercek.com";
-      if (st) st.innerHTML = (vetercekGiu ? '⚠️ <strong>vetercek.com je nedosegljiv</strong> (ni napaka naše strani) · ' : '')
-        + '<a href="' + link + '" target="_blank" rel="noopener">odpri podatke v živo na vetercek.com</a>';
+      const link = pc ? LINK_PCFVG : (LINK_SPOT[prefix] || LINK_VETERCEK[prefix] || "https://vetercek.com");
+      if (st) st.innerHTML = (giu ? '⚠️ <strong>vetercek.com je nedosegljiv</strong> (ni napaka naše strani) · ' : '')
+        + '<a href="' + link + '" target="_blank" rel="noopener">' + (pc ? "odpri podatke v živo (Protezione Civile FVG)" : "odpri podatke v živo na vetercek.com") + '</a>';
     }
 
     function cella(val, cls) {
@@ -2014,7 +2022,7 @@
       renderOsmer(data.osmer);
       /* vetercek je res nedosegljiv le, ko hkrati molčita Monte Grisa in Muggia. Ena sama
          ugasnjena postaja (Poreč, Rovinj, Savudrija od 24. 8. 2026) ne pomeni, da je vetercek down. */
-      vetercekGiu = ["monteGrisa", "muggia"].every(function (k) { return data[k + "Error"]; });
+      vetercekGiu = ["monteGrisa", "grado"].every(function (k) { return data[k + "Error"]; });
       renderStazione(data.monteGrisa, "grisa");
       renderStazione(data.muggia, "muggia");
       renderStazione(data.marinajulia, "marinajulia");

@@ -1837,7 +1837,7 @@
       <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
     </div>
     <p class="stato" id="statoPaloma"></p>
-    <p class="stato">Fonte: <a href="https://monitor.protezionecivile.fvg.it" target="_blank" rel="noopener">Protezione Civile FVG</a> / ARPA OSMER (dati IODL 2.0) · <a href="https://maps.google.com/?q=45.618580,13.565300" target="_blank" rel="noopener">📍 Posizione esatta</a> (45°37′07″ N, 13°33′55″ E)</p>
+    <p class="stato">Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · dati elaborati (nodi, medie) · <a href="https://maps.google.com/?q=45.618580,13.565300" target="_blank" rel="noopener">📍 Posizione esatta</a> (45°37′07″ N, 13°33′55″ E)</p>
 
     <h3 style="margin:1rem 0 .25rem;">Boa Pirano (Vida, NIB)</h3>
     <div id="piranStat">
@@ -1888,7 +1888,7 @@
   <div class="section" id="osmer">
     <h2>Previsione descrittiva – OSMER FVG</h2>
     <div id="osmerBollettino"><p class="stato">Caricamento…</p></div>
-    <p class="stato">Fonte: <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">OSMER – Arpa FVG</a></p>
+    <p class="stato">Fonte: <a href="https://www.meteo.fvg.it/" target="_blank" rel="noopener">ARPA FVG - S.O.C. OSMER e GRN</a> · <a href="https://creativecommons.org/licenses/by/3.0/it/" target="_blank" rel="noopener">CC BY 3.0 IT</a></p>
   </div>
 
   <!-- RADAR ARSO -->
@@ -2261,11 +2261,18 @@
   <script>
     // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
     const PROXY = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
+    /* Stazioni della rete idrometeorologica regionale FVG (1 ott 2026): dati della Protezione
+       Civile della Regione, licenza CC BY 4.0. La licenza chiede la dicitura esatta della fonte,
+       il link alla licenza e di dire che i dati sono elaborati (nodi, medie). Vedi apps-script. */
+    const PCFVG = ["trieste", "muggia", "marinajulia", "lignano"];
+    const LINK_PCFVG = "https://monitor.protezionecivile.fvg.it/";
+    const FONTE_PCFVG_TESTO = '<a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · dati elaborati';
+    const FONTE_PCFVG = "Fonte: " + FONTE_PCFVG_TESTO;
     const LINK_VETERCEK = {
-      trieste: "https://vetercek.com/danes/index.php?postaja=trst",
+      trieste: LINK_PCFVG,
       grisa: "https://vetercek.com/danes/index.php?postaja=montegrisa",
-      muggia: "https://vetercek.com/danes/index.php?postaja=muggia",
-      marinajulia: "https://vetercek.com/danes/index.php?id=91&postaja=monfalcone4",
+      muggia: LINK_PCFVG,
+      marinajulia: LINK_PCFVG,
       grado: "https://vetercek.com/danes/index.php?id=24&postaja=grado"
     };
     const SPOT_ISTRIA = ["zusterna", "antenal", "preluka", "liznjan", "premantura"];
@@ -2758,7 +2765,7 @@
     }
 
     /* Boa Paloma (centro golfo): rete idrometeo della Protezione Civile FVG, API aperta
-       (CORS *, licenza IODL 2.0, attribuzione ARPA OSMER) chiamata direttamente dal
+       (CORS *, licenza CC BY 4.0, fonte "Protezione Civile della Regione FVG") chiamata direttamente dal
        browser — niente proxy. Cadenza 15 min, timestamp "dt" in UTC.
        Sensori: 5 = direzione (°N), 6 = vento medio (m/s), 7 = raffica (m/s), 2 = aria. */
     const PALOMA_API = "https://monitor.protezionecivile.fvg.it/api/stations/574/measures/latest";
@@ -3084,7 +3091,7 @@
           ? "⚠️ Centralina non in linea: l'ultimo dato è delle " + escHtml(ora) + " (" + etaTesto(eta.min) + "), non rappresenta il vento attuale"
           : stale
           ? "⚠️ Ultimo dato disponibile" + (ora ? " (" + escHtml(ora) + ")" : "") + ", in attesa di aggiornamento"
-          : (prefix === "trieste" && !oraria ? "Fonte: Protezione Civile FVG (stazione OSMER, ogni 15 min)" : "Fonte: vetercek.com")
+          : (PCFVG.indexOf(prefix) !== -1 ? FONTE_PCFVG + " · ogni 15 min" : "Fonte: vetercek.com")
             + " · " + finestraTxt + (ora ? " · agg. " + escHtml(ora) : ""))
           + gpsLinkHtml(prefix);
       }
@@ -3092,21 +3099,22 @@
 
     let vetercekGiu = false;   // true quando il proxy segnala vetercek.com irraggiungibile (fonte esterna giù)
     function mostraNoData(prefix) {
+      const pc = PCFVG.indexOf(prefix) !== -1, giu = vetercekGiu && !pc;   // le regionali non vengono da vetercek
       const cards = document.getElementById(prefix + "Cards");
-      if (cards) cards.innerHTML = vetercekGiu
+      if (cards) cards.innerHTML = giu
         ? '<div class="pannello"><div class="tws-dir" style="color:#b35c00">Dati vetercek non raggiungibili</div>'
           + '<div style="font-size:.82rem;color:#7a5230;margin-top:6px;font-weight:600;line-height:1.4">⚠️ La fonte di questa centralina non risponde.<br>Il resto del sito (Barcola, previsioni, mare) funziona regolarmente.</div></div>'
         : '<div class="pannello"><div class="tws-dir">Dati non disponibili</div></div>';
       const tr = document.getElementById(prefix + "Trend");
       if (tr) tr.innerHTML = "";
       const body = document.getElementById(prefix + "Body");
-      if (body) body.innerHTML = vetercekGiu
+      if (body) body.innerHTML = giu
         ? '<tr><td colspan="5">vetercek.com non risponde — centralina momentaneamente non disponibile</td></tr>'
         : '<tr><td colspan="5">Dati momentaneamente non disponibili</td></tr>';
       const st = document.getElementById("stato" + cap(prefix));
-      const link = LINK_SPOT[prefix] || LINK_VETERCEK[prefix] || "https://vetercek.com";
-      if (st) st.innerHTML = (vetercekGiu ? '⚠️ <strong>Dati vetercek non raggiungibili</strong> al momento · ' : '')
-        + '<a href="' + link + '" target="_blank" rel="noopener">apri i dati live su vetercek.com</a>';
+      const link = pc ? LINK_PCFVG : (LINK_SPOT[prefix] || LINK_VETERCEK[prefix] || "https://vetercek.com");
+      if (st) st.innerHTML = (giu ? '⚠️ <strong>Dati vetercek non raggiungibili</strong> al momento · ' : '')
+        + '<a href="' + link + '" target="_blank" rel="noopener">' + (pc ? "apri i dati live della Protezione Civile FVG" : "apri i dati live su vetercek.com") + '</a>';
     }
 
     function cella(val, cls) {
@@ -3160,10 +3168,10 @@
       ultimoPayload = data;
       renderOsmer(data.osmer);
       window.__gps = data.gps || {};   // coordinate centraline (dal feed API vetercek)
-      /* vetercek davvero giù = tacciono insieme Monte Grisa e Muggia, che sono sempre in linea.
+      /* vetercek davvero giù = tacciono insieme Monte Grisa e Grado, che sono sempre in linea.
          Una singola stazione spenta (Poreč, Rovinj e Savudrija ferme dal 24 ago 2026) non è
          "vetercek non raggiungibile": prima bastava lei per mostrare l'avviso su tutta la pagina. */
-      vetercekGiu = ["monteGrisa", "muggia"].every(function (k) { return data[k + "Error"]; });
+      vetercekGiu = ["monteGrisa", "grado"].every(function (k) { return data[k + "Error"]; });
       // Trieste: finestra 6h. Dato a 15 min dalla Protezione Civile FVG; orario (vetercek) solo se quella fonte è giù
       renderStazione(data.trieste, "trieste", 360, data.triesteFonte !== "pcfvg");
       renderStazione(data.monteGrisa, "grisa");
@@ -3194,7 +3202,7 @@
           salvaCacheDati(data);
           document.getElementById("ultimoAggiornamento").textContent =
             "Ultimo aggiornamento: " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })
-            + (vetercekGiu ? " · ⚠️ Dati vetercek non raggiungibili (Monte Grisa / Muggia / Istria non disponibili)" : "");
+            + (vetercekGiu ? " · ⚠️ Dati vetercek non raggiungibili (Monte Grisa / Grado / Istria non disponibili)" : "");
         })
         .catch(err => {
           console.error("Errore caricamento dati centraline:", err);

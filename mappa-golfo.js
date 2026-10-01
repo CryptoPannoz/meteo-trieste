@@ -381,8 +381,8 @@
     disegnaStazione(gMambo, st, v);
   }
 
-  /* Boa Paloma: rete idrometeo Protezione Civile FVG. API aperta (CORS *, IODL 2.0,
-     attribuzione ARPA OSMER), cadenza 15 min, "dt" in UTC. Fetch autonomo del modulo,
+  /* Boa Paloma: rete idrometeo Protezione Civile FVG. API aperta (CORS *, CC BY 4.0,
+     fonte "Protezione Civile della Regione Friuli Venezia Giulia"), cadenza 15 min, "dt" in UTC. Fetch autonomo del modulo,
      con throttle: render() gira anche ogni 5 minuti ma la boa si chiama al massimo
      ogni 4, cosi' nessuna pagina ospite deve occuparsene. */
   var palomaUltimoFetch = 0;

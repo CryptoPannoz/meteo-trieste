@@ -373,13 +373,13 @@
     { name: "Alessio Vremec · ALADIN", detail: sl ? "deljenje vremenskih kart" : "divulgazione delle mappe meteo", url: "https://kuguluff.altervista.org/vento/ventoAladinSI.htm" }
   ];
   var dataSources = [
-    { name: "OSMER · ARPA FVG", url: "https://www.meteo.fvg.it/" },
+    { name: "ARPA FVG - S.O.C. OSMER e GRN (previsioni)", url: "https://www.meteo.fvg.it/" },
     { name: "ARSO Slovenija", url: "https://meteo.arso.gov.si/" },
     { name: "ProfiWetter · DWD", url: "https://profiwetter.ch/" },
     { name: "Open-Meteo", url: "https://open-meteo.com/" },
     { name: "OGS · NODC", url: "https://nodc.ogs.it/geoportal/?msv=1" },
     { name: "NIB · boja Vida", url: "https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" },
-    { name: "Protezione Civile FVG", url: "https://monitor.protezionecivile.fvg.it/" },
+    { name: "Protezione Civile della Regione Friuli Venezia Giulia (stazioni, CC BY 4.0)", url: "https://monitor.protezionecivile.fvg.it/licenza" },
     { name: "Windguru", url: "https://www.windguru.cz/" },
     { name: "Windy", url: "https://www.windy.com/" },
     { name: "KJD BUM", url: "https://kjdbum.si/" }

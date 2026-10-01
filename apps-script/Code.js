@@ -5,7 +5,7 @@
  *
  * Endpoint: doGet -> { trieste, triesteFonte, monteGrisa, muggia, grado, lignano, lignanoLive, cavazzo, preluka, antenal, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
- * trieste: righe a 15 min dalla Protezione Civile FVG (triesteFonte 'pcfvg'), orarie da vetercek se l'API è giù
+ * trieste, muggia, marinajulia, lignano: righe a 15 min dalla Protezione Civile FVG (rete regionale, CC BY 4.0)
  * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
  * gps: coordinate di ogni centralina (dal feed API, in parte stimate da vetercek)
  *
@@ -21,13 +21,12 @@
 
 // lat/lon nella config = override delle coordinate del feed vetercek (che per
 // alcune stazioni sono stimate male, parole di Jaka stesso).
+// Trieste molo, Muggia, Marina Julia e Lignano NON stanno più qui (1 ott 2026): sono stazioni
+// della rete idrometeorologica regionale e si leggono solo dalla Protezione Civile FVG (vedi
+// PCFVG_STAZIONI sotto), non dalla copia che ne fa vetercek.
 var STATIONS = {
-  trieste:     { postaja: 'trst', lat: 45.636806, lon: 13.750556 }, // molo F.lli Bandiera (45°38'12.5"N 13°45'02.0"E)
   monteGrisa:  { postaja: 'montegrisa' },
-  muggia:      { postaja: 'muggia' },
-  marinajulia: { id: 91, postaja: 'monfalcone4' },
-  grado:       { id: 24, postaja: 'grado' },
-  lignano:     { postaja: 'lignano' },
+  grado:       { id: 24, postaja: 'grado' },          // stazione privata, non della rete regionale
   zusterna:   { id: 147, postaja: 'kjdbum' },
   preluka:    { id: 149, postaja: 'preluka' },
   // Dajla (id 39) ferma dal 20 ago 2026: sostituita da Antenal (Cittanova), 4 km a sud
@@ -53,8 +52,8 @@ var METEOGRADO_URL = 'https://meteogrado.kitelifefvg.it/';
 // la webcam se l'immagine è vecchia (ago 2026: ferma 12 giorni con data solo nei pixel).
 var CAM_BARCOLA_URL = 'https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg';
 // Stazione meteo professionale sulla spiaggia di Lignano (lignanosabbiadoro.com):
-// vento quasi in tempo reale, molto più fresco della stazione OSMER via vetercek
-// che per Lignano pubblica un solo dato all'ora. Pagina pubblica, valori
+// vento quasi in tempo reale, più fresco della stazione regionale di Lignano (15 min,
+// Protezione Civile FVG). Pagina pubblica, valori
 // renderizzati lato server nel blocco "Meteo Live". Il sito accetta lo UA di
 // Apps Script (verificato lug 2026), quindi niente relay.
 var LIGNANO_LIVE_URL = 'https://www.lignanosabbiadoro.com/meteo-lignano';
@@ -64,15 +63,26 @@ var LIGNANO_LIVE_URL = 'https://www.lignanosabbiadoro.com/meteo-lignano';
 // gradi (B), °C (T), mmHg (P). Se l'admin cambiasse le unità di default cambierebbe
 // anche il JSON: le sigle nelle chiavi restano uguali, i valori no.
 var CAVAZZO_URL = 'https://www.boranucleare.it/windstation/homepage/blocks/current/updater.php?interval=11';
-// Trieste molo a 15 minuti (set 2026). vetercek 'trst' ripubblica la stazione OSMER di
-// Trieste UNA volta all'ora: il dato arrivava vecchio fino a 60 minuti. La stessa
-// stazione (verificato: valori identici alle ore piene) esce ogni 15 minuti dall'API
-// pubblica della Protezione Civile FVG, stazione 212. Sensori: 5 direzione (°),
-// 6 velocità media (m/s), 7 raffica (m/s), 2 temperatura (°C). Orari in UTC.
-// Se l'API non risponde resta il dato orario di vetercek.
-var PCFVG_TRIESTE_URL = 'https://monitor.protezionecivile.fvg.it/api/stations/212/measures';
+/* Stazioni della rete idrometeorologica regionale FVG (1 ott 2026).
+   La rete è una sola e la mantiene la Protezione Civile della Regione (PCR), che pubblica i
+   dati in tempo reale con licenza CC BY 4.0: si possono ripubblicare subito, citando
+   "Fonte: Protezione Civile della Regione Friuli Venezia Giulia" con il link alla licenza
+   e indicando che i dati sono elaborati (https://monitor.protezionecivile.fvg.it/licenza).
+   ARPA FVG invece (mail di Andrea Cicogna, 1 ott 2026) non consente di ripubblicare prima
+   di 24 ore i dati real-time del SUO sito: per questo queste stazioni si leggono SOLO
+   dall'API della Protezione Civile e non dalla copia di vetercek, senza ripieghi.
+   Verificato il 1 ott 2026 che sono le stesse stazioni: valori identici a quelli che
+   vetercek mostrava per "muggia" e "monfalcone4" (Marina Julia), orari per "trst".
+   Una richiesta per stazione con tutti i sensori: 5 direzione (°), 6 velocità media (m/s),
+   7 raffica (m/s), 2 temperatura (°C). Orari dell'API in UTC. */
+var PCFVG_API = 'https://monitor.protezionecivile.fvg.it/api/stations/';
 var PCFVG_SENSORI = { dir: 5, vel: 6, raffica: 7, temp: 2 };
-var TRIESTE_RIGHE = 24;   // 6 ore a 15 minuti: la home mostra le ultime 6 ore
+var PCFVG_STAZIONI = {
+  trieste:     { id: 212, righe: 24, lat: 45.636806, lon: 13.750556 }, // molo F.lli Bandiera; 6 ore in home
+  muggia:      { id: 500, righe: 10, lat: 45.610448, lon: 13.752571 }, // "Muggia S+M"
+  marinajulia: { id: 92,  righe: 10, lat: 45.780302, lon: 13.54963 },  // stazione "Monfalcone"
+  lignano:     { id: 213, righe: 24, lat: 45.701878, lon: 13.147102 }  // "Lignano": 6 ore nella pagina di Lignano
+};
 var MAX_ROWS = 10;
 // NOTA (giu 2026): vetercek.com ha iniziato a bloccare le richieste senza User-Agent
 // da browser (la connessione resta appesa fino al timeout -> "Indirizzo non disponibile").
@@ -245,6 +255,10 @@ function doGet(e) {
   if (e && e.parameter && e.parameter.views) {
     return jsonOut(fetchGoatViews());
   }
+  // ?storicoBarcola=YYYY-MM-DD — storico di Barcola per il registro 8-18 (vedi storicoBarcola).
+  if (e && e.parameter && e.parameter.storicoBarcola) {
+    return jsonOut(storicoBarcola(String(e.parameter.storicoBarcola)));
+  }
   // ?diag=1 — stato del trigger di riscaldamento (tempo trigger consumato oggi).
   if (e && e.parameter && e.parameter.diag) {
     return jsonOut(statoRiscaldamento());
@@ -379,6 +393,33 @@ function statoRiscaldamento() {
   };
 }
 
+/* Storico di Barcola per il registro meteo (30 set 2026, richiesto dalla Barcolana:
+   dalle 8 alle 18, un valore ogni 15 minuti). Windguru conserva lo storico della
+   stazione con medie a 5 minuti (nodi) e lo dà per qualsiasi giorno, anche passato;
+   come per il dato corrente serve il Referer windguru.cz, quindi passa di qui e non dal
+   Worker Cloudflare (che Windguru respinge). Il raggruppamento in quarti d'ora lo fa il
+   Worker. Orari "from/to" nell'ora locale della stazione. In cache 4 minuti per oggi,
+   6 ore per i giorni passati: il registro si ricostruisce spesso, Windguru si legge poco. */
+var BARCOLA_STORICO_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data&id_station=5307&avg_minutes=5';
+function storicoBarcola(giorno) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(giorno)) return { errore: 'giorno non valido' };
+  var cache = CacheService.getScriptCache(), chiave = 'wg_' + giorno;
+  try { var c = cache.get(chiave); if (c) return JSON.parse(c); } catch (ignore) {}
+  var url = BARCOLA_STORICO_URL + '&from=' + encodeURIComponent(giorno + ' 07:40') + '&to=' + encodeURIComponent(giorno + ' 18:05');
+  try {
+    var r = UrlFetchApp.fetch(url, { headers: { Referer: 'https://www.windguru.cz/station/5307' }, muteHttpExceptions: true });
+    var j = JSON.parse(r.getContentText());
+    if (!j || j['return'] === 'error' || !Array.isArray(j.unixtime)) throw new Error(j && j.message ? j.message : 'risposta non valida');
+    var out = { giorno: giorno, unixtime: j.unixtime, wind_avg: j.wind_avg, wind_max: j.wind_max,
+                wind_direction: j.wind_direction, updated: new Date().toISOString() };
+    var oggi = Utilities.formatDate(new Date(), 'Europe/Rome', 'yyyy-MM-dd');
+    try { cache.put(chiave, JSON.stringify(out), giorno === oggi ? 240 : 21600); } catch (ignore2) {}
+    return out;
+  } catch (err) {
+    return { giorno: giorno, errore: String(err), updated: new Date().toISOString() };
+  }
+}
+
 // true se il payload contiene almeno una fonte con dati reali (non tutto errori).
 function datiValidi(d) {
   if (!d) return false;
@@ -386,6 +427,10 @@ function datiValidi(d) {
   var keys = Object.keys(STATIONS);
   for (var i = 0; i < keys.length; i++) {
     if (Array.isArray(d[keys[i]]) && d[keys[i]].length) return true;
+  }
+  var pc = Object.keys(PCFVG_STAZIONI);
+  for (var j = 0; j < pc.length; j++) {
+    if (Array.isArray(d[pc[j]]) && d[pc[j]].length) return true;
   }
   if (d.osmer && d.osmer.length) return true;
   if (d.piran) return true;
@@ -417,12 +462,12 @@ function buildData() {
   requests.push({ url: CAM_BARCOLA_URL, headers: { Range: 'bytes=0-0' }, muteHttpExceptions: true, followRedirects: true });
   // ultima+2: stazione Lago di Cavazzo (boranucleare.it)
   requests.push({ url: CAVAZZO_URL, muteHttpExceptions: true, followRedirects: true });
-  // in coda: Trieste molo a 15 minuti (Protezione Civile FVG), un sensore per richiesta
+  // in coda: stazioni della rete regionale dalla Protezione Civile FVG, una richiesta per stazione
   var iPcfvg = requests.length;
   var daPcfvg = Utilities.formatDate(new Date(Date.now() - 6.5 * 3600000), 'UTC', 'yyyy-MM-dd HH:mm:ss');
-  var sensori = Object.keys(PCFVG_SENSORI);
-  sensori.forEach(function (s) {
-    requests.push({ url: PCFVG_TRIESTE_URL + '?sensor_id=' + PCFVG_SENSORI[s] + '&from=' + encodeURIComponent(daPcfvg),
+  var pcKeys = Object.keys(PCFVG_STAZIONI);
+  pcKeys.forEach(function (k) {
+    requests.push({ url: PCFVG_API + PCFVG_STAZIONI[k].id + '/measures?from=' + encodeURIComponent(daPcfvg),
                     muteHttpExceptions: true, followRedirects: true });
   });
 
@@ -512,23 +557,27 @@ function buildData() {
     out.cavazzoError = String(e);
   }
 
-  // Trieste molo: righe a 15 minuti se l'API PC FVG ha un dato recente, altrimenti
-  // restano quelle orarie di vetercek. triesteFonte dice al frontend quale soglia
-  // di "centralina ferma" usare (oraria = più larga).
-  out.triesteFonte = 'vetercek';
-  try {
-    var serie = {};
-    sensori.forEach(function (s, j) { serie[s] = JSON.parse(responses[iPcfvg + j].getContentText()); });
-    var righe = parsePcfvgRighe(serie, TRIESTE_RIGHE);   // [] se l'ultimo dato ha più di 90 min
-    if (righe.length) {
-      out.trieste = righe;
-      out.triesteFonte = 'pcfvg';
-      delete out.triesteError;
-      delete out.triesteHtmlError;
+  // stazioni della rete regionale: righe a 15 minuti dall'API della Protezione Civile.
+  // Nessun ripiego su altre fonti (vedi PCFVG_STAZIONI). triesteFonte resta per i frontend
+  // che la leggono: oggi vale sempre 'pcfvg'.
+  out.triesteFonte = 'pcfvg';
+  pcKeys.forEach(function (k, j) {
+    var st = PCFVG_STAZIONI[k];
+    out.gps[k] = { lat: st.lat, lon: st.lon };
+    try {
+      var tutte = JSON.parse(responses[iPcfvg + j].getContentText()).measures || [];
+      var serie = {};
+      Object.keys(PCFVG_SENSORI).forEach(function (s) {
+        serie[s] = { measures: tutte.filter(function (m) { return m.sensor_id === PCFVG_SENSORI[s]; }) };
+      });
+      var righe = parsePcfvgRighe(serie, st.righe);   // [] se l'ultimo dato ha più di 90 min
+      out[k] = righe;
+      if (!righe.length) out[k + 'Error'] = 'nessun dato recente dalla Protezione Civile FVG';
+    } catch (e) {
+      out[k] = [];
+      out[k + 'Error'] = String(e);
     }
-  } catch (e) {
-    out.triestePcfvgError = String(e);
-  }
+  });
 
   out.updated = new Date().toISOString();
   return out;
