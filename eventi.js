@@ -17,6 +17,7 @@
      guida: <spot o bora> · webcam: aggiorna | play
      barcolana vento: live|prev · barcolana previsione: <ora> · barcolana lato: <n>
      barcolana centralina: <nome> · barcolana classifiche: <anno> · condividi: whatsapp|copia link
+     barcolana registro: scarica csv | cambia giorno
 
    GoatCounter invia con sendBeacon: il conteggio arriva anche se il clic cambia pagina.
    Su localhost GoatCounter non conta nulla (è normale). Per contare altro da una pagina:
@@ -69,6 +70,8 @@
     if (t.closest("#shareWa")) return conta("condividi: whatsapp");
     if (t.closest("#shareCopy")) return conta("condividi: copia link");
     if ((el = t.closest("[data-lang-btn]"))) return conta("lingua: " + el.getAttribute("data-lang-btn"));
+    if (t.closest("#regCsv")) return conta("barcolana registro: scarica csv");
+    if (t.closest("#regPrima, #regDopo, #regOggi")) return conta("barcolana registro: cambia giorno");
 
     // ---- comuni a tutte le pagine ----
     if (t.closest("#btnAggiorna, #bcAggiorna")) return conta("aggiorna: " + pagina);

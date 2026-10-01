@@ -1069,6 +1069,26 @@
     .bc-avviso { border: 1px solid var(--line); border-left: 4px solid var(--bc-boa); border-radius: 10px; padding: .6rem .8rem; font-size: .8rem; color: var(--slate-2); line-height: 1.5; margin-top: .8rem; background: var(--surface-soft); }
     .bc-avviso strong { color: var(--ink); }
 
+    /* --- registro del vento --- */
+    .bc-reg-ctrl { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .2rem 0 .5rem; }
+    .bc-reg-ctrl button, .bc-reg-ctrl input { margin: 0; min-height: 38px; font: inherit; font-size: .85rem; font-weight: 700; }
+    .bc-reg-ctrl input { padding: .3rem .55rem; border: 1px solid var(--line); border-radius: 3px; background: var(--surface); color: var(--ink); }
+    .bc-reg-ctrl #regCsv { margin-left: auto; }
+    .bc-reg-wrap { max-height: 70vh; overflow: auto; }
+    .bc-reg { min-width: 760px; font-variant-numeric: tabular-nums; }
+    .bc-reg th, .bc-reg td { padding: .3rem .45rem; }
+    .bc-reg thead th { position: sticky; top: 0; z-index: 2; white-space: normal; line-height: 1.2; vertical-align: bottom; }
+    .bc-reg th:first-child, .bc-reg td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); font-weight: 800; }
+    .bc-reg thead th:first-child { z-index: 3; background: var(--bcn-th, var(--surface-soft)); }
+    .bc-reg td.campo, .bc-reg th.campo { border-left: 2px solid var(--bc-boa); border-right: 2px solid var(--bc-boa); }
+    .bc-reg td.v { background: color-mix(in srgb, var(--c) 16%, transparent); }
+    .bc-reg td b { font-size: .92rem; }
+    .bc-reg td small { color: var(--label); font-weight: 600; }
+    .bc-reg td .wind-arrow { width: .95rem; height: .95rem; vertical-align: -.18rem; margin: 0 .1rem 0 .25rem; }
+    .bc-reg td i { font-style: normal; font-size: .72rem; color: var(--slate-2); font-weight: 700; }
+    .bc-reg tr.adesso td { box-shadow: inset 0 2px 0 var(--bc-boa), inset 0 -2px 0 var(--bc-boa); }
+    .bc-reg td.attesa { color: var(--label); }
+
     @media (max-width: 900px) {
       .bc-layout, .bc-cl-grid, .bc-regata { grid-template-columns: 1fr; }
     }
@@ -1287,6 +1307,7 @@
     <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" hidden>
       <a href="#vento"><span class="l-it">Vento ora</span><span class="l-en">Wind now</span></a>
       <a href="#mappaVento"><span class="l-it">Percorso</span><span class="l-en">Course</span></a>
+      <a href="#registro"><span class="l-it">Registro</span><span class="l-en">Wind log</span></a>
       <a href="#previsioni-gara"><span class="l-it">Previsioni</span><span class="l-en">Forecast</span></a>
       <a href="#classifiche"><span class="l-it">Classifiche</span><span class="l-en">Results</span></a>
       <a href="/">Vento Trieste</a>
@@ -1357,6 +1378,24 @@
         </div>
       </div>
       <div class="bc-avviso"><span class="l-it"><strong>Non per la navigazione.</strong> Le boe sulla mappa sono ricavate dalla mappa del percorso pubblicata su barcolana.it (precisione di qualche decina di metri). Coordinate, lati da lasciare e segnali ufficiali sono solo nelle Istruzioni di Regata del Comitato.</span><span class="l-en"><strong>Not for navigation.</strong> Marks are derived from the course map published on barcolana.it (accurate to a few tens of metres). Official coordinates, rounding sides and signals are only in the Sailing Instructions.</span></div>
+    </section>
+
+    <!-- 2b. REGISTRO DEL VENTO (1 ott 2026, richiesto dall'organizzazione della Barcolana):
+         dalle 8 alle 18, un valore ogni 15 minuti per centralina + media sul campo di regata.
+         I dati li prepara il Worker Cloudflare (cloudflare-worker/dati, /registro?giorno=). -->
+    <section class="section" id="registro">
+      <h2><span class="l-it">Registro del vento · dalle 8 alle 18</span><span class="l-en">Wind log · 8:00 to 18:00</span></h2>
+      <p class="stato"><span class="l-it">Un valore ogni 15 minuti per ogni centralina e per il campo di regata: vento medio, raffica massima e direzione dei 15 minuti che finiscono a quell'ora, in nodi.</span><span class="l-en">One value every 15 minutes for each station and for the race course: mean wind, highest gust and direction over the 15 minutes ending at that time, in knots.</span></p>
+      <div class="bc-reg-ctrl">
+        <button type="button" id="regPrima" aria-label="Giorno precedente" title="Giorno precedente">◀</button>
+        <input type="date" id="regGiorno" aria-label="Giorno">
+        <button type="button" id="regDopo" aria-label="Giorno successivo" title="Giorno successivo">▶</button>
+        <button type="button" id="regOggi"><span class="l-it">Oggi</span><span class="l-en">Today</span></button>
+        <button type="button" id="regCsv">⬇ <span class="l-it">Scarica CSV</span><span class="l-en">Download CSV</span></button>
+      </div>
+      <p class="bc-nota" id="regStato" aria-live="polite"></p>
+      <div class="bc-tab-wrap bc-reg-wrap"><table class="bc-tab bc-reg" id="regTab"></table></div>
+      <p class="bc-nota"><span class="l-it"><b>Campo di regata</b>: media delle centraline a mare (Barcola, Trieste molo, Muggia, Paloma) pesata sulla distanza dal centro del percorso, come la stima in cima alla pagina. <b>Barcola</b>: Windguru, medie a 5 minuti; quando l'anemometro segna 0/0 è fermo e non viene contato. <b>Trieste molo, Muggia, boa Paloma</b>: Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · dati elaborati. <b>Monte Grisa</b>: Vetercek, registrata da Vento Trieste dal 30 settembre 2026 (in quota, fuori dalla media). <b>Boa Mambo</b>: OGS, un dato all'ora pubblicato con 1-2 ore di ritardo.</span><span class="l-en"><b>Race course</b>: average of the sea-level stations (Barcola, Trieste pier, Muggia, Paloma) weighted by distance from the centre of the course, like the estimate at the top of the page. <b>Barcola</b>: Windguru, 5-minute averages; a 0/0 reading means the anemometer is stuck and is not counted. <b>Trieste pier, Muggia, Paloma buoy</b>: Source: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · processed data. <b>Monte Grisa</b>: Vetercek, recorded by Vento Trieste since 30 September 2026 (high up, not in the average). <b>Mambo buoy</b>: OGS, one reading per hour published 1-2 hours late.</span></p>
     </section>
 
     <!-- 3. PREVISIONI -->
@@ -2179,6 +2218,103 @@
     }
     document.getElementById("bcAggiorna").addEventListener("click", caricaLive);
 
+    /* ---------- registro del vento 8-18 (Worker Cloudflare /registro) ---------- */
+    const REG_URL = "https://ventotrieste-dati.bebroggi.workers.dev/registro";
+    const GIORNO_BARCOLANA = "2026-10-11";
+    const reg = { giorno: null, dati: null, timer: null, inCorso: null };
+    const oggiRoma = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome" }).format(new Date());
+    const oraRoma = () => new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
+    function spostaGiorno(g, d) {
+      const t = new Date(g + "T12:00:00Z"); t.setUTCDate(t.getUTCDate() + d);
+      return t.toISOString().slice(0, 10);
+    }
+    function nomeSerie(sr) {
+      return { campo: tr("Campo di regata", "Race course"), trieste: tr("Trieste molo", "Trieste pier"), paloma: tr("Boa Paloma", "Paloma buoy"), mambo: tr("Boa Mambo", "Mambo buoy") }[sr.id] || sr.nome;
+    }
+    function disegnaRegistro() {
+      const tab = document.getElementById("regTab"), st = document.getElementById("regStato");
+      const d = reg.dati;
+      if (!d || !d.serie) { tab.innerHTML = ""; return; }
+      const oggi = oggiRoma(), ora = oraRoma(), eOggi = d.giorno === oggi;
+      // quarto d'ora in corso: l'ultimo già chiuso (es. alle 10:07 è la riga delle 10:00)
+      let iAdesso = -1;
+      if (eOggi) d.slot.forEach((h, i) => { if (h <= ora) iAdesso = i; });
+      const futuro = d.giorno > oggi;
+      tab.innerHTML = "<thead><tr><th>" + tr("Ora", "Time") + "</th>" +
+        d.serie.map(sr => '<th class="' + (sr.id === "campo" ? "campo" : "") + '">' + nomeSerie(sr) + (sr.oraria ? " <small>(" + tr("oraria", "hourly") + ")</small>" : "") + "</th>").join("") +
+        "</tr></thead><tbody>" + d.slot.map((h, i) => {
+          const dopo = futuro || (eOggi && i > iAdesso);
+          return '<tr class="' + (i === iAdesso ? "adesso" : "") + '"><td>' + h + "</td>" + d.serie.map(sr => {
+            const v = sr.dati[i], cls = sr.id === "campo" ? "campo" : "";
+            if (!v) return '<td class="' + cls + (dopo ? " attesa" : "") + '">' + (dopo || (sr.oraria && h.slice(3) !== "00") ? "" : "–") + "</td>";
+            const tinta = v[0] >= 8 ? ' style="--c:' + coloreKt(v[0]) + '"' : "";
+            return '<td class="' + cls + (v[0] >= 8 ? " v" : "") + '"' + tinta + "><b>" + fmt(v[0], 1) + "</b>" +
+              (v[1] != null ? "<small>/" + fmt(v[1], 0) + "</small>" : "") +
+              (v[2] != null ? frecciaSvg(v[2], "") + "<i>" + cardinale(v[2]) + "</i>" : "") + "</td>";
+          }).join("") + "</tr>";
+        }).join("") + "</tbody>";
+      const n = d.serie[0].dati.filter(Boolean).length;
+      st.textContent = futuro ? tr("Giorno futuro: il registro si riempie dalle 8 di quel giorno.", "Future day: the log fills up from 8:00 that day.") :
+        (n ? "" : tr("Nessun dato per questo giorno. ", "No data for this day. ")) +
+        (eOggi ? tr("Oggi: si aggiorna da solo ogni 5 minuti. ", "Today: updates itself every 5 minutes. ") : "") +
+        tr("Aggiornato alle ", "Updated at ") + oraHHMM(new Date(d.aggiornato)) + (d.errori ? tr(" · alcune fonti non hanno risposto, riprova più tardi", " · some sources did not respond, try again later") : "");
+    }
+    function caricaRegistro(giorno) {
+      if (giorno) reg.giorno = giorno;
+      const g = reg.giorno, input = document.getElementById("regGiorno");
+      input.value = g;
+      document.getElementById("regDopo").disabled = g >= oggiRoma();
+      if (!reg.dati || reg.dati.giorno !== g) document.getElementById("regStato").textContent = tr("Carico il registro…", "Loading the log…");
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 45000);
+      const p = fetch(REG_URL + "?giorno=" + g + "&ts=" + Date.now(), { signal: ctl.signal })
+        .then(r => r.json())
+        .then(d => {
+          if (reg.giorno !== g) return;                 // nel frattempo è stato scelto un altro giorno
+          if (d.errore) throw new Error(d.errore);
+          reg.dati = d; disegnaRegistro();
+        })
+        .catch(() => {
+          if (reg.giorno !== g) return;
+          document.getElementById("regStato").textContent = tr("Registro al momento non disponibile, riprova tra poco.", "Log not available right now, please try again shortly.");
+        })
+        .finally(() => clearTimeout(t));
+      reg.inCorso = p;
+      return p;
+    }
+    function scaricaCsv() {
+      const d = reg.dati;
+      if (!d || !d.serie) return;
+      const en = LANG === "en", sep = en ? "," : ";";
+      const num = v => v == null ? "" : (en ? String(v) : String(v).replace(".", ","));
+      const intest = [en ? "Time" : "Ora"];
+      d.serie.forEach(sr => { const n = nomeSerie(sr); intest.push(n + (en ? " mean kt" : " medio kt"), n + (en ? " gust kt" : " raffica kt"), n + (en ? " dir °" : " direzione °")); });
+      const righe = [intest].concat(d.slot.map((h, i) => [h].concat(...d.serie.map(sr => { const v = sr.dati[i]; return v ? [num(v[0]), num(v[1]), v[2] == null ? "" : String(v[2])] : ["", "", ""]; }))));
+      const csv = "\ufeff" + (en ? "# Wind log " : "# Registro del vento ") + d.giorno + " · ventotrieste.info/barcolana2026\n" +
+        righe.map(r => r.map(c => (c.indexOf(sep) !== -1 || /["\n]/.test(c)) ? '"' + c.replace(/"/g, '""') + '"' : c).join(sep)).join("\n") + "\n";
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+      a.download = "registro-vento-barcolana-" + d.giorno + ".csv";
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    }
+    (function () {
+      const oggi = oggiRoma();
+      const input = document.getElementById("regGiorno");
+      input.max = oggi; input.min = "2024-01-01";
+      // dopo la regata (fino a fine ottobre) si apre sul giorno della Barcolana
+      reg.giorno = (oggi > GIORNO_BARCOLANA && oggi <= "2026-10-31") ? GIORNO_BARCOLANA : oggi;
+      input.addEventListener("change", () => { if (input.value) caricaRegistro(input.value > oggiRoma() ? oggiRoma() : input.value); });
+      document.getElementById("regPrima").addEventListener("click", () => caricaRegistro(spostaGiorno(reg.giorno, -1)));
+      document.getElementById("regDopo").addEventListener("click", () => { const g = spostaGiorno(reg.giorno, 1); if (g <= oggiRoma()) caricaRegistro(g); });
+      document.getElementById("regOggi").addEventListener("click", () => caricaRegistro(oggiRoma()));
+      document.getElementById("regCsv").addEventListener("click", scaricaCsv);
+      // oggi, dalle 7:45 alle 18:30: si rinnova ogni 5 minuti (se la scheda è visibile)
+      setInterval(() => {
+        const o = oraRoma();
+        if (!document.hidden && reg.giorno === oggiRoma() && o >= "07:45" && o <= "18:30") caricaRegistro();
+      }, 5 * 60 * 1000);
+    })();
+
     /* ---------- previsioni (Open-Meteo, multi-punto e multi-modello) ---------- */
     const MODELLI = [
       { id: "ecmwf_ifs025", nome: "ECMWF" },
@@ -2403,7 +2539,7 @@
 
     /* il dock mobile di footer-widgets.js ha etichette solo in italiano */
     function etichetteDock() {
-      const nomi = { "#vento": ["Ora", "Now"], "#mappaVento": ["Mappa", "Map"], "#previsioni-gara": ["Previsioni", "Forecast"], "#classifiche": ["Classifiche", "Results"] };
+      const nomi = { "#vento": ["Ora", "Now"], "#mappaVento": ["Mappa", "Map"], "#registro": ["Registro", "Log"], "#previsioni-gara": ["Previsioni", "Forecast"], "#classifiche": ["Classifiche", "Results"] };
       document.querySelectorAll(".ux-mobile-dock a").forEach(a => {
         const n = nomi[a.getAttribute("href")], lab = a.querySelector(".ux-dock-label");
         if (n && lab) lab.textContent = tr(n[0], n[1]);
@@ -2419,7 +2555,7 @@
       document.querySelectorAll("[data-lang-btn]").forEach(b => b.setAttribute("aria-pressed", String(b.getAttribute("data-lang-btn") === LANG)));
       document.title = tr("Vento Barcolana 2026 – il vento sul percorso in tempo reale", "Barcolana 2026 wind – live wind on the race course");
       CAT.P = tr("Passere", "Passere");
-      disegnaLegenda(); disegnaClassifiche(); disegnaPrevisioni();
+      disegnaLegenda(); disegnaClassifiche(); disegnaPrevisioni(); disegnaRegistro();
       aggiornaHero(); aggiornaPercorso(); countdown(); aggiornaCondivisione(); etichetteDock();
       const agg = document.getElementById("ultimoAggiornamento");
       if (!caricamentoInCorso && Object.keys(stato.live).length) {
@@ -2447,6 +2583,7 @@
       if (Date.now() - ultimoCaricamento > 60 * 1000) caricaLive();
     });
     setInterval(caricaPrevisioni, 60 * 60 * 1000);
+    caricaRegistro();
   })();
   </script>
 </body>

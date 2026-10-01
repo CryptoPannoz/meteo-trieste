@@ -10,6 +10,11 @@ Due worker sull'account Cloudflare **bebroggi@gmail.com** (`*.bebroggi.workers.d
   copia di più di 9 minuti. Stato: `https://ventotrieste-dati.bebroggi.workers.dev/?diag=1`.
   Deploy: `cd cloudflare-worker/dati && npx wrangler deploy` (serve `npx wrangler login`).
   Windguru (Barcola) risponde 403 alle richieste da Cloudflare: Barcola resta quella del proxy.
+  **Registro del vento** (1 ott 2026, per la Barcolana): `/registro?giorno=YYYY-MM-DD` dà le
+  8–18 a passi di 15 minuti per Barcola (storico Windguru via proxy `?storicoBarcola=`),
+  Trieste molo, Muggia, Paloma (Protezione Civile FVG), Monte Grisa (registrata dal cron in KV
+  `grisa:<giorno>` dal 30 set 2026), Mambo (OGS, orario) e la media sul campo di regata.
+  Oggi si ricalcola ogni 5 minuti dal cron; i giorni passati restano salvati in KV.
 
 # vetercek-relay (Cloudflare Worker)
 
