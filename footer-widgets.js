@@ -698,17 +698,29 @@
 
   var dock = null;
   if (nav && menuButton && navLinks.length) {
-    var first = trovaLink("#vento") || navLinks[0];
-    var second = trovaLink("#mappavento") || trovaLink("#centraline") || trovaLink("#boe");
-    var third = trovaLink("#webcam") || trovaLink("#radarlive");
-    var fourth = trovaLink("#radarlive") || trovaLink("#previsioni");
     var selected = [];
-    [first, second, third, fourth].forEach(function (link) {
-      if (link && selected.indexOf(link) === -1) selected.push(link);
+    /* Ordine esplicito: <nav id="topnav" data-dock="#vento,#webcam,#radarLive,#previsioni">
+       (home, 2 ott 2026: Ora · Webcam · Radar · Previsioni · Altro). Una voce che non è
+       nel menu diventa comunque un link alla sua sezione. */
+    var ordineDock = (nav.getAttribute("data-dock") || "").split(",")
+      .map(function (h) { return h.trim(); }).filter(function (h) { return !!h; });
+    ordineDock.forEach(function (h) {
+      var link = navLinks.find(function (l) { return l.getAttribute("href") === h; });
+      if (!link) { link = document.createElement("a"); link.setAttribute("href", h); }
+      selected.push(link);
     });
-    navLinks.forEach(function (link) {
-      if (selected.length < 4 && selected.indexOf(link) === -1) selected.push(link);
-    });
+    if (!selected.length) {
+      var first = trovaLink("#vento") || navLinks[0];
+      var second = trovaLink("#mappavento") || trovaLink("#centraline") || trovaLink("#boe");
+      var third = trovaLink("#webcam") || trovaLink("#radarlive");
+      var fourth = trovaLink("#radarlive") || trovaLink("#previsioni");
+      [first, second, third, fourth].forEach(function (link) {
+        if (link && selected.indexOf(link) === -1) selected.push(link);
+      });
+      navLinks.forEach(function (link) {
+        if (selected.length < 4 && selected.indexOf(link) === -1) selected.push(link);
+      });
+    }
 
     dock = document.createElement("nav");
     dock.className = "ux-mobile-dock";

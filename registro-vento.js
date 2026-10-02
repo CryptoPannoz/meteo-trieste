@@ -33,8 +33,10 @@
   var ORE_SURF = 6;          // …per almeno queste ore (24 quarti d'ora) = giornata surfabile
   var MIN_QUARTI = 26;       // quarti d'ora con un dato (su 53) perché il giorno valga
   var MARE = ["barcola", "trieste", "muggia", "paloma"];   // centraline a mare: da qui il picco di raffica
-  // colori del grafico, verificati con validate_palette (contrasto e daltonismo, tutti e tre insieme)
-  var C_MEDIA = "#1f5f99", C_RAFFICA = "#2b9cb0", C_SURF = "#d9364a";
+  // colori del grafico, verificati con validate_palette (contrasto e daltonismo, tutti e tre insieme).
+  // Sono variabili CSS: una pagina scura le ridefinisce (home: --rv-media #3a72cc, --rv-raffica
+  // #1fa7a0, --rv-surf #e4475d, validati sul fondo scuro #151b21).
+  var C_MEDIA = "var(--rv-media,#1f5f99)", C_RAFFICA = "var(--rv-raffica,#2b9cb0)", C_SURF = "var(--rv-surf,#d9364a)";
   var ORA_FINE = "19";       // fine del registro (Worker REG_ULTIMA), per "il giorno si chiude alle…"
   var FASCE = [[8, "#7d8b97"], [15, "#12a58a"], [25, "#e8830c"], [35, "#d9364a"], [Infinity, "#a2358f"]];
   var CARD = {
@@ -145,6 +147,7 @@
       ".rv-dirx>b{position:absolute;right:100%;top:.05rem;padding-right:.4rem;font-size:.6rem;font-weight:700;color:var(--label,var(--muted,#5f7280))}" +
       ".rv-dirx>span{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.12rem;white-space:nowrap}" +
       ".rv-dirx>span.oggi{opacity:.5}" +
+      ".rv-dirx i{font-style:normal}" +
       ".rv-dirx .rv-freccia{width:.85rem;height:.85rem;margin:0;vertical-align:0}" +
       ".rv-dirx.sett{font-size:.72rem}.rv-dirx.sett .rv-freccia{width:1rem;height:1rem}" +
       "@media (max-width:700px){.rv-dirx.mese .rv-freccia{width:.62rem;height:.62rem}.rv-dirx.mese i{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.54rem}}" +
@@ -156,6 +159,8 @@
       ".rv-lettura{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .55rem;min-height:2.6rem;margin:.5rem 0 0;padding:.45rem .6rem;border:1px solid " + BORDO + ";border-radius:3px;background:var(--surface,#fff);font-size:.88rem;color:var(--ink,#16232c)}" +
       ".rv-lettura span{font-weight:700}" +
       ".rv-lettura em{font-style:normal;font-size:.8rem;font-weight:600;color:var(--slate-2,var(--muted,#5f7280))}" +
+      ".rv-lettura .rv-vai{margin:0 0 0 auto;min-height:32px;display:inline-flex;align-items:center;padding:.2rem .6rem;border:1px solid " + BORDO + ";border-radius:3px;" +
+        "background:var(--surface-soft,#f3f7f8);color:var(--ink,#16232c);font-size:.78rem;font-weight:700;text-decoration:none}" +
       ".rv-lettura button{margin:0 0 0 auto;min-height:32px;padding:.2rem .6rem;border:1px solid " + BORDO + ";border-radius:3px;background:var(--surface-soft,#f3f7f8);color:var(--ink,#16232c);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}" +
       ".rv-mesi{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:.7rem 0 .2rem;padding-top:.6rem;border-top:1px solid " + BORDO + ";font-size:.74rem;font-weight:700;color:var(--label,var(--muted,#5f7280))}" +
       ".rv-mesi button{display:inline-flex;align-items:center;gap:.35rem;margin:0;min-height:34px;padding:.2rem .65rem;border:1px solid " + BORDO + ";border-radius:999px;background:var(--surface,#fff);color:var(--ink,#16232c);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer}" +
@@ -341,7 +346,9 @@
   function nomeGiorno(g) { return maiuscola(dataFmt(g, { weekday: "long", day: "numeric", month: "long" })); }
 
   function lettura(r, g) {
-    var x = datoGiorno(r, g), vai = g === r.giorno ? '<button type="button" data-rv-vai>' + tr("Vedi il registro ↓", "See the log ↓") + "</button>" : "";
+    var x = datoGiorno(r, g), vai = g !== r.giorno ? "" : r.opz.soloGrafico ?
+      '<a class="rv-vai" href="' + (r.opz.linkRegistro || "/registro/") + "?giorno=" + g + '">' + tr("Apri nel registro →", "Open in the log →") + "</a>" :
+      '<button type="button" data-rv-vai>' + tr("Vedi il registro ↓", "See the log ↓") + "</button>";
     if (!x) return "<span>" + nomeGiorno(g) + "</span><em>" + (g > oggiRoma() ? tr("ancora da venire", "still to come") : tr("nessuna media per questo giorno", "no average for this day")) + "</em>" + vai;
     return "<span>" + nomeGiorno(g) + "</span>" + sintesi(x) +
       (x.oggi ? "<em>· " + tr("finora, il giorno si chiude alle " + ORA_FINE, "so far, the day closes at " + ORA_FINE) + "</em>" : "") + vai;
@@ -357,7 +364,8 @@
   function letturaBase(r) {
     var gg = periodo(r.per);
     return gg.indexOf(r.giorno) !== -1 ? lettura(r, r.giorno) :
-      "<em>" + tr("Passa sopra una colonna o toccala per vedere media, raffica e ore di vento del giorno, e aprirlo nel registro.", "Hover or tap a column to see that day's mean, gust and hours of wind, and open it in the log.") + "</em>";
+      "<em>" + tr("Passa sopra una colonna o toccala per vedere media, raffica e ore di vento del giorno" + (r.opz.soloGrafico ? "." : ", e aprirlo nel registro."),
+        "Hover or tap a column to see that day's mean, gust and hours of wind" + (r.opz.soloGrafico ? "." : ", and open it in the log.")) + "</em>";
   }
 
   function disegnaRiep(r) {
@@ -368,7 +376,9 @@
       // all'apertura il mese in corso; nella sua prima settimana il mese prima, che ha più giorni
       var tipo = "mese";
       try { tipo = localStorage.getItem("vt-registro-grafico") === "sett" ? "sett" : "mese"; } catch (e) {}
-      r.per = { tipo: tipo, rif: (tipo === "mese" && oggi.slice(8) <= "07" && sposta(inizioMese, -1) >= j.dal) ? sposta(inizioMese, -1) : oggi };
+      // se la pagina si apre su un giorno preciso (/registro/?giorno=…), il grafico parte da lì
+      r.per = { tipo: tipo, rif: (r.giorno && r.giorno < oggi && r.giorno >= j.dal) ? r.giorno :
+        (tipo === "mese" && oggi.slice(8) <= "07" && sposta(inizioMese, -1) >= j.dal) ? sposta(inizioMese, -1) : oggi };
       r.seguito = r.giorno;
     }
     // se il giorno del registro cambia (frecce, calendario) e cade fuori, il grafico lo segue
@@ -464,7 +474,11 @@
     box.addEventListener("click", function (ev) {
       var t = ev.target.closest ? ev.target : null, b;
       if (!t) return;
-      if ((b = t.closest("[data-rv-giorno]"))) { carica(r, b.getAttribute("data-rv-giorno")); r.seguito = r.giorno; disegnaRiep(r); return; }
+      if ((b = t.closest("[data-rv-giorno]"))) {
+        // solo grafico: il giorno si seleziona e basta (il link porta al registro); altrimenti si apre in tabella
+        if (r.opz.soloGrafico) r.giorno = b.getAttribute("data-rv-giorno"); else carica(r, b.getAttribute("data-rv-giorno"));
+        r.seguito = r.giorno; disegnaRiep(r); return;
+      }
       if ((b = t.closest("[data-rv-vai]"))) { r.root.querySelector(".rv-ctrl").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
       if ((b = t.closest("[data-rv-mese]"))) { r.per = { tipo: "mese", rif: b.getAttribute("data-rv-mese") + "-01" }; disegnaRiep(r); return; }
       if ((b = t.closest("[data-rv-tipo]"))) {
@@ -667,7 +681,44 @@
   setInterval(function () { if (!document.hidden) rinnova(); }, 60000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) rinnova(); });
 
+  /* Solo il grafico delle giornate surfabili (home, sezione a tendina): niente tabella né
+     comandi del giorno; toccando una colonna si legge il giorno e c'è il link al registro.
+     Per la colonna chiara di oggi scarica anche il registro di oggi, e lo rinnova ogni 5
+     minuti se la sezione è aperta e la scheda visibile.
+       var g = RegistroVento.grafico(el, { attendi: true, nomeCampo: […], linkRegistro: "/registro/" });
+       g.carica();   // quando la tendina si apre */
+  function grafico(root, opz) {
+    opz = opz || {};
+    opz.soloGrafico = true;
+    stili();
+    root.innerHTML = '<section class="rv-riep" id="regRiep" aria-label="Giornate surfabili" hidden></section>';
+    var r = { root: root, opz: opz, giorno: null, $: function (id) { return root.querySelector("#" + id); }, caricato: false, ultimoOggi: 0 };
+    ascoltaGrafico(r);
+    var oggi = function () {
+      var g = oggiRoma();
+      r.ultimoOggi = Date.now();
+      return fetch(URL_REG + "?giorno=" + g + "&ts=" + Date.now()).then(function (x) { return x.json(); }).then(function (d) {
+        if (!d || !d.serie || d.giorno !== g) return;
+        var mo = sintesiReg(d);
+        r.oggi = mo ? { g: g, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d } : null;
+        if (r.riep) disegnaRiep(r);
+      }).catch(function () {});
+    };
+    var carica = function () {
+      if (r.caricato) return;
+      r.caricato = true;
+      caricaRiepilogo(r);
+      oggi();
+    };
+    setInterval(function () {
+      if (r.caricato && !document.hidden && root.offsetParent !== null && Date.now() - r.ultimoOggi > 4.5 * 60000) oggi();
+    }, 60000);
+    if (!opz.attendi) carica();
+    return { carica: carica };
+  }
+
   window.RegistroVento = {
+    grafico: grafico,
     monta: monta,
     ridisegna: function () { istanze.forEach(function (r) { testi(r); disegna(r); }); }
   };

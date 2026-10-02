@@ -1493,6 +1493,14 @@
       .wind-name-badge { min-height: 30px; padding: .25rem .62rem; font-size: .76rem; }
       .surf-wind-badge { margin-top: .72rem; font-size: .76rem; }
     }
+
+    /* Registro del vento in home (registro-vento.js, solo grafico). Colori del grafico per il
+       tema scuro, validati sul fondo #151b21; nel tema chiaro tornano quelli del modulo. */
+    #registroHome { --rv-media: #3a72cc; --rv-raffica: #1fa7a0; --rv-surf: #e4475d; --bcn-btn-ink: #07090c; }
+    :root[data-theme="light"] #registroHome { --rv-media: #1f5f99; --rv-raffica: #2b9cb0; --rv-surf: #d9364a; --bcn-btn-ink: #ffffff; }
+    #registroHome .rv-riep { margin: 0; padding: 0; border: 0; background: transparent; }
+    #registroHome .registro-home-link { margin-top: .9rem; }
+    #registroHome .registro-home-link a { font-weight: 800; }
   </style>
 
   <!-- Dati strutturati per Google (rich results) -->
@@ -1568,7 +1576,7 @@
         Menu
       </button>
     </div>
-    <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" hidden>
+    <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" data-dock="#vento,#webcam,#radarLive,#previsioni" hidden>
       <a href="#vento">Vento ora</a>
       <a href="#centraline">Centraline</a>
       <a href="#boe">Boe meteo</a>
@@ -1576,7 +1584,7 @@
       <a href="#previsioni">Previsioni</a>
       <a href="#webcam">Webcam</a>
       <a href="#istria" onclick="apriSpotIstria(event)">Spot Istria</a>
-      <a href="/registro/">📋 Registro del vento</a>
+      <a href="#registro">📋 Registro del vento</a>
       <a href="#" class="topnav-birra" onclick="apriBirra(event)" aria-label="Offrimi una birra">♥ Offrimi una birra</a>
     </nav>
   </header>
@@ -2094,6 +2102,24 @@
     <p class="stato">Fonte: <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">cam.kitelifefvg.it</a> · Kite Life FVG</p>
   </div>
 
+  </details>
+
+  <!-- REGISTRO DEL VENTO (2 ott 2026): solo il grafico delle giornate surfabili, per mese o
+       settimana (registro-vento.js, RegistroVento.grafico); il registro completo sta su /registro/.
+       Dopo le previsioni: è storico, non nowcasting (footer-widgets.js sposta webcam e radar
+       prima delle previsioni, il registro resta qui sotto). -->
+  <details class="gruppo-collapse page-collapse" id="registro">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>📋 Registro del vento</strong>
+      <span>Giornate surfabili, media e raffica giorno per giorno</span>
+    </span>
+  </summary>
+
+  <div class="section" id="registroHome">
+    <div id="registroGrafico"><p class="stato">Caricamento…</p></div>
+    <p class="stato registro-home-link"><a href="/registro/">📋 Apri il registro completo →</a> ogni 15 minuti dalle 6 alle 19 per ogni centralina, giorni passati e CSV.</p>
+  </div>
   </details>
 
   <!-- SPOT ISTRIA (gruppo collassabile) -->
@@ -3691,7 +3717,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20260822-ux1"></script>
+  <script src="./footer-widgets.js?v=20261002-dock"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
@@ -3735,7 +3761,18 @@
   <!-- GoatCounter (statistiche anonime, senza cookie) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
-  <script src="/eventi.js?v=20261002" defer></script>
+  <script src="/eventi.js?v=20261002c" defer></script>
+  <!-- grafico del registro del vento: si scarica solo quando la tendina si apre -->
+  <script src="/registro-vento.js?v=20261002h" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var det = document.getElementById("registro");
+      if (!det || !window.RegistroVento) return;
+      var g = RegistroVento.grafico(document.getElementById("registroGrafico"), { attendi: true, nomeCampo: ["Media in golfo", "Gulf average"] });
+      if (det.open) g.carica();
+      det.addEventListener("toggle", function () { if (det.open) g.carica(); });
+    });
+  </script>
   <!-- Alba/tramonto (calcolo SunCalc offline, golfo di Trieste) -->
   <script>
     (function () {

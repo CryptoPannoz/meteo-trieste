@@ -37,7 +37,7 @@
     {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Registro del vento","item":"https://ventotrieste.info/registro/"}]}
   ]}
   </script>
-  <script src="/registro-vento.js?v=20261002f"></script>
+  <script src="/registro-vento.js?v=20261002h"></script>
 </head>
 <body>
   <header class="topbar"><a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a><nav class="toplinks" aria-label="Navigazione"><a href="/">Vento ora</a><a href="/mappa/">Mappa live</a><a href="/spot/">Spot</a></nav></header>
@@ -65,8 +65,9 @@
   </main>
   <footer class="page-footer"><nav><a href="/">Vento Trieste</a><a href="/mappa/">Mappa live</a><a href="/spot/">Spot</a></nav>Dati live e fonti attribuite · ventotrieste.info</footer>
   <script>
-    // il registro di oggi si riempie dalle 6; si apre subito su oggi
-    RegistroVento.monta(document.getElementById("registroVento"), { nomeCampo: ["Media in golfo", "Gulf average"], riepilogo: true });
+    // il registro di oggi si riempie dalle 6; si apre su oggi, o sul giorno del link (/registro/?giorno=AAAA-MM-GG, dal grafico in home)
+    var giornoLink = (location.search.match(/[?&]giorno=(\d{4}-\d{2}-\d{2})(?:&|$)/) || [])[1];
+    RegistroVento.monta(document.getElementById("registroVento"), { nomeCampo: ["Media in golfo", "Gulf average"], riepilogo: true, giorno: giornoLink });
   </script>
   <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
