@@ -18,7 +18,7 @@
  *    richieste che partono da Cloudflare (provato 29 set 2026 con vari Referer/UA).
  *    Resta quella del proxy Apps Script, aggiornata ogni 5 minuti.
  *  - GET /?diag=1: età del payload salvato.
- *  - GET /registro?giorno=YYYY-MM-DD: registro del vento dalle 8 alle 18, un valore ogni
+ *  - GET /registro?giorno=YYYY-MM-DD: registro del vento dalle 6 alle 19, un valore ogni
  *    15 minuti per centralina più la media sul campo di regata (vedi "REGISTRO" sotto).
  *  - GET /riepilogo: media di ogni giornata dal 1° settembre 2026, per il riepilogo dei
  *    giorni ventosi sopra la tabella del registro (vedi "RIEPILOGO" sotto).
@@ -81,7 +81,7 @@ function leggiProxy(query, ok) {
 }
 
 /* cron: copia il payload in KV se è più recente di quello salvato; quando cambia,
-   aggiorna anche la registrazione di Monte Grisa e, tra le 8 e le 18:30, il registro di oggi */
+   aggiorna anche la registrazione di Monte Grisa e, tra le 6 e le 19:30, il registro di oggi */
 async function aggiorna(env) {
   const d = await leggiProxy();
   const salvato = await env.DATI.getWithMetadata(CHIAVE, { type: 'text' });
@@ -90,16 +90,18 @@ async function aggiorna(env) {
   await env.DATI.put(CHIAVE, JSON.stringify(d), { metadata: { updated: d.updated, salvato: new Date().toISOString() } });
   try { await registraGrisa(env, d); } catch (e) { console.warn('grisa: ' + e); }
   const ora = roma(Date.now());
-  if (ora.hhmm >= '07:55' && ora.hhmm <= '18:30') {
+  if (ora.hhmm >= REG_CRON_DA && ora.hhmm <= REG_CRON_A) {
     try { await salvaRegistro(env, await costruisciRegistro(env, ora.giorno)); } catch (e) { console.warn('registro: ' + e); }
   }
   return 'scritto ' + d.updated;
 }
 
-/* ============================ REGISTRO DEL VENTO 8-18 ============================
-   Richiesto dall'organizzazione della Barcolana (30 set 2026): per ogni giorno, dalle 8
-   alle 18, un valore ogni 15 minuti per ciascuna centralina, più la media sul campo di
-   regata. Ogni casella = i 15 minuti che finiscono a quell'ora: vento medio, raffica
+/* ============================ REGISTRO DEL VENTO 6-19 ============================
+   Richiesto dall'organizzazione della Barcolana (30 set 2026): per ogni giorno un valore
+   ogni 15 minuti per ciascuna centralina, più la media sul campo di regata. Prima dalle 8
+   alle 18; dal 2 ott 2026 dalle 6 alle 19 (Alberto), REG_VERSIONE 2: i registri salvati con
+   la finestra vecchia si rifanno da soli (la pagina Barcolana mostra comunque solo 8-18).
+   Ogni casella = i 15 minuti che finiscono a quell'ora: vento medio, raffica
    massima e direzione media (nodi, gradi di provenienza).
 
    Da dove arriva lo storico:
@@ -116,9 +118,11 @@ async function aggiorna(env) {
    pesata 1/d² delle centraline a mare (Barcola, Trieste molo, Muggia, Paloma).
 
    Conservazione: "registro:<giorno>" in KV. Oggi si ricalcola ogni 5 minuti dal cron
-   (8-18:30); un giorno passato si calcola alla prima richiesta e resta salvato.
-   Scritture KV al giorno: ~290 payload + ~125 Monte Grisa + ~130 registro + 1-2 riepilogo (limite 1000). */
-const REG_PRIMA = 8 * 60, REG_ULTIMA = 18 * 60, REG_PASSO = 15;
+   (6-19:30); un giorno passato si calcola alla prima richiesta e resta salvato.
+   Scritture KV al giorno: ~290 payload + ~160 Monte Grisa + ~165 registro + 1-2 riepilogo (limite 1000). */
+const REG_PRIMA = 6 * 60, REG_ULTIMA = 19 * 60, REG_PASSO = 15;
+const REG_VERSIONE = 2;                                  // 1 = 8-18, 2 = 6-19
+const REG_CRON_DA = '05:55', REG_CRON_A = '19:30';       // quando il cron tiene fresco il registro di oggi
 const BARCOLA_GIORNI = 14;
 const MS_IN_KT = 1.94384;
 const PCFVG = 'https://monitor.protezionecivile.fvg.it/api/stations/';
@@ -228,7 +232,7 @@ async function registraGrisa(env, payload) {
     const m = String(r.ora || '').match(/^(\d{1,2}):(\d{2})/), kt = parseFloat(r.kt);
     if (!m || isNaN(kt)) return;
     const min = Number(m[1]) * 60 + Number(m[2]);
-    // solo oggi (un orario "nel futuro" è di ieri) e solo la finestra 8-18
+    // solo oggi (un orario "nel futuro" è di ieri) e solo la finestra del registro
     if (min > adesso.min + 5 || min <= REG_PRIMA - REG_PASSO || min > REG_ULTIMA) return;
     const deg = CARDINALI[String(r.direzione || '').toUpperCase().trim()];
     const raf = parseFloat(r.sunki);
@@ -286,10 +290,10 @@ async function costruisciRegistro(env, giorno) {
     prova(s.id, campioniGrisa(env, giorno))));
   const serie = {};
   REG_STAZIONI.forEach((s, i) => { serie[s.id] = vuoto ? slot.map(() => null) : inQuarti(campioni[i]); });
-  // giorno chiuso: dopo le 20:30 (Mambo arriva in ritardo) o un giorno passato, e senza fonti in errore
-  const chiuso = giorno < adesso.giorno || (giorno === adesso.giorno && adesso.hhmm >= '20:30');
+  // giorno chiuso: dopo le 21:30 (Mambo arriva in ritardo) o un giorno passato, e senza fonti in errore
+  const chiuso = giorno < adesso.giorno || (giorno === adesso.giorno && adesso.hhmm >= '21:30');
   return {
-    giorno, passo: REG_PASSO, fuso: 'Europe/Rome', slot,
+    giorno, versione: REG_VERSIONE, passo: REG_PASSO, fuso: 'Europe/Rome', slot,
     serie: [{ id: 'campo', nome: 'Campo di regata', fonte: 'media pesata delle centraline a mare', dati: mediaCampo(serie) }]
       .concat(REG_STAZIONI.map(s => ({ id: s.id, nome: s.nome, fonte: s.fonte, oraria: !!s.oraria, dati: serie[s.id] }))),
     errori: Object.keys(errori).length ? errori : undefined,
@@ -306,10 +310,10 @@ async function registro(env, ctx, giorno) {
   const adesso = roma(Date.now());
   if (giorno > adesso.giorno) return costruisciRegistro(env, giorno);        // futuro: vuoto, non si salva
   const salvato = await env.DATI.get('registro:' + giorno, { type: 'json', cacheTtl: 60 });
-  if (salvato) {
+  if (salvato && salvato.versione === REG_VERSIONE) {
     const eta = (Date.now() - Date.parse(salvato.aggiornato)) / 60000;
-    // oggi tra le 8 e le 18:30 lo tiene fresco il cron; fuori da lì (o giorno con fonti in errore) si ricalcola ogni 30 min
-    const max = salvato.completo ? Infinity : (giorno === adesso.giorno && adesso.hhmm >= '07:55' && adesso.hhmm <= '18:30') ? 7 : 30;
+    // oggi nella finestra del cron lo tiene fresco il cron; fuori da lì (o giorno con fonti in errore) si ricalcola ogni 30 min
+    const max = salvato.completo ? Infinity : (giorno === adesso.giorno && adesso.hhmm >= REG_CRON_DA && adesso.hhmm <= REG_CRON_A) ? 7 : 30;
     if (eta <= max) return salvato;
   }
   try {
@@ -326,12 +330,14 @@ async function registro(env, ctx, giorno) {
    Richiesto da Alberto (2 ott 2026): sopra la tabella del registro un grafico giorno per
    giorno con media e raffica massima, e il conto delle giornate surfabili del mese.
    Giornata surfabile = la media sul campo (la prima colonna del registro) sopra i 15 nodi
-   per almeno 6 ore dei quarti d'ora 8-18. Le 6 ore le applica la pagina (registro-vento.js),
+   per almeno 6 ore dei quarti d'ora 6-19. Le 6 ore le applica la pagina (registro-vento.js),
    qui solo i numeri.
 
-   KV "riepilogo" = { giorni: { "YYYY-MM-DD": { n, m, r, q, d, sb, p } } }
-     n = quarti d'ora con un dato (su 41), m = media della giornata (nodi, 1 decimale),
-     r = raffica massima della giornata nella colonna della media sul campo (nodi),
+   KV "riepilogo" = { giorni: { "YYYY-MM-DD": { v, n, m, r, rs, q, d, sb, p } } }
+     v = REG_VERSIONE con cui è stato fatto (diverso = si rifà),
+     n = quarti d'ora con un dato (su 53), m = media della giornata (nodi, 1 decimale),
+     r = raffica massima della giornata: il picco più alto delle centraline a mare (nodi),
+     rs = la centralina dove l'ha fatto (barcola, trieste, muggia, paloma),
      q = quarti d'ora con la media sopra RIEP_SOGLIA (24 = 6 ore),
      d = direzione prevalente (gradi, media vettoriale pesata sul vento),
      sb = 1 senza Barcola (oltre le 2 settimane di Windguru), p = 1 con una centralina a mare
@@ -345,20 +351,23 @@ const RIEP_DAL = '2026-09-01';
 const RIEP_CHIAVE = 'riepilogo';
 const RIEP_RIPROVA_MS = 20 * 60000, RIEP_TENTATIVI = 3, RIEP_LETTI = 8;
 const RIEP_SOGLIA = 15;
-// giorno già fatto con tutti i campi (quelli salvati prima del 2 ott sera non hanno r e q: si rifanno)
-const riepFatto = x => !!x && !x.e && x.q != null;
+// giorno già fatto con la finestra e i campi di adesso (gli altri si rifanno)
+const riepFatto = x => !!x && !x.e && x.v === REG_VERSIONE;
 
 function sintesiGiorno(reg) {
   const campo = reg.serie[0].dati.filter(Boolean);
-  const out = { n: campo.length };
+  const out = { v: REG_VERSIONE, n: campo.length };
   if (campo.length) {
     let sx = 0, sy = 0;
     campo.forEach(v => { if (v[2] != null) { sx += v[0] * Math.sin(v[2] * Math.PI / 180); sy += v[0] * Math.cos(v[2] * Math.PI / 180); } });
     out.m = r1(campo.reduce((a, v) => a + v[0], 0) / campo.length);
     if (sx || sy) out.d = Math.round((Math.atan2(sx, sy) * 180 / Math.PI + 360) % 360);
-    const raffiche = campo.filter(v => v[1] != null).map(v => v[1]);
-    if (raffiche.length) out.r = Math.max.apply(null, raffiche);
   }
+  // raffica: il picco più alto della giornata tra le centraline a mare
+  reg.serie.forEach(sr => {
+    if (!REG_STAZIONI.some(s => s.id === sr.id && s.campo)) return;
+    sr.dati.forEach(v => { if (v && v[1] != null && !(out.r >= v[1])) { out.r = v[1]; out.rs = sr.id; } });
+  });
   out.q = campo.filter(v => v[0] > RIEP_SOGLIA).length;
   if (reg.senza && reg.senza.indexOf('barcola') !== -1) out.sb = 1;
   return out;
@@ -375,7 +384,7 @@ async function completaRiepilogo(env) {
     if (riepFatto(prima) || (prima && prima.e && ora - prima.t <= RIEP_RIPROVA_MS)) continue;
     letti++;
     let reg = await env.DATI.get('registro:' + g, { type: 'json' });
-    if (!reg || !reg.completo) {
+    if (!reg || !reg.completo || reg.versione !== REG_VERSIONE) {
       if (costruito) continue;
       costruito = true;
       reg = await costruisciRegistro(env, g);

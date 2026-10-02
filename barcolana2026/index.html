@@ -1504,7 +1504,7 @@
           async src="//gc.zgo.at/count.js"></script>
   <script src="/eventi.js?v=20261002" defer></script>
   <script src="/dati-live.js?v=20260929b"></script>
-  <script src="/registro-vento.js?v=20261002d"></script>
+  <script src="/registro-vento.js?v=20261002e"></script>
   <script src="./costa.js?v=2"></script>
   <script src="./strade.js?v=1" defer onload="window.disegnaBaseBarcolana && window.disegnaBaseBarcolana()"></script>
   <script>
@@ -2472,7 +2472,8 @@
       if (!det || !window.RegistroVento) return;
       const oggi = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome" }).format(new Date());
       const rv = RegistroVento.monta(document.getElementById("registroVento"), {
-        attendi: true, giorno: (oggi > "2026-10-11" && oggi <= "2026-10-31") ? "2026-10-11" : oggi });
+        attendi: true, giorno: (oggi > "2026-10-11" && oggi <= "2026-10-31") ? "2026-10-11" : oggi,
+        finestra: ["08:00", "18:00"] });   // il registro va dalle 6 alle 19: alla Barcolana serve 8-18
       det.addEventListener("toggle", () => { if (det.open) rv.carica(); });
       // dal menu ("Registro") o da un link con #registro la tendina si apre da sola
       // (al primo caricamento la pagina sopra si allunga mentre arrivano mappa e dati: riporto la vista sul registro)

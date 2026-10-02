@@ -394,7 +394,7 @@ function statoRiscaldamento() {
 }
 
 /* Storico di Barcola per il registro meteo (30 set 2026, richiesto dalla Barcolana:
-   dalle 8 alle 18, un valore ogni 15 minuti). Windguru conserva lo storico della
+   un valore ogni 15 minuti; dal 2 ott 2026 dalle 6 alle 19, prima 8-18). Windguru conserva lo storico della
    stazione con medie a 5 minuti (nodi) e lo dà per qualsiasi giorno, anche passato;
    come per il dato corrente serve il Referer windguru.cz, quindi passa di qui e non dal
    Worker Cloudflare (che Windguru respinge). Il raggruppamento in quarti d'ora lo fa il
@@ -403,9 +403,9 @@ function statoRiscaldamento() {
 var BARCOLA_STORICO_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data&id_station=5307&avg_minutes=5';
 function storicoBarcola(giorno) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(giorno)) return { errore: 'giorno non valido' };
-  var cache = CacheService.getScriptCache(), chiave = 'wg_' + giorno;
+  var cache = CacheService.getScriptCache(), chiave = 'wg619_' + giorno;   // chiave nuova: le copie 8-18 in cache non valgono più
   try { var c = cache.get(chiave); if (c) return JSON.parse(c); } catch (ignore) {}
-  var url = BARCOLA_STORICO_URL + '&from=' + encodeURIComponent(giorno + ' 07:40') + '&to=' + encodeURIComponent(giorno + ' 18:05');
+  var url = BARCOLA_STORICO_URL + '&from=' + encodeURIComponent(giorno + ' 05:40') + '&to=' + encodeURIComponent(giorno + ' 19:05');
   try {
     var r = UrlFetchApp.fetch(url, { headers: { Referer: 'https://www.windguru.cz/station/5307' }, muteHttpExceptions: true });
     var j = JSON.parse(r.getContentText());

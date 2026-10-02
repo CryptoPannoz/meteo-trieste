@@ -1,7 +1,7 @@
 /* registro-vento.js — Registro del vento del Golfo di Trieste (1 ott 2026).
 
-   Dalle 8 alle 18, un valore ogni 15 minuti per Barcola, Trieste molo, Muggia, boa Paloma,
-   Monte Grisa e boa Mambo, più la media sul campo di regata della Barcolana. Ogni casella
+   Dalle 6 alle 19 (fino al 2 ott 2026: 8-18), un valore ogni 15 minuti per Barcola, Trieste
+   molo, Muggia, boa Paloma, Monte Grisa e boa Mambo, più la media sul campo di regata della Barcolana. Ogni casella
    = i 15 minuti che finiscono a quell'ora: vento medio, raffica massima, direzione (nodi).
    I dati li prepara il Worker Cloudflare (cloudflare-worker/dati, /registro?giorno=).
 
@@ -10,9 +10,9 @@
    i colori della pagina dalle variabili CSS quando ci sono (--line, --surface, --label…).
 
    Giornate surfabili (2 ott 2026, solo con l'opzione riepilogo): la prima colonna (media sul
-   campo / in golfo) sopra SOGLIA nodi per almeno ORE_SURF ore dei quarti d'ora 8-18. Sopra la
-   tabella un grafico per mese o settimana: per ogni giorno la raffica massima e, dentro, la
-   media della giornata; pallino rosso sulle giornate surfabili, contate sopra il grafico (dati
+   campo / in golfo) sopra SOGLIA nodi per almeno ORE_SURF ore dei quarti d'ora 6-19. Sopra la
+   tabella un grafico per mese o settimana: per ogni giorno la raffica massima (il picco più
+   alto tra le centraline a mare) e, dentro, la media della giornata; pallino rosso sulle giornate surfabili, contate sopra il grafico (dati
    dal Worker, /riepilogo). Sotto i bottoni la stessa sintesi del giorno mostrato.
 
    Uso:
@@ -20,7 +20,8 @@
        giorno: "YYYY-MM-DD",        // giorno iniziale (default: oggi)
        attendi: true,               // non scarica finché non si chiama rv.carica() (tendina chiusa)
        nomeCampo: ["Campo di regata", "Race course"],
-       riepilogo: true              // grafico delle giornate surfabili e sintesi del giorno
+       riepilogo: true,             // grafico delle giornate surfabili e sintesi del giorno
+       finestra: ["08:00", "18:00"] // mostra (e scarica) solo questi orari del registro
      });
      RegistroVento.ridisegna();     // dopo un cambio di lingua
    Gli id interni (regGiorno, regCsv…) sono quelli che conta /eventi.js: una sola istanza per pagina. */
@@ -30,9 +31,11 @@
   var URL_RIEP = "https://ventotrieste-dati.bebroggi.workers.dev/riepilogo";
   var SOGLIA = 15;           // nodi: la media del quarto d'ora deve stare SOPRA questo valore…
   var ORE_SURF = 6;          // …per almeno queste ore (24 quarti d'ora) = giornata surfabile
-  var MIN_QUARTI = 20;       // quarti d'ora con un dato (su 41) perché il giorno valga
+  var MIN_QUARTI = 26;       // quarti d'ora con un dato (su 53) perché il giorno valga
+  var MARE = ["barcola", "trieste", "muggia", "paloma"];   // centraline a mare: da qui il picco di raffica
   // colori del grafico, verificati con validate_palette (contrasto e daltonismo, tutti e tre insieme)
   var C_MEDIA = "#1f5f99", C_RAFFICA = "#2b9cb0", C_SURF = "#d9364a";
+  var ORA_FINE = "19";       // fine del registro (Worker REG_ULTIMA), per "il giorno si chiude alle…"
   var FASCE = [[8, "#7d8b97"], [15, "#12a58a"], [25, "#e8830c"], [35, "#d9364a"], [Infinity, "#a2358f"]];
   var CARD = {
     it: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"],
@@ -258,19 +261,27 @@
     return (lingua() === "it" && o.month === "long") ? s.replace(/^1 /, "1° ") : s;    // "1° settembre"
   }
 
-  // sintesi del giorno dalla prima colonna, calcolata come nel Worker (sintesiGiorno):
-  // m = media dei quarti d'ora, r = raffica massima, q = quarti d'ora con la media sopra SOGLIA,
-  // d = direzione prevalente (media vettoriale pesata sul vento)
-  function mediaGiorno(dati) {
-    var v = dati.filter(Boolean), sx = 0, sy = 0, r = null, q = 0;
+  // sintesi di un giorno dal registro, calcolata come nel Worker (sintesiGiorno): dalla prima
+  // colonna m = media dei quarti d'ora, q = quarti d'ora con la media sopra SOGLIA,
+  // d = direzione prevalente (media vettoriale pesata sul vento); r = picco di raffica più alto
+  // tra le centraline a mare e rs = dove
+  function sintesiReg(reg) {
+    var v = reg.serie[0].dati.filter(Boolean), sx = 0, sy = 0, q = 0, out;
     if (!v.length) return null;
     v.forEach(function (x) {
       if (x[2] != null) { sx += x[0] * Math.sin(x[2] * Math.PI / 180); sy += x[0] * Math.cos(x[2] * Math.PI / 180); }
-      if (x[1] != null) r = r == null ? x[1] : Math.max(r, x[1]);
       if (x[0] > SOGLIA) q++;
     });
-    return { m: Math.round(v.reduce(function (a, x) { return a + x[0]; }, 0) / v.length * 10) / 10, n: v.length, r: r, q: q,
+    out = { m: Math.round(v.reduce(function (a, x) { return a + x[0]; }, 0) / v.length * 10) / 10, n: v.length, r: null, rs: null, q: q,
       d: (sx || sy) ? Math.round((Math.atan2(sx, sy) * 180 / Math.PI + 360) % 360) : null };
+    reg.serie.forEach(function (sr) {
+      if (MARE.indexOf(sr.id) === -1) return;
+      sr.dati.forEach(function (x) { if (x && x[1] != null && !(out.r >= x[1])) { out.r = x[1]; out.rs = sr.id; } });
+    });
+    return out;
+  }
+  function nomeMare(id) {
+    return { barcola: "Barcola", trieste: tr("Trieste molo", "Trieste pier"), muggia: "Muggia", paloma: tr("Boa Paloma", "Paloma buoy") }[id] || "";
   }
   function surfabile(q) { return q != null && q >= ORE_SURF * 4; }
   function ore(q) {                  // quarti d'ora -> "6 h 30", "45 min"
@@ -314,9 +325,9 @@
   // un giorno nel grafico: dal riepilogo se è chiuso, per oggi dal registro caricato ("finora")
   function datoGiorno(r, g) {
     var x = r.riep && r.riep.giorni[g];
-    if (x && x.m != null && x.n >= MIN_QUARTI) return { m: x.m, r: x.r, q: x.q, d: x.d, surf: surfabile(x.q) };
+    if (x && x.m != null && x.n >= MIN_QUARTI) return { m: x.m, r: x.r, rs: x.rs, q: x.q, d: x.d, surf: surfabile(x.q) };
     var o = r.oggi;
-    if (o && o.g === g && g === oggiRoma()) return { m: o.m, r: o.r, q: o.q, d: o.d, oggi: true, surf: surfabile(o.q) };
+    if (o && o.g === g && g === oggiRoma()) return { m: o.m, r: o.r, rs: o.rs, q: o.q, d: o.d, oggi: true, surf: surfabile(o.q) };
     return null;
   }
   function nomeGiorno(g) { return maiuscola(dataFmt(g, { weekday: "long", day: "numeric", month: "long" })); }
@@ -325,12 +336,12 @@
     var x = datoGiorno(r, g), vai = g === r.giorno ? '<button type="button" data-rv-vai>' + tr("Vedi il registro ↓", "See the log ↓") + "</button>" : "";
     if (!x) return "<span>" + nomeGiorno(g) + "</span><em>" + (g > oggiRoma() ? tr("ancora da venire", "still to come") : tr("nessuna media per questo giorno", "no average for this day")) + "</em>" + vai;
     return "<span>" + nomeGiorno(g) + "</span>" + sintesi(x) +
-      (x.oggi ? "<em>· " + tr("finora, il giorno si chiude alle 18", "so far, the day closes at 18:00") + "</em>" : "") + vai;
+      (x.oggi ? "<em>· " + tr("finora, il giorno si chiude alle " + ORA_FINE, "so far, the day closes at " + ORA_FINE) + "</em>" : "") + vai;
   }
   // media, raffica, direzione, ore sopra i 15 e bollino: nella riga di lettura e sotto i bottoni
   function sintesi(x) {
     return "<em>" + tr("media", "mean") + "</em><strong>" + num(x.m, 1) + " kt</strong>" +
-      (x.r != null ? "<em>" + tr("raffica max", "max gust") + "</em><strong>" + num(x.r, 0) + " kt</strong>" : "") +
+      (x.r != null ? "<em>" + tr("raffica max", "max gust") + "</em><strong>" + num(x.r, 0) + " kt</strong>" + (x.rs ? "<em>" + tr("a ", "at ") + nomeMare(x.rs) + "</em>" : "") : "") +
       (x.d != null ? "<em>" + tr("da ", "from ") + cardinale(x.d) + "</em>" : "") +
       (x.q != null ? "<em>· " + (x.q ? ore(x.q) + tr(" sopra i ", " above ") + SOGLIA + " kt" : tr("mai sopra i ", "never above ") + SOGLIA + " kt") + "</em>" : "") +
       (x.surf ? '<b class="rv-badge"><i class="rv-pallino"></i>' + (x.oggi ? tr("Già surfabile", "Already surfable") : tr("Giornata surfabile", "Surfable day")) + "</b>" : "");
@@ -403,9 +414,9 @@
     var giorni = function (n) { return n + " " + (n === 1 ? tr("giorno", "day") : tr("giorni", "days")); };
     box.innerHTML = "<h3>" + tr("Giornate surfabili", "Surfable days") + "</h3>" +
       '<p class="rv-nota">' + tr(
-        "Ogni colonna è un giorno, dalle 8 alle 18, dalla colonna «" + nomeC + "»: in blu la <b>media</b>, sopra fino alla <b>raffica massima</b>. " +
+        "Ogni colonna è un giorno, dalle 6 alle 19: in blu la <b>media</b> della colonna «" + nomeC + "», sopra fino alla <b>raffica massima</b>, il picco più alto tra Barcola, Trieste molo, Muggia e Paloma. " +
           "Pallino rosso = <b>giornata surfabile</b>: la media è stata sopra i " + SOGLIA + " nodi per almeno " + ORE_SURF + " ore.",
-        "Each column is one day, 8:00-18:00, from the «" + nomeC + "» column: the <b>mean</b> in blue, topped up to the <b>max gust</b>. " +
+        "Each column is one day, 6:00-19:00: the <b>mean</b> of the «" + nomeC + "» column in blue, topped up to the <b>max gust</b>, the highest peak among Barcola, Trieste pier, Muggia and Paloma. " +
           "Red dot = <b>surfable day</b>: the mean stayed above " + SOGLIA + " knots for at least " + ORE_SURF + " hours.") +
       (j.mancanti ? " <b>" + tr("Sto completando lo storico: mancano ancora " + giorni(j.mancanti) + ".", "Still filling in the history: " + giorni(j.mancanti) + " to go.") + "</b>" : "") + "</p>" +
       '<div class="rv-graf-testa">' +
@@ -472,13 +483,13 @@
 
   // sotto i bottoni: sintesi del giorno mostrato (per oggi, fino all'ultimo quarto d'ora)
   function rigaMedia(r, d, eOggi, fine) {
-    var mg = mediaGiorno(d.serie[0].dati), nomeC = nomeSerie(r, d.serie[0]);
+    var mg = sintesiReg(d), nomeC = nomeSerie(r, d.serie[0]);
     if (!mg) return "";
     if (!eOggi && mg.n < MIN_QUARTI) return '<div class="rv-media"><span>' + tr("La giornata", "The day") + "</span><em>" +
       tr("troppo pochi dati (" + mg.n + " quarti d'ora su " + d.slot.length + ")", "not enough data (" + mg.n + " of " + d.slot.length + " quarter-hours)") + "</em></div>";
     mg.surf = surfabile(mg.q); mg.oggi = eOggi;
     return '<div class="rv-media"><span>' + (eOggi ? tr("Oggi finora", "Today so far") : tr("La giornata", "The day")) +
-      " · " + nomeC + " · 8:00-" + (eOggi ? d.slot[fine] : "18:00") + "</span>" + sintesi(mg) + "</div>";
+      " · " + nomeC + " · " + d.slot[0] + "-" + d.slot[eOggi ? fine : d.slot.length - 1] + "</span>" + sintesi(mg) + "</div>";
   }
 
   var RIGHE_BREVI = 12;   // ultime 3 ore; il resto con "Mostra tutta la giornata"
@@ -498,7 +509,7 @@
     var d = r.dati, $ = r.$, st = $("regStato");
     if (r.opz.riepilogo) {
       // la media di oggi finora fa la colonna chiara del grafico
-      if (d && d.serie && d.giorno === oggiRoma()) { var mo = mediaGiorno(d.serie[0].dati); r.oggi = mo ? { g: d.giorno, m: mo.m, r: mo.r, q: mo.q, d: mo.d } : null; }
+      if (d && d.serie && d.giorno === oggiRoma()) { var mo = sintesiReg(d); r.oggi = mo ? { g: d.giorno, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d } : null; }
       disegnaRiep(r);                              // il giorno aperto si vede premuto nel grafico
     }
     if (!d || !d.serie) { $("regTab").innerHTML = ""; $("regTabM").innerHTML = ""; $("regUltimo").innerHTML = ""; $("regMedia").innerHTML = ""; $("regTutto").hidden = true; return; }
@@ -557,8 +568,8 @@
       tr("Mostra tutta la giornata (altri " + piu + " orari)", "Show the whole day (" + piu + " more)");
 
     var n = d.serie[0].dati.filter(Boolean).length;
-    st.textContent = futuro ? tr("Giorno futuro: il registro si riempie dalle 8 di quel giorno.", "Future day: the log fills up from 8:00 that day.") :
-      (eOggi && fine < 0) ? tr("Il registro di oggi parte alle 8:00.", "Today's log starts at 8:00.") :
+    st.textContent = futuro ? tr("Giorno futuro: il registro si riempie dalle " + d.slot[0] + " di quel giorno.", "Future day: the log fills up from " + d.slot[0] + " that day.") :
+      (eOggi && fine < 0) ? tr("Il registro di oggi parte alle " + d.slot[0] + ".", "Today's log starts at " + d.slot[0] + ".") :
       (n ? "" : tr("Nessun dato per questo giorno. ", "No data for this day. ")) +
       (eOggi ? tr("Oggi: si aggiorna da solo ogni 5 minuti. ", "Today: updates itself every 5 minutes. ") : "") +
       tr("Aggiornato alle ", "Updated at ") + oraLocale(d.aggiornato) +
@@ -573,6 +584,14 @@
     istanze.forEach(function (r) { r.root.style.setProperty("--rv-top", h + "px"); });
   }
   window.addEventListener("resize", function () { clearTimeout(misuraTop.t); misuraTop.t = setTimeout(misuraTop, 150); });
+
+  // solo gli orari [da, a] del registro (opzione finestra), per tabella, riepilogo e CSV
+  function taglia(d, fin) {
+    if (!fin || !d.slot) return d;
+    var tieni = d.slot.map(function (h) { return h >= fin[0] && h <= fin[1]; });
+    var f = function (arr) { return arr.filter(function (x, i) { return tieni[i]; }); };
+    return Object.assign({}, d, { slot: f(d.slot), serie: d.serie.map(function (sr) { return Object.assign({}, sr, { dati: f(sr.dati) }); }) });
+  }
 
   function carica(r, giorno) {
     if (giorno && giorno !== r.giorno) r.tutto = false;
@@ -590,7 +609,7 @@
       .then(function (d) {
         if (r.giorno !== g) return;                // nel frattempo è stato scelto un altro giorno
         if (d.errore) throw new Error(d.errore);
-        r.dati = d; r.ultimo = Date.now(); disegna(r);
+        r.dati = taglia(d, r.opz.finestra); r.ultimo = Date.now(); disegna(r);
       })
       .catch(function () {
         if (r.giorno !== g) return;
@@ -624,11 +643,11 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
 
-  // oggi, dalle 7:45 alle 18:30, si rinnova ogni 5 minuti (scheda visibile e registro già aperto)
+  // oggi, dalle 5:45 alle 19:30, si rinnova ogni 5 minuti (scheda visibile e registro già aperto)
   function rinnova() {
     var o = oraRoma(), oggi = oggiRoma();
     istanze.forEach(function (r) {
-      if (r.caricato && r.giorno === oggi && o >= "07:45" && o <= "18:30" && Date.now() - r.ultimo > 4 * 60000) carica(r);
+      if (r.caricato && r.giorno === oggi && o >= "05:45" && o <= "19:30" && Date.now() - r.ultimo > 4 * 60000) carica(r);
     });
   }
   setInterval(function () { if (!document.hidden) rinnova(); }, 60000);
