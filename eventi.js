@@ -18,6 +18,7 @@
      barcolana vento: live|prev · barcolana previsione: <ora> · barcolana lato: <n>
      barcolana centralina: <nome> · barcolana classifiche: <anno> · condividi: whatsapp|copia link
      registro: scarica csv | cambia giorno | mostra tutto | centralina <id>   (/registro/ e Barcolana; titolo = pagina)
+     registro: giorno dal riepilogo   bottone di un giorno nel riepilogo dei giorni ventosi (/registro/)
 
    GoatCounter invia con sendBeacon: il conteggio arriva anche se il clic cambia pagina.
    Su localhost GoatCounter non conta nulla (è normale). Per contare altro da una pagina:
@@ -74,6 +75,7 @@
     if (t.closest("#regPrima, #regDopo, #regOggi")) return conta("registro: cambia giorno");
     if (t.closest("#regTutto")) return conta("registro: mostra tutto");
     if ((el = t.closest("[data-rv-serie]"))) return conta("registro: centralina " + el.getAttribute("data-rv-serie"));
+    if (t.closest("[data-rv-giorno]")) return conta("registro: giorno dal riepilogo");
 
     // ---- comuni a tutte le pagine ----
     if (t.closest("#btnAggiorna, #bcAggiorna")) return conta("aggiorna: " + pagina);

@@ -20,6 +20,8 @@
  *  - GET /?diag=1: età del payload salvato.
  *  - GET /registro?giorno=YYYY-MM-DD: registro del vento dalle 8 alle 18, un valore ogni
  *    15 minuti per centralina più la media sul campo di regata (vedi "REGISTRO" sotto).
+ *  - GET /riepilogo: media di ogni giornata dal 1° settembre 2026, per il riepilogo dei
+ *    giorni ventosi sopra la tabella del registro (vedi "RIEPILOGO" sotto).
  *
  * Il frontend (/dati-live.js) usa questo Worker per primo e torna al proxy Apps Script
  * se il Worker non risponde o ha un payload vecchio: il sito non dipende da Cloudflare.
@@ -102,7 +104,9 @@ async function aggiorna(env) {
 
    Da dove arriva lo storico:
     - Barcola: Windguru, medie a 5 minuti, via proxy Apps Script (?storicoBarcola=),
-      perché Windguru respinge Cloudflare. Disponibile per qualsiasi giorno.
+      perché Windguru respinge Cloudflare. Windguru tiene solo le ultime 2 settimane
+      (provato il 2 ott 2026: c'era dal 18 settembre): oltre BARCOLA_GIORNI non si chiede,
+      la colonna resta vuota e la media sul campo si fa con le altre tre.
     - Trieste molo, Muggia, boa Paloma: Protezione Civile FVG (stazioni 212, 500, 574),
       già a 15 minuti, per qualsiasi giorno. Sensori 5 direzione, 6 velocità, 7 raffica.
     - Monte Grisa: vetercek dà solo l'ultimo dato, quindi la registriamo noi dal payload
@@ -113,8 +117,9 @@ async function aggiorna(env) {
 
    Conservazione: "registro:<giorno>" in KV. Oggi si ricalcola ogni 5 minuti dal cron
    (8-18:30); un giorno passato si calcola alla prima richiesta e resta salvato.
-   Scritture KV al giorno: ~290 payload + ~125 Monte Grisa + ~130 registro (limite 1000). */
+   Scritture KV al giorno: ~290 payload + ~125 Monte Grisa + ~130 registro + 1-2 riepilogo (limite 1000). */
 const REG_PRIMA = 8 * 60, REG_ULTIMA = 18 * 60, REG_PASSO = 15;
+const BARCOLA_GIORNI = 14;
 const MS_IN_KT = 1.94384;
 const PCFVG = 'https://monitor.protezionecivile.fvg.it/api/stations/';
 const CAMPO = { lat: 45.662, lon: 13.705 };
@@ -146,6 +151,7 @@ function romaInUtc(giorno, min) {           // giorno + minuti dalla mezzanotte 
 }
 const hhmm = min => String(Math.floor(min / 60)).padStart(2, '0') + ':' + String(min % 60).padStart(2, '0');
 const giornoValido = g => /^\d{4}-\d{2}-\d{2}$/.test(g) && !isNaN(Date.parse(g + 'T12:00:00Z')) && g >= '2020-01-01';
+const sposta = (g, n) => new Date(Date.parse(g + 'T12:00:00Z') + n * 864e5).toISOString().slice(0, 10);
 const r1 = v => Math.round(v * 10) / 10;
 
 /* campioni [{ min, kt, raffica, deg }] -> una casella per quarto d'ora:
@@ -271,8 +277,10 @@ async function costruisciRegistro(env, giorno) {
   const errori = {};
   const prova = (id, p) => p.catch(e => { errori[id] = String(e).slice(0, 120); return []; });
   const vuoto = giorno > adesso.giorno;
+  const giorniFa = (Date.parse(adesso.giorno + 'T12:00:00Z') - Date.parse(giorno + 'T12:00:00Z')) / 864e5;
+  const senzaBarcola = giorniFa > BARCOLA_GIORNI;       // Windguru non ce l'ha più: non è un errore
   const campioni = vuoto ? [] : await Promise.all(REG_STAZIONI.map(s =>
-    s.id === 'barcola' ? prova(s.id, campioniBarcola(giorno)) :
+    s.id === 'barcola' ? (senzaBarcola ? [] : prova(s.id, campioniBarcola(giorno))) :
     s.pc ? prova(s.id, campioniPcfvg(s.pc, giorno)) :
     s.id === 'mambo' ? prova(s.id, campioniMambo(giorno)) :
     prova(s.id, campioniGrisa(env, giorno))));
@@ -285,6 +293,7 @@ async function costruisciRegistro(env, giorno) {
     serie: [{ id: 'campo', nome: 'Campo di regata', fonte: 'media pesata delle centraline a mare', dati: mediaCampo(serie) }]
       .concat(REG_STAZIONI.map(s => ({ id: s.id, nome: s.nome, fonte: s.fonte, oraria: !!s.oraria, dati: serie[s.id] }))),
     errori: Object.keys(errori).length ? errori : undefined,
+    senza: senzaBarcola ? ['barcola'] : undefined,
     completo: chiuso && !Object.keys(errori).length,
     aggiornato: new Date().toISOString(),
   };
@@ -313,6 +322,78 @@ async function registro(env, ctx, giorno) {
   }
 }
 
+/* ========================= RIEPILOGO: GIORNI VENTOSI =========================
+   Richiesto da Alberto (2 ott 2026): sopra la tabella del registro, mese per mese, quanti
+   giorni ventosi. Giorno ventoso = media della giornata sopra i 15 nodi; la media della
+   giornata è quella dei quarti d'ora 8-18 della media sul campo (la prima colonna del
+   registro). La soglia la applica la pagina (registro-vento.js), qui solo i numeri.
+
+   KV "riepilogo" = { giorni: { "YYYY-MM-DD": { n, m, d, sb, p } } }
+     n = quarti d'ora con un dato (su 41), m = media della giornata (nodi, 1 decimale),
+     d = direzione prevalente (gradi, media vettoriale pesata sul vento),
+     sb = 1 senza Barcola (oltre le 2 settimane di Windguru), p = 1 con una centralina a mare
+     mancata. Un giorno con una centralina a mare in errore resta { e: tentativi, t: ms }
+     e si riprova dopo 20 minuti; al 4° tentativo si tiene la media delle altre (p = 1).
+   Lo riempie il cron (completaRiepilogo) dal 1° settembre 2026 a ieri: i giorni già nel
+   registro salvato si leggono e basta, al massimo UN giorno da ricostruire per giro (limite
+   di 50 sottorichieste del piano gratuito). Ogni giorno nuovo entra dopo mezzanotte, quando
+   Windguru ha ancora Barcola: è così che lo storico resta completo. */
+const RIEP_DAL = '2026-09-01';
+const RIEP_CHIAVE = 'riepilogo';
+const RIEP_RIPROVA_MS = 20 * 60000, RIEP_TENTATIVI = 3, RIEP_LETTI = 8;
+
+function sintesiGiorno(reg) {
+  const campo = reg.serie[0].dati.filter(Boolean);
+  const out = { n: campo.length };
+  if (campo.length) {
+    let sx = 0, sy = 0;
+    campo.forEach(v => { if (v[2] != null) { sx += v[0] * Math.sin(v[2] * Math.PI / 180); sy += v[0] * Math.cos(v[2] * Math.PI / 180); } });
+    out.m = r1(campo.reduce((a, v) => a + v[0], 0) / campo.length);
+    if (sx || sy) out.d = Math.round((Math.atan2(sx, sy) * 180 / Math.PI + 360) % 360);
+  }
+  if (reg.senza && reg.senza.indexOf('barcola') !== -1) out.sb = 1;
+  return out;
+}
+// contano solo le centraline che entrano nella media sul campo (Mambo o Monte Grisa no)
+const erroriMare = reg => Object.keys(reg.errori || {}).filter(id => REG_STAZIONI.some(s => s.id === id && s.campo));
+
+async function completaRiepilogo(env) {
+  const ieri = sposta(roma(Date.now()).giorno, -1), ora = Date.now();
+  const riep = (await env.DATI.get(RIEP_CHIAVE, { type: 'json' })) || { giorni: {} };
+  let letti = 0, costruito = false, fatti = 0;
+  for (let g = RIEP_DAL; g <= ieri && letti < RIEP_LETTI; g = sposta(g, 1)) {
+    const prima = riep.giorni[g];
+    if (prima && !(prima.e && ora - prima.t > RIEP_RIPROVA_MS)) continue;
+    letti++;
+    let reg = await env.DATI.get('registro:' + g, { type: 'json' });
+    if (!reg || !reg.completo) {
+      if (costruito) continue;
+      costruito = true;
+      reg = await costruisciRegistro(env, g);
+      await salvaRegistro(env, reg);
+    }
+    const err = erroriMare(reg), tentativi = (prima && prima.e) || 0;
+    riep.giorni[g] = (err.length && tentativi < RIEP_TENTATIVI) ? { e: tentativi + 1, t: ora } :
+      Object.assign(sintesiGiorno(reg), err.length ? { p: 1 } : {});
+    fatti++;
+  }
+  if (fatti) await env.DATI.put(RIEP_CHIAVE, JSON.stringify(riep));
+  return fatti + ' giorni';
+}
+
+/* per la pagina: i giorni fatti (senza i campi interni) e quanti mancano ancora */
+async function riepilogo(env) {
+  const riep = (await env.DATI.get(RIEP_CHIAVE, { type: 'json', cacheTtl: 60 })) || { giorni: {} };
+  const ieri = sposta(roma(Date.now()).giorno, -1), giorni = {};
+  let mancanti = 0;
+  for (let g = RIEP_DAL; g <= ieri; g = sposta(g, 1)) {
+    const x = riep.giorni[g];
+    if (!x || x.e) { mancanti++; continue; }
+    giorni[g] = x;
+  }
+  return { dal: RIEP_DAL, fino: ieri, giorni, mancanti, aggiornato: new Date().toISOString() };
+}
+
 function json(obj, extra) {
   return new Response(typeof obj === 'string' ? obj : JSON.stringify(obj), {
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...CORS, ...(extra || {}) },
@@ -321,7 +402,14 @@ function json(obj, extra) {
 
 export default {
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(aggiorna(env).catch(err => console.warn('aggiorna: ' + err)));
+    ctx.waitUntil((async () => {
+      const esito = await aggiorna(env).catch(err => { console.warn('aggiorna: ' + err); return 'errore'; });
+      // un passo del riepilogo solo a minuti pari e quando il payload non è cambiato (cioè
+      // senza il registro di oggi da ricostruire): così si resta sotto le 50 sottorichieste
+      if (esito === 'invariato' && new Date(event.scheduledTime).getUTCMinutes() % 2 === 0) {
+        await completaRiepilogo(env).catch(err => console.warn('riepilogo: ' + err));
+      }
+    })());
   },
 
   async fetch(request, env, ctx) {
@@ -335,6 +423,14 @@ export default {
         return json(await registro(env, ctx, giorno), { 'Cache-Control': 'public, max-age=60' });
       } catch (err) {
         return json({ giorno, errore: 'registro non disponibile: ' + err });
+      }
+    }
+
+    if (indirizzo.pathname === '/riepilogo') {
+      try {
+        return json(await riepilogo(env), { 'Cache-Control': 'public, max-age=300' });
+      } catch (err) {
+        return json({ errore: 'riepilogo non disponibile: ' + err });
       }
     }
 

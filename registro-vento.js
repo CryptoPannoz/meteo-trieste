@@ -9,17 +9,27 @@
    Autonomo: stili, testi IT/EN (lingua da <html data-lang>), frecce e colori suoi; prende
    i colori della pagina dalle variabili CSS quando ci sono (--line, --surface, --label…).
 
+   Giorni ventosi (2 ott 2026, solo con l'opzione riepilogo): giorno ventoso = media della
+   giornata sopra SOGLIA_VENTOSO nodi, dove la media della giornata è quella dei quarti d'ora
+   8-18 della prima colonna (media sul campo / in golfo). Sopra la tabella il riepilogo mese
+   per mese (dal Worker, /riepilogo), sotto i bottoni la media del giorno mostrato.
+
    Uso:
      var rv = RegistroVento.monta(elemento, {
        giorno: "YYYY-MM-DD",        // giorno iniziale (default: oggi)
        attendi: true,               // non scarica finché non si chiama rv.carica() (tendina chiusa)
-       nomeCampo: ["Campo di regata", "Race course"]
+       nomeCampo: ["Campo di regata", "Race course"],
+       riepilogo: true              // riepilogo dei giorni ventosi e media della giornata
      });
      RegistroVento.ridisegna();     // dopo un cambio di lingua
    Gli id interni (regGiorno, regCsv…) sono quelli che conta /eventi.js: una sola istanza per pagina. */
 (function () {
   "use strict";
   var URL_REG = "https://ventotrieste-dati.bebroggi.workers.dev/registro";
+  var URL_RIEP = "https://ventotrieste-dati.bebroggi.workers.dev/riepilogo";
+  var SOGLIA_VENTOSO = 15;   // nodi: media della giornata SOPRA questo valore = giorno ventoso
+  var MIN_QUARTI = 20;       // quarti d'ora con un dato (su 41) perché la media del giorno valga
+  var VENTOSO = "#e8830c";   // la fascia 15-25 nodi di FASCE
   var FASCE = [[8, "#7d8b97"], [15, "#12a58a"], [25, "#e8830c"], [35, "#d9364a"], [Infinity, "#a2358f"]];
   var CARD = {
     it: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"],
@@ -84,6 +94,30 @@
       ".rv-tab tr.adesso td:first-child{color:" + ACC + "}" +
       ".rv-tutto{display:block;width:100%;margin-top:.5rem}" +
       ".rv-tutto[hidden]{display:none}" +
+      /* giorni ventosi: riepilogo dei mesi sopra il registro e media del giorno mostrato */
+      ".rv-riep{margin:0 0 1rem;padding:.7rem .8rem .2rem;border:1px solid " + BORDO + ";border-radius:3px;background:var(--surface-soft,#f3f7f8)}" +
+      ".rv-riep h3{margin:0;font-size:1rem;color:var(--bcn-title,var(--ink,#16232c))}" +
+      ".rv-riep .rv-nota{margin:.15rem 0 .55rem}" +
+      ".rv-mese{display:grid;grid-template-columns:minmax(12rem,max-content) 1fr;gap:.35rem 1rem;align-items:center;padding:.6rem 0;border-top:1px solid " + BORDO + "}" +
+      ".rv-mese-nome{display:block;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--label,var(--muted,#5f7280))}" +
+      ".rv-mese-nome em{font-style:normal;font-weight:600;text-transform:none;letter-spacing:0}" +
+      ".rv-mese-conto{font-size:.9rem;font-weight:700;color:var(--ink,#16232c)}" +
+      ".rv-mese-conto strong{font-size:1.6rem;line-height:1.1;margin-right:.15rem}" +
+      ".rv-mese-conto small{font-size:.78rem;font-weight:600;color:var(--label,var(--muted,#5f7280))}" +
+      ".rv-giorni{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;font-size:.78rem;color:var(--label,var(--muted,#5f7280))}" +
+      ".rv-giorni button{margin:0;min-height:36px;padding:.25rem .6rem;border:1px solid " + BORDO + ";border-left:4px solid " + VENTOSO + ";border-radius:3px;" +
+        "background:color-mix(in srgb," + VENTOSO + " 14%,var(--surface,#fff));color:var(--ink,#16232c);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap}" +
+      ".rv-giorni button.calmo{border-left-color:" + BORDO + ";background:var(--surface,#fff)}" +
+      ".rv-giorni button[aria-pressed=true]{outline:2px solid " + ACC + ";outline-offset:1px}" +
+      ".rv-giorni button i{font-style:normal;font-weight:600;color:var(--slate-2,var(--muted,#5f7280))}" +
+      ".rv-media{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .55rem;margin:.1rem 0 .6rem;font-size:.9rem;color:var(--ink,#16232c)}" +
+      ".rv-media span{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--label,var(--muted,#5f7280))}" +
+      ".rv-media strong{font-size:1.05rem}" +
+      ".rv-media em{font-style:normal;font-size:.8rem;font-weight:600;color:var(--slate-2,var(--muted,#5f7280))}" +
+      ".rv-ctrl{scroll-margin-top:calc(var(--rv-top,0px) + .5rem)}" +
+      ".rv-badge{display:inline-block;padding:.15rem .55rem;border:1px solid " + VENTOSO + ";border-radius:999px;background:color-mix(in srgb," + VENTOSO + " 18%,var(--surface,#fff));" +
+        "font-size:.76rem;font-weight:800;color:var(--ink,#16232c)}" +
+      "@media (max-width:700px){.rv-mese{grid-template-columns:1fr}}" +
       /* telefono: una centralina alla volta, tabella a 4 colonne che sta nello schermo;
          l'intestazione resta attaccata sotto la barra in alto (--rv-top) mentre si scorre la pagina */
       ".rv-mobile{display:none}" +
@@ -109,6 +143,7 @@
     try { serie = localStorage.getItem("vt-registro-serie") || "campo"; } catch (e) {}
     var r = { root: root, opz: opz, giorno: opz.giorno || oggiRoma(), dati: null, caricato: false, ultimo: 0, serie: serie, tutto: false };
     root.innerHTML =
+      (opz.riepilogo ? '<section class="rv-riep" id="regRiep" aria-label="Giorni ventosi" hidden></section>' : "") +
       '<div class="rv-ctrl">' +
         '<button type="button" id="regPrima">◀</button>' +
         '<input type="date" id="regGiorno" min="2024-01-01">' +
@@ -117,6 +152,7 @@
         '<button type="button" id="regCsv"></button>' +
       '</div>' +
       '<p class="rv-stato" id="regStato" aria-live="polite"></p>' +
+      '<div id="regMedia"></div>' +
       '<div id="regUltimo"></div>' +
       '<div class="rv-wrap"><table class="rv-tab rv-larga" id="regTab"></table></div>' +
       '<div class="rv-mobile"><div class="rv-chips" id="regSerie" role="group"></div><table class="rv-tab rv-stretta" id="regTabM"></table></div>' +
@@ -140,9 +176,18 @@
       try { localStorage.setItem("vt-registro-serie", r.serie); } catch (e) {}
       disegna(r);
     });
+    if (opz.riepilogo) $("regRiep").addEventListener("click", function (ev) {
+      var b = ev.target.closest ? ev.target.closest("[data-rv-giorno]") : null;
+      if (!b) return;
+      carica(r, b.getAttribute("data-rv-giorno"));
+      // porta in vista il registro, se i mesi lo hanno spinto in basso
+      var c = root.querySelector(".rv-ctrl"), y = c.getBoundingClientRect().top;
+      if (y < 0 || y > window.innerHeight * 0.45) c.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     istanze.push(r);
     misuraTop();
     testi(r);
+    if (opz.riepilogo) caricaRiepilogo(r);
     if (!opz.attendi) carica(r);
     return { carica: function (g) { if (!r.caricato || g) carica(r, g); }, ridisegna: function () { testi(r); disegna(r); } };
   }
@@ -173,6 +218,94 @@
     return { campo: tr(nc[0], nc[1]), trieste: tr("Trieste molo", "Trieste pier"), paloma: tr("Boa Paloma", "Paloma buoy"), mambo: tr("Boa Mambo", "Mambo buoy") }[sr.id] || sr.nome;
   }
 
+  /* ---- giorni ventosi ---- */
+  function locale() { return lingua() === "en" ? "en-GB" : "it-IT"; }
+  function dataFmt(g, o) {
+    o.timeZone = "UTC";
+    var s = new Intl.DateTimeFormat(locale(), o).format(new Date(g.length === 7 ? g + "-15T12:00:00Z" : g + "T12:00:00Z"));
+    return (lingua() === "it" && o.month === "long") ? s.replace(/^1 /, "1° ") : s;    // "1° settembre"
+  }
+
+  // media della giornata: media dei quarti d'ora con un dato, arrotondata come nel Worker;
+  // direzione prevalente = media vettoriale pesata sul vento
+  function mediaGiorno(dati) {
+    var v = dati.filter(Boolean), sx = 0, sy = 0;
+    if (!v.length) return null;
+    v.forEach(function (x) { if (x[2] != null) { sx += x[0] * Math.sin(x[2] * Math.PI / 180); sy += x[0] * Math.cos(x[2] * Math.PI / 180); } });
+    return { m: Math.round(v.reduce(function (a, x) { return a + x[0]; }, 0) / v.length * 10) / 10, n: v.length,
+      d: (sx || sy) ? Math.round((Math.atan2(sx, sy) * 180 / Math.PI + 360) % 360) : null };
+  }
+
+  function caricaRiepilogo(r) {
+    clearTimeout(r.tRiep);
+    fetch(URL_RIEP + "?ts=" + Date.now())
+      .then(function (x) { return x.json(); })
+      .then(function (j) {
+        if (!j || j.errore || !j.giorni) throw new Error("riepilogo");
+        r.riep = j; disegnaRiep(r);
+        // dopo il primo avvio il Worker completa lo storico un giorno alla volta
+        if (j.mancanti) r.tRiep = setTimeout(function () { caricaRiepilogo(r); }, 120000);
+      })
+      .catch(function () {});   // senza riepilogo il registro funziona lo stesso
+  }
+
+  /* Mese per mese, dal più recente: quanti giorni ventosi su quanti giorni con dati, e i
+     giorni ventosi come bottoni che aprono quel giorno nel registro. */
+  function disegnaRiep(r) {
+    var box = r.$("regRiep"), j = r.riep;
+    if (!box || !j) return;
+    var mesi = {}, ordine = [], senzaB = null, meseOggi = oggiRoma().slice(0, 7);
+    var nomeC = (r.opz.nomeCampo || ["Campo di regata", "Race course"])[lingua() === "en" ? 1 : 0];
+    Object.keys(j.giorni).sort().forEach(function (g) {
+      var x = j.giorni[g];
+      if (x.m == null || !(x.n >= MIN_QUARTI)) return;
+      var k = g.slice(0, 7), giorno = { g: g, m: x.m, d: x.d };
+      if (!mesi[k]) { mesi[k] = { tot: 0, ventosi: [], max: null }; ordine.unshift(k); }
+      mesi[k].tot++;
+      if (x.m > SOGLIA_VENTOSO) mesi[k].ventosi.push(giorno);
+      if (!mesi[k].max || x.m > mesi[k].max.m) mesi[k].max = giorno;
+      if (x.sb) senzaB = g;
+    });
+    var chip = function (x, calmo) {
+      return '<button type="button" data-rv-giorno="' + x.g + '"' + (calmo ? ' class="calmo"' : "") + ' aria-pressed="' + (x.g === r.giorno) + '">' +
+        dataFmt(x.g, { day: "numeric", month: "short" }) + " · " + num(x.m, 1) + " kt" + (x.d != null ? " <i>" + cardinale(x.d) + "</i>" : "") + "</button>";
+    };
+    var giorni = function (n) { return n + " " + (n === 1 ? tr("giorno", "day") : tr("giorni", "days")); };
+    box.innerHTML = "<h3>" + tr("Giorni ventosi", "Windy days") + "</h3>" +
+      '<p class="rv-nota">' + tr(
+        "Un giorno è ventoso quando la <b>media della giornata</b> supera i " + SOGLIA_VENTOSO + " nodi: la media dei quarti d'ora dalle 8 alle 18 della colonna «" + nomeC + "». " +
+          "Dati dal " + dataFmt(j.dal, { day: "numeric", month: "long", year: "numeric" }) + ". Tocca un giorno per aprirlo nel registro.",
+        "A day is windy when the <b>daily average</b> is above " + SOGLIA_VENTOSO + " knots: the average of the 8:00-18:00 quarter-hours in the «" + nomeC + "» column. " +
+          "Data since " + dataFmt(j.dal, { day: "numeric", month: "long", year: "numeric" }) + ". Tap a day to open it in the log.") +
+      (j.mancanti ? " <b>" + tr("Sto completando lo storico: mancano ancora " + giorni(j.mancanti) + ".", "Still filling in the history: " + giorni(j.mancanti) + " to go.") + "</b>" : "") + "</p>" +
+      ordine.map(function (k) {
+        var M = mesi[k], n = M.ventosi.length;
+        return '<div class="rv-mese"><div><span class="rv-mese-nome">' + dataFmt(k, { month: "long", year: "numeric" }) +
+            (k === meseOggi ? " <em>· " + tr("in corso", "so far") + "</em>" : "") + "</span>" +
+            '<span class="rv-mese-conto"><strong>' + n + "</strong> " + (n === 1 ? tr("giorno ventoso", "windy day") : tr("giorni ventosi", "windy days")) +
+            " <small>" + tr("su ", "out of ") + giorni(M.tot) + "</small></span></div>" +
+          '<div class="rv-giorni">' + (n ? M.ventosi.map(function (x) { return chip(x); }).join("") :
+            tr("Nessuno. Il più ventoso:", "None. Windiest:") + " " + chip(M.max, true)) + "</div></div>";
+      }).join("") +
+      (senzaB ? '<p class="rv-nota">' + tr("Fino al " + dataFmt(senzaB, { day: "numeric", month: "long" }) + " la media è senza Barcola: Windguru ne conserva lo storico solo per due settimane.",
+        "Until " + dataFmt(senzaB, { day: "numeric", month: "long" }) + " the average is without Barcola: Windguru only keeps two weeks of its history.") + "</p>" : "");
+    box.hidden = !ordine.length && !j.mancanti;
+  }
+
+  // sotto i bottoni: media in golfo del giorno mostrato (per oggi, fino all'ultimo quarto d'ora)
+  function rigaMedia(r, d, eOggi, fine) {
+    var mg = mediaGiorno(d.serie[0].dati), nomeC = nomeSerie(r, d.serie[0]);
+    if (!mg) return "";
+    if (!eOggi && mg.n < MIN_QUARTI) return '<div class="rv-media"><span>' + tr("Media della giornata", "Daily average") + "</span><em>" +
+      tr("troppo pochi dati (" + mg.n + " quarti d'ora su " + d.slot.length + ")", "not enough data (" + mg.n + " of " + d.slot.length + " quarter-hours)") + "</em></div>";
+    var ventoso = mg.m > SOGLIA_VENTOSO;
+    return '<div class="rv-media"><span>' + (eOggi ? tr("Media di oggi finora", "Today's average so far") : tr("Media della giornata", "Daily average")) +
+      " · " + nomeC + " · 8:00-" + (eOggi ? d.slot[fine] : "18:00") + "</span><strong>" + num(mg.m, 1) + " kt</strong>" +
+      (mg.d != null ? "<em>" + tr("da ", "from ") + cardinale(mg.d) + "</em>" : "") +
+      (ventoso ? '<b class="rv-badge">' + (eOggi ? tr("Per ora è un giorno ventoso", "Windy day so far") : tr("Giorno ventoso", "Windy day")) + "</b>" :
+        "<em>· " + tr("sotto i " + SOGLIA_VENTOSO + " nodi, non ventoso", "below " + SOGLIA_VENTOSO + " knots, not windy") + "</em>") + "</div>";
+  }
+
   var RIGHE_BREVI = 12;   // ultime 3 ore; il resto con "Mostra tutta la giornata"
 
   function cella(v, cls, vuota) {
@@ -188,7 +321,8 @@
      telefono una alla volta, scelta coi bottoni, con l'intestazione sempre visibile. */
   function disegna(r) {
     var d = r.dati, $ = r.$, st = $("regStato");
-    if (!d || !d.serie) { $("regTab").innerHTML = ""; $("regTabM").innerHTML = ""; $("regUltimo").innerHTML = ""; $("regTutto").hidden = true; return; }
+    if (r.opz.riepilogo) disegnaRiep(r);           // il giorno aperto si vede premuto nei mesi
+    if (!d || !d.serie) { $("regTab").innerHTML = ""; $("regTabM").innerHTML = ""; $("regUltimo").innerHTML = ""; $("regMedia").innerHTML = ""; $("regTutto").hidden = true; return; }
     var oggi = oggiRoma(), ora = oraRoma(), eOggi = d.giorno === oggi, futuro = d.giorno > oggi;
     var fine = d.slot.length - 1;
     if (eOggi) { fine = -1; d.slot.forEach(function (h, i) { if (h <= ora) fine = i; }); }
@@ -211,6 +345,7 @@
         (u.v[1] != null ? tr("raffica ", "gust ") + num(u.v[1], 0) + " kt" : "") +
         (u.v[2] != null ? " · " + tr("da ", "from ") + cardinale(u.v[2]) + " " + freccia(u.v[2]) : "") + "</em></div>" : "";
     };
+    $("regMedia").innerHTML = r.opz.riepilogo ? rigaMedia(r, d, eOggi, fine) : "";
     // su computer la media sul campo, su telefono la centralina scelta
     $("regUltimo").innerHTML = box(d.serie[0], "rv-solo-larga") + box(mostra, "rv-solo-mobile");
 
