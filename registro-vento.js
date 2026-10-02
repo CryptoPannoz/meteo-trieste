@@ -486,7 +486,7 @@
           '<button type="button" data-rv-sposta="1"' + (gg[gg.length - 1] < oggi ? "" : " disabled") + ' aria-label="' + tr("Periodo successivo", "Next period") + '">▶</button></div>' +
       "</div>" +
       '<div class="rv-conto">' + SURFISTA + '<strong>' + surf + "</strong> " + (surf === 1 ? tr("giornata surfabile", "surfable day") : tr("giornate surfabili", "surfable days")) +
-        " <em>" + tr("su ", "out of ") + giorni(chiusi) + tr(" registrati", " recorded") + (inCorso ? " · " + tr("in corso", "so far") : "") + "</em></div>" +
+        " <em>" + tr("su ", "out of ") + giorni(chiusi) + (chiusi === 1 ? tr(" registrato", " recorded") : tr(" registrati", " recorded")) + (inCorso ? " · " + tr("in corso", "so far") : "") + "</em></div>" +
       '<div class="rv-meteo ' + r.per.tipo + '" aria-hidden="true">' + meteo + "</div>" +
       '<div class="rv-plot">' + griglia + '<div class="rv-colonne" role="group" aria-label="' + tr("Media e raffica di ogni giorno", "Mean and gust of each day") + '">' + colonne + "</div></div>" +
       '<div class="rv-assex" aria-hidden="true">' + assex + "</div>" +
