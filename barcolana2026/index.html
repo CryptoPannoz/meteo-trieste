@@ -1502,9 +1502,9 @@
   <!-- GoatCounter (statistiche anonime, senza cookie) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
-  <script src="/eventi.js?v=20261001" defer></script>
+  <script src="/eventi.js?v=20261002" defer></script>
   <script src="/dati-live.js?v=20260929b"></script>
-  <script src="/registro-vento.js?v=20261001"></script>
+  <script src="/registro-vento.js?v=20261002"></script>
   <script src="./costa.js?v=2"></script>
   <script src="./strade.js?v=1" defer onload="window.disegnaBaseBarcolana && window.disegnaBaseBarcolana()"></script>
   <script>
@@ -2475,9 +2475,14 @@
         attendi: true, giorno: (oggi > "2026-10-11" && oggi <= "2026-10-31") ? "2026-10-11" : oggi });
       det.addEventListener("toggle", () => { if (det.open) rv.carica(); });
       // dal menu ("Registro") o da un link con #registro la tendina si apre da sola
-      const apriDaLink = () => { if (location.hash === "#registro") det.open = true; };
-      apriDaLink();
-      window.addEventListener("hashchange", apriDaLink);
+      // (al primo caricamento la pagina sopra si allunga mentre arrivano mappa e dati: riporto la vista sul registro)
+      const apriDaLink = (attesa) => {
+        if (location.hash !== "#registro") return;
+        det.open = true;
+        setTimeout(() => document.getElementById("registro").scrollIntoView({ block: "start" }), attesa || 0);
+      };
+      apriDaLink(900);
+      window.addEventListener("hashchange", () => apriDaLink(0));
     })();
   })();
   </script>

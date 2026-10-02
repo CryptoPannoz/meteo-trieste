@@ -50,35 +50,64 @@
     if (document.getElementById("rvStili")) return;
     var st = document.createElement("style");
     st.id = "rvStili";
+    var BORDO = "var(--line,#c8d8dc)", ACC = "var(--bc-boa,var(--sea,#075d70))", TH = "var(--bcn-th,var(--surface-soft,#eef3f5))";
     st.textContent =
       ".rv-ctrl{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.2rem 0 .5rem}" +
-      ".rv-ctrl button,.rv-ctrl input{margin:0;min-height:38px;padding:.3rem .65rem;border:1px solid var(--line,#c8d8dc);border-radius:3px;" +
+      ".rv-ctrl button,.rv-ctrl input,.rv-tutto{margin:0;min-height:38px;padding:.3rem .65rem;border:1px solid " + BORDO + ";border-radius:3px;" +
         "background:var(--surface,#fff);color:var(--ink,#16232c);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer}" +
       ".rv-ctrl button:disabled{opacity:.45;cursor:default}" +
       ".rv-ctrl #regCsv{margin-left:auto}" +
       ".rv-stato,.rv-nota{margin:.3rem 0 .5rem;font-size:.76rem;line-height:1.45;color:var(--label,var(--muted,#5f7280))}" +
-      ".rv-wrap{max-height:70vh;overflow:auto;border:1px solid var(--line,#c8d8dc);border-radius:3px;-webkit-overflow-scrolling:touch}" +
-      ".rv-tab{width:100%;min-width:760px;border-collapse:collapse;font-size:.82rem;font-variant-numeric:tabular-nums;margin:0}" +
-      ".rv-tab th,.rv-tab td{padding:.3rem .45rem;border-bottom:1px solid var(--line,#c8d8dc);text-align:left;white-space:nowrap;color:var(--ink,#16232c);background:transparent}" +
+      /* riepilogo dell'ultimo quarto d'ora, in cima */
+      ".rv-ultimo{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .6rem;margin:.1rem 0 .6rem;padding:.6rem .75rem;border:1px solid " + BORDO + ";" +
+        "border-left:4px solid " + ACC + ";border-radius:3px;background:var(--surface-soft,#f3f7f8)}" +
+      ".rv-ultimo span{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--label,var(--muted,#5f7280))}" +
+      ".rv-ultimo strong{font-size:1.25rem;color:var(--bcn-title,var(--ink,#16232c))}" +
+      ".rv-ultimo em{font-style:normal;font-size:.85rem;color:var(--slate-2,var(--muted,#5f7280));font-weight:600}" +
+      /* tabella completa (computer) */
+      ".rv-wrap{max-height:70vh;overflow:auto;border:1px solid " + BORDO + ";border-radius:3px;-webkit-overflow-scrolling:touch}" +
+      ".rv-tab{width:100%;border-collapse:collapse;font-size:.82rem;font-variant-numeric:tabular-nums;margin:0}" +
+      ".rv-larga{min-width:760px}" +
+      ".rv-tab th,.rv-tab td{padding:.3rem .45rem;border-bottom:1px solid " + BORDO + ";text-align:left;white-space:nowrap;color:var(--ink,#16232c);background:transparent}" +
       ".rv-tab thead th{position:sticky;top:0;z-index:2;white-space:normal;line-height:1.2;vertical-align:bottom;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;" +
-        "font-weight:800;color:var(--bcn-title,var(--sea,#16232c));background:var(--bcn-th,var(--surface-soft,#eef3f5))}" +
-      ".rv-tab th:first-child,.rv-tab td:first-child{position:sticky;left:0;z-index:1;background:var(--surface,#fff);font-weight:800}" +
-      ".rv-tab thead th:first-child{z-index:3;background:var(--bcn-th,var(--surface-soft,#eef3f5))}" +
-      ".rv-tab .campo{border-left:2px solid var(--bc-boa,var(--sea,#075d70));border-right:2px solid var(--bc-boa,var(--sea,#075d70))}" +
+        "font-weight:800;color:var(--bcn-title,var(--sea,#16232c));background:" + TH + "}" +
+      ".rv-larga th:first-child,.rv-larga td:first-child{position:sticky;left:0;z-index:1;background:var(--surface,#fff);font-weight:800}" +
+      ".rv-larga thead th:first-child{z-index:3;background:" + TH + "}" +
+      ".rv-tab .campo{border-left:2px solid " + ACC + ";border-right:2px solid " + ACC + "}" +
       ".rv-tab td.v{background:color-mix(in srgb,var(--c) 16%,transparent)}" +
       ".rv-tab td b{font-size:.92rem}" +
       ".rv-tab td small{color:var(--label,var(--muted,#5f7280));font-weight:600}" +
       ".rv-tab th small{font-weight:600;text-transform:none;letter-spacing:0}" +
       ".rv-freccia{width:.95rem;height:.95rem;vertical-align:-.18rem;margin:0 .1rem 0 .25rem;color:var(--bcn-arrow,var(--sea,#075d70))}" +
       ".rv-tab td i{font-style:normal;font-size:.72rem;color:var(--slate-2,var(--muted,#5f7280));font-weight:700}" +
-      ".rv-tab tr.adesso td{box-shadow:inset 0 2px 0 var(--bc-boa,var(--sea,#075d70)),inset 0 -2px 0 var(--bc-boa,var(--sea,#075d70))}";
+      ".rv-tab tr.adesso td{box-shadow:inset 0 -2px 0 " + ACC + "}" +
+      ".rv-tab tr.adesso td:first-child{color:" + ACC + "}" +
+      ".rv-tutto{display:block;width:100%;margin-top:.5rem}" +
+      ".rv-tutto[hidden]{display:none}" +
+      /* telefono: una centralina alla volta, tabella a 4 colonne che sta nello schermo;
+         l'intestazione resta attaccata sotto la barra in alto (--rv-top) mentre si scorre la pagina */
+      ".rv-mobile{display:none}" +
+      ".rv-chips{display:flex;gap:.35rem;overflow-x:auto;padding:.1rem 0 .5rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}" +
+      ".rv-chips::-webkit-scrollbar{display:none}" +
+      ".rv-chips button{flex:0 0 auto;margin:0;min-height:36px;padding:.3rem .7rem;border:1px solid " + BORDO + ";border-radius:999px;background:var(--surface,#fff);" +
+        "color:var(--ink,#16232c);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap}" +
+      ".rv-chips button[aria-pressed=true]{background:var(--bcn-btn,var(--sea,#075d70));border-color:var(--bcn-btn,var(--sea,#075d70));color:var(--bcn-btn-ink,#fff)}" +
+      ".rv-stretta{font-size:.9rem;border:1px solid " + BORDO + "}" +
+      ".rv-stretta thead th{top:var(--rv-top,0px)}" +
+      ".rv-stretta th,.rv-stretta td{padding:.45rem .5rem}" +
+      ".rv-stretta td:first-child{font-weight:800}" +
+      ".rv-stretta td b{font-size:1.02rem}" +
+      ".rv-solo-mobile{display:none}" +
+      "@media (max-width:700px){.rv-wrap,.rv-solo-larga{display:none}.rv-mobile,.rv-solo-mobile{display:flex}.rv-mobile{display:block}}";
     document.head.appendChild(st);
   }
 
   function monta(root, opz) {
     opz = opz || {};
     stili();
-    var r = { root: root, opz: opz, giorno: opz.giorno || oggiRoma(), dati: null, caricato: false, ultimo: 0 };
+    var serie = "campo";
+    try { serie = localStorage.getItem("vt-registro-serie") || "campo"; } catch (e) {}
+    var r = { root: root, opz: opz, giorno: opz.giorno || oggiRoma(), dati: null, caricato: false, ultimo: 0, serie: serie, tutto: false };
     root.innerHTML =
       '<div class="rv-ctrl">' +
         '<button type="button" id="regPrima">◀</button>' +
@@ -88,7 +117,10 @@
         '<button type="button" id="regCsv"></button>' +
       '</div>' +
       '<p class="rv-stato" id="regStato" aria-live="polite"></p>' +
-      '<div class="rv-wrap"><table class="rv-tab" id="regTab"></table></div>' +
+      '<div id="regUltimo"></div>' +
+      '<div class="rv-wrap"><table class="rv-tab rv-larga" id="regTab"></table></div>' +
+      '<div class="rv-mobile"><div class="rv-chips" id="regSerie" role="group"></div><table class="rv-tab rv-stretta" id="regTabM"></table></div>' +
+      '<button type="button" class="rv-tutto" id="regTutto" hidden></button>' +
       '<p class="rv-nota" id="regNota"></p>';
     var $ = function (id) { return root.querySelector("#" + id); };
     r.$ = $;
@@ -100,7 +132,16 @@
     $("regDopo").addEventListener("click", function () { var g = sposta(r.giorno, 1); if (g <= oggiRoma()) carica(r, g); });
     $("regOggi").addEventListener("click", function () { carica(r, oggiRoma()); });
     $("regCsv").addEventListener("click", function () { csv(r); });
+    $("regTutto").addEventListener("click", function () { r.tutto = !r.tutto; disegna(r); });
+    $("regSerie").addEventListener("click", function (ev) {
+      var b = ev.target.closest ? ev.target.closest("[data-rv-serie]") : null;
+      if (!b) return;
+      r.serie = b.getAttribute("data-rv-serie");
+      try { localStorage.setItem("vt-registro-serie", r.serie); } catch (e) {}
+      disegna(r);
+    });
     istanze.push(r);
+    misuraTop();
     testi(r);
     if (!opz.attendi) carica(r);
     return { carica: function (g) { if (!r.caricato || g) carica(r, g); }, ridisegna: function () { testi(r); disegna(r); } };
@@ -132,36 +173,95 @@
     return { campo: tr(nc[0], nc[1]), trieste: tr("Trieste molo", "Trieste pier"), paloma: tr("Boa Paloma", "Paloma buoy"), mambo: tr("Boa Mambo", "Mambo buoy") }[sr.id] || sr.nome;
   }
 
+  var RIGHE_BREVI = 12;   // ultime 3 ore; il resto con "Mostra tutta la giornata"
+
+  function cella(v, cls, vuota) {
+    if (!v) return '<td class="' + cls + '">' + vuota + "</td>";
+    var forte = v[0] >= 8;
+    return '<td class="' + cls + (forte ? " v" : "") + '"' + (forte ? ' style="--c:' + colore(v[0]) + '"' : "") + "><b>" + num(v[0], 1) + "</b>" +
+      (v[1] != null ? "<small>/" + num(v[1], 0) + "</small>" : "") +
+      (v[2] != null ? freccia(v[2]) + "<i>" + cardinale(v[2]) + "</i>" : "") + "</td>";
+  }
+
+  /* Righe dalla più recente: per oggi solo fino al quarto d'ora appena chiuso (niente righe
+     vuote del pomeriggio), di default le ultime 3 ore. Su computer tutte le centraline; su
+     telefono una alla volta, scelta coi bottoni, con l'intestazione sempre visibile. */
   function disegna(r) {
-    var d = r.dati, tab = r.$("regTab"), st = r.$("regStato");
-    if (!d || !d.serie) { tab.innerHTML = ""; return; }
-    var oggi = oggiRoma(), ora = oraRoma(), eOggi = d.giorno === oggi, futuro = d.giorno > oggi, iAdesso = -1;
-    // quarto d'ora in corso: l'ultimo già chiuso (alle 10:07 è la riga delle 10:00)
-    if (eOggi) d.slot.forEach(function (h, i) { if (h <= ora) iAdesso = i; });
-    var html = "<thead><tr><th>" + tr("Ora", "Time") + "</th>" + d.serie.map(function (sr) {
+    var d = r.dati, $ = r.$, st = $("regStato");
+    if (!d || !d.serie) { $("regTab").innerHTML = ""; $("regTabM").innerHTML = ""; $("regUltimo").innerHTML = ""; $("regTutto").hidden = true; return; }
+    var oggi = oggiRoma(), ora = oraRoma(), eOggi = d.giorno === oggi, futuro = d.giorno > oggi;
+    var fine = d.slot.length - 1;
+    if (eOggi) { fine = -1; d.slot.forEach(function (h, i) { if (h <= ora) fine = i; }); }
+    if (futuro) fine = -1;
+    var ordine = [];
+    for (var i = fine; i >= 0; i--) ordine.push(i);
+    var righe = r.tutto ? ordine : ordine.slice(0, RIGHE_BREVI);
+    var vuota = function (sr, i) { return (sr.oraria && d.slot[i].slice(3) !== "00") ? "" : "–"; };
+
+    // riepilogo: ultimo quarto d'ora con un dato per la serie mostrata (campo su computer)
+    var mostra = d.serie.filter(function (sr) { return sr.id === r.serie; })[0] || d.serie[0];
+    var riep = function (sr) {
+      for (var k = 0; k < ordine.length; k++) { var v = sr.dati[ordine[k]]; if (v) return { i: ordine[k], v: v }; }
+      return null;
+    };
+    var box = function (sr, cls) {
+      var u = riep(sr);
+      return u ? '<div class="rv-ultimo ' + cls + '"><span>' + (eOggi ? tr("Ultimo dato", "Latest") : tr("Ultimo dato del giorno", "Last reading of the day")) + " · " +
+        d.slot[u.i] + " · " + nomeSerie(r, sr) + "</span><strong>" + num(u.v[0], 1) + " kt</strong><em>" +
+        (u.v[1] != null ? tr("raffica ", "gust ") + num(u.v[1], 0) + " kt" : "") +
+        (u.v[2] != null ? " · " + tr("da ", "from ") + cardinale(u.v[2]) + " " + freccia(u.v[2]) : "") + "</em></div>" : "";
+    };
+    // su computer la media sul campo, su telefono la centralina scelta
+    $("regUltimo").innerHTML = box(d.serie[0], "rv-solo-larga") + box(mostra, "rv-solo-mobile");
+
+    // tabella completa
+    $("regTab").innerHTML = "<thead><tr><th>" + tr("Ora", "Time") + "</th>" + d.serie.map(function (sr) {
       return '<th class="' + (sr.id === "campo" ? "campo" : "") + '">' + nomeSerie(r, sr) + (sr.oraria ? " <small>(" + tr("oraria", "hourly") + ")</small>" : "") + "</th>";
-    }).join("") + "</tr></thead><tbody>";
-    html += d.slot.map(function (h, i) {
-      var dopo = futuro || (eOggi && i > iAdesso);
-      return '<tr class="' + (i === iAdesso ? "adesso" : "") + '"><td>' + h + "</td>" + d.serie.map(function (sr) {
-        var v = sr.dati[i], cls = sr.id === "campo" ? "campo" : "";
-        if (!v) return '<td class="' + cls + '">' + (dopo || (sr.oraria && h.slice(3) !== "00") ? "" : "–") + "</td>";
-        var forte = v[0] >= 8;
-        return '<td class="' + cls + (forte ? " v" : "") + '"' + (forte ? ' style="--c:' + colore(v[0]) + '"' : "") + "><b>" + num(v[0], 1) + "</b>" +
-          (v[1] != null ? "<small>/" + num(v[1], 0) + "</small>" : "") +
-          (v[2] != null ? freccia(v[2]) + "<i>" + cardinale(v[2]) + "</i>" : "") + "</td>";
+    }).join("") + "</tr></thead><tbody>" + righe.map(function (i) {
+      return '<tr class="' + (eOggi && i === fine ? "adesso" : "") + '"><td>' + d.slot[i] + "</td>" + d.serie.map(function (sr) {
+        return cella(sr.dati[i], sr.id === "campo" ? "campo" : "", vuota(sr, i));
       }).join("") + "</tr>";
     }).join("") + "</tbody>";
-    tab.innerHTML = html;
+
+    // telefono: bottoni delle centraline + tabella della centralina scelta
+    $("regSerie").innerHTML = d.serie.map(function (sr) {
+      return '<button type="button" data-rv-serie="' + sr.id + '" aria-pressed="' + (sr.id === mostra.id) + '">' + nomeSerie(r, sr) + "</button>";
+    }).join("");
+    $("regSerie").setAttribute("aria-label", tr("Centralina", "Station"));
+    $("regTabM").innerHTML = "<thead><tr><th>" + tr("Ora", "Time") + "</th><th>" + nomeSerie(r, mostra) + " <small>" + tr("medio", "mean") + "</small></th><th>" + tr("Raffica", "Gust") + "</th><th>" + tr("Da", "From") + "</th></tr></thead><tbody>" +
+      righe.map(function (i) {
+        var v = mostra.dati[i], cls = eOggi && i === fine ? "adesso" : "";
+        if (!v) return '<tr class="' + cls + '"><td>' + d.slot[i] + '</td><td colspan="3">' + vuota(mostra, i) + "</td></tr>";
+        var forte = v[0] >= 8, tinta = forte ? ' class="v" style="--c:' + colore(v[0]) + '"' : "";
+        return '<tr class="' + cls + '"><td>' + d.slot[i] + "</td><td" + tinta + "><b>" + num(v[0], 1) + "</b></td><td>" +
+          (v[1] != null ? num(v[1], 0) : "–") + "</td><td>" + (v[2] != null ? freccia(v[2]) + "<i>" + cardinale(v[2]) + "</i>" : "–") + "</td></tr>";
+      }).join("") + "</tbody>";
+
+    var piu = ordine.length - RIGHE_BREVI;
+    $("regTutto").hidden = piu <= 0;
+    $("regTutto").textContent = r.tutto ? tr("Mostra solo le ultime 3 ore", "Show only the last 3 hours") :
+      tr("Mostra tutta la giornata (altri " + piu + " orari)", "Show the whole day (" + piu + " more)");
+
     var n = d.serie[0].dati.filter(Boolean).length;
     st.textContent = futuro ? tr("Giorno futuro: il registro si riempie dalle 8 di quel giorno.", "Future day: the log fills up from 8:00 that day.") :
+      (eOggi && fine < 0) ? tr("Il registro di oggi parte alle 8:00.", "Today's log starts at 8:00.") :
       (n ? "" : tr("Nessun dato per questo giorno. ", "No data for this day. ")) +
       (eOggi ? tr("Oggi: si aggiorna da solo ogni 5 minuti. ", "Today: updates itself every 5 minutes. ") : "") +
       tr("Aggiornato alle ", "Updated at ") + oraLocale(d.aggiornato) +
       (d.errori ? tr(" · alcune fonti non hanno risposto, riprova più tardi", " · some sources did not respond, try again later") : "");
   }
 
+  /* altezza della barra in alto (se resta fissa): l'intestazione della tabella su telefono
+     si ferma subito sotto, invece di finirci dietro */
+  function misuraTop() {
+    var tb = document.querySelector(".topbar"), h = 0;
+    if (tb) { var pos = getComputedStyle(tb).position; if (pos === "sticky" || pos === "fixed") h = Math.round(tb.getBoundingClientRect().height); }
+    istanze.forEach(function (r) { r.root.style.setProperty("--rv-top", h + "px"); });
+  }
+  window.addEventListener("resize", function () { clearTimeout(misuraTop.t); misuraTop.t = setTimeout(misuraTop, 150); });
+
   function carica(r, giorno) {
+    if (giorno && giorno !== r.giorno) r.tutto = false;
     if (giorno) r.giorno = giorno;
     r.caricato = true;
     var g = r.giorno, $ = r.$;
