@@ -140,6 +140,14 @@
       ".rv-col small{position:absolute;left:50%;transform:translateX(-50%);font-size:.7rem;font-weight:800;color:var(--ink,#16232c);white-space:nowrap;z-index:3}" +
       ".rv-assex{display:flex;margin:.3rem .1rem 0 1.9rem;font-size:.66rem;font-weight:600;color:var(--label,var(--muted,#5f7280));font-variant-numeric:tabular-nums}" +
       ".rv-assex span{flex:1 1 0;min-width:0;text-align:center;white-space:nowrap;overflow:visible}" +
+      /* direzione media sotto l'asse: freccia (dove va) e sigla (da dove viene) per ogni giorno */
+      ".rv-dirx{position:relative;display:flex;margin:.3rem .1rem 0 1.9rem;font-size:.58rem;font-weight:800;line-height:1.1;color:var(--slate-2,var(--muted,#5f7280))}" +
+      ".rv-dirx>b{position:absolute;right:100%;top:.05rem;padding-right:.4rem;font-size:.6rem;font-weight:700;color:var(--label,var(--muted,#5f7280))}" +
+      ".rv-dirx>span{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.12rem;white-space:nowrap}" +
+      ".rv-dirx>span.oggi{opacity:.5}" +
+      ".rv-dirx .rv-freccia{width:.85rem;height:.85rem;margin:0;vertical-align:0}" +
+      ".rv-dirx.sett{font-size:.72rem}.rv-dirx.sett .rv-freccia{width:1rem;height:1rem}" +
+      "@media (max-width:700px){.rv-dirx.mese .rv-freccia{width:.62rem;height:.62rem}.rv-dirx.mese i{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.54rem}}" +
       ".rv-legenda{display:flex;flex-wrap:wrap;gap:.25rem 1rem;margin:.55rem 0 0;font-size:.74rem;color:var(--label,var(--muted,#5f7280))}" +
       ".rv-legenda span{display:inline-flex;align-items:center;gap:.35rem}" +
       ".rv-k-media,.rv-k-raffica{display:inline-block;width:9px;height:12px;border-radius:2px 2px 0 0;background:" + C_MEDIA + "}" +
@@ -397,6 +405,10 @@
       var dd = Number(g.slice(8));
       return "<span>" + (r.per.tipo === "sett" ? dataFmt(g, { weekday: "short" }).replace(".", "") + " " + dd : ((dd === 1 || dd % 5 === 0) && dd < 31 ? dd : "")) + "</span>";
     }).join("");
+    // sotto l'asse, la direzione media di ogni giorno (sul telefono, in vista mese, la sigla è in verticale)
+    var dirx = dati.map(function (x) {
+      return '<span' + (x && x.oggi ? ' class="oggi"' : "") + ">" + (x && x.d != null ? freccia(x.d) + "<i>" + cardinale(x.d) + "</i>" : "") + "</span>";
+    }).join("");
 
     // tutti i mesi registrati, per saltare da uno all'altro (e vederne il conto)
     var mesi = {}, ordine = [], senzaB = null;
@@ -431,9 +443,11 @@
         " <em>" + tr("su ", "out of ") + giorni(chiusi) + tr(" registrati", " recorded") + (inCorso ? " · " + tr("in corso", "so far") : "") + "</em></div>" +
       '<div class="rv-plot">' + griglia + '<div class="rv-colonne" role="group" aria-label="' + tr("Media e raffica di ogni giorno", "Mean and gust of each day") + '">' + colonne + "</div></div>" +
       '<div class="rv-assex" aria-hidden="true">' + assex + "</div>" +
+      '<div class="rv-dirx ' + r.per.tipo + '" aria-hidden="true"><b>' + tr("da", "from") + "</b>" + dirx + "</div>" +
       '<div class="rv-legenda"><span><i class="rv-k-media"></i>' + tr("media del giorno", "daily mean") + "</span>" +
         '<span><i class="rv-k-raffica"></i>' + tr("raffica massima", "max gust") + "</span>" +
         '<span><i class="rv-k-soglia"></i>' + SOGLIA + " kt</span>" +
+        "<span>" + freccia(67.5) + tr("ENE = direzione media, da dove viene", "ENE = mean direction, where it comes from") + "</span>" +
         '<span><i class="rv-pallino"></i>' + tr("giornata surfabile (" + ORE_SURF + " h sopra i " + SOGLIA + " kt)", "surfable day (" + ORE_SURF + " h above " + SOGLIA + " kt)") + "</span></div>" +
       '<div class="rv-lettura" id="regLettura" aria-live="polite">' + letturaBase(r) + "</div>" +
       (ordine.length > 1 ? '<div class="rv-mesi">' + tr("Mesi:", "Months:") + " " + ordine.map(function (k) {

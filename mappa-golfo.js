@@ -26,15 +26,20 @@
 
   /* id = chiave nel JSON del proxy (tranne "mambo": boa OGS, dati a parte).
      lato: dove sta l'etichetta; dy: scostamento verticale extra (Barcola sta
-     sotto il blocco di Monte Grisa). */
+     sotto il blocco di Monte Grisa).
+     sposta: [dx, dy] in unità della mappa. Davanti a Trieste le centraline distano
+     26-31 unità, ma un simbolo con la freccia ne occupa almeno 25 di raggio: si
+     accavallavano (Alberto, 2 ott 2026, "illeggibile"). Il simbolo si sposta dove c'è
+     posto, con un filo che lo lega al punto vero (pallino scuro), e tra due simboli
+     restano almeno ~47 unità. */
   var STAZIONI = [
     { id: "grado",       nome: "Grado",        lon: 13.395, lat: 45.678, lato: "sopra"    },
     { id: "marinajulia", nome: "Marina Julia", lon: 13.565, lat: 45.782, lato: "sinistra" },
-    { id: "monteGrisa",  nome: "Monte Grisa",  lon: 13.757, lat: 45.712, lato: "destra"   },
+    { id: "monteGrisa",  nome: "Monte Grisa",  lon: 13.757, lat: 45.712, lato: "destra", sposta: [16, -17] },
     { id: "barcola",     nome: "Barcola",      lon: 13.754, lat: 45.680, lato: "destra", dy: 16, tipo: "barcola" },
     /* Trieste molo F.lli Bandiera: stazione OSMER, dal set 2026 a 15 minuti (Protezione
        Civile FVG via proxy). Prima era oraria da vetercek, per questo non era in mappa. */
-    { id: "trieste",     nome: "Trieste molo", lon: 13.7506, lat: 45.6368, lato: "destra" },
+    { id: "trieste",     nome: "Trieste molo", lon: 13.7506, lat: 45.6368, lato: "destra", sposta: [-36, 7] },
     /* posizione reale 13.708/45.698 (davanti al castello di Miramare), spostata
        un po' al largo per non accavallarsi al gruppo Monte Grisa/Barcola */
     { id: "mambo",       nome: "Boa Mambo",    lon: 13.660, lat: 45.685, lato: "sopra",    tipo: "mambo" },
@@ -124,6 +129,12 @@
     var deg = GRADI_CARDINALE[(r0.direzione || "").toUpperCase().trim()];
     return { kt: parseFloat(r0.kt), raffica: parseFloat(r0.sunki),
       deg: (deg === undefined) ? null : deg, ora: r0.ora || "" };
+  }
+
+  /* dove si disegna il simbolo (x, y) e dove sta davvero la centralina (x0, y0) */
+  function posizione(st) {
+    var x0 = px(st.lon), y0 = py(st.lat), d = st.sposta || [0, 0];
+    return { x: x0 + d[0], y: y0 + d[1], x0: x0, y0: y0, spostata: !!st.sposta };
   }
 
   function el(tag, attrs, testo) {
@@ -239,7 +250,7 @@
     if (marker) marker.classList.add("mg-selected");
     stazioneSelezionata = st.id;
 
-    var x = px(st.lon), y = py(st.lat);
+    var pos = posizione(st), x = pos.x, y = pos.y;
     var colore = classeColore(v.kt);
     var kt = Math.round(v.kt), gu = Math.round(v.raffica);
     var valoreRaffica = !isNaN(v.raffica) && gu > kt ? " · raffica " + gu + " kt" : "";
@@ -277,7 +288,7 @@
      centralina offline (v null) -> punto spento, non si disegna nulla */
   function disegnaStazione(dest, st, v) {
     if (!v || isNaN(v.kt)) return null;
-    var x = px(st.lon), y = py(st.lat);
+    var pos = posizione(st), x = pos.x, y = pos.y;
     var g = el("g", { "class": "mg-stazione", role: "button", tabindex: "0", "data-stazione": st.id });
     var colore = classeColore(v.kt);
     var kt = Math.round(v.kt), gu = Math.round(v.raffica);
@@ -286,15 +297,23 @@
       (v.deg != null ? " da " + Math.round(v.deg) + "°" : "") +
       (v.ora ? " · agg. " + v.ora : "");
     g.setAttribute("aria-label", titolo + ". Apri dettaglio");
+    /* simbolo spostato: filo e pallino sul punto vero, sotto a tutto il resto */
+    if (pos.spostata) {
+      g.appendChild(el("line", { x1: pos.x0, y1: pos.y0, x2: x, y2: y, stroke: "#ffffff", "stroke-width": 3.4, "stroke-linecap": "round", opacity: .9 }));
+      g.appendChild(el("line", { x1: pos.x0, y1: pos.y0, x2: x, y2: y, stroke: "#15313a", "stroke-width": 1.4, "stroke-linecap": "round" }));
+      g.appendChild(el("circle", { cx: pos.x0, cy: pos.y0, r: 3.2, fill: "#15313a", stroke: "#ffffff", "stroke-width": 1.4 }));
+    }
     g.appendChild(el("circle", { cx: x, cy: y, r: 25, fill: "transparent", "pointer-events": "all" }));
     g.appendChild(el("circle", { cx: x, cy: y, r: 17.5, fill: colore, "fill-opacity": .07, stroke: colore,
       "stroke-width": 2.6, "class": "mg-halo" }));
 
-    /* Freccia ad alto contrasto: parte dal bordo del valore e indica dove VA il vento. */
+    /* Freccia ad alto contrasto: parte dal bordo del valore e indica dove VA il vento.
+       Corta (punta a 28-40 unità dal centro, prima arrivava a 64): la forza la dicono già
+       numero e colore, e una freccia lunga finiva sopra le centraline vicine. */
     if (v.deg != null && v.kt >= 1) {
       var k = Math.min(v.kt, 40);
-      var L = 34 + k * 0.75;
-      var sw = 4.1 + k * 0.055;
+      var L = 28 + k * 0.3;
+      var sw = 3.8 + k * 0.05;
       var hw = sw * 1.5 + 3.4;
       var freccia = el("g", { transform: "translate(" + x + " " + y + ") rotate(" + ((v.deg + 180) % 360) + ")", filter: "url(#mgOmbra)" });
       freccia.appendChild(el("line", { x1: 0, y1: -12, x2: 0, y2: -L + 9,
