@@ -12,7 +12,7 @@
    Giornate surfabili (2 ott 2026, solo con l'opzione riepilogo): la prima colonna (media sul
    campo / in golfo) sopra SOGLIA nodi per almeno ORE_SURF ore dei quarti d'ora 6-19. Sopra la
    tabella un grafico per mese o settimana: per ogni giorno la raffica massima (il picco più
-   alto tra le centraline a mare) e, dentro, la media della giornata; pallino rosso sulle giornate surfabili, contate sopra il grafico (dati
+   alto tra le centraline a mare) e, dentro, la media della giornata; il surfista 🏄‍♂️ sulle giornate surfabili, contate sopra il grafico (dati
    dal Worker, /riepilogo). Sotto i bottoni la stessa sintesi del giorno mostrato.
    Meteo del giorno (sopra le colonne): sole, sole e nuvole, nuvoloso o pioggia, dal Worker
    (pioggia e radiazione solare di Trieste molo, Protezione Civile FVG).
@@ -120,8 +120,8 @@
       ".rv-conto{display:flex;align-items:center;flex-wrap:wrap;gap:.2rem .45rem;margin:0 0 .55rem;font-size:.9rem;font-weight:700;color:var(--ink,#16232c)}" +
       ".rv-conto strong{font-size:1.6rem;line-height:1}" +
       ".rv-conto em{font-style:normal;font-size:.8rem;font-weight:600;color:var(--label,var(--muted,#5f7280))}" +
-      ".rv-pallino{display:inline-block;flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:" + C_SURF + ";box-shadow:0 0 0 2px var(--surface,#fff)}" +
-      ".rv-conto .rv-pallino{width:12px;height:12px}" +
+      ".rv-surfista{display:inline-block;flex:0 0 auto;font-style:normal;font-size:1rem;line-height:1}" +
+      ".rv-conto .rv-surfista{font-size:1.35rem}" +
       /* grafico: colonne in HTML (bottoni), griglia e soglia sotto; l'altezza include l'asse x */
       ".rv-plot{position:relative;height:170px;margin:0 .1rem 0 1.9rem}" +
       ".rv-gl{position:absolute;left:0;right:0;height:0;border-top:1px solid color-mix(in srgb," + BORDO + " 70%,transparent)}" +
@@ -139,8 +139,8 @@
       ".rv-col i.med{background:" + C_MEDIA + ";border-radius:0;box-shadow:0 -2px 0 var(--surface-soft,#f3f7f8);z-index:1}" +
       ".rv-col i.med.sola{border-radius:4px 4px 0 0;box-shadow:none}" +
       ".rv-col.oggi i{opacity:.4}" +
-      ".rv-col b{position:absolute;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:" + C_SURF + ";box-shadow:0 0 0 2px var(--surface-soft,#f3f7f8);z-index:3}" +
-      ".rv-col.oggi b{background:var(--surface-soft,#f3f7f8);border:2px solid " + C_SURF + ";box-sizing:border-box}" +
+      ".rv-col b{position:absolute;left:50%;transform:translateX(-50%);font-size:17px;line-height:1;font-weight:400;z-index:3;pointer-events:none}" +
+      ".rv-col.oggi b{opacity:.55}" +
       ".rv-col small{position:absolute;left:50%;transform:translateX(-50%);font-size:.7rem;font-weight:800;color:var(--ink,#16232c);white-space:nowrap;z-index:3}" +
       ".rv-assex{display:flex;margin:.3rem .1rem 0 1.9rem;font-size:.66rem;font-weight:600;color:var(--label,var(--muted,#5f7280));font-variant-numeric:tabular-nums}" +
       ".rv-assex span{flex:1 1 0;min-width:0;text-align:center;white-space:nowrap;overflow:visible}" +
@@ -176,7 +176,7 @@
       ".rv-mesi{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:.7rem 0 .2rem;padding-top:.6rem;border-top:1px solid " + BORDO + ";font-size:.74rem;font-weight:700;color:var(--label,var(--muted,#5f7280))}" +
       ".rv-mesi button{display:inline-flex;align-items:center;gap:.35rem;margin:0;min-height:34px;padding:.2rem .65rem;border:1px solid " + BORDO + ";border-radius:999px;background:var(--surface,#fff);color:var(--ink,#16232c);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer}" +
       ".rv-mesi button[aria-pressed=true]{border-color:var(--bcn-btn,var(--sea,#075d70));box-shadow:inset 0 0 0 1px var(--bcn-btn,var(--sea,#075d70))}" +
-      "@media (max-width:700px){.rv-plot{height:150px}.rv-per strong{min-width:0}.rv-col small{font-size:.64rem}.rv-col b{width:8px;height:8px;margin-left:-4px}}" +
+      "@media (max-width:700px){.rv-plot{height:150px}.rv-per strong{min-width:0}.rv-col small{font-size:.64rem}.rv-col b{font-size:12px}.rv-meteo.sett~.rv-plot .rv-col b{font-size:17px}}" +
       ".rv-media{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .55rem;margin:.1rem 0 .6rem;font-size:.9rem;color:var(--ink,#16232c)}" +
       ".rv-media span{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--label,var(--muted,#5f7280))}" +
       ".rv-media strong{font-size:1.05rem}" +
@@ -311,6 +311,8 @@
     return { barcola: "Barcola", trieste: tr("Trieste molo", "Trieste pier"), muggia: "Muggia", paloma: tr("Boa Paloma", "Paloma buoy") }[id] || "";
   }
   var SOLE_C = "var(--rv-sole,#d99a00)", GOCCE_C = C_MEDIA;
+  // giornata surfabile: il surfista della schermata di caricamento della home (era un pallino rosso)
+  var SURFISTA = '<i class="rv-surfista" aria-hidden="true">\ud83c\udfc4\u200d\u2642\ufe0f</i>';
   var NUVOLA = function (y) { return '<path d="M6.5 ' + y + 'h11a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.6 1.5A3.3 3.3 0 0 0 6.5 ' + y + 'z"/>'; };
   var METEO = {
     sole: { nome: ["sole", "sunny"], svg: '<g stroke="' + SOLE_C + '"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"/></g>' },
@@ -347,7 +349,7 @@
 
   /* ---- grafico delle giornate surfabili ----
      Una colonna per giorno: alta fino alla raffica massima, con dentro (in blu) la media della
-     giornata; linea tratteggiata = SOGLIA (12 nodi); pallino rosso = giornata surfabile (media sopra i 12
+     giornata; linea tratteggiata = SOGLIA (12 nodi); surfista = giornata surfabile (media sopra i 12
      per almeno 6 ore). Mese o settimana (lun-dom), con le frecce per spostarsi.
      Oggi è una colonna chiara ("finora") e non entra nel conto finché il giorno non è chiuso.
      Toccare una colonna apre quel giorno nel registro qui sotto (senza far scorrere la pagina:
@@ -390,7 +392,7 @@
       (x.r != null ? "<em>" + tr("raffica max", "max gust") + "</em><strong>" + num(x.r, 0) + " kt</strong>" + (x.rs ? "<em>" + tr("a ", "at ") + nomeMare(x.rs) + "</em>" : "") : "") +
       (x.d != null ? "<em>" + tr("da ", "from ") + cardinale(x.d) + "</em>" : "") +
       (x.q != null ? "<em>· " + (x.q ? ore(x.q) + tr(" sopra i ", " above ") + SOGLIA + " kt" : tr("mai sopra i ", "never above ") + SOGLIA + " kt") + "</em>" : "") +
-      (x.surf ? '<b class="rv-badge"><i class="rv-pallino"></i>' + (x.oggi ? tr("Già surfabile", "Already surfable") : tr("Giornata surfabile", "Surfable day")) + "</b>" : "");
+      (x.surf ? '<b class="rv-badge">' + SURFISTA + (x.oggi ? tr("Già surfabile", "Already surfable") : tr("Giornata surfabile", "Surfable day")) + "</b>" : "");
   }
   function letturaBase(r) {
     var gg = periodo(r.per);
@@ -402,14 +404,11 @@
   function disegnaRiep(r) {
     var box = r.$("regRiep"), j = r.riep;
     if (!box || !j) return;
-    var oggi = oggiRoma(), inizioMese = oggi.slice(0, 8) + "01";
+    var oggi = oggiRoma();
     if (!r.per) {
-      // all'apertura il mese in corso; nella sua prima settimana il mese prima, che ha più giorni
-      var tipo = "mese";
-      try { tipo = localStorage.getItem("vt-registro-grafico") === "sett" ? "sett" : "mese"; } catch (e) {}
-      // se la pagina si apre su un giorno preciso (/registro/?giorno=…), il grafico parte da lì
-      r.per = { tipo: tipo, rif: (r.giorno && r.giorno < oggi && r.giorno >= j.dal) ? r.giorno :
-        (tipo === "mese" && oggi.slice(8) <= "07" && sposta(inizioMese, -1) >= j.dal) ? sposta(inizioMese, -1) : oggi };
+      // all'apertura sempre Mese, il mese in corso (Alberto, 2 ott 2026); se la pagina si apre
+      // su un giorno preciso (/registro/?giorno=…), il mese di quel giorno
+      r.per = { tipo: "mese", rif: (r.giorno && r.giorno < oggi && r.giorno >= j.dal) ? r.giorno : oggi };
       r.seguito = r.giorno;
     }
     // se il giorno del registro cambia (frecce, calendario) e cade fuori, il grafico lo segue
@@ -440,9 +439,9 @@
         ' aria-pressed="' + (g === r.giorno) + '" aria-label="' + desc + '">' +
         (x && x.r != null ? '<i style="height:' + pct(x.r) + '"></i>' : "") +
         (x ? '<i class="med' + (x.r != null ? "" : " sola") + '" style="height:' + pct(x.m) + '"></i>' : "") +
-        (x && x.surf ? '<b style="bottom:calc(' + cima + ' + 5px)"></b>' : "") +
-        // in settimana c'è spazio: sopra il pallino quante ore sopra la soglia
-        (x && x.surf && r.per.tipo === "sett" ? '<small style="bottom:calc(' + cima + ' + 19px)">' + ore(x.q) + "</small>" : "") + "</button>";
+        (x && x.surf ? '<b style="bottom:calc(' + cima + ' + 3px)">\ud83c\udfc4\u200d\u2642\ufe0f</b>' : "") +
+        // in settimana c'è spazio: sopra il surfista quante ore sopra la soglia
+        (x && x.surf && r.per.tipo === "sett" ? '<small style="bottom:calc(' + cima + ' + 23px)">' + ore(x.q) + "</small>" : "") + "</button>";
     }).join("");
     var assex = gg.map(function (g) {
       var dd = Number(g.slice(8));
@@ -474,9 +473,9 @@
     box.innerHTML = "<h3>" + tr("Giornate surfabili", "Surfable days") + "</h3>" +
       '<p class="rv-nota">' + tr(
         "Ogni colonna è un giorno, dalle 6 alle 19: in blu la <b>media</b> della colonna «" + nomeC + "», sopra fino alla <b>raffica massima</b>, il picco più alto tra Barcola, Trieste molo, Muggia e Paloma. " +
-          "Pallino rosso = <b>giornata surfabile</b>: la media è stata sopra i " + SOGLIA + " nodi per almeno " + ORE_SURF + " ore.",
+          SURFISTA + " = <b>giornata surfabile</b>: la media è stata sopra i " + SOGLIA + " nodi per almeno " + ORE_SURF + " ore.",
         "Each column is one day, 6:00-19:00: the <b>mean</b> of the «" + nomeC + "» column in blue, topped up to the <b>max gust</b>, the highest peak among Barcola, Trieste pier, Muggia and Paloma. " +
-          "Red dot = <b>surfable day</b>: the mean stayed above " + SOGLIA + " knots for at least " + ORE_SURF + " hours.") +
+          SURFISTA + " = <b>surfable day</b>: the mean stayed above " + SOGLIA + " knots for at least " + ORE_SURF + " hours.") +
       (j.mancanti ? " <b>" + tr("Sto completando lo storico: mancano ancora " + giorni(j.mancanti) + ".", "Still filling in the history: " + giorni(j.mancanti) + " to go.") + "</b>" : "") + "</p>" +
       '<div class="rv-graf-testa">' +
         '<div class="rv-seg" role="group" aria-label="' + tr("Periodo", "Period") + '">' +
@@ -486,7 +485,7 @@
           "<strong>" + nomePeriodo(r.per, gg) + "</strong>" +
           '<button type="button" data-rv-sposta="1"' + (gg[gg.length - 1] < oggi ? "" : " disabled") + ' aria-label="' + tr("Periodo successivo", "Next period") + '">▶</button></div>' +
       "</div>" +
-      '<div class="rv-conto"><i class="rv-pallino"></i><strong>' + surf + "</strong> " + (surf === 1 ? tr("giornata surfabile", "surfable day") : tr("giornate surfabili", "surfable days")) +
+      '<div class="rv-conto">' + SURFISTA + '<strong>' + surf + "</strong> " + (surf === 1 ? tr("giornata surfabile", "surfable day") : tr("giornate surfabili", "surfable days")) +
         " <em>" + tr("su ", "out of ") + giorni(chiusi) + tr(" registrati", " recorded") + (inCorso ? " · " + tr("in corso", "so far") : "") + "</em></div>" +
       '<div class="rv-meteo ' + r.per.tipo + '" aria-hidden="true">' + meteo + "</div>" +
       '<div class="rv-plot">' + griglia + '<div class="rv-colonne" role="group" aria-label="' + tr("Media e raffica di ogni giorno", "Mean and gust of each day") + '">' + colonne + "</div></div>" +
@@ -497,11 +496,11 @@
         '<span><i class="rv-k-soglia"></i>' + SOGLIA + " kt</span>" +
         "<span>" + freccia(67.5) + tr("ENE = direzione media, da dove viene", "ENE = mean direction, where it comes from") + "</span>" +
         "<span>" + ["sole", "variabile", "nuvoloso", "pioggia"].map(iconaMeteo).join("") + tr("sole · sole e nuvole · nuvoloso · pioggia", "sunny · sun and clouds · cloudy · rain") + "</span>" +
-        '<span><i class="rv-pallino"></i>' + tr("giornata surfabile (" + ORE_SURF + " h sopra i " + SOGLIA + " kt)", "surfable day (" + ORE_SURF + " h above " + SOGLIA + " kt)") + "</span></div>" +
+        '<span>' + SURFISTA + tr("giornata surfabile (" + ORE_SURF + " h sopra i " + SOGLIA + " kt)", "surfable day (" + ORE_SURF + " h above " + SOGLIA + " kt)") + "</span></div>" +
       '<div class="rv-lettura" id="regLettura" aria-live="polite">' + letturaBase(r) + "</div>" +
       (ordine.length > 1 ? '<div class="rv-mesi">' + tr("Mesi:", "Months:") + " " + ordine.map(function (k) {
         return '<button type="button" data-rv-mese="' + k + '" aria-pressed="' + (r.per.tipo === "mese" && r.per.rif.slice(0, 7) === k) + '">' +
-          maiuscola(dataFmt(k, { month: "long", year: "numeric" })) + ' <i class="rv-pallino"></i>' + mesi[k] + "</button>";
+          maiuscola(dataFmt(k, { month: "long", year: "numeric" })) + ' ' + SURFISTA + mesi[k] + "</button>";
       }).join("") + "</div>" : "") +
       (senzaB ? '<p class="rv-nota">' + tr("Fino al " + dataFmt(senzaB, { day: "numeric", month: "long" }) + " la media è senza Barcola: Windguru ne conserva lo storico solo per due settimane.",
         "Until " + dataFmt(senzaB, { day: "numeric", month: "long" }) + " the average is without Barcola: Windguru only keeps two weeks of its history.") + "</p>" : "") +
@@ -526,7 +525,6 @@
       if ((b = t.closest("[data-rv-tipo]"))) {
         var gg = periodo(r.per), oggi = oggiRoma();
         r.per = { tipo: b.getAttribute("data-rv-tipo"), rif: gg.indexOf(r.giorno) !== -1 ? r.giorno : (gg[gg.length - 1] < oggi ? gg[gg.length - 1] : oggi) };
-        try { localStorage.setItem("vt-registro-grafico", r.per.tipo); } catch (e) {}
         disegnaRiep(r); return;
       }
       if ((b = t.closest("[data-rv-sposta]"))) {
