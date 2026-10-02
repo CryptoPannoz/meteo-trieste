@@ -322,14 +322,17 @@ async function registro(env, ctx, giorno) {
   }
 }
 
-/* ========================= RIEPILOGO: GIORNI VENTOSI =========================
-   Richiesto da Alberto (2 ott 2026): sopra la tabella del registro, mese per mese, quanti
-   giorni ventosi. Giorno ventoso = media della giornata sopra i 15 nodi; la media della
-   giornata è quella dei quarti d'ora 8-18 della media sul campo (la prima colonna del
-   registro). La soglia la applica la pagina (registro-vento.js), qui solo i numeri.
+/* ===================== RIEPILOGO: GIORNATE SURFABILI =====================
+   Richiesto da Alberto (2 ott 2026): sopra la tabella del registro un grafico giorno per
+   giorno con media e raffica massima, e il conto delle giornate surfabili del mese.
+   Giornata surfabile = la media sul campo (la prima colonna del registro) sopra i 15 nodi
+   per almeno 6 ore dei quarti d'ora 8-18. Le 6 ore le applica la pagina (registro-vento.js),
+   qui solo i numeri.
 
-   KV "riepilogo" = { giorni: { "YYYY-MM-DD": { n, m, d, sb, p } } }
+   KV "riepilogo" = { giorni: { "YYYY-MM-DD": { n, m, r, q, d, sb, p } } }
      n = quarti d'ora con un dato (su 41), m = media della giornata (nodi, 1 decimale),
+     r = raffica massima della giornata nella colonna della media sul campo (nodi),
+     q = quarti d'ora con la media sopra RIEP_SOGLIA (24 = 6 ore),
      d = direzione prevalente (gradi, media vettoriale pesata sul vento),
      sb = 1 senza Barcola (oltre le 2 settimane di Windguru), p = 1 con una centralina a mare
      mancata. Un giorno con una centralina a mare in errore resta { e: tentativi, t: ms }
@@ -341,6 +344,9 @@ async function registro(env, ctx, giorno) {
 const RIEP_DAL = '2026-09-01';
 const RIEP_CHIAVE = 'riepilogo';
 const RIEP_RIPROVA_MS = 20 * 60000, RIEP_TENTATIVI = 3, RIEP_LETTI = 8;
+const RIEP_SOGLIA = 15;
+// giorno già fatto con tutti i campi (quelli salvati prima del 2 ott sera non hanno r e q: si rifanno)
+const riepFatto = x => !!x && !x.e && x.q != null;
 
 function sintesiGiorno(reg) {
   const campo = reg.serie[0].dati.filter(Boolean);
@@ -350,7 +356,10 @@ function sintesiGiorno(reg) {
     campo.forEach(v => { if (v[2] != null) { sx += v[0] * Math.sin(v[2] * Math.PI / 180); sy += v[0] * Math.cos(v[2] * Math.PI / 180); } });
     out.m = r1(campo.reduce((a, v) => a + v[0], 0) / campo.length);
     if (sx || sy) out.d = Math.round((Math.atan2(sx, sy) * 180 / Math.PI + 360) % 360);
+    const raffiche = campo.filter(v => v[1] != null).map(v => v[1]);
+    if (raffiche.length) out.r = Math.max.apply(null, raffiche);
   }
+  out.q = campo.filter(v => v[0] > RIEP_SOGLIA).length;
   if (reg.senza && reg.senza.indexOf('barcola') !== -1) out.sb = 1;
   return out;
 }
@@ -363,7 +372,7 @@ async function completaRiepilogo(env) {
   let letti = 0, costruito = false, fatti = 0;
   for (let g = RIEP_DAL; g <= ieri && letti < RIEP_LETTI; g = sposta(g, 1)) {
     const prima = riep.giorni[g];
-    if (prima && !(prima.e && ora - prima.t > RIEP_RIPROVA_MS)) continue;
+    if (riepFatto(prima) || (prima && prima.e && ora - prima.t <= RIEP_RIPROVA_MS)) continue;
     letti++;
     let reg = await env.DATI.get('registro:' + g, { type: 'json' });
     if (!reg || !reg.completo) {
@@ -388,8 +397,8 @@ async function riepilogo(env) {
   let mancanti = 0;
   for (let g = RIEP_DAL; g <= ieri; g = sposta(g, 1)) {
     const x = riep.giorni[g];
-    if (!x || x.e) { mancanti++; continue; }
-    giorni[g] = x;
+    if (!riepFatto(x)) mancanti++;
+    if (x && !x.e) giorni[g] = x;
   }
   return { dal: RIEP_DAL, fino: ieri, giorni, mancanti, aggiornato: new Date().toISOString() };
 }
