@@ -14,6 +14,8 @@
    tabella un grafico per mese o settimana: per ogni giorno la raffica massima (il picco più
    alto tra le centraline a mare) e, dentro, la media della giornata; pallino rosso sulle giornate surfabili, contate sopra il grafico (dati
    dal Worker, /riepilogo). Sotto i bottoni la stessa sintesi del giorno mostrato.
+   Meteo del giorno (sopra le colonne): sole, sole e nuvole, nuvoloso o pioggia, dal Worker
+   (pioggia e radiazione solare di Trieste molo, Protezione Civile FVG).
 
    Uso:
      var rv = RegistroVento.monta(elemento, {
@@ -29,7 +31,7 @@
   "use strict";
   var URL_REG = "https://ventotrieste-dati.bebroggi.workers.dev/registro";
   var URL_RIEP = "https://ventotrieste-dati.bebroggi.workers.dev/riepilogo";
-  var SOGLIA = 15;           // nodi: la media del quarto d'ora deve stare SOPRA questo valore…
+  var SOGLIA = 12;           // nodi: la media del quarto d'ora deve stare SOPRA questo valore… (15 fino al 2 ott sera)
   var ORE_SURF = 6;          // …per almeno queste ore (24 quarti d'ora) = giornata surfabile
   var MIN_QUARTI = 26;       // quarti d'ora con un dato (su 53) perché il giorno valga
   var MARE = ["barcola", "trieste", "muggia", "paloma"];   // centraline a mare: da qui il picco di raffica
@@ -148,6 +150,15 @@
       ".rv-dirx>span{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.12rem;white-space:nowrap}" +
       ".rv-dirx>span.oggi{opacity:.5}" +
       ".rv-dirx i{font-style:normal}" +
+      /* meteo del giorno sopra il grafico (icone a tratto: sole ambra, gocce blu, nuvole grigie) */
+      ".rv-meteo{display:flex;margin:0 .1rem .3rem 1.9rem;color:var(--slate-2,var(--muted,#5f7280))}" +
+      ".rv-meteo>span{flex:1 1 0;min-width:0;display:flex;justify-content:center}" +
+      ".rv-meteo>span.oggi{opacity:.55}" +
+      ".rv-meteo-ico{width:min(18px,100%);height:auto;aspect-ratio:1;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}" +
+      ".rv-meteo.sett .rv-meteo-ico{width:24px}" +
+      ".rv-legenda .rv-meteo-ico,.rv-meteo-txt .rv-meteo-ico{width:16px;color:var(--slate-2,var(--muted,#5f7280))}" +
+      ".rv-legenda .rv-meteo-ico+.rv-meteo-ico{margin-left:-.2rem}" +
+      ".rv-meteo-txt{display:inline-flex;align-items:center;gap:.25rem}" +
       ".rv-dirx .rv-freccia{width:.85rem;height:.85rem;margin:0;vertical-align:0}" +
       ".rv-dirx.sett{font-size:.72rem}.rv-dirx.sett .rv-freccia{width:1rem;height:1rem}" +
       "@media (max-width:700px){.rv-dirx.mese .rv-freccia{width:.62rem;height:.62rem}.rv-dirx.mese i{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.54rem}}" +
@@ -252,11 +263,13 @@
       "<b>" + nomeCampo[0] + "</b>: media delle centraline a mare (Barcola, Trieste molo, Muggia, Paloma) pesata sulla distanza dal centro del percorso della Barcolana. " +
       "<b>Barcola</b>: Windguru, medie a 5 minuti; quando l'anemometro segna 0/0 è fermo e non viene contato. " +
       "<b>Trieste molo, Muggia, boa Paloma</b>: Fonte: " + FONTE_PC + " · dati elaborati. " +
+      "<b>Meteo del giorno</b> (icone sopra il grafico): pioggia e radiazione solare misurate a Trieste molo, stessa fonte. " +
       "<b>Monte Grisa</b>: Vetercek, registrata da Vento Trieste dal 30 settembre 2026 (in quota, fuori dalla media). " +
       "<b>Boa Mambo</b>: OGS, un dato all'ora pubblicato con 1-2 ore di ritardo.",
       "<b>" + nomeCampo[1] + "</b>: average of the sea-level stations (Barcola, Trieste pier, Muggia, Paloma) weighted by distance from the centre of the Barcolana course. " +
       "<b>Barcola</b>: Windguru, 5-minute averages; a 0/0 reading means the anemometer is stuck and is not counted. " +
       "<b>Trieste pier, Muggia, Paloma buoy</b>: Source: " + FONTE_PC + " · processed data. " +
+      "<b>Day's weather</b> (icons above the chart): rain and solar radiation measured at Trieste pier, same source. " +
       "<b>Monte Grisa</b>: Vetercek, recorded by Vento Trieste since 30 September 2026 (high up, not in the average). " +
       "<b>Mambo buoy</b>: OGS, one reading per hour published 1-2 hours late.");
   }
@@ -287,6 +300,7 @@
     });
     out = { m: Math.round(v.reduce(function (a, x) { return a + x[0]; }, 0) / v.length * 10) / 10, n: v.length, r: null, rs: null, q: q,
       d: (sx || sy) ? Math.round((Math.atan2(sx, sy) * 180 / Math.PI + 360) % 360) : null };
+    if (reg.meteo && reg.meteo.tipo) { out.mt = reg.meteo.tipo; out.pr = reg.meteo.pioggia; }
     reg.serie.forEach(function (sr) {
       if (MARE.indexOf(sr.id) === -1) return;
       sr.dati.forEach(function (x) { if (x && x[1] != null && !(out.r >= x[1])) { out.r = x[1]; out.rs = sr.id; } });
@@ -295,6 +309,22 @@
   }
   function nomeMare(id) {
     return { barcola: "Barcola", trieste: tr("Trieste molo", "Trieste pier"), muggia: "Muggia", paloma: tr("Boa Paloma", "Paloma buoy") }[id] || "";
+  }
+  var SOLE_C = "var(--rv-sole,#d99a00)", GOCCE_C = C_MEDIA;
+  var NUVOLA = function (y) { return '<path d="M6.5 ' + y + 'h11a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.6 1.5A3.3 3.3 0 0 0 6.5 ' + y + 'z"/>'; };
+  var METEO = {
+    sole: { nome: ["sole", "sunny"], svg: '<g stroke="' + SOLE_C + '"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"/></g>' },
+    variabile: { nome: ["sole e nuvole", "sun and clouds"], svg: '<g stroke="' + SOLE_C + '"><circle cx="8.5" cy="8.5" r="3"/><path d="M8.5 2.5v1.5M2.5 8.5H4M4.3 4.3l1 1M12.7 4.3l-1 1"/></g>' + NUVOLA(20) },
+    nuvoloso: { nome: ["nuvoloso", "cloudy"], svg: NUVOLA(18.5) },
+    pioggia: { nome: ["pioggia", "rain"], svg: NUVOLA(14) + '<g stroke="' + GOCCE_C + '"><path d="M8.5 17l-1.2 3.5M12.5 17l-1.2 3.5M16.5 17l-1.2 3.5"/></g>' }
+  };
+  function iconaMeteo(tipo) {
+    var m = METEO[tipo];
+    return m ? '<svg class="rv-meteo-ico" viewBox="0 0 24 24" aria-hidden="true">' + m.svg + "</svg>" : "";
+  }
+  function nomeMeteo(x) {
+    var m = METEO[x.mt];
+    return m ? tr(m.nome[0], m.nome[1]) + (x.mt === "pioggia" && x.pr ? " " + num(x.pr, x.pr < 10 ? 1 : 0) + " mm" : "") : "";
   }
   function surfabile(q) { return q != null && q >= ORE_SURF * 4; }
   function ore(q) {                  // quarti d'ora -> "6 h 30", "45 min"
@@ -317,7 +347,7 @@
 
   /* ---- grafico delle giornate surfabili ----
      Una colonna per giorno: alta fino alla raffica massima, con dentro (in blu) la media della
-     giornata; linea tratteggiata = 15 nodi; pallino rosso = giornata surfabile (media sopra i 15
+     giornata; linea tratteggiata = SOGLIA (12 nodi); pallino rosso = giornata surfabile (media sopra i 12
      per almeno 6 ore). Mese o settimana (lun-dom), con le frecce per spostarsi.
      Oggi è una colonna chiara ("finora") e non entra nel conto finché il giorno non è chiuso.
      Toccare una colonna apre quel giorno nel registro qui sotto (senza far scorrere la pagina:
@@ -338,9 +368,9 @@
   // un giorno nel grafico: dal riepilogo se è chiuso, per oggi dal registro caricato ("finora")
   function datoGiorno(r, g) {
     var x = r.riep && r.riep.giorni[g];
-    if (x && x.m != null && x.n >= MIN_QUARTI) return { m: x.m, r: x.r, rs: x.rs, q: x.q, d: x.d, surf: surfabile(x.q) };
+    if (x && x.m != null && x.n >= MIN_QUARTI) return { m: x.m, r: x.r, rs: x.rs, q: x.q, d: x.d, mt: x.mt, pr: x.pr, surf: surfabile(x.q) };
     var o = r.oggi;
-    if (o && o.g === g && g === oggiRoma()) return { m: o.m, r: o.r, rs: o.rs, q: o.q, d: o.d, oggi: true, surf: surfabile(o.q) };
+    if (o && o.g === g && g === oggiRoma()) return { m: o.m, r: o.r, rs: o.rs, q: o.q, d: o.d, mt: o.mt, pr: o.pr, oggi: true, surf: surfabile(o.q) };
     return null;
   }
   function nomeGiorno(g) { return maiuscola(dataFmt(g, { weekday: "long", day: "numeric", month: "long" })); }
@@ -353,9 +383,10 @@
     return "<span>" + nomeGiorno(g) + "</span>" + sintesi(x) +
       (x.oggi ? "<em>· " + tr("finora, il giorno si chiude alle " + ORA_FINE, "so far, the day closes at " + ORA_FINE) + "</em>" : "") + vai;
   }
-  // media, raffica, direzione, ore sopra i 15 e bollino: nella riga di lettura e sotto i bottoni
+  // meteo, media, raffica, direzione, ore sopra la soglia e bollino: nella riga di lettura e sotto i bottoni
   function sintesi(x) {
-    return "<em>" + tr("media", "mean") + "</em><strong>" + num(x.m, 1) + " kt</strong>" +
+    return (x.mt ? '<em class="rv-meteo-txt">' + iconaMeteo(x.mt) + nomeMeteo(x) + " ·</em>" : "") +
+      "<em>" + tr("media", "mean") + "</em><strong>" + num(x.m, 1) + " kt</strong>" +
       (x.r != null ? "<em>" + tr("raffica max", "max gust") + "</em><strong>" + num(x.r, 0) + " kt</strong>" + (x.rs ? "<em>" + tr("a ", "at ") + nomeMare(x.rs) + "</em>" : "") : "") +
       (x.d != null ? "<em>" + tr("da ", "from ") + cardinale(x.d) + "</em>" : "") +
       (x.q != null ? "<em>· " + (x.q ? ore(x.q) + tr(" sopra i ", " above ") + SOGLIA + " kt" : tr("mai sopra i ", "never above ") + SOGLIA + " kt") + "</em>" : "") +
@@ -394,7 +425,9 @@
     var yMax = Math.max(20, Math.ceil(max / 5) * 5 + 5), passo = yMax > 30 ? 10 : 5;
     var pct = function (v) { return (Math.min(v, yMax) / yMax * 100).toFixed(2) + "%"; };
     var griglia = "";
-    for (var t = 0; t <= yMax; t += passo) if (t !== SOGLIA) griglia += '<div class="rv-gl' + (t ? "" : " base") + '" style="bottom:' + pct(t) + '"><span>' + t + "</span></div>";
+    // le tacche troppo vicine alla soglia perdono il numero (il 12 si sovrapponeva al 10)
+    for (var t = 0; t <= yMax; t += passo) if (t !== SOGLIA) griglia += '<div class="rv-gl' + (t ? "" : " base") + '" style="bottom:' + pct(t) + '">' +
+      (Math.abs(t - SOGLIA) < yMax * 0.09 ? "" : "<span>" + t + "</span>") + "</div>";
     griglia += '<div class="rv-gl soglia" style="bottom:' + pct(SOGLIA) + '"><span>' + SOGLIA + "</span></div>";
 
     var colonne = gg.map(function (g, i) {
@@ -408,12 +441,16 @@
         (x && x.r != null ? '<i style="height:' + pct(x.r) + '"></i>' : "") +
         (x ? '<i class="med' + (x.r != null ? "" : " sola") + '" style="height:' + pct(x.m) + '"></i>' : "") +
         (x && x.surf ? '<b style="bottom:calc(' + cima + ' + 5px)"></b>' : "") +
-        // in settimana c'è spazio: sopra il pallino quante ore sopra i 15 nodi
+        // in settimana c'è spazio: sopra il pallino quante ore sopra la soglia
         (x && x.surf && r.per.tipo === "sett" ? '<small style="bottom:calc(' + cima + ' + 19px)">' + ore(x.q) + "</small>" : "") + "</button>";
     }).join("");
     var assex = gg.map(function (g) {
       var dd = Number(g.slice(8));
       return "<span>" + (r.per.tipo === "sett" ? dataFmt(g, { weekday: "short" }).replace(".", "") + " " + dd : ((dd === 1 || dd % 5 === 0) && dd < 31 ? dd : "")) + "</span>";
+    }).join("");
+    // sopra il grafico, il meteo di ogni giorno
+    var meteo = dati.map(function (x) {
+      return '<span' + (x && x.oggi ? ' class="oggi"' : "") + ">" + (x && x.mt ? iconaMeteo(x.mt) : "") + "</span>";
     }).join("");
     // sotto l'asse, la direzione media di ogni giorno (sul telefono, in vista mese, la sigla è in verticale)
     var dirx = dati.map(function (x) {
@@ -451,6 +488,7 @@
       "</div>" +
       '<div class="rv-conto"><i class="rv-pallino"></i><strong>' + surf + "</strong> " + (surf === 1 ? tr("giornata surfabile", "surfable day") : tr("giornate surfabili", "surfable days")) +
         " <em>" + tr("su ", "out of ") + giorni(chiusi) + tr(" registrati", " recorded") + (inCorso ? " · " + tr("in corso", "so far") : "") + "</em></div>" +
+      '<div class="rv-meteo ' + r.per.tipo + '" aria-hidden="true">' + meteo + "</div>" +
       '<div class="rv-plot">' + griglia + '<div class="rv-colonne" role="group" aria-label="' + tr("Media e raffica di ogni giorno", "Mean and gust of each day") + '">' + colonne + "</div></div>" +
       '<div class="rv-assex" aria-hidden="true">' + assex + "</div>" +
       '<div class="rv-dirx ' + r.per.tipo + '" aria-hidden="true"><b>' + tr("da", "from") + "</b>" + dirx + "</div>" +
@@ -458,6 +496,7 @@
         '<span><i class="rv-k-raffica"></i>' + tr("raffica massima", "max gust") + "</span>" +
         '<span><i class="rv-k-soglia"></i>' + SOGLIA + " kt</span>" +
         "<span>" + freccia(67.5) + tr("ENE = direzione media, da dove viene", "ENE = mean direction, where it comes from") + "</span>" +
+        "<span>" + ["sole", "variabile", "nuvoloso", "pioggia"].map(iconaMeteo).join("") + tr("sole · sole e nuvole · nuvoloso · pioggia", "sunny · sun and clouds · cloudy · rain") + "</span>" +
         '<span><i class="rv-pallino"></i>' + tr("giornata surfabile (" + ORE_SURF + " h sopra i " + SOGLIA + " kt)", "surfable day (" + ORE_SURF + " h above " + SOGLIA + " kt)") + "</span></div>" +
       '<div class="rv-lettura" id="regLettura" aria-live="polite">' + letturaBase(r) + "</div>" +
       (ordine.length > 1 ? '<div class="rv-mesi">' + tr("Mesi:", "Months:") + " " + ordine.map(function (k) {
@@ -465,7 +504,10 @@
           maiuscola(dataFmt(k, { month: "long", year: "numeric" })) + ' <i class="rv-pallino"></i>' + mesi[k] + "</button>";
       }).join("") + "</div>" : "") +
       (senzaB ? '<p class="rv-nota">' + tr("Fino al " + dataFmt(senzaB, { day: "numeric", month: "long" }) + " la media è senza Barcola: Windguru ne conserva lo storico solo per due settimane.",
-        "Until " + dataFmt(senzaB, { day: "numeric", month: "long" }) + " the average is without Barcola: Windguru only keeps two weeks of its history.") + "</p>" : "");
+        "Until " + dataFmt(senzaB, { day: "numeric", month: "long" }) + " the average is without Barcola: Windguru only keeps two weeks of its history.") + "</p>" : "") +
+      (r.opz.soloGrafico ? '<p class="rv-nota">' + tr(
+        "Fonti: Barcola, Windguru. Trieste molo, Muggia, boa Paloma e meteo del giorno (pioggia e radiazione solare di Trieste molo): Fonte: " + FONTE_PC + " · dati elaborati.",
+        "Sources: Barcola, Windguru. Trieste pier, Muggia, Paloma buoy and the day's weather (rain and solar radiation at Trieste pier): Source: " + FONTE_PC + " · processed data.") + "</p>" : "");
     box.hidden = false;
   }
 
@@ -537,7 +579,7 @@
     var d = r.dati, $ = r.$, st = $("regStato");
     if (r.opz.riepilogo) {
       // la media di oggi finora fa la colonna chiara del grafico
-      if (d && d.serie && d.giorno === oggiRoma()) { var mo = sintesiReg(d); r.oggi = mo ? { g: d.giorno, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d } : null; }
+      if (d && d.serie && d.giorno === oggiRoma()) { var mo = sintesiReg(d); r.oggi = mo ? { g: d.giorno, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d, mt: mo.mt, pr: mo.pr } : null; }
       disegnaRiep(r);                              // il giorno aperto si vede premuto nel grafico
     }
     if (!d || !d.serie) { $("regTab").innerHTML = ""; $("regTabM").innerHTML = ""; $("regUltimo").innerHTML = ""; $("regMedia").innerHTML = ""; $("regTutto").hidden = true; return; }
@@ -700,7 +742,7 @@
       return fetch(URL_REG + "?giorno=" + g + "&ts=" + Date.now()).then(function (x) { return x.json(); }).then(function (d) {
         if (!d || !d.serie || d.giorno !== g) return;
         var mo = sintesiReg(d);
-        r.oggi = mo ? { g: g, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d } : null;
+        r.oggi = mo ? { g: g, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d, mt: mo.mt, pr: mo.pr } : null;
         if (r.riep) disegnaRiep(r);
       }).catch(function () {});
     };

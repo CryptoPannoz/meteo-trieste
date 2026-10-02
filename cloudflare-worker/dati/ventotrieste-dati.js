@@ -121,7 +121,7 @@ async function aggiorna(env) {
    (6-19:30); un giorno passato si calcola alla prima richiesta e resta salvato.
    Scritture KV al giorno: ~290 payload + ~160 Monte Grisa + ~165 registro + 1-2 riepilogo (limite 1000). */
 const REG_PRIMA = 6 * 60, REG_ULTIMA = 19 * 60, REG_PASSO = 15;
-const REG_VERSIONE = 2;                                  // 1 = 8-18, 2 = 6-19
+const REG_VERSIONE = 3;                                  // 1 = 8-18, 2 = 6-19, 3 = + meteo del giorno
 const REG_CRON_DA = '05:55', REG_CRON_A = '19:30';       // quando il cron tiene fresco il registro di oggi
 const BARCOLA_GIORNI = 14;
 const MS_IN_KT = 1.94384;
@@ -209,6 +209,46 @@ async function campioniPcfvg(stazione, giorno) {
   }).filter(Boolean);
 }
 
+/* Meteo del giorno (2 ott 2026, "c'era sole o pioggia?"): dalla stazione di Trieste molo della
+   Protezione Civile FVG (212, la stessa del vento, CC BY 4.0), nella finestra del registro.
+   Pioggia = somma del sensore 1 (mm ogni 15 minuti). Sole = energia della radiazione globale
+   misurata (sensore 18, W/m²) diviso quella a cielo sereno dello stesso momento (modello di
+   Haurwitz, 1098·cos z·e^(-0.057/cos z)), solo con il sole sopra ~6° (cos z > 0.1).
+   tipo: pioggia se ≥ 1 mm, altrimenti sole ≥ METEO_SOLE, variabile ≥ METEO_VARIABILE, nuvoloso. */
+const METEO_STAZIONE = { id: 212, lat: 45.649981, lon: 13.752239 };
+const METEO_PIOGGIA = 1, METEO_SOLE = 0.7, METEO_VARIABILE = 0.45;
+function cosZenit(ms, lat, lon) {
+  const d = new Date(ms), anno = d.getUTCFullYear();
+  const n = (Date.UTC(anno, d.getUTCMonth(), d.getUTCDate()) - Date.UTC(anno, 0, 0)) / 864e5;
+  const g = 2 * Math.PI / 365 * (n - 1 + (d.getUTCHours() - 12) / 24);
+  const decl = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) +
+    0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+  const eqt = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+  const ha = ((d.getUTCHours() * 60 + d.getUTCMinutes() + eqt + 4 * lon) / 4 - 180) * Math.PI / 180;
+  const fi = lat * Math.PI / 180;
+  return Math.sin(fi) * Math.sin(decl) + Math.cos(fi) * Math.cos(decl) * Math.cos(ha);
+}
+async function meteoGiorno(giorno) {
+  const fmt = ms => new Date(ms).toISOString().slice(0, 19).replace('T', ' ');
+  const q = '&from=' + encodeURIComponent(fmt(romaInUtc(giorno, REG_PRIMA - REG_PASSO))) + '&to=' + encodeURIComponent(fmt(romaInUtc(giorno, REG_ULTIMA)));
+  const [rr, rg] = await Promise.all([1, 18].map(s => getJson(PCFVG + METEO_STAZIONE.id + '/measures?sensor_id=' + s + q)));
+  let pioggia = 0, nPioggia = 0, misurata = 0, serena = 0;
+  (rr.measures || []).forEach(m => { if (typeof m.value === 'number' && m.value >= 0) { pioggia += m.value; nPioggia++; } });
+  (rg.measures || []).forEach(m => {
+    if (typeof m.value !== 'number') return;
+    const t = Date.parse(m.dt.replace(' ', 'T') + 'Z') - 7.5 * 60000;        // centro dei 15 minuti
+    const cz = cosZenit(t, METEO_STAZIONE.lat, METEO_STAZIONE.lon);
+    if (cz <= 0.1) return;
+    misurata += Math.max(m.value, 0);
+    serena += 1098 * cz * Math.exp(-0.057 / cz);
+  });
+  const sole = serena ? Math.round(misurata / serena * 100) / 100 : null;
+  if (!nPioggia && sole == null) return null;
+  const tipo = pioggia >= METEO_PIOGGIA ? 'pioggia' : sole == null ? null :
+    sole >= METEO_SOLE ? 'sole' : sole >= METEO_VARIABILE ? 'variabile' : 'nuvoloso';
+  return { tipo, pioggia: r1(pioggia), sole };
+}
+
 async function campioniMambo(giorno) {
   const da = new Date(romaInUtc(giorno, REG_PRIMA - REG_PASSO)).toISOString(), a = new Date(romaInUtc(giorno, REG_ULTIMA)).toISOString();
   const url = 'https://nodc.ogs.it/erddap/tabledap/MAMBO1_TS.json?' + encodeURIComponent('time,WSPD,GSPD,WDIR') +
@@ -290,6 +330,7 @@ async function costruisciRegistro(env, giorno) {
     prova(s.id, campioniGrisa(env, giorno))));
   const serie = {};
   REG_STAZIONI.forEach((s, i) => { serie[s.id] = vuoto ? slot.map(() => null) : inQuarti(campioni[i]); });
+  const meteo = vuoto ? null : await meteoGiorno(giorno).catch(e => { errori.meteo = String(e).slice(0, 120); return null; });
   // giorno chiuso: dopo le 21:30 (Mambo arriva in ritardo) o un giorno passato, e senza fonti in errore
   const chiuso = giorno < adesso.giorno || (giorno === adesso.giorno && adesso.hhmm >= '21:30');
   return {
@@ -298,6 +339,7 @@ async function costruisciRegistro(env, giorno) {
       .concat(REG_STAZIONI.map(s => ({ id: s.id, nome: s.nome, fonte: s.fonte, oraria: !!s.oraria, dati: serie[s.id] }))),
     errori: Object.keys(errori).length ? errori : undefined,
     senza: senzaBarcola ? ['barcola'] : undefined,
+    meteo: meteo || undefined,
     completo: chiuso && !Object.keys(errori).length,
     aggiornato: new Date().toISOString(),
   };
@@ -329,8 +371,8 @@ async function registro(env, ctx, giorno) {
 /* ===================== RIEPILOGO: GIORNATE SURFABILI =====================
    Richiesto da Alberto (2 ott 2026): sopra la tabella del registro un grafico giorno per
    giorno con media e raffica massima, e il conto delle giornate surfabili del mese.
-   Giornata surfabile = la media sul campo (la prima colonna del registro) sopra i 15 nodi
-   per almeno 6 ore dei quarti d'ora 6-19. Le 6 ore le applica la pagina (registro-vento.js),
+   Giornata surfabile = la media sul campo (la prima colonna del registro) sopra i 12 nodi
+   (15 fino al 2 ott sera) per almeno 6 ore dei quarti d'ora 6-19. Le 6 ore le applica la pagina (registro-vento.js),
    qui solo i numeri.
 
    KV "riepilogo" = { giorni: { "YYYY-MM-DD": { v, n, m, r, rs, q, d, sb, p } } }
@@ -340,6 +382,7 @@ async function registro(env, ctx, giorno) {
      rs = la centralina dove l'ha fatto (barcola, trieste, muggia, paloma),
      q = quarti d'ora con la media sopra RIEP_SOGLIA (24 = 6 ore),
      d = direzione prevalente (gradi, media vettoriale pesata sul vento),
+     mt = meteo del giorno a Trieste (sole, variabile, nuvoloso, pioggia), pr = pioggia in mm,
      sb = 1 senza Barcola (oltre le 2 settimane di Windguru), p = 1 con una centralina a mare
      mancata. Un giorno con una centralina a mare in errore resta { e: tentativi, t: ms }
      e si riprova dopo 20 minuti; al 4° tentativo si tiene la media delle altre (p = 1).
@@ -349,8 +392,8 @@ async function registro(env, ctx, giorno) {
    Windguru ha ancora Barcola: è così che lo storico resta completo. */
 const RIEP_DAL = '2026-09-01';
 const RIEP_CHIAVE = 'riepilogo';
-const RIEP_RIPROVA_MS = 20 * 60000, RIEP_TENTATIVI = 3, RIEP_LETTI = 8;
-const RIEP_SOGLIA = 15;
+const RIEP_RIPROVA_MS = 20 * 60000, RIEP_TENTATIVI = 3, RIEP_LETTI = 6;
+const RIEP_SOGLIA = 12;     // era 15 fino al 2 ott 2026 sera (Alberto: "abbassiamo a 12")
 // giorno già fatto con la finestra e i campi di adesso (gli altri si rifanno)
 const riepFatto = x => !!x && !x.e && x.v === REG_VERSIONE;
 
@@ -370,6 +413,7 @@ function sintesiGiorno(reg) {
   });
   out.q = campo.filter(v => v[0] > RIEP_SOGLIA).length;
   if (reg.senza && reg.senza.indexOf('barcola') !== -1) out.sb = 1;
+  if (reg.meteo && reg.meteo.tipo) { out.mt = reg.meteo.tipo; out.pr = reg.meteo.pioggia; }
   return out;
 }
 // contano solo le centraline che entrano nella media sul campo (Mambo o Monte Grisa no)

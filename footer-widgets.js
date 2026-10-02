@@ -140,6 +140,8 @@
       '</span></summary>';
     radar.parentNode.insertBefore(radarLive, radar);
     radarLive.appendChild(radar);
+    // arrivando da un link (es. il menu in basso di una pagina spot senza radar: /#radarLive) si apre già
+    if (location.hash === "#radarLive" || location.hash === "#radar") radarLive.open = true;
   }
 
   var webcam = document.getElementById("webcam");
