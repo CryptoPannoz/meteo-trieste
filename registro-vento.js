@@ -32,7 +32,7 @@
   var URL_REG = "https://ventotrieste-dati.bebroggi.workers.dev/registro";
   var URL_RIEP = "https://ventotrieste-dati.bebroggi.workers.dev/riepilogo";
   var SOGLIA = 12;           // nodi: la media del quarto d'ora deve stare SOPRA questo valore… (15 fino al 2 ott sera)
-  var ORE_SURF = 6;          // …per almeno queste ore (24 quarti d'ora) = giornata surfabile
+  var ORE_SURF = 4;          // …per almeno queste ore (16 quarti d'ora) = giornata surfabile (6 fino al 2 ott sera)
   var MIN_QUARTI = 26;       // quarti d'ora con un dato (su 53) perché il giorno valga
   var MARE = ["barcola", "trieste", "muggia", "paloma"];   // centraline a mare: da qui il picco di raffica
   // colori del grafico, verificati con validate_palette (contrasto e daltonismo, tutti e tre insieme).
@@ -350,7 +350,7 @@
   /* ---- grafico delle giornate surfabili ----
      Una colonna per giorno: alta fino alla raffica massima, con dentro (in blu) la media della
      giornata; linea tratteggiata = SOGLIA (12 nodi); surfista = giornata surfabile (media sopra i 12
-     per almeno 6 ore). Mese o settimana (lun-dom), con le frecce per spostarsi.
+     per almeno ORE_SURF ore). Mese o settimana (lun-dom), con le frecce per spostarsi.
      Oggi è una colonna chiara ("finora") e non entra nel conto finché il giorno non è chiuso.
      Toccare una colonna apre quel giorno nel registro qui sotto (senza far scorrere la pagina:
      la riga di lettura ha il bottone per andarci). */

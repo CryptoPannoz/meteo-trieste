@@ -372,7 +372,7 @@ async function registro(env, ctx, giorno) {
    Richiesto da Alberto (2 ott 2026): sopra la tabella del registro un grafico giorno per
    giorno con media e raffica massima, e il conto delle giornate surfabili del mese.
    Giornata surfabile = la media sul campo (la prima colonna del registro) sopra i 12 nodi
-   (15 fino al 2 ott sera) per almeno 6 ore dei quarti d'ora 6-19. Le 6 ore le applica la pagina (registro-vento.js),
+   (15 fino al 2 ott sera) per almeno 4 ore (6 fino al 2 ott sera) dei quarti d'ora 6-19. Le ore le applica la pagina (registro-vento.js),
    qui solo i numeri.
 
    KV "riepilogo" = { giorni: { "YYYY-MM-DD": { v, n, m, r, rs, q, d, sb, p } } }
@@ -380,7 +380,7 @@ async function registro(env, ctx, giorno) {
      n = quarti d'ora con un dato (su 53), m = media della giornata (nodi, 1 decimale),
      r = raffica massima della giornata: il picco più alto delle centraline a mare (nodi),
      rs = la centralina dove l'ha fatto (barcola, trieste, muggia, paloma),
-     q = quarti d'ora con la media sopra RIEP_SOGLIA (24 = 6 ore),
+     q = quarti d'ora con la media sopra RIEP_SOGLIA (16 = 4 ore),
      d = direzione prevalente (gradi, media vettoriale pesata sul vento),
      mt = meteo del giorno a Trieste (sole, variabile, nuvoloso, pioggia), pr = pioggia in mm,
      sb = 1 senza Barcola (oltre le 2 settimane di Windguru), p = 1 con una centralina a mare
