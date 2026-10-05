@@ -1070,12 +1070,10 @@
 
 
     /* ---- ott 2026: logo, collaborazione, pulsanti info, sezioni a tendina ---- */
-    .bc-logo { display: block; width: min(320px, 74%); margin: .15rem 0 1.05rem; line-height: 0; }
-    .bc-logo svg { display: block; width: 100%; height: auto; }
-    .bc-collab { display: flex; flex-wrap: wrap; align-items: stretch; gap: .6rem .8rem; margin-top: 1rem; }
-    .bc-collab p { flex: 1 1 320px; margin: 0; padding: .6rem .8rem; font-size: .82rem; line-height: 1.45; }
-    .bc-tg-btn { display: inline-flex; align-items: center; gap: .55rem; padding: .55rem .95rem; font-weight: 700; font-size: .88rem; text-decoration: none; }
-    .bc-tg-btn .bc-tg { width: 1.45rem; height: 1.45rem; }
+    .visually-hidden { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    /* logo Barcolana nella barra fissa in alto */
+    .bc-brand { display: flex; align-items: center; min-width: 0; }
+    .bc-brand-logo { display: block; width: clamp(130px, 22vw, 210px); height: auto; }
     /* pulsanti "i": pillola azzurrina con la i piena, ben visibili ma sotto "Aggiorna" per peso */
     .bc-i-btn { display: inline-flex; align-items: center; gap: .5rem; margin: 0; min-height: 38px; padding: .35rem .85rem .35rem .45rem; font: inherit; font-size: .84rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
     .bc-i { display: inline-grid; place-items: center; width: 1.45rem; height: 1.45rem; border-radius: 50%; font-size: .82rem; font-weight: 800; font-style: normal; line-height: 1; flex: none; }
@@ -1258,15 +1256,8 @@
     html[data-theme] body.bcn .bc-lang button[aria-pressed="true"] { background: var(--bcn-btn); color: var(--bcn-btn-ink); }
 
     /* intestazione su fascia blu, come i riquadri istituzionali della regata */
-    html[data-theme] body.bcn #vento.hero {
-      background: var(--bcn-hero); color: var(--bcn-hero-ink); border-radius: 4px;
-      padding: clamp(1rem, 3vw, 1.9rem); box-shadow: var(--bcn-shadow);
-      border-bottom: 4px solid var(--bcn-red);
-    }
-    html[data-theme] body.bcn #vento .eyebrow { display: inline-flex; align-items: center; gap: .55rem; color: var(--bcn-hero-ink); letter-spacing: .14em; font-weight: 700; }
-    html[data-theme] body.bcn #vento .eyebrow::before { content: ""; width: 26px; height: 4px; background: var(--bcn-red); }
-    html[data-theme] body.bcn #vento .site-page-title { color: var(--bcn-hero-ink); font-weight: 700; letter-spacing: -.02em !important; }
-    html[data-theme] body.bcn #vento .bc-lead { color: var(--bcn-hero-soft); }
+    /* dal 5 ott 2026 la pagina parte dalla scheda del vento: niente fascia blu attorno */
+    html[data-theme] body.bcn #vento.hero { background: transparent; padding: 0; box-shadow: none; border: 0; }
 
     /* schede */
     html[data-theme] body.bcn .console-card, html[data-theme] body.bcn .section {
@@ -1336,14 +1327,9 @@
     html[data-theme] body.bcn .supporter-total strong { color: var(--bcn-accent); }
 
 
-    /* testata: logo bianco su fascia blu, box della collaborazione, Telegram */
-    html[data-theme] body.bcn #vento .bc-logo { color: #fff; }
-    html[data-theme] body.bcn #vento .bc-collab p { border: 1px solid rgba(255,255,255,.26); border-left: 4px solid var(--bcn-red); border-radius: 3px; background: rgba(255,255,255,.07); color: var(--bcn-hero-soft); }
-    html[data-theme] body.bcn #vento .bc-collab p strong { color: #fff; }
-    html[data-theme] body.bcn #vento .bc-collab p a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,.55); text-underline-offset: 2px; }
-    html[data-theme] body.bcn #vento .bc-collab p a:hover { text-decoration-color: var(--bcn-red); }
-    html[data-theme] body.bcn #vento .bc-tg-btn { background: #fff; color: #003770; border: 0; border-radius: 3px; }
-    html[data-theme] body.bcn #vento .bc-tg-btn:hover { background: var(--bcn-red); color: #fff; }
+    /* logo nella barra in alto: blu Barcolana sul bianco, bianco nel tema scuro */
+    html[data-theme] body.bcn .bc-brand { color: var(--bcn-title); }
+    html[data-theme] body.bcn .bc-brand:hover { color: var(--bcn-accent); }
     html[data-theme] body.bcn .bc-i-btn { background: var(--bcn-th); border: 1px solid color-mix(in srgb, var(--bcn-title) 35%, transparent); color: var(--bcn-title); border-radius: 999px; }
     html[data-theme] body.bcn .bc-i-btn .bc-i { background: var(--bcn-title); color: var(--surface); }
     html[data-theme] body.bcn .bc-i-btn:hover { background: var(--bcn-btn); border-color: var(--bcn-btn); color: var(--bcn-btn-ink); }
@@ -1370,9 +1356,9 @@
 <body class="bcn">
 
   <header class="topbar">
-    <a class="brand" href="https://ventotrieste.info/">
-      <strong>Vento Barcolana</strong>
-      <span>by Vento Trieste · <span class="l-it">Golfo di Trieste</span><span class="l-en">Gulf of Trieste</span></span>
+    <!-- logo Barcolana nella barra fissa al posto di "Vento Trieste" (Jacopo, digital SVBG, 5 ott 2026) -->
+    <a class="brand bc-brand" href="https://www.barcolana.it/" target="_blank" rel="noopener" aria-label="Vento Barcolana – barcolana.it">
+      <svg class="bc-brand-logo" viewBox="85 82.9 1259 125.3" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M283.21 182.17C297.95 182.17 301.63 176.54 301.63 168.74C301.63 160.93 297.95 155.30 283.21 155.30L261.32 155.30L261.32 182.17ZM280.40 133.19C293.40 133.19 296.65 127.99 296.65 121.06C296.65 113.90 293.40 108.92 280.40 108.92L261.32 108.92L261.32 133.19ZM230.33 85.08L284.08 85.08C312.90 85.08 328.72 97.43 328.72 118.89C328.72 130.81 323.52 138.61 313.99 143.38C326.56 147.71 333.71 156.60 333.71 170.90C333.71 192.79 317.45 206.01 286.25 206.01L230.33 206.01ZM414.97 163.10L399.37 115.64L383.98 163.10ZM383.11 85.08L417.14 85.08L461.35 206.01L429.06 206.01L422.34 186.08L376.83 186.08L370.33 206.01L338.68 206.01ZM518.34 143.81C535.25 143.81 542.62 139.26 542.62 127.13C542.62 114.99 535.25 110.22 518.34 110.22L505.34 110.22L505.34 143.81ZM474.35 85.08L517.91 85.08C553.02 85.08 574.91 97.87 574.91 127.13C574.91 145.76 564.50 156.82 550.63 162.45L579.89 206.01L544.78 206.01L521.38 168.95L505.34 168.95L505.34 206.01L474.35 206.01ZM701.47 160.50C699.30 191.49 676.33 208.18 645.55 208.18C609.36 208.18 588.12 184.77 588.12 145.55C588.12 106.32 609.36 82.91 645.77 82.91C676.33 82.91 699.30 99.60 701.47 130.59L670.04 130.59C669.39 119.32 661.37 109.79 646.20 109.79C625.18 109.79 620.19 127.99 620.19 145.55C620.19 163.10 625.18 181.31 646.20 181.31C661.37 181.31 669.39 171.77 670.04 160.50ZM802.23 145.55C802.23 127.77 797.04 109.79 774.49 109.79C751.95 109.79 746.75 127.77 746.75 145.55C746.75 163.32 751.95 181.31 774.49 181.31C797.04 181.31 802.23 163.32 802.23 145.55M714.68 145.55C714.68 108.05 734.40 82.91 774.49 82.91C814.37 82.91 834.09 108.05 834.09 145.55C834.09 183.04 814.37 208.18 774.49 208.18C734.40 208.18 714.68 183.04 714.68 145.55M847.52 85.08L878.51 85.08L878.51 179.36L930.74 179.36L930.74 206.01L847.52 206.01ZM1018.51 163.10L1002.91 115.64L987.52 163.10ZM986.66 85.08L1020.68 85.08L1064.89 206.01L1032.60 206.01L1025.88 186.08L980.37 186.08L973.87 206.01L942.23 206.01ZM1076.59 85.08L1114.08 85.08L1155.91 165.70L1155.91 85.08L1185.39 85.08L1185.39 206.01L1147.89 206.01L1106.06 125.39L1106.06 206.01L1076.59 206.01ZM1273.37 163.10L1257.76 115.64L1242.38 163.10ZM1241.51 85.08L1275.53 85.08L1319.75 206.01L1287.46 206.01L1280.74 186.08L1235.22 186.08L1228.72 206.01L1197.08 206.01ZM206.09 206.01L85.04 206.01L85.04 84.96ZM1325.79 85.04C1315.77 85.04 1307.64 93.17 1307.64 103.20C1307.64 113.22 1315.77 121.35 1325.79 121.35C1335.82 121.35 1343.95 113.22 1343.95 103.20C1343.95 93.17 1335.82 85.04 1325.79 85.04M1325.79 87.89C1334.24 87.89 1341.10 94.75 1341.10 103.20C1341.10 111.64 1334.24 118.51 1325.79 118.51C1317.35 118.51 1310.48 111.64 1310.48 103.20C1310.48 94.75 1317.35 87.89 1325.79 87.89M1325.40 103.15C1328.40 103.15 1329.57 102.33 1329.57 100.25C1329.57 98.20 1328.40 97.34 1325.40 97.34L1323.11 97.34L1323.11 103.15ZM1318.78 93.79L1325.43 93.79C1330.80 93.79 1334.07 95.81 1334.07 100.25C1334.07 103.25 1332.44 104.96 1330.11 105.81L1334.96 112.85L1329.97 112.85L1326.02 106.70L1323.11 106.70L1323.11 112.85L1318.78 112.85Z"/></svg>
     </a>
     <div class="topbar-actions">
       <span class="topbar-live">Dati live</span>
@@ -1399,17 +1385,10 @@
          20250204_BARCOLANA_b_CMYK, livello "B blu", reso in bianco sulla fascia blu), il box della
          collaborazione e il canale Telegram. Solo "Barcolana", mai il numero dell'edizione (sponsor). -->
     <section class="hero" id="vento">
-      <div class="hero-copy">
-        <a class="bc-logo" href="https://www.barcolana.it/" target="_blank" rel="noopener" aria-label="Barcolana – barcolana.it"><svg viewBox="85 82.9 1259 125.3" role="img" aria-label="Barcolana" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M283.21 182.17C297.95 182.17 301.63 176.54 301.63 168.74C301.63 160.93 297.95 155.30 283.21 155.30L261.32 155.30L261.32 182.17ZM280.40 133.19C293.40 133.19 296.65 127.99 296.65 121.06C296.65 113.90 293.40 108.92 280.40 108.92L261.32 108.92L261.32 133.19ZM230.33 85.08L284.08 85.08C312.90 85.08 328.72 97.43 328.72 118.89C328.72 130.81 323.52 138.61 313.99 143.38C326.56 147.71 333.71 156.60 333.71 170.90C333.71 192.79 317.45 206.01 286.25 206.01L230.33 206.01ZM414.97 163.10L399.37 115.64L383.98 163.10ZM383.11 85.08L417.14 85.08L461.35 206.01L429.06 206.01L422.34 186.08L376.83 186.08L370.33 206.01L338.68 206.01ZM518.34 143.81C535.25 143.81 542.62 139.26 542.62 127.13C542.62 114.99 535.25 110.22 518.34 110.22L505.34 110.22L505.34 143.81ZM474.35 85.08L517.91 85.08C553.02 85.08 574.91 97.87 574.91 127.13C574.91 145.76 564.50 156.82 550.63 162.45L579.89 206.01L544.78 206.01L521.38 168.95L505.34 168.95L505.34 206.01L474.35 206.01ZM701.47 160.50C699.30 191.49 676.33 208.18 645.55 208.18C609.36 208.18 588.12 184.77 588.12 145.55C588.12 106.32 609.36 82.91 645.77 82.91C676.33 82.91 699.30 99.60 701.47 130.59L670.04 130.59C669.39 119.32 661.37 109.79 646.20 109.79C625.18 109.79 620.19 127.99 620.19 145.55C620.19 163.10 625.18 181.31 646.20 181.31C661.37 181.31 669.39 171.77 670.04 160.50ZM802.23 145.55C802.23 127.77 797.04 109.79 774.49 109.79C751.95 109.79 746.75 127.77 746.75 145.55C746.75 163.32 751.95 181.31 774.49 181.31C797.04 181.31 802.23 163.32 802.23 145.55M714.68 145.55C714.68 108.05 734.40 82.91 774.49 82.91C814.37 82.91 834.09 108.05 834.09 145.55C834.09 183.04 814.37 208.18 774.49 208.18C734.40 208.18 714.68 183.04 714.68 145.55M847.52 85.08L878.51 85.08L878.51 179.36L930.74 179.36L930.74 206.01L847.52 206.01ZM1018.51 163.10L1002.91 115.64L987.52 163.10ZM986.66 85.08L1020.68 85.08L1064.89 206.01L1032.60 206.01L1025.88 186.08L980.37 186.08L973.87 206.01L942.23 206.01ZM1076.59 85.08L1114.08 85.08L1155.91 165.70L1155.91 85.08L1185.39 85.08L1185.39 206.01L1147.89 206.01L1106.06 125.39L1106.06 206.01L1076.59 206.01ZM1273.37 163.10L1257.76 115.64L1242.38 163.10ZM1241.51 85.08L1275.53 85.08L1319.75 206.01L1287.46 206.01L1280.74 186.08L1235.22 186.08L1228.72 206.01L1197.08 206.01ZM206.09 206.01L85.04 206.01L85.04 84.96ZM1325.79 85.04C1315.77 85.04 1307.64 93.17 1307.64 103.20C1307.64 113.22 1315.77 121.35 1325.79 121.35C1335.82 121.35 1343.95 113.22 1343.95 103.20C1343.95 93.17 1335.82 85.04 1325.79 85.04M1325.79 87.89C1334.24 87.89 1341.10 94.75 1341.10 103.20C1341.10 111.64 1334.24 118.51 1325.79 118.51C1317.35 118.51 1310.48 111.64 1310.48 103.20C1310.48 94.75 1317.35 87.89 1325.79 87.89M1325.40 103.15C1328.40 103.15 1329.57 102.33 1329.57 100.25C1329.57 98.20 1328.40 97.34 1325.40 97.34L1323.11 97.34L1323.11 103.15ZM1318.78 93.79L1325.43 93.79C1330.80 93.79 1334.07 95.81 1334.07 100.25C1334.07 103.25 1332.44 104.96 1330.11 105.81L1334.96 112.85L1329.97 112.85L1326.02 106.70L1323.11 106.70L1323.11 112.85L1318.78 112.85Z"/></svg></a>
-        <p class="eyebrow"><span class="l-it">Domenica 11.10.2026 · partenza 10:30</span><span class="l-en">Sunday 11.10.2026 · start 10:30</span></p>
-        <h1 class="site-page-title"><span class="l-it">Il vento sul percorso della Barcolana</span><span class="l-en">The Barcolana: the wind on the race course</span></h1>
-        <p class="bc-lead"><span class="l-it">Mappa del percorso, vento in tempo reale dalle centraline e dalle boe del Golfo, andatura e vele lato per lato. Gratis, per chi regata e per chi la segue da riva.</span><span class="l-en">Course map, live wind from the Gulf's weather stations and buoys, point of sail and sail choice for every leg. Free, for every crew and for everyone watching from the shore.</span></p>
-        <div class="bc-collab">
-          <p><span class="l-it"><strong>Vento Barcolana</strong> nasce da una collaborazione tra <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, progetto indipendente di <a href="https://bebroggi.it" target="_blank" rel="noopener">Alberto Broggi (bebroggi.it)</a>, e <a href="https://www.barcolana.it/" target="_blank" rel="noopener">Barcolana Srl</a>.</span><span class="l-en"><strong>Vento Barcolana</strong> is a collaboration between <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, an independent project by <a href="https://bebroggi.it" target="_blank" rel="noopener">Alberto Broggi (bebroggi.it)</a>, and <a href="https://www.barcolana.it/" target="_blank" rel="noopener">Barcolana Srl</a>.</span></p>
-          <a class="bc-tg-btn" href="https://t.me/barcolana58" target="_blank" rel="noopener"><svg class="bc-tg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path fill="#fff" d="M5.43 11.87c3.5-1.52 5.83-2.53 6.99-3.01 3.33-1.39 4.02-1.63 4.48-1.64.1 0 .32.02.46.14.12.1.15.23.17.33.02.09.04.31.02.47-.18 1.9-.96 6.5-1.36 8.63-.17.9-.5 1.2-.82 1.23-.7.06-1.22-.46-1.9-.9-1.06-.7-1.65-1.13-2.68-1.8-1.18-.78-.42-1.21.26-1.91.18-.18 3.25-2.98 3.31-3.23 0-.03.01-.15-.06-.21-.07-.06-.17-.04-.25-.02-.1.02-1.79 1.14-5.06 3.35-.48.33-.91.49-1.3.48-.43-.01-1.25-.24-1.87-.44-.75-.24-1.35-.37-1.3-.79.03-.22.33-.44.9-.67z"/></svg><span><span class="l-it">Canale Telegram ufficiale</span><span class="l-en">Official Telegram channel</span></span> ↗</a>
-        </div>
-      </div>
-
+      <!-- 5 ott 2026: tolta la testata (logo, titolo, collaborazione, Telegram): il logo sta nella barra
+           in alto, collaborazione e Telegram restano nel piede e in "Info utili". Il titolo resta per
+           i motori di ricerca e i lettori di schermo. -->
+      <h1 class="visually-hidden"><span class="l-it">Vento Barcolana: il vento sul percorso della Barcolana in tempo reale</span><span class="l-en">Vento Barcolana: live wind on the Barcolana race course</span></h1>
       <div class="console-card" id="campoOra">
         <div class="bc-card-head">
           <h2><span class="l-it">Vento sul campo di regata · adesso</span><span class="l-en">Wind on the race course · now</span></h2>
