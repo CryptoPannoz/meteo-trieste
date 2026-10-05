@@ -1102,6 +1102,25 @@
       .bc-card-azioni { flex-direction: row; flex-wrap: wrap; align-items: center; width: 100%; }
       .bc-card-azioni .bc-refresh { min-width: 0; }
     }
+    /* web app: pulsante in "Info utili" e finestra con le istruzioni per iPhone e Android */
+    .bc-app-btn { display: flex; align-items: center; gap: .75rem; width: 100%; margin: .6rem 0 0; padding: .6rem .85rem; text-align: left; font: inherit; cursor: pointer; }
+    .bc-app-btn[hidden], .bc-app-ora[hidden] { display: none; }
+    .bc-app-btn img { width: 44px; height: 44px; border-radius: 10px; flex: none; box-shadow: 0 0 0 1.5px rgba(255,255,255,.6); }
+    .bc-app-btn strong { display: block; font-size: .95rem; line-height: 1.25; }
+    .bc-app-btn small { display: block; margin-top: .1rem; font-size: .76rem; font-weight: 600; opacity: .85; }
+    .bc-app-intro { display: flex; align-items: center; gap: .85rem; }
+    .bc-app-intro img { width: 56px; height: 56px; border-radius: 12px; flex: none; }
+    .bc-app-intro p { margin: 0; }
+    .bc-app-ora { margin: .8rem 0 0; }
+    .bc-app-os { margin-top: .8rem; padding: .7rem .9rem .75rem; border: 1px solid var(--line); border-radius: 3px; }
+    .bc-app-os h4 { display: flex; align-items: center; gap: .45rem; margin: 0 0 .3rem !important; }
+    .bc-app-os ol { margin: 0; padding-left: 1.25rem; }
+    .bc-app-os li { margin: .25rem 0; }
+    .bc-app-os .bc-nota { margin-top: .45rem; }
+    .bc-app-tuo { display: none; padding: .1rem .5rem; border-radius: 999px; background: var(--bcn-red, #e30613); color: #fff; font-size: .62rem; letter-spacing: .06em; }
+    .bc-app-os.tuo { border-color: var(--bcn-title, var(--ink)); box-shadow: inset 4px 0 0 var(--bcn-red, #e30613); }
+    .bc-app-os.tuo .bc-app-tuo { display: inline-block; }
+    .bc-share-ico { width: 1.15em; height: 1.15em; vertical-align: -.2em; }
     /* chi l'ha fatto: firma ben visibile nel piede (Alberto, 5 ott 2026) */
     .bc-autore { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; margin: 0 0 1rem; padding: 1rem 1.1rem; }
     .bc-autore-chi { display: grid; gap: .15rem; min-width: 0; text-align: left; }
@@ -1331,6 +1350,8 @@
     html[data-theme] body.bcn .bc-i-btn:hover .bc-i { background: var(--bcn-btn-ink); color: var(--bcn-btn); }
     html[data-theme] body.bcn .bc-dialog-x { border-radius: 50%; }
     html[data-theme] body.bcn .bc-dialog-testa h3 { color: var(--bcn-title); }
+    html[data-theme] body.bcn .bc-app-btn { background: var(--bcn-hero); color: #fff; border: 0; border-radius: 4px; border-bottom: 3px solid var(--bcn-red); }
+    html[data-theme] body.bcn .bc-app-btn:hover { background: var(--bcn-red); color: #fff; }
     html[data-theme] body.bcn .bc-autore { background: var(--bcn-hero); color: var(--bcn-hero-ink); border-radius: 4px; border-bottom: 4px solid var(--bcn-red); }
     html[data-theme] body.bcn .bc-autore-chi small { color: var(--bcn-hero-soft); }
     html[data-theme] body.bcn .bc-autore-chi strong { color: #fff; }
@@ -1442,6 +1463,38 @@
           <p class="bc-nota"><span class="l-it">Fonti</span><span class="l-en">Sources</span>: Barcola (Windguru) · Monte Grisa (Vetercek) · <span class="l-it">boa Mambo</span><span class="l-en">Mambo buoy</span> (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>) · Trieste molo, Muggia, Paloma: Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · <span class="l-it">dati elaborati</span><span class="l-en">processed data</span>.</p>
       </div>
     </dialog>
+    <dialog class="bc-dialog" id="infoApp" aria-labelledby="infoAppTit">
+      <div class="bc-dialog-testa"><h3 id="infoAppTit"><span class="l-it">Vento Barcolana sul telefono</span><span class="l-en">Vento Barcolana on your phone</span></h3><button type="button" class="bc-dialog-x" aria-label="Chiudi / Close" title="Chiudi">✕</button></div>
+      <div class="bc-dialog-corpo">
+        <div class="bc-app-intro">
+          <img src="./icon-192.png" alt="" width="56" height="56" />
+          <p><span class="l-it">Aggiungi la pagina alla schermata Home: avrai l'icona <strong>Vento Barcolana</strong> e si aprirà a schermo intero, come un'app, sempre con i dati aggiornati. Gratis, niente da scaricare dagli store.</span><span class="l-en">Add the page to your Home screen: you get the <strong>Vento Barcolana</strong> icon and it opens full screen, like an app, always with up-to-date data. Free, nothing to download from the app stores.</span></p>
+        </div>
+        <div class="bc-app-ora" id="appOra" hidden>
+          <button type="button" class="bc-refresh" id="appInstallaOra">📲 <span class="l-it">Installa adesso</span><span class="l-en">Install now</span></button>
+        </div>
+        <section class="bc-app-os" data-os="ios">
+          <h4><span class="l-it">iPhone e iPad</span><span class="l-en">iPhone and iPad</span> <span class="bc-app-tuo"><span class="l-it">il tuo telefono</span><span class="l-en">your phone</span></span></h4>
+          <ol>
+            <li><span class="l-it">Apri questa pagina con <strong>Safari</strong>.</span><span class="l-en">Open this page in <strong>Safari</strong>.</span></li>
+            <li><span class="l-it">Tocca il tasto <strong>Condividi</strong> <svg class="bc-share-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8.5 10H6.5a1.5 1.5 0 0 0-1.5 1.5v8A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> (su iOS 26 è nel menu <strong>•••</strong> in basso).</span><span class="l-en">Tap the <strong>Share</strong> button <svg class="bc-share-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M8.5 10H6.5a1.5 1.5 0 0 0-1.5 1.5v8A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> (on iOS 26 it is in the <strong>•••</strong> menu at the bottom).</span></li>
+            <li><span class="l-it">Scorri e scegli <strong>Aggiungi alla schermata Home</strong>. Se compare l'opzione «Apri come app web», lasciala attiva.</span><span class="l-en">Scroll down and choose <strong>Add to Home Screen</strong>. If you see «Open as Web App», leave it on.</span></li>
+            <li><span class="l-it">Tocca <strong>Aggiungi</strong>.</span><span class="l-en">Tap <strong>Add</strong>.</span></li>
+          </ol>
+          <p class="bc-nota"><span class="l-it">Funziona anche da Chrome per iPhone: tasto Condividi accanto all'indirizzo, poi «Aggiungi alla schermata Home».</span><span class="l-en">Also works from Chrome on iPhone: Share button next to the address bar, then «Add to Home Screen».</span></p>
+        </section>
+        <section class="bc-app-os" data-os="android">
+          <h4>Android <span class="bc-app-tuo"><span class="l-it">il tuo telefono</span><span class="l-en">your phone</span></span></h4>
+          <ol>
+            <li><span class="l-it">Apri questa pagina con <strong>Chrome</strong>.</span><span class="l-en">Open this page in <strong>Chrome</strong>.</span></li>
+            <li><span class="l-it">Tocca il menu <strong>⋮</strong> in alto a destra.</span><span class="l-en">Tap the <strong>⋮</strong> menu at the top right.</span></li>
+            <li><span class="l-it">Scegli <strong>Installa app</strong> (su alcuni telefoni: <strong>Aggiungi a schermata Home</strong>).</span><span class="l-en">Choose <strong>Install app</strong> (on some phones: <strong>Add to Home screen</strong>).</span></li>
+            <li><span class="l-it">Conferma con <strong>Installa</strong>.</span><span class="l-en">Confirm with <strong>Install</strong>.</span></li>
+          </ol>
+        </section>
+        <p class="bc-nota"><span class="l-it">L'icona apre sempre la pagina online: serve la connessione, e i dati sono quelli del momento.</span><span class="l-en">The icon always opens the live page: you need a connection, and the data are always current.</span></p>
+      </div>
+    </dialog>
     <dialog class="bc-dialog" id="infoMappa" aria-labelledby="infoMappaTit">
       <div class="bc-dialog-testa"><h3 id="infoMappaTit"><span class="l-it">Legenda della mappa</span><span class="l-en">Map legend</span></h3><button type="button" class="bc-dialog-x" aria-label="Chiudi / Close" title="Chiudi">✕</button></div>
       <div class="bc-dialog-corpo">
@@ -1533,6 +1586,12 @@
           <a class="dona-btn" id="shareWa" href="#" target="_blank" rel="noopener">📲 <span class="l-it">Mandala all'equipaggio</span><span class="l-en">Send to your crew</span></a>
           <button type="button" id="shareCopy">🔗 <span class="l-it">Copia link</span><span class="l-en">Copy link</span></button>
         </div>
+        <!-- web app (ott 2026): istruzioni per aggiungerla alla schermata Home; sparisce se è già aperta dall'icona -->
+        <button type="button" class="bc-app-btn" id="appInstalla" data-dialog="infoApp" aria-haspopup="dialog">
+          <img src="./icon-192.png" alt="" width="44" height="44" />
+          <span><strong><span class="l-it">Installa l'app sul telefono</span><span class="l-en">Get the app on your phone</span></strong>
+            <small><span class="l-it">iPhone e Android · gratis, senza passare dagli store</span><span class="l-en">iPhone and Android · free, no app store needed</span></small></span>
+        </button>
         <p class="bc-indip"><span class="l-it">Per percorso, boe e segnali fanno fede le Istruzioni di Regata e</span><span class="l-en">For course, marks and signals, the Sailing Instructions and</span> <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a><span class="l-it">.</span><span class="l-en"> prevail.</span></p>
         </div>
       </div>
@@ -2476,6 +2535,35 @@
       }
     }
     document.querySelectorAll("[data-lang-btn]").forEach(b => b.addEventListener("click", () => impostaLingua(b.getAttribute("data-lang-btn"))));
+
+    /* ---------- web app: "Installa l'app sul telefono" ----------
+       Evidenzia le istruzioni del telefono in uso (Android per primo su Android); con Chrome,
+       se il browser lo consente, c'è anche il tasto per installare subito. Già aperta dall'icona
+       (display-mode standalone) il pulsante sparisce. Conteggi su GoatCounter via eventi.js. */
+    (function () {
+      const conta = n => { if (window.vtConta) window.vtConta(n); };
+      const btn = document.getElementById("appInstalla");
+      const standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+      if (standalone) { btn.hidden = true; return; }
+      const ua = navigator.userAgent || "";
+      // Android per primo: l'iPad si riconosce da "Mac con schermo touch", che altrimenti prende anche altro
+      const os = /Android/i.test(ua) ? "android" : (/iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) ? "ios" : null;
+      document.querySelectorAll("#infoApp [data-os]").forEach(sez => sez.classList.toggle("tuo", sez.getAttribute("data-os") === os));
+      if (os === "android") {
+        const a = document.querySelector('#infoApp [data-os="android"]'), i = document.querySelector('#infoApp [data-os="ios"]');
+        i.parentNode.insertBefore(a, i);
+      }
+      btn.addEventListener("click", () => conta("barcolana app: istruzioni" + (os ? " " + os : "")));
+      let richiesta = null;
+      window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); richiesta = e; document.getElementById("appOra").hidden = false; });
+      document.getElementById("appInstallaOra").addEventListener("click", () => {
+        if (!richiesta) return;
+        richiesta.prompt();
+        richiesta.userChoice.then(c => { conta("barcolana app: installa " + (c && c.outcome)); }).catch(() => {});
+        richiesta = null; document.getElementById("appOra").hidden = true;
+      });
+      window.addEventListener("appinstalled", () => conta("barcolana app: installata"));
+    })();
 
     /* ---------- avvio ---------- */
     controllaPrevisione();
