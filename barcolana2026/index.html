@@ -24,7 +24,17 @@
   <meta property="og:image:alt" content="Barche ormeggiate sulle Rive di Trieste davanti a piazza Unità nella settimana della Barcolana" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://ventotrieste.info/barcolana2026/og-barcolana2026.jpg" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E⛵%3C/text%3E%3C/svg%3E" />
+  <!-- icona: la "B" con il triangolo del logo Barcolana (dal PDF ufficiale), bianca su blu. Con il
+       manifest, chi aggiunge la pagina alla schermata Home del telefono la apre come una app -->
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <meta name="theme-color" content="#003770" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Vento Barcolana" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <script>(function(){var t=null;try{t=localStorage.getItem("vento-trieste-theme");}catch(e){}
     /* pagina Barcolana: senza una scelta salvata parte chiara (colori ufficiali su bianco) */
     document.documentElement.setAttribute("data-theme",(t==="light"||t==="dark")?t:"light");

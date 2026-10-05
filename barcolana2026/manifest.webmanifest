@@ -1,0 +1,18 @@
+{
+  "id": "/barcolana2026/",
+  "name": "Vento Barcolana",
+  "short_name": "Vento Barcolana",
+  "description": "Il vento sul percorso della Barcolana, live: centraline, boe, mappa del percorso e registro del vento.",
+  "lang": "it",
+  "start_url": "/barcolana2026/?utm_source=webapp",
+  "scope": "/barcolana2026/",
+  "display": "standalone",
+  "background_color": "#003770",
+  "theme_color": "#003770",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
