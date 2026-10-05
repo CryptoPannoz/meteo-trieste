@@ -917,8 +917,11 @@
     :root[data-theme="light"] .bc-chip b { color: var(--sea-dark); }
 
     /* --- vento sul campo, ora --- */
-    .bc-card-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; }
-    .bc-card-head h2 { margin: 0; }
+    .bc-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: .6rem; flex-wrap: wrap; }
+    .bc-card-head h2 { margin: 0; padding-top: .6rem; }
+    /* Aggiorna e, sotto, il pulsante info delle centraline */
+    .bc-card-azioni { display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; }
+    .bc-card-azioni .bc-refresh { min-width: 9.5rem; justify-content: center; }
     .bc-refresh { margin: 0; min-height: 38px; padding: .4rem .85rem; font-weight: 800; border-radius: 999px; }
     .bc-refresh[aria-busy="true"] { opacity: .7; cursor: progress; }
     .bc-refresh[aria-busy="true"] .bc-giro { display: inline-block; animation: bc-giro 1s linear infinite; }
@@ -999,7 +1002,7 @@
 
     .bc-pannello h3 { margin: 0 0 .5rem; font-size: 1.02rem; }
     .bc-ctrl { margin: .65rem 0 .2rem; display: grid; gap: .55rem; }
-    .bc-ctrl[hidden] { display: none; }
+    .bc-ctrl[hidden], .bc-seg[hidden] { display: none; }
     .bc-ctrl label { font-size: .78rem; font-weight: 800; color: var(--label); display: flex; justify-content: space-between; gap: .5rem; }
     .bc-ctrl label output { color: var(--ink); }
     .bc-ctrl input[type="range"] { width: 100%; accent-color: var(--signal); }
@@ -1063,21 +1066,40 @@
     .bc-collab p { flex: 1 1 320px; margin: 0; padding: .6rem .8rem; font-size: .82rem; line-height: 1.45; }
     .bc-tg-btn { display: inline-flex; align-items: center; gap: .55rem; padding: .55rem .95rem; font-weight: 700; font-size: .88rem; text-decoration: none; }
     .bc-tg-btn .bc-tg { width: 1.45rem; height: 1.45rem; }
-    .bc-i-btn { display: inline-flex; align-items: center; gap: .45rem; margin: 0; min-height: 34px; padding: .3rem .75rem; font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer; }
-    .bc-i { display: inline-grid; place-items: center; width: 1.1rem; height: 1.1rem; border-radius: 50%; border: 1.6px solid currentColor; font-size: .7rem; font-weight: 800; font-style: normal; line-height: 1; flex: none; }
-    .bc-i-pan { margin-top: .6rem; padding: .75rem .9rem; border: 1px solid var(--line); background: var(--surface-soft); font-size: .82rem; line-height: 1.5; color: var(--slate-2); }
-    .bc-i-pan[hidden] { display: none; }
-    .bc-i-pan h4 { margin: .85rem 0 .3rem; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--bcn-title, var(--ink)); }
-    .bc-i-pan h4:first-child { margin-top: 0; }
-    .bc-i-pan ul { margin: 0; padding-left: 1.1rem; }
-    .bc-i-pan li { margin: .18rem 0; }
-    .bc-i-pan p { margin: .35rem 0 0; }
-    .bc-i-pan strong { color: var(--ink); }
-    .bc-i-pan .bc-legenda { margin-top: 0; }
-    .bc-staz-info { margin: -.25rem 0 .7rem; }
-    /* legenda: una "i" tonda nell'angolo in alto a destra della mappa (in alto a sinistra ci sono scala e nord) */
-    .bc-mappa .bc-leg-btn { position: absolute; top: 8px; right: 8px; z-index: 2; width: 36px; height: 36px; min-height: 0; padding: 0; justify-content: center; border-radius: 50% !important; box-shadow: 0 2px 8px rgba(0,30,70,.2); }
-    .bc-mappa .bc-leg-btn .bc-i { width: 1.25rem; height: 1.25rem; font-size: .8rem; }
+    /* pulsanti "i": pillola azzurrina con la i piena, ben visibili ma sotto "Aggiorna" per peso */
+    .bc-i-btn { display: inline-flex; align-items: center; gap: .5rem; margin: 0; min-height: 38px; padding: .35rem .85rem .35rem .45rem; font: inherit; font-size: .84rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .bc-i { display: inline-grid; place-items: center; width: 1.45rem; height: 1.45rem; border-radius: 50%; font-size: .82rem; font-weight: 800; font-style: normal; line-height: 1; flex: none; }
+    .bc-sez-testa { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: .5rem 1rem; margin-bottom: .7rem; }
+    .bc-sez-testa h2 { margin: 0; white-space: normal; }
+    /* finestre informative */
+    .bc-dialog { width: min(640px, calc(100vw - 24px)); max-height: min(86vh, 780px); padding: 0; border: 1px solid var(--line); border-top: 4px solid var(--bcn-red, #e30613); border-radius: 4px; background: var(--surface); color: var(--ink); box-shadow: 0 24px 60px rgba(0,20,50,.35); overflow: hidden; }
+    .bc-dialog[open] { display: flex; flex-direction: column; }
+    .bc-dialog::backdrop { background: rgba(0,20,45,.55); }
+    .bc-dialog-testa { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .75rem .9rem .75rem 1.1rem; border-bottom: 1px solid var(--line); }
+    .bc-dialog-testa h3 { margin: 0; font-size: 1.05rem; }
+    .bc-dialog-x { flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin: 0; padding: 0; font-size: 1rem; cursor: pointer; }
+    .bc-dialog-corpo { overflow-y: auto; padding: .9rem 1.1rem 1.1rem; font-size: .88rem; line-height: 1.55; color: var(--slate-2); -webkit-overflow-scrolling: touch; }
+    .bc-dialog-corpo h4 { margin: 1rem 0 .3rem; font-size: .74rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--bcn-title, var(--ink)); }
+    .bc-dialog-corpo h4:first-child { margin-top: 0; }
+    .bc-dialog-corpo ul { margin: 0; padding-left: 1.1rem; }
+    .bc-dialog-corpo li { margin: .2rem 0; }
+    .bc-dialog-corpo p { margin: .4rem 0 0; }
+    .bc-dialog-corpo strong { color: var(--ink); }
+    .bc-dialog-corpo .bc-legenda { margin: 0 0 .4rem; font-size: .78rem; }
+    @media (max-width: 560px) {
+      /* telefono: la finestra sale dal basso */
+      .bc-dialog { width: 100vw; max-width: 100vw; max-height: 88vh; margin: auto 0 0; border-radius: 12px 12px 0 0; border-left: 0; border-right: 0; border-bottom: 0; }
+      .bc-card-azioni { flex-direction: row; flex-wrap: wrap; align-items: center; width: 100%; }
+      .bc-card-azioni .bc-refresh { min-width: 0; }
+    }
+    /* chi l'ha fatto: firma ben visibile nel piede (Alberto, 5 ott 2026) */
+    .bc-autore { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; margin: 0 0 1rem; padding: 1rem 1.1rem; }
+    .bc-autore-chi { display: grid; gap: .15rem; min-width: 0; text-align: left; }
+    .bc-autore-chi small { font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .bc-autore-chi strong { font-size: 1.45rem; line-height: 1.15; font-weight: 700; }
+    .bc-autore-chi span { font-size: .86rem; }
+    .bc-autore-azioni { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .bc-autore-azioni a { display: inline-flex; align-items: center; gap: .4rem; min-height: 40px; padding: .4rem .9rem; font-weight: 700; font-size: .88rem; text-decoration: none; }
     .bc-avviso-breve { margin: .7rem 0 0; font-size: .76rem; color: var(--label); line-height: 1.45; }
     .bc-avviso-breve strong { color: var(--ink); }
     /* sezione chiusa a tendina: il titolo è il sommario */
@@ -1223,8 +1245,8 @@
     }
     html[data-theme] body.bcn .console-card { border-top: 4px solid var(--bcn-red); }
     html[data-theme] body.bcn .console-card h2 { color: var(--bcn-accent); letter-spacing: .1em; }
-    html[data-theme] body.bcn .section > h2 { font-weight: 700; }
-    html[data-theme] body.bcn .section > h2::before { content: ""; display: block; width: 34px; height: 4px; margin-bottom: .6rem; background: var(--bcn-red); }
+    html[data-theme] body.bcn .section > h2, html[data-theme] body.bcn .bc-sez-testa > h2 { font-weight: 700; }
+    html[data-theme] body.bcn .section > h2::before, html[data-theme] body.bcn .bc-sez-testa > h2::before { content: ""; display: block; width: 34px; height: 4px; margin-bottom: .6rem; background: var(--bcn-red); }
     html[data-theme] body.bcn .section:hover, html[data-theme] body.bcn .console-card:hover { border-color: var(--line); box-shadow: var(--bcn-shadow); }
     html[data-theme] body.bcn .stato, html[data-theme] body.bcn .bc-nota { color: var(--slate-2); }
 
@@ -1293,9 +1315,18 @@
     html[data-theme] body.bcn #vento .bc-collab p a:hover { text-decoration-color: var(--bcn-red); }
     html[data-theme] body.bcn #vento .bc-tg-btn { background: #fff; color: #003770; border: 0; border-radius: 3px; }
     html[data-theme] body.bcn #vento .bc-tg-btn:hover { background: var(--bcn-red); color: #fff; }
-    html[data-theme] body.bcn .bc-i-pan { border-radius: 3px; }
-    html[data-theme] body.bcn .bc-i-btn[aria-expanded="true"] { background: var(--bcn-btn); border-color: var(--bcn-btn); color: var(--bcn-btn-ink); }
-    html[data-theme] body.bcn .bc-mappa .bc-leg-btn:not([aria-expanded="true"]) { background: var(--surface); }
+    html[data-theme] body.bcn .bc-i-btn { background: var(--bcn-th); border: 1px solid color-mix(in srgb, var(--bcn-title) 35%, transparent); color: var(--bcn-title); border-radius: 999px; }
+    html[data-theme] body.bcn .bc-i-btn .bc-i { background: var(--bcn-title); color: var(--surface); }
+    html[data-theme] body.bcn .bc-i-btn:hover { background: var(--bcn-btn); border-color: var(--bcn-btn); color: var(--bcn-btn-ink); }
+    html[data-theme] body.bcn .bc-i-btn:hover .bc-i { background: var(--bcn-btn-ink); color: var(--bcn-btn); }
+    html[data-theme] body.bcn .bc-dialog-x { border-radius: 50%; }
+    html[data-theme] body.bcn .bc-dialog-testa h3 { color: var(--bcn-title); }
+    html[data-theme] body.bcn .bc-autore { background: var(--bcn-hero); color: var(--bcn-hero-ink); border-radius: 4px; border-bottom: 4px solid var(--bcn-red); }
+    html[data-theme] body.bcn .bc-autore-chi small { color: var(--bcn-hero-soft); }
+    html[data-theme] body.bcn .bc-autore-chi strong { color: #fff; }
+    html[data-theme] body.bcn .bc-autore-chi span { color: var(--bcn-hero-soft); }
+    html[data-theme] body.bcn .bc-autore-azioni a { background: #fff; color: #003770; border-radius: 3px; }
+    html[data-theme] body.bcn .bc-autore-azioni a:hover { background: var(--bcn-red); color: #fff; }
     html[data-theme] body.bcn .bc-tend-tit strong { color: var(--bcn-title); }
     html[data-theme] body.bcn .bc-tend-tit strong::before { content: ""; display: block; width: 34px; height: 4px; margin-bottom: .55rem; background: var(--bcn-red); }
 
@@ -1343,7 +1374,7 @@
         <h1 class="site-page-title"><span class="l-it">Il vento sul percorso della Barcolana</span><span class="l-en">The Barcolana: the wind on the race course</span></h1>
         <p class="bc-lead"><span class="l-it">Mappa del percorso, vento in tempo reale dalle centraline e dalle boe del Golfo, andatura e vele lato per lato. Gratis, per chi regata e per chi la segue da riva.</span><span class="l-en">Course map, live wind from the Gulf's weather stations and buoys, point of sail and sail choice for every leg. Free, for every crew and for everyone watching from the shore.</span></p>
         <div class="bc-collab">
-          <p><span class="l-it"><strong>Vento Barcolana</strong> nasce da una collaborazione tra <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, progetto indipendente di <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a>, e <a href="https://www.barcolana.it/" target="_blank" rel="noopener">Barcolana Srl</a>.</span><span class="l-en"><strong>Vento Barcolana</strong> is a collaboration between <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, an independent project by <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a>, and <a href="https://www.barcolana.it/" target="_blank" rel="noopener">Barcolana Srl</a>.</span></p>
+          <p><span class="l-it"><strong>Vento Barcolana</strong> nasce da una collaborazione tra <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, progetto indipendente di <a href="https://bebroggi.it" target="_blank" rel="noopener">Alberto Broggi (bebroggi.it)</a>, e <a href="https://www.barcolana.it/" target="_blank" rel="noopener">Barcolana Srl</a>.</span><span class="l-en"><strong>Vento Barcolana</strong> is a collaboration between <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, an independent project by <a href="https://bebroggi.it" target="_blank" rel="noopener">Alberto Broggi (bebroggi.it)</a>, and <a href="https://www.barcolana.it/" target="_blank" rel="noopener">Barcolana Srl</a>.</span></p>
           <a class="bc-tg-btn" href="https://t.me/barcolana58" target="_blank" rel="noopener"><svg class="bc-tg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path fill="#fff" d="M5.43 11.87c3.5-1.52 5.83-2.53 6.99-3.01 3.33-1.39 4.02-1.63 4.48-1.64.1 0 .32.02.46.14.12.1.15.23.17.33.02.09.04.31.02.47-.18 1.9-.96 6.5-1.36 8.63-.17.9-.5 1.2-.82 1.23-.7.06-1.22-.46-1.9-.9-1.06-.7-1.65-1.13-2.68-1.8-1.18-.78-.42-1.21.26-1.91.18-.18 3.25-2.98 3.31-3.23 0-.03.01-.15-.06-.21-.07-.06-.17-.04-.25-.02-.1.02-1.79 1.14-5.06 3.35-.48.33-.91.49-1.3.48-.43-.01-1.25-.24-1.87-.44-.75-.24-1.35-.37-1.3-.79.03-.22.33-.44.9-.67z"/></svg><span><span class="l-it">Canale Telegram ufficiale</span><span class="l-en">Official Telegram channel</span></span> ↗</a>
         </div>
       </div>
@@ -1351,7 +1382,10 @@
       <div class="console-card" id="campoOra">
         <div class="bc-card-head">
           <h2><span class="l-it">Vento sul campo di regata · adesso</span><span class="l-en">Wind on the race course · now</span></h2>
-          <button type="button" class="bc-refresh" id="bcAggiorna"><span class="bc-giro" aria-hidden="true">🔄</span> <span class="l-it">Aggiorna</span><span class="l-en">Refresh</span></button>
+          <div class="bc-card-azioni">
+            <button type="button" class="bc-refresh" id="bcAggiorna"><span class="bc-giro" aria-hidden="true">🔄</span> <span class="l-it">Aggiorna</span><span class="l-en">Refresh</span></button>
+            <button type="button" class="bc-i-btn" data-dialog="infoCentraline" aria-haspopup="dialog"><i class="bc-i" aria-hidden="true">i</i><span class="l-it">Come funzionano le centraline</span><span class="l-en">How the stations work</span></button>
+          </div>
         </div>
         <div class="bc-now">
           <div class="bc-now-kt" aria-live="polite"><span id="nowKt">–</span><small>kt</small></div>
@@ -1363,62 +1397,79 @@
         </div>
         <p class="bc-now-fonti" id="nowFonti"></p>
         <ul class="bc-staz-list" id="nowStazioni" aria-label="Centraline"></ul>
-        <div class="bc-staz-info">
-          <button type="button" class="bc-i-btn" aria-expanded="false" aria-controls="infoCentraline"><i class="bc-i" aria-hidden="true">i</i><span class="l-it">Come funzionano le centraline</span><span class="l-en">How the stations work</span></button>
-          <div class="bc-i-pan" id="infoCentraline" hidden>
-            <h4><span class="l-it">Da dove arrivano i dati</span><span class="l-en">Where the data come from</span></h4>
-            <ul>
-              <li><span class="l-it"><strong>Barcola</strong>: anemometro al porticciolo di Barcola, dati Windguru. Un nuovo valore ogni 1–5 minuti.</span><span class="l-en"><strong>Barcola</strong>: anemometer at Barcola harbour, Windguru data. A new reading every 1–5 minutes.</span></li>
-              <li><span class="l-it"><strong>Trieste molo, Muggia e boa Paloma</strong>: rete meteorologica regionale. Un valore ogni 15 minuti. Trieste molo è sul molo F.lli Bandiera, vicino all'arrivo; la boa Paloma è in mezzo al Golfo.</span><span class="l-en"><strong>Trieste pier, Muggia and Paloma buoy</strong>: regional weather network. A reading every 15 minutes. Trieste pier is on the F.lli Bandiera pier, near the finish; the Paloma buoy is in the middle of the Gulf.</span></li>
-              <li><span class="l-it"><strong>Monte Grisa</strong>: stazione Vetercek in quota sopra Barcola, ogni pochi minuti. Con la Bora segna prima e più forte del mare.</span><span class="l-en"><strong>Monte Grisa</strong>: Vetercek station high above Barcola, every few minutes. In Bora it reads earlier and stronger than at sea.</span></li>
-              <li><span class="l-it"><strong>Boa Mambo</strong> (OGS), davanti a Miramare: pubblica un dato all'ora con 1–2 ore di ritardo.</span><span class="l-en"><strong>Mambo buoy</strong> (OGS), off Miramare: publishes one reading per hour, 1–2 hours late.</span></li>
-            </ul>
-            <h4><span class="l-it">Come si legge</span><span class="l-en">How to read it</span></h4>
-            <ul>
-              <li><span class="l-it">Il <strong>numero grande</strong> è il vento medio stimato al centro del percorso, in nodi; sotto, da dove viene e le raffiche.</span><span class="l-en">The <strong>big number</strong> is the estimated mean wind at the centre of the course, in knots; below it, where it comes from and the gusts.</span></li>
-              <li><span class="l-it">In ogni riga: <strong>vento medio / raffica</strong> in nodi. La freccia va dove va il vento, la sigla (ENE, SO…) dice da dove viene.</span><span class="l-en">On each line: <strong>mean wind / gust</strong> in knots. The arrow points where the wind blows to, the letters (ENE, SW…) say where it comes from.</span></li>
-              <li><span class="l-it"><strong>Vento medio</strong> = la media dell'intervallo di misura della centralina; <strong>raffica</strong> = il colpo più forte nello stesso intervallo. Le vele si regolano sulle raffiche.</span><span class="l-en"><strong>Mean wind</strong> = the average over the station's measuring interval; <strong>gust</strong> = the strongest blow in the same interval. Trim the sails for the gusts.</span></li>
-              <li><span class="l-it">Pallino <strong>verde</strong>: dato fresco. <strong>Giallo</strong>: un po' vecchio, ancora usato. <strong>Grigio</strong>: offline o troppo vecchio, non entra nei calcoli. Accanto, l'ora del dato e quanti minuti fa.</span><span class="l-en"><strong>Green</strong> dot: fresh data. <strong>Yellow</strong>: a bit old, still used. <strong>Grey</strong>: offline or too old, left out of the calculations. Next to it, the time of the reading and how many minutes ago.</span></li>
-            </ul>
-            <h4><span class="l-it">Come si calcola la media sul campo</span><span class="l-en">How the race-course average works</span></h4>
-            <ul>
-              <li><span class="l-it">È la media delle centraline <strong>a mare</strong> in linea, pesata sulla distanza: la più vicina conta di più (peso 1/d²). Lo stesso calcolo, fatto sul punto medio di ogni lato, colora il percorso sulla mappa.</span><span class="l-en">It is the average of the live <strong>sea-level</strong> stations, weighted by distance: the closest counts most (weight 1/d²). The same calculation, at the midpoint of each leg, colours the course on the map.</span></li>
-              <li><span class="l-it"><strong>Monte Grisa non entra nella media</strong>: è in quota e con la Bora esagera rispetto al mare.</span><span class="l-en"><strong>Monte Grisa is left out of the average</strong>: it is high up and overstates the Bora compared with the sea.</span></li>
-              <li><span class="l-it"><strong>Niente dati vecchi</strong>: Barcola e Monte Grisa escono dal calcolo dopo 20 minuti, le altre dopo 30. La boa Mambo, oraria e in ritardo, di solito è fuori.</span><span class="l-en"><strong>No stale data</strong>: Barcola and Monte Grisa drop out after 20 minutes, the others after 30. The Mambo buoy, hourly and late, is usually out.</span></li>
-            </ul>
-            <h4><span class="l-it">Ogni quanto si aggiorna</span><span class="l-en">How often it updates</span></h4>
-            <p><span class="l-it">La pagina riscarica tutte le centraline ogni 5 minuti e quando ci torni sopra; il tasto <strong>Aggiorna</strong> lo fa subito. Ogni centralina ha però il suo ritmo (vedi sopra): il dato di una stazione ogni 15 minuti cambia solo ogni 15 minuti.</span><span class="l-en">The page reloads every station every 5 minutes and whenever you come back to it; the <strong>Refresh</strong> button does it straight away. Each station has its own pace, though (see above): a station reporting every 15 minutes only changes every 15 minutes.</span></p>
-            <p class="bc-nota"><span class="l-it">Fonti</span><span class="l-en">Sources</span>: Barcola (Windguru) · Monte Grisa (Vetercek) · <span class="l-it">boa Mambo</span><span class="l-en">Mambo buoy</span> (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>) · Trieste molo, Muggia, Paloma: Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · <span class="l-it">dati elaborati</span><span class="l-en">processed data</span>.</p>
-          </div>
-        </div>
         <div class="bc-mini-lati" id="nowLati"></div>
         <p class="stato" id="ultimoAggiornamento" style="margin:.6rem 0 0;"></p>
       </div>
 
     </section>
 
-    <!-- 2. PERCORSO (ott 2026, compattato: solo vento live, legenda e note dietro il pulsante "Legenda") -->
+    <!-- finestre informative (ott 2026): si aprono dai pulsanti "i", si chiudono con ✕, Esc o toccando fuori -->
+    <dialog class="bc-dialog" id="infoCentraline" aria-labelledby="infoCentralineTit">
+      <div class="bc-dialog-testa"><h3 id="infoCentralineTit"><span class="l-it">Come funzionano le centraline</span><span class="l-en">How the stations work</span></h3><button type="button" class="bc-dialog-x" aria-label="Chiudi / Close" title="Chiudi">✕</button></div>
+      <div class="bc-dialog-corpo">
+          <h4><span class="l-it">Da dove arrivano i dati</span><span class="l-en">Where the data come from</span></h4>
+          <ul>
+            <li><span class="l-it"><strong>Barcola</strong>: anemometro al porticciolo di Barcola, dati Windguru. Un nuovo valore ogni 1–5 minuti.</span><span class="l-en"><strong>Barcola</strong>: anemometer at Barcola harbour, Windguru data. A new reading every 1–5 minutes.</span></li>
+            <li><span class="l-it"><strong>Trieste molo, Muggia e boa Paloma</strong>: rete meteorologica regionale. Un valore ogni 15 minuti. Trieste molo è sul molo F.lli Bandiera, vicino all'arrivo; la boa Paloma è in mezzo al Golfo.</span><span class="l-en"><strong>Trieste pier, Muggia and Paloma buoy</strong>: regional weather network. A reading every 15 minutes. Trieste pier is on the F.lli Bandiera pier, near the finish; the Paloma buoy is in the middle of the Gulf.</span></li>
+            <li><span class="l-it"><strong>Monte Grisa</strong>: stazione Vetercek in quota sopra Barcola, ogni pochi minuti. Con la Bora segna prima e più forte del mare.</span><span class="l-en"><strong>Monte Grisa</strong>: Vetercek station high above Barcola, every few minutes. In Bora it reads earlier and stronger than at sea.</span></li>
+            <li><span class="l-it"><strong>Boa Mambo</strong> (OGS), davanti a Miramare: pubblica un dato all'ora con 1–2 ore di ritardo.</span><span class="l-en"><strong>Mambo buoy</strong> (OGS), off Miramare: publishes one reading per hour, 1–2 hours late.</span></li>
+          </ul>
+          <h4><span class="l-it">Come si legge</span><span class="l-en">How to read it</span></h4>
+          <ul>
+            <li><span class="l-it">Il <strong>numero grande</strong> è il vento medio stimato al centro del percorso, in nodi; sotto, da dove viene e le raffiche.</span><span class="l-en">The <strong>big number</strong> is the estimated mean wind at the centre of the course, in knots; below it, where it comes from and the gusts.</span></li>
+            <li><span class="l-it">In ogni riga: <strong>vento medio / raffica</strong> in nodi. La freccia va dove va il vento, la sigla (ENE, SO…) dice da dove viene.</span><span class="l-en">On each line: <strong>mean wind / gust</strong> in knots. The arrow points where the wind blows to, the letters (ENE, SW…) say where it comes from.</span></li>
+            <li><span class="l-it"><strong>Vento medio</strong> = la media dell'intervallo di misura della centralina; <strong>raffica</strong> = il colpo più forte nello stesso intervallo. Le vele si regolano sulle raffiche.</span><span class="l-en"><strong>Mean wind</strong> = the average over the station's measuring interval; <strong>gust</strong> = the strongest blow in the same interval. Trim the sails for the gusts.</span></li>
+            <li><span class="l-it">Pallino <strong>verde</strong>: dato fresco. <strong>Giallo</strong>: un po' vecchio, ancora usato. <strong>Grigio</strong>: offline o troppo vecchio, non entra nei calcoli. Accanto, l'ora del dato e quanti minuti fa.</span><span class="l-en"><strong>Green</strong> dot: fresh data. <strong>Yellow</strong>: a bit old, still used. <strong>Grey</strong>: offline or too old, left out of the calculations. Next to it, the time of the reading and how many minutes ago.</span></li>
+          </ul>
+          <h4><span class="l-it">Come si calcola la media sul campo</span><span class="l-en">How the race-course average works</span></h4>
+          <ul>
+            <li><span class="l-it">È la media delle centraline <strong>a mare</strong> in linea, pesata sulla distanza: la più vicina conta di più (peso 1/d²). Lo stesso calcolo, fatto sul punto medio di ogni lato, colora il percorso sulla mappa.</span><span class="l-en">It is the average of the live <strong>sea-level</strong> stations, weighted by distance: the closest counts most (weight 1/d²). The same calculation, at the midpoint of each leg, colours the course on the map.</span></li>
+            <li><span class="l-it"><strong>Monte Grisa non entra nella media</strong>: è in quota e con la Bora esagera rispetto al mare.</span><span class="l-en"><strong>Monte Grisa is left out of the average</strong>: it is high up and overstates the Bora compared with the sea.</span></li>
+            <li><span class="l-it"><strong>Niente dati vecchi</strong>: Barcola e Monte Grisa escono dal calcolo dopo 20 minuti, le altre dopo 30. La boa Mambo, oraria e in ritardo, di solito è fuori.</span><span class="l-en"><strong>No stale data</strong>: Barcola and Monte Grisa drop out after 20 minutes, the others after 30. The Mambo buoy, hourly and late, is usually out.</span></li>
+          </ul>
+          <h4><span class="l-it">Ogni quanto si aggiorna</span><span class="l-en">How often it updates</span></h4>
+          <p><span class="l-it">La pagina riscarica tutte le centraline ogni 5 minuti e quando ci torni sopra; il tasto <strong>Aggiorna</strong> lo fa subito. Ogni centralina ha però il suo ritmo (vedi sopra): il dato di una stazione ogni 15 minuti cambia solo ogni 15 minuti.</span><span class="l-en">The page reloads every station every 5 minutes and whenever you come back to it; the <strong>Refresh</strong> button does it straight away. Each station has its own pace, though (see above): a station reporting every 15 minutes only changes every 15 minutes.</span></p>
+          <p class="bc-nota"><span class="l-it">Fonti</span><span class="l-en">Sources</span>: Barcola (Windguru) · Monte Grisa (Vetercek) · <span class="l-it">boa Mambo</span><span class="l-en">Mambo buoy</span> (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>) · Trieste molo, Muggia, Paloma: Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · <span class="l-it">dati elaborati</span><span class="l-en">processed data</span>.</p>
+      </div>
+    </dialog>
+    <dialog class="bc-dialog" id="infoMappa" aria-labelledby="infoMappaTit">
+      <div class="bc-dialog-testa"><h3 id="infoMappaTit"><span class="l-it">Legenda della mappa</span><span class="l-en">Map legend</span></h3><button type="button" class="bc-dialog-x" aria-label="Chiudi / Close" title="Chiudi">✕</button></div>
+      <div class="bc-dialog-corpo">
+        <div class="bc-legenda" id="bcLegenda"></div>
+        <h4><span class="l-it">Come si legge</span><span class="l-en">How to read it</span></h4>
+        <p><span class="l-it">Ogni lato si colora secondo l'andatura che avrà: con il vento <strong>live</strong>, stimato lato per lato dalle centraline più vicine, oppure (fino a sabato 10 ottobre) con la <strong>previsione</strong> per domenica, media dei modelli meteo. Tocca un lato o una centralina per i dettagli.</span><span class="l-en">Each leg is coloured by the point of sail it will have: with the <strong>live</strong> wind, estimated leg by leg from the nearest stations, or (until Saturday 10 October) with Sunday's <strong>forecast</strong>, the mean of the weather models. Tap a leg or a station for details.</span></p>
+        <p><span class="l-it">Rotte e distanze dalla mappa ufficiale del percorso; posizioni delle boe ricavate dalla stessa mappa. I suggerimenti sulle vele sono generici: ogni barca e ogni equipaggio fanno storia a sé. Classe Crociera: niente Code Zero né drifter (sì gennaker e spi).</span><span class="l-en">Courses and distances from the official course map; mark positions derived from the same map. Sail suggestions are generic: every boat and crew is different. Cruising class: no Code Zero or drifter (gennakers and spinnakers allowed).</span></p>
+        <p><span class="l-it"><strong>Non per la navigazione.</strong> Le boe sono ricavate dalla mappa del percorso pubblicata su barcolana.it (precisione di qualche decina di metri). Coordinate, lati da lasciare e segnali ufficiali sono solo nelle Istruzioni di Regata del Comitato.</span><span class="l-en"><strong>Not for navigation.</strong> Marks are derived from the course map published on barcolana.it (accurate to a few tens of metres). Official coordinates, rounding sides and signals are only in the Sailing Instructions.</span></p>
+      </div>
+    </dialog>
+
+    <!-- 2. PERCORSO (ott 2026, compattato: legenda e note nella finestra del pulsante "Legenda") -->
     <section class="section" id="mappaVento">
-      <h2><span class="l-it">Il percorso e il vento, lato per lato</span><span class="l-en">The course and the wind, leg by leg</span></h2>
+      <div class="bc-sez-testa">
+        <h2><span class="l-it">Il percorso e il vento, lato per lato</span><span class="l-en">The course and the wind, leg by leg</span></h2>
+        <button type="button" class="bc-i-btn" data-dialog="infoMappa" aria-haspopup="dialog"><i class="bc-i" aria-hidden="true">i</i><span class="l-it">Legenda</span><span class="l-en">Legend</span></button>
+      </div>
       <div class="bc-layout">
         <div>
           <div class="bc-mappa" id="bcMappa">
             <svg class="bc-base" id="bcBase" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"></svg>
             <svg id="bcSvg" role="img" xmlns="http://www.w3.org/2000/svg"></svg>
-            <button type="button" class="bc-i-btn bc-leg-btn" aria-expanded="false" aria-controls="bcLegendaBox" aria-label="Legenda" title="Legenda"><i class="bc-i" aria-hidden="true">i</i></button>
-          </div>
-          <div class="bc-i-pan" id="bcLegendaBox" hidden>
-            <div class="bc-legenda" id="bcLegenda"></div>
-            <h4><span class="l-it">Come si legge</span><span class="l-en">How to read it</span></h4>
-            <p><span class="l-it">Ogni lato si colora secondo l'andatura che avrà con il vento <strong>live</strong>, stimato lato per lato dalle centraline più vicine. Tocca un lato o una centralina per i dettagli.</span><span class="l-en">Each leg is coloured by the point of sail it will have with the <strong>live</strong> wind, estimated leg by leg from the nearest stations. Tap a leg or a station for details.</span></p>
-            <p><span class="l-it">Rotte e distanze dalla mappa ufficiale del percorso; posizioni delle boe ricavate dalla stessa mappa. I suggerimenti sulle vele sono generici: ogni barca e ogni equipaggio fanno storia a sé. Classe Crociera: niente Code Zero né drifter (sì gennaker e spi).</span><span class="l-en">Courses and distances from the official course map; mark positions derived from the same map. Sail suggestions are generic: every boat and crew is different. Cruising class: no Code Zero or drifter (gennakers and spinnakers allowed).</span></p>
-            <p><span class="l-it"><strong>Non per la navigazione.</strong> Le boe sono ricavate dalla mappa del percorso pubblicata su barcolana.it (precisione di qualche decina di metri). Coordinate, lati da lasciare e segnali ufficiali sono solo nelle Istruzioni di Regata del Comitato.</span><span class="l-en"><strong>Not for navigation.</strong> Marks are derived from the course map published on barcolana.it (accurate to a few tens of metres). Official coordinates, rounding sides and signals are only in the Sailing Instructions.</span></p>
           </div>
           <div class="bc-info" id="bcInfo" aria-live="polite"></div>
         </div>
 
         <div class="bc-pannello" id="lati">
-          <h3><span class="l-it">Andatura e vele · vento live</span><span class="l-en">Point of sail and sails · live wind</span></h3>
+          <h3><span class="l-it">Andatura e vele</span><span class="l-en">Point of sail and sails</span></h3>
+          <!-- Live / Previsione: la previsione resta fino a sabato 10 ottobre, dal giorno della regata solo live -->
+          <div class="bc-seg" role="group" aria-label="Vento" id="modoVento">
+            <button type="button" data-modo="live" aria-pressed="true">Live</button>
+            <button type="button" data-modo="prev" aria-pressed="false"><span class="l-it">Previsione 11/10</span><span class="l-en">Forecast 11 Oct</span></button>
+          </div>
+          <div class="bc-ctrl" id="ctrlPrev" hidden>
+            <label><span><span class="l-it">Ora (domenica 11 ottobre)</span><span class="l-en">Time (Sunday 11 October)</span></span> <output id="prevOraOut">11:00</output></label>
+            <div class="bc-seg" role="group" id="prevOre"></div>
+            <p class="bc-nota" id="prevNota"></p>
+          </div>
           <div class="bc-somma" id="bcSomma"></div>
           <ol class="bc-lati" id="bcLati"></ol>
         </div>
@@ -1504,11 +1555,20 @@
         </nav>
       </section>
     </section>
+    <div class="bc-autore">
+      <div class="bc-autore-chi">
+        <small><span class="l-it">Ideato e realizzato da</span><span class="l-en">Created and built by</span></small>
+        <strong>Alberto Broggi</strong>
+        <span><span class="l-it">Dati, database e automazione</span><span class="l-en">Data, databases and automation</span></span>
+      </div>
+      <div class="bc-autore-azioni">
+        <a class="bc-autore-btn" href="mailto:bebroggi@gmail.com?subject=Vento%20Barcolana">✉️ <span class="l-it">Suggerimenti e migliorie</span><span class="l-en">Suggestions</span></a>
+        <a class="bc-autore-btn" href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it ↗</a>
+      </div>
+    </div>
     <p class="credits-meta">
       <span class="l-it">Dati</span><span class="l-en">Data</span>: Barcola (Windguru), Monte Grisa (Vetercek), MAMBO1 (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>), Trieste molo, Muggia &amp; Paloma (Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · <span class="l-it">dati elaborati</span><span class="l-en">processed data</span>), <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <span class="l-it">percorso</span><span class="l-en">course</span>: <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.<br>
       <span class="l-it">Vento Barcolana nasce da una collaborazione tra Vento Trieste, progetto indipendente di <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a>, e Barcolana Srl. Marchio e logo Barcolana appartengono ai rispettivi titolari.</span><span class="l-en">Vento Barcolana is a collaboration between Vento Trieste, an independent project by <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a>, and Barcolana Srl. The Barcolana name and logo belong to their respective owners.</span><br>
-      <span class="l-it">Suggerimenti e migliorie</span><span class="l-en">Suggestions</span>: <a href="mailto:bebroggi@gmail.com">bebroggi@gmail.com</a> ·
-      <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a><br>
       <span class="credits-signoff"><span class="l-it">Buon vento!</span><span class="l-en">Fair winds!</span></span>
     </p>
   </div>
@@ -1722,7 +1782,7 @@
     }
 
     /* ---------- stato ---------- */
-    const stato = { live: {}, sel: null };
+    const stato = { modo: "live", live: {}, prev: null, prevOra: 11, sel: null };
 
     /* vento stimato in un punto: media pesata 1/d² delle stazioni a mare disponibili */
     /* dato della stazione solo se abbastanza recente (vedi max in STAZIONI), altrimenti null */
@@ -1753,7 +1813,24 @@
         fonti: pesi.filter(p => p.w / tot > 0.15).map(p => p.nome) };
     }
 
-    const ventoPrincipale = i => stimaVento(LATI[i].mid);
+    /* media dei modelli (Open-Meteo) in un punto e a un'ora */
+    function mediaModelli(punto, ora) {
+      if (!stato.prev || !stato.prev[punto]) return null;
+      const h = stato.prev[punto].hourly;
+      const i = h.time.findIndex(t => t.endsWith("T" + String(ora).padStart(2, "0") + ":00"));
+      if (i < 0) return null;
+      let n = 0, sk = 0, sg = 0, ng = 0, sx = 0, sy = 0; const nomi = [];
+      MODELLI.forEach(m => {
+        const k = h["wind_speed_10m_" + m.id], g = h["wind_gusts_10m_" + m.id], d = h["wind_direction_10m_" + m.id];
+        if (!k || k[i] == null) return;
+        n++; sk += k[i]; nomi.push(m.nome);
+        if (g && g[i] != null) { sg += g[i]; ng++; }
+        if (d && d[i] != null) { const w = Math.max(k[i], 1); sx += w * Math.sin(rad(d[i])); sy += w * Math.cos(rad(d[i])); }
+      });
+      if (!n) return null;
+      return { kt: sk / n, raffica: ng ? sg / ng : NaN, deg: (sx || sy) ? norm360(Math.atan2(sx, sy) * 180 / Math.PI) : null, fonti: nomi };
+    }
+    const ventoPrincipale = i => stato.modo === "prev" ? mediaModelli(i, stato.prevOra) : stimaVento(LATI[i].mid);
 
     /* ---------- mappa del percorso ---------- */
     const SVG_NS = "http://www.w3.org/2000/svg";
@@ -1850,7 +1927,7 @@
       });
       svg.appendChild(gL);
 
-      /* percorso: tratto sottile con bordino, colore = andatura col vento live.
+      /* percorso: tratto sottile con bordino, colore = andatura col vento live o previsto.
          Accanto a ogni lato, come sulla mappa ufficiale, rotta × distanza; sul lato il numero. */
       const an = opt.an;
       const gR = el("g", {});
@@ -2005,7 +2082,7 @@
         const rotta = String(l.rotta).padStart(3, "0") + "° · " + fmt(l.nm, 1) + tr(" mn", " nm");
         let corpo;
         if (!a.v) {
-          corpo = '<div class="bc-lato-vento">' + tr("In attesa dei dati delle centraline…", "Waiting for station data…") + "</div>";
+          corpo = '<div class="bc-lato-vento">' + (opt.modo === "prev" ? tr("Previsione non ancora disponibile per quest'ora.", "Forecast not yet available for this time.") : tr("In attesa dei dati delle centraline…", "Waiting for station data…")) + "</div>";
         } else {
           corpo = '<div class="bc-lato-and">' + a.an.testo + ' <small>· ' + [Math.round(a.twa) + tr("° dal vento", "° off the wind"), a.mure, a.an.nota].filter(Boolean).join(" · ") + "</small></div>" +
             ('<div class="bc-lato-vento">' + Math.round(a.v.kt) + " kt" + (!isNaN(a.v.raffica) ? " (" + tr("raff. ", "gust ") + Math.round(a.v.raffica) + ")" : "") +
@@ -2056,11 +2133,14 @@
       const an = analisi(ventoPrincipale);
       disegnaMappa(svgMappa, { an, stazioni: true, sel: stato.sel, onLato: n => seleziona("l" + n), onStaz: id => seleziona("s" + id) });
       document.getElementById("bcMappa").classList.toggle("bc-ha-sel", !!(stato.sel && stato.sel[0] === "l"));
-      disegnaLati(document.getElementById("bcLati"), an, { sel: stato.sel, onLato: n => seleziona("l" + n) });
-      disegnaSomma(document.getElementById("bcSomma"), an, tr("Con il vento di adesso il percorso è:", "With the current wind the course is:"));
+      disegnaLati(document.getElementById("bcLati"), an, { modo: stato.modo, sel: stato.sel, onLato: n => seleziona("l" + n) });
+      disegnaSomma(document.getElementById("bcSomma"), an, stato.modo === "live" ? tr("Con il vento di adesso il percorso è:", "With the current wind the course is:") :
+        tr("Con la previsione per domenica alle " + stato.prevOra + ":00 il percorso è:", "With Sunday's " + stato.prevOra + ":00 forecast the course is:"));
       // riquadro info
       const box = document.getElementById("bcInfo");
-      if (!stato.sel) box.textContent = tr("Tocca un lato del percorso o una centralina. Legenda: la ⓘ in alto a destra.", "Tap a leg of the course or a station. Legend: the ⓘ at the top right.");
+      if (!stato.sel) box.textContent = stato.modo === "prev" ?
+        tr("Percorso colorato con la previsione per domenica alle " + stato.prevOra + ":00 (le centraline in mappa restano live). Tocca un lato per i dettagli.", "Course coloured with Sunday's " + stato.prevOra + ":00 forecast (stations on the map stay live). Tap a leg for details.") :
+        tr("Tocca un lato del percorso o una centralina per i dettagli.", "Tap a leg of the course or a station for details.");
       else if (stato.sel[0] === "l") {
         const a = an[+stato.sel.slice(1) - 1], l = a.l;
         box.innerHTML = "<strong>" + tr("Lato ", "Leg ") + l.n + " · " + nomeLato(l) + "</strong> · " + String(l.rotta).padStart(3, "0") + "°, " + fmt(l.nm, 1) + tr(" mn", " nm") +
@@ -2107,6 +2187,7 @@
         return '<button type="button" class="bc-mini-lato" data-lato="' + l.n + '" style="--c:' + ANDATURE[an.k].c + '"><b>' + tr("Lato ", "Leg ") + l.n + "</b><span>" + nomeAnd(an.k) + "</span></button>";
       }).join("");
       Array.prototype.forEach.call($("nowLati").querySelectorAll("[data-lato]"), b => b.addEventListener("click", () => {
+        impostaModo("live");
         stato.sel = "l" + b.getAttribute("data-lato");
         aggiornaPercorso();
         document.getElementById("mappaVento").scrollIntoView({ behavior: "smooth" });
@@ -2200,6 +2281,71 @@
     }
     document.getElementById("bcAggiorna").addEventListener("click", caricaLive);
 
+    /* ---------- previsione sul percorso (Open-Meteo, multi-punto e multi-modello) ----------
+       Tolta il 5 ott 2026 con tabella e Windguru e rimessa lo stesso giorno, solo come modo
+       "Previsione 11/10" della mappa, su richiesta di Alberto: c'è fino a sabato 10 ottobre,
+       dal giorno della regata il pulsante sparisce e resta solo il live. */
+    const PREV_FINO = Date.parse(GIORNO_GARA + "T00:00:00+02:00");
+    const prevAttiva = () => Date.now() < PREV_FINO;
+    const MODELLI = [
+      { id: "ecmwf_ifs025", nome: "ECMWF" },
+      { id: "icon_seamless", nome: "ICON" },
+      { id: "italia_meteo_arpae_icon_2i", nome: "ICON-2I" },
+      { id: "meteofrance_seamless", nome: "Météo-France" },
+      { id: "gfs_seamless", nome: "GFS" }
+    ];
+    function caricaPrevisioni() {
+      if (!prevAttiva()) return;
+      const punti = LATI.map(l => l.mid).concat([CENTRO_CAMPO]);
+      const url = "https://api.open-meteo.com/v1/forecast?latitude=" + punti.map(p => p.lat.toFixed(4)).join(",") +
+        "&longitude=" + punti.map(p => p.lon.toFixed(4)).join(",") +
+        "&hourly=wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=kn&timezone=Europe%2FRome" +
+        "&start_date=" + GIORNO_GARA + "&end_date=" + GIORNO_GARA + "&models=" + MODELLI.map(m => m.id).join(",");
+      fetchTimeout(url, 20000)
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(j => { stato.prev = Array.isArray(j) ? j : [j]; stato.prevErr = false; notaPrevisione(); aggiornaPercorso(); })
+        .catch(() => { stato.prevErr = true; notaPrevisione(); });
+    }
+    function notaPrevisione() {
+      const nota = document.getElementById("prevNota");
+      if (!stato.prev) { nota.textContent = stato.prevErr ? tr("Previsione non disponibile in questo momento: riprova tra poco.", "Forecast unavailable right now: try again shortly.") : tr("Carico i modelli…", "Loading models…"); return; }
+      const c = stato.prev[LATI.length].hourly;
+      const disp = MODELLI.filter(m => (c["wind_speed_10m_" + m.id] || []).some(v => v != null));
+      if (!disp.length) { nota.textContent = tr("Nessun modello arriva ancora all'11 ottobre: torna nei prossimi giorni.", "No model reaches 11 October yet: check back in a few days."); return; }
+      const giorni = Math.floor((PARTENZA_ORA - Date.now()) / 86400000);
+      const aff = giorni > 7 ? tr("a " + giorni + " giorni è una tendenza: guarda la direzione più dei nodi", giorni + " days out it is a trend: trust the direction more than the knots") :
+        giorni > 3 ? tr("a " + giorni + " giorni l'affidabilità è media", giorni + " days out reliability is medium") :
+        giorni >= 1 ? tr("a " + giorni + (giorni === 1 ? " giorno" : " giorni") + " entrano i modelli ad alta risoluzione", giorni + (giorni === 1 ? " day" : " days") + " out the high-resolution models kick in") :
+        tr("ultime ore: confronta con il live", "final hours: compare with the live data");
+      nota.textContent = tr("Media di ", "Mean of ") + disp.map(m => m.nome).join(", ") + tr(" sul punto medio di ogni lato; ", " at the midpoint of each leg; ") + aff + ".";
+    }
+    function impostaModo(m) {
+      stato.modo = (m === "prev" && prevAttiva()) ? "prev" : "live";
+      document.querySelectorAll("[data-modo]").forEach(b => b.setAttribute("aria-pressed", String(b.getAttribute("data-modo") === stato.modo)));
+      document.getElementById("ctrlPrev").hidden = stato.modo !== "prev";
+    }
+    /* da domenica 11 il pulsante della previsione sparisce (anche a pagina già aperta) */
+    function controllaPrevisione() {
+      const ok = prevAttiva();
+      document.getElementById("modoVento").hidden = !ok;
+      if (!ok && stato.modo === "prev") impostaModo("live");
+    }
+    document.querySelectorAll("[data-modo]").forEach(b => b.addEventListener("click", () => { impostaModo(b.getAttribute("data-modo")); aggiornaPercorso(); }));
+    (function () {
+      const box = document.getElementById("prevOre");
+      for (let o = 10; o <= 15; o++) {
+        const b = document.createElement("button");
+        b.type = "button"; b.textContent = o + ":00"; b.setAttribute("aria-pressed", String(o === stato.prevOra));
+        b.addEventListener("click", () => {
+          stato.prevOra = o;
+          box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+          document.getElementById("prevOraOut").textContent = o + ":00";
+          aggiornaPercorso();
+        });
+        box.appendChild(b);
+      }
+    })();
+
     /* vento medio 10-14 al centro del percorso, analisi ECMWF IFS via Open-Meteo archive:
        [anno, data, nodi medi, direzione media, raffica max del modello] */
     const VENTO_STORICO = [
@@ -2224,13 +2370,17 @@
     }
 
     /* ---------- controlli, lingua, legenda ---------- */
-    /* pulsanti "i": aprono e chiudono il riquadro indicato da aria-controls */
-    document.querySelectorAll(".bc-i-btn[aria-controls]").forEach(b => b.addEventListener("click", () => {
-      const pan = document.getElementById(b.getAttribute("aria-controls"));
-      if (!pan) return;
-      pan.hidden = !pan.hidden;
-      b.setAttribute("aria-expanded", String(!pan.hidden));
+    /* pulsanti "i": aprono la finestra indicata da data-dialog; si chiude con ✕, Esc o toccando fuori */
+    document.querySelectorAll("[data-dialog]").forEach(b => b.addEventListener("click", () => {
+      const d = document.getElementById(b.getAttribute("data-dialog"));
+      if (!d) return;
+      if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", "");
     }));
+    document.querySelectorAll("dialog.bc-dialog").forEach(d => {
+      const chiudi = () => { if (typeof d.close === "function") d.close(); else d.removeAttribute("open"); };
+      d.querySelector(".bc-dialog-x").addEventListener("click", chiudi);
+      d.addEventListener("click", e => { if (e.target === d) chiudi(); });   // tocco sullo sfondo, fuori dalla finestra
+    });
 
     function disegnaLegenda() {
       const tri = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1.5 L12.5 11.5 L1.5 11.5Z" fill="var(--bc-boa)"/></svg>';
@@ -2303,7 +2453,7 @@
       try { localStorage.setItem("vento-trieste-lang", LANG); } catch (e) {}
       document.querySelectorAll("[data-lang-btn]").forEach(b => b.setAttribute("aria-pressed", String(b.getAttribute("data-lang-btn") === LANG)));
       document.title = tr("Vento Barcolana – il vento sul percorso in tempo reale", "Vento Barcolana – live wind on the race course");
-      disegnaLegenda(); disegnaVentoStorico(); if (window.RegistroVento) RegistroVento.ridisegna();
+      disegnaLegenda(); disegnaVentoStorico(); notaPrevisione(); if (window.RegistroVento) RegistroVento.ridisegna();
       aggiornaHero(); aggiornaPercorso(); countdown(); aggiornaCondivisione(); etichetteDock();
       const agg = document.getElementById("ultimoAggiornamento");
       if (!caricamentoInCorso && Object.keys(stato.live).length) {
@@ -2314,11 +2464,14 @@
     document.querySelectorAll("[data-lang-btn]").forEach(b => b.addEventListener("click", () => impostaLingua(b.getAttribute("data-lang-btn"))));
 
     /* ---------- avvio ---------- */
+    controllaPrevisione();
     impostaLingua(LANG);
     setInterval(countdown, 30000);
     // ogni minuto: eta' "min fa" e dati che invecchiano oltre la soglia escono da stima e mappa
-    setInterval(() => { if (!document.hidden) { aggiornaHero(); aggiornaPercorso(); } }, 60000);
+    setInterval(() => { if (!document.hidden) { controllaPrevisione(); aggiornaHero(); aggiornaPercorso(); } }, 60000);
     caricaLive();
+    caricaPrevisioni();
+    setInterval(caricaPrevisioni, 60 * 60 * 1000);
     setInterval(() => { if (!document.hidden) caricaLive(); }, 5 * 60 * 1000);
     /* Telefono in tasca, tab in background: i timer si fermano e al rientro la pagina
        mostrerebbe i dati di quando l'avevi lasciata. Al rientro ridisegno subito (le
@@ -2326,7 +2479,7 @@
        di un minuto. */
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) return;
-      aggiornaHero(); aggiornaPercorso();
+      controllaPrevisione(); aggiornaHero(); aggiornaPercorso();
       if (Date.now() - ultimoCaricamento > 60 * 1000) caricaLive();
     });
     /* registro del vento: modulo condiviso /registro-vento.js, chiuso a tendina (tanti dati: si
