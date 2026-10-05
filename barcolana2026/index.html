@@ -1137,6 +1137,10 @@
     .bc-sostenitori span { padding: .15rem .55rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); font-size: .78rem; color: var(--ink); }
     .bc-sostenitori span::before { content: "♥ "; color: var(--bcn-red, #e30613); }
     details.bc-fonti { margin: 0 0 1rem; }
+    .bc-fonti-dati { margin: 0; padding: 0 .9rem .7rem; font-size: .76rem; line-height: 1.5; color: var(--label); text-align: left; }
+    .bc-mappa .bc-osm { position: absolute; right: 0; bottom: 0; z-index: 2; padding: .1rem .35rem; border-top-left-radius: 3px; background: rgba(255,255,255,.75); font-size: .62rem; line-height: 1.4; color: #3d4b5c; }
+    .bc-mappa .bc-osm a { color: inherit !important; text-decoration: none; }
+    html[data-theme="dark"] .bc-mappa .bc-osm { background: rgba(0,20,40,.7); color: #b9cbe0; }
     details.bc-fonti .sources { margin: 0; padding: 0 .9rem .9rem; border: 0; }
     /* chi l'ha fatto: firma ben visibile nel piede (Alberto, 5 ott 2026) */
     .bc-autore { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; margin: 0 0 1rem; padding: 1rem 1.1rem; }
@@ -1557,6 +1561,7 @@
           <div class="bc-mappa" id="bcMappa">
             <svg class="bc-base" id="bcBase" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"></svg>
             <svg id="bcSvg" role="img" xmlns="http://www.w3.org/2000/svg"></svg>
+            <span class="bc-osm">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></span>
           </div>
           <div class="bc-info" id="bcInfo" aria-live="polite"></div>
         </div>
@@ -1658,6 +1663,9 @@
   <!-- data-senza: su questa pagina niente box Visitatori. Il riquadro "Aiuta Vento Trieste" di footer-widgets.js
        viene sostituito (script qui sotto) da una tendina con partner, dati e fonti; i sostenitori vanno nella finestra. -->
   <div class="footer-widgets" id="footerWidgets" data-lang="it" data-senza="visitatori"></div>
+  <!-- in fondo solo "Buon vento!" (Alberto, 5 ott 2026): le attribuzioni dei dati stanno nella tendina
+       "Partner, dati e fonti" (questo paragrafo, che lo script qui sotto ci sposta dentro), OpenStreetMap sulla mappa -->
+  <p class="bc-fonti-dati" id="bcFontiDati"><span class="l-it">Dati</span><span class="l-en">Data</span>: Barcola (Windguru), Monte Grisa (Vetercek), MAMBO1 (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>), Trieste molo, Muggia &amp; Paloma (Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · <span class="l-it">dati elaborati</span><span class="l-en">processed data</span>), <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <span class="l-it">percorso</span><span class="l-en">course</span>: <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.</p>
   <script src="/footer-widgets.js?v=20261005"></script>
   <script>/* footer-widgets.js mette il tema scuro se non c'è una scelta salvata: su questa pagina
      il predefinito è chiaro. Allineo anche il pulsante (che offre "Scuro"). */
@@ -1680,6 +1688,8 @@
       var det = document.createElement("details");
       det.className = "bc-albo bc-fonti";
       det.innerHTML = '<summary><span class="l-it">Partner, dati e fonti</span><span class="l-en">Partners, data and sources</span></summary>';
+      var dati = document.getElementById("bcFontiDati");   // attribuzioni obbligatorie (Prot. Civile FVG CC BY 4.0, OGS, OSM)
+      if (dati) det.appendChild(dati);
       var fonti = sw.querySelector(".sources");
       if (fonti) det.appendChild(fonti);
       sw.parentNode.replaceChild(det, sw);
@@ -1697,11 +1707,7 @@
         </nav>
       </section>
     </section>
-    <p class="credits-meta">
-      <span class="l-it">Dati</span><span class="l-en">Data</span>: Barcola (Windguru), Monte Grisa (Vetercek), MAMBO1 (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>), Trieste molo, Muggia &amp; Paloma (Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · <span class="l-it">dati elaborati</span><span class="l-en">processed data</span>), <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <span class="l-it">percorso</span><span class="l-en">course</span>: <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.<br>
-      <span class="l-it">Vento Barcolana nasce da una collaborazione tra Vento Trieste, progetto indipendente di <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a>, e Barcolana Srl. Marchio e logo Barcolana appartengono ai rispettivi titolari.</span><span class="l-en">Vento Barcolana is a collaboration between Vento Trieste, an independent project by <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a>, and Barcolana Srl. The Barcolana name and logo belong to their respective owners.</span><br>
-      <span class="credits-signoff"><span class="l-it">Buon vento!</span><span class="l-en">Fair winds!</span></span>
-    </p>
+    <p class="credits-meta"><span class="credits-signoff"><span class="l-it">Buon vento!</span><span class="l-en">Fair winds!</span></span></p>
   </div>
   </footer>
 
