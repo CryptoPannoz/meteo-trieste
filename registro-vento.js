@@ -23,7 +23,10 @@
        attendi: true,               // non scarica finché non si chiama rv.carica() (tendina chiusa)
        nomeCampo: ["Campo di regata", "Race course"],
        riepilogo: true,             // grafico delle giornate surfabili e sintesi del giorno
-       finestra: ["08:00", "18:00"] // mostra (e scarica) solo questi orari del registro
+       finestra: ["08:00", "18:00"],// mostra (e scarica) solo questi orari del registro
+       senzaSurf: true,             // grafico senza surfista, soglia e conto delle giornate (Barcolana)
+       periodo: "30",               // grafico sugli ultimi 30 giorni invece di Mese/Settimana
+       evento: { giorno: "2026-10-11", segno: "⛵", nome: ["giorno della Barcolana", "Barcolana race day"] }
      });
      RegistroVento.ridisegna();     // dopo un cambio di lingua
    Gli id interni (regGiorno, regCsv…) sono quelli che conta /eventi.js: una sola istanza per pagina. */
@@ -358,12 +361,14 @@
   function lunedi(g) { return sposta(g, -((new Date(g + "T12:00:00Z").getUTCDay() + 6) % 7)); }
   function spostaMese(g, n) { var t = new Date(g.slice(0, 7) + "-01T12:00:00Z"); t.setUTCMonth(t.getUTCMonth() + n); return t.toISOString().slice(0, 10); }
   function periodo(per) {             // i giorni (YYYY-MM-DD) del mese o della settimana di per.rif
+    if (per.tipo === "trenta") { for (var k = 29, gg = []; k >= 0; k--) gg.push(sposta(per.rif, -k)); return gg; }   // i 30 giorni che finiscono a per.rif
     var g0 = per.tipo === "sett" ? lunedi(per.rif) : per.rif.slice(0, 8) + "01";
     var n = per.tipo === "sett" ? 7 : Number(sposta(spostaMese(g0, 1), -1).slice(8)), out = [];
     for (var i = 0; i < n; i++) out.push(sposta(g0, i));
     return out;
   }
   function nomePeriodo(per, gg) {
+    if (per.tipo === "trenta") return dataFmt(gg[0], { day: "numeric", month: "short" }) + " – " + dataFmt(gg[gg.length - 1], { day: "numeric", month: "short", year: "numeric" });
     if (per.tipo !== "sett") return maiuscola(dataFmt(per.rif.slice(0, 7), { month: "long", year: "numeric" }));
     return dataFmt(gg[0], { day: "numeric", month: "short" }) + " – " + dataFmt(gg[6], { day: "numeric", month: "short", year: "numeric" });
   }
@@ -382,23 +387,29 @@
       '<a class="rv-vai" href="' + (r.opz.linkRegistro || "/registro/") + "?giorno=" + g + '">' + tr("Apri nel registro →", "Open in the log →") + "</a>" :
       '<button type="button" data-rv-vai>' + tr("Vedi il registro ↓", "See the log ↓") + "</button>";
     if (!x) return "<span>" + nomeGiorno(g) + "</span><em>" + (g > oggiRoma() ? tr("ancora da venire", "still to come") : tr("nessuna media per questo giorno", "no average for this day")) + "</em>" + vai;
-    return "<span>" + nomeGiorno(g) + "</span>" + sintesi(x) +
+    return "<span>" + nomeGiorno(g) + "</span>" + sintesi(x, r) + nomeEvento(r, g) +
       (x.oggi ? "<em>· " + tr("finora, il giorno si chiude alle " + ORA_FINE, "so far, the day closes at " + ORA_FINE) + "</em>" : "") + vai;
   }
   // meteo, media, raffica, direzione, ore sopra la soglia e bollino: nella riga di lettura e sotto i bottoni
-  function sintesi(x) {
+  function sintesi(x, r) {
+    var surf = !(r && r.opz.senzaSurf);
     return (x.mt ? '<em class="rv-meteo-txt">' + iconaMeteo(x.mt) + nomeMeteo(x) + " ·</em>" : "") +
       "<em>" + tr("media", "mean") + "</em><strong>" + num(x.m, 1) + " kt</strong>" +
       (x.r != null ? "<em>" + tr("raffica max", "max gust") + "</em><strong>" + num(x.r, 0) + " kt</strong>" + (x.rs ? "<em>" + tr("a ", "at ") + nomeMare(x.rs) + "</em>" : "") : "") +
       (x.d != null ? "<em>" + tr("da ", "from ") + cardinale(x.d) + "</em>" : "") +
-      (x.q != null ? "<em>· " + (x.q ? ore(x.q) + tr(" sopra i ", " above ") + SOGLIA + " kt" : tr("mai sopra i ", "never above ") + SOGLIA + " kt") + "</em>" : "") +
-      (x.surf ? '<b class="rv-badge">' + SURFISTA + (x.oggi ? tr("Già surfabile", "Already surfable") : tr("Giornata surfabile", "Surfable day")) + "</b>" : "");
+      (surf && x.q != null ? "<em>· " + (x.q ? ore(x.q) + tr(" sopra i ", " above ") + SOGLIA + " kt" : tr("mai sopra i ", "never above ") + SOGLIA + " kt") + "</em>" : "") +
+      (surf && x.surf ? '<b class="rv-badge">' + SURFISTA + (x.oggi ? tr("Già surfabile", "Already surfable") : tr("Giornata surfabile", "Surfable day")) + "</b>" : "");
+  }
+  // il giorno dell'evento (opzione evento: la Barcolana) ha il suo segno sopra la colonna
+  function eEvento(r, g) { return !!(r.opz.evento && r.opz.evento.giorno === g); }
+  function nomeEvento(r, g) {
+    return eEvento(r, g) ? '<b class="rv-badge">' + r.opz.evento.segno + " " + tr(r.opz.evento.nome[0], r.opz.evento.nome[1]) + "</b>" : "";
   }
   function letturaBase(r) {
     var gg = periodo(r.per);
     return gg.indexOf(r.giorno) !== -1 ? lettura(r, r.giorno) :
-      "<em>" + tr("Passa sopra una colonna o toccala per vedere media, raffica e ore di vento del giorno" + (r.opz.soloGrafico ? "." : ", e aprirlo nel registro."),
-        "Hover or tap a column to see that day's mean, gust and hours of wind" + (r.opz.soloGrafico ? "." : ", and open it in the log.")) + "</em>";
+      "<em>" + tr("Passa sopra una colonna o toccala per vedere media, raffica " + (r.opz.senzaSurf ? "e direzione" : "e ore di vento") + " del giorno" + (r.opz.soloGrafico ? "." : ", e aprirlo nel registro."),
+        "Hover or tap a column to see that day's mean, gust and " + (r.opz.senzaSurf ? "direction" : "hours of wind") + (r.opz.soloGrafico ? "." : ", and open it in the log.")) + "</em>";
   }
 
   function disegnaRiep(r) {
@@ -408,14 +419,14 @@
     if (!r.per) {
       // all'apertura sempre Mese, il mese in corso (Alberto, 2 ott 2026); se la pagina si apre
       // su un giorno preciso (/registro/?giorno=…), il mese di quel giorno
-      r.per = { tipo: "mese", rif: (r.giorno && r.giorno < oggi && r.giorno >= j.dal) ? r.giorno : oggi };
+      r.per = { tipo: r.opz.periodo === "30" ? "trenta" : "mese", rif: (r.giorno && r.giorno < oggi && r.giorno >= j.dal) ? r.giorno : oggi };
       r.seguito = r.giorno;
     }
     // se il giorno del registro cambia (frecce, calendario) e cade fuori, il grafico lo segue
     if (r.giorno !== r.seguito) { r.seguito = r.giorno; if (periodo(r.per).indexOf(r.giorno) === -1 && r.giorno >= j.dal) r.per.rif = r.giorno; }
 
     var gg = periodo(r.per), dati = gg.map(function (g) { return datoGiorno(r, g); });
-    var max = 0, surf = 0, chiusi = 0;
+    var max = 0, surf = 0, chiusi = 0, conSurf = !r.opz.senzaSurf, cls = r.per.tipo === "sett" ? "sett" : "mese";
     dati.forEach(function (x) {
       if (!x) return;
       if (!x.oggi) { chiusi++; if (x.surf) surf++; }
@@ -425,27 +436,31 @@
     var pct = function (v) { return (Math.min(v, yMax) / yMax * 100).toFixed(2) + "%"; };
     var griglia = "";
     // le tacche troppo vicine alla soglia perdono il numero (il 12 si sovrapponeva al 10)
-    for (var t = 0; t <= yMax; t += passo) if (t !== SOGLIA) griglia += '<div class="rv-gl' + (t ? "" : " base") + '" style="bottom:' + pct(t) + '">' +
-      (Math.abs(t - SOGLIA) < yMax * 0.09 ? "" : "<span>" + t + "</span>") + "</div>";
-    griglia += '<div class="rv-gl soglia" style="bottom:' + pct(SOGLIA) + '"><span>' + SOGLIA + "</span></div>";
+    for (var t = 0; t <= yMax; t += passo) if (!conSurf || t !== SOGLIA) griglia += '<div class="rv-gl' + (t ? "" : " base") + '" style="bottom:' + pct(t) + '">' +
+      (conSurf && Math.abs(t - SOGLIA) < yMax * 0.09 ? "" : "<span>" + t + "</span>") + "</div>";
+    if (conSurf) griglia += '<div class="rv-gl soglia" style="bottom:' + pct(SOGLIA) + '"><span>' + SOGLIA + "</span></div>";
 
     var colonne = gg.map(function (g, i) {
       var x = dati[i], cima = x ? pct(Math.max(x.m, x.r || 0)) : "0%";
       var desc = nomeGiorno(g) + ": " + (x ? tr("media ", "mean ") + num(x.m, 1) + tr(" nodi", " knots") +
-          (x.r != null ? tr(", raffica massima ", ", max gust ") + num(x.r, 0) : "") + (x.q ? ", " + ore(x.q) + tr(" sopra i ", " above ") + SOGLIA : "") +
-          (x.oggi ? tr(", finora", ", so far") : "") + (x.surf ? tr(", giornata surfabile", ", surfable day") : "") :
+          (x.r != null ? tr(", raffica massima ", ", max gust ") + num(x.r, 0) : "") + (conSurf && x.q ? ", " + ore(x.q) + tr(" sopra i ", " above ") + SOGLIA : "") +
+          (x.oggi ? tr(", finora", ", so far") : "") + (conSurf && x.surf ? tr(", giornata surfabile", ", surfable day") : "") +
+          (eEvento(r, g) ? ", " + tr(r.opz.evento.nome[0], r.opz.evento.nome[1]) : "") :
         (g > oggi ? tr("ancora da venire", "still to come") : tr("nessun dato", "no data")));
       return '<button type="button" class="rv-col' + (x && x.oggi ? " oggi" : "") + '" data-rv-giorno="' + g + '"' + (g > oggi ? " disabled" : "") +
         ' aria-pressed="' + (g === r.giorno) + '" aria-label="' + desc + '">' +
         (x && x.r != null ? '<i style="height:' + pct(x.r) + '"></i>' : "") +
         (x ? '<i class="med' + (x.r != null ? "" : " sola") + '" style="height:' + pct(x.m) + '"></i>' : "") +
-        (x && x.surf ? '<b style="bottom:calc(' + cima + ' + 3px)">\ud83c\udfc4\u200d\u2642\ufe0f</b>' : "") +
+        (x && conSurf && x.surf ? '<b style="bottom:calc(' + cima + ' + 3px)">\ud83c\udfc4\u200d\u2642\ufe0f</b>' : "") +
+        (x && eEvento(r, g) ? '<b style="bottom:calc(' + cima + ' + 3px)">' + r.opz.evento.segno + "</b>" : "") +
         // in settimana c'è spazio: sopra il surfista quante ore sopra la soglia
         (x && x.surf && r.per.tipo === "sett" ? '<small style="bottom:calc(' + cima + ' + 23px)">' + ore(x.q) + "</small>" : "") + "</button>";
     }).join("");
     var assex = gg.map(function (g) {
       var dd = Number(g.slice(8));
-      return "<span>" + (r.per.tipo === "sett" ? dataFmt(g, { weekday: "short" }).replace(".", "") + " " + dd : ((dd === 1 || dd % 5 === 0) && dd < 31 ? dd : "")) + "</span>";
+      return "<span>" + (r.per.tipo === "sett" ? dataFmt(g, { weekday: "short" }).replace(".", "") + " " + dd :
+        r.per.tipo === "trenta" && dd === 1 ? dataFmt(g, { day: "numeric", month: "short" }).replace(".", "").replace(/^1° /, "1 ") :
+        ((dd === 1 || dd % 5 === 0) && dd < 31 ? dd : "")) + "</span>";
     }).join("");
     // sopra il grafico, il meteo di ogni giorno
     var meteo = dati.map(function (x) {
@@ -468,37 +483,40 @@
     if (ordine.indexOf(oggi.slice(0, 7)) === -1 && oggi.slice(0, 7) >= j.dal.slice(0, 7)) { mesi[oggi.slice(0, 7)] = 0; ordine.unshift(oggi.slice(0, 7)); }
 
     var nomeC = (r.opz.nomeCampo || ["Campo di regata", "Race course"])[lingua() === "en" ? 1 : 0];
-    var primo = periodo({ tipo: r.per.tipo, rif: j.dal })[0], inCorso = gg.indexOf(oggi) !== -1;
+    var primo = r.per.tipo === "trenta" ? j.dal : periodo({ tipo: r.per.tipo, rif: j.dal })[0], inCorso = gg.indexOf(oggi) !== -1;
     var giorni = function (n) { return n + " " + (n === 1 ? tr("giorno", "day") : tr("giorni", "days")); };
-    box.innerHTML = "<h3>" + tr("Giornate surfabili", "Surfable days") + "</h3>" +
-      '<p class="rv-nota">' + tr(
+    box.innerHTML = "<h3>" + (conSurf ? tr("Giornate surfabili", "Surfable days") : tr("Il vento giorno per giorno", "The wind day by day")) + "</h3>" +
+      '<p class="rv-nota">' + (!conSurf ? tr(
+        "Ogni colonna è un giorno, dalle 6 alle 19: in blu la <b>media</b> della colonna «" + nomeC + "», sopra fino alla <b>raffica massima</b>, il picco più alto tra Barcola, Trieste molo, Muggia e Paloma. Tocca un giorno per aprirlo nel registro qui sotto.",
+        "Each column is one day, 6:00-19:00: the <b>mean</b> of the «" + nomeC + "» column in blue, topped up to the <b>max gust</b>, the highest peak among Barcola, Trieste pier, Muggia and Paloma. Tap a day to open it in the log below.") : tr(
         "Ogni colonna è un giorno, dalle 6 alle 19: in blu la <b>media</b> della colonna «" + nomeC + "», sopra fino alla <b>raffica massima</b>, il picco più alto tra Barcola, Trieste molo, Muggia e Paloma. " +
           SURFISTA + " = <b>giornata surfabile</b>: la media è stata sopra i " + SOGLIA + " nodi per almeno " + ORE_SURF + " ore.",
         "Each column is one day, 6:00-19:00: the <b>mean</b> of the «" + nomeC + "» column in blue, topped up to the <b>max gust</b>, the highest peak among Barcola, Trieste pier, Muggia and Paloma. " +
-          SURFISTA + " = <b>surfable day</b>: the mean stayed above " + SOGLIA + " knots for at least " + ORE_SURF + " hours.") +
+          SURFISTA + " = <b>surfable day</b>: the mean stayed above " + SOGLIA + " knots for at least " + ORE_SURF + " hours.")) +
       (j.mancanti ? " <b>" + tr("Sto completando lo storico: mancano ancora " + giorni(j.mancanti) + ".", "Still filling in the history: " + giorni(j.mancanti) + " to go.") + "</b>" : "") + "</p>" +
       '<div class="rv-graf-testa">' +
-        '<div class="rv-seg" role="group" aria-label="' + tr("Periodo", "Period") + '">' +
+        (r.per.tipo === "trenta" ? "" : '<div class="rv-seg" role="group" aria-label="' + tr("Periodo", "Period") + '">' +
           '<button type="button" data-rv-tipo="mese" aria-pressed="' + (r.per.tipo === "mese") + '">' + tr("Mese", "Month") + "</button>" +
-          '<button type="button" data-rv-tipo="sett" aria-pressed="' + (r.per.tipo === "sett") + '">' + tr("Settimana", "Week") + "</button></div>" +
+          '<button type="button" data-rv-tipo="sett" aria-pressed="' + (r.per.tipo === "sett") + '">' + tr("Settimana", "Week") + "</button></div>") +
         '<div class="rv-per"><button type="button" data-rv-sposta="-1"' + (gg[0] > primo ? "" : " disabled") + ' aria-label="' + tr("Periodo precedente", "Previous period") + '">◀</button>' +
           "<strong>" + nomePeriodo(r.per, gg) + "</strong>" +
           '<button type="button" data-rv-sposta="1"' + (gg[gg.length - 1] < oggi ? "" : " disabled") + ' aria-label="' + tr("Periodo successivo", "Next period") + '">▶</button></div>' +
       "</div>" +
-      '<div class="rv-conto">' + SURFISTA + '<strong>' + surf + "</strong> " + (surf === 1 ? tr("giornata surfabile", "surfable day") : tr("giornate surfabili", "surfable days")) +
-        " <em>" + tr("su ", "out of ") + giorni(chiusi) + (chiusi === 1 ? tr(" registrato", " recorded") : tr(" registrati", " recorded")) + (inCorso ? " · " + tr("in corso", "so far") : "") + "</em></div>" +
-      '<div class="rv-meteo ' + r.per.tipo + '" aria-hidden="true">' + meteo + "</div>" +
+      (!conSurf ? "" : '<div class="rv-conto">' + SURFISTA + '<strong>' + surf + "</strong> " + (surf === 1 ? tr("giornata surfabile", "surfable day") : tr("giornate surfabili", "surfable days")) +
+        " <em>" + tr("su ", "out of ") + giorni(chiusi) + (chiusi === 1 ? tr(" registrato", " recorded") : tr(" registrati", " recorded")) + (inCorso ? " · " + tr("in corso", "so far") : "") + "</em></div>") +
+      '<div class="rv-meteo ' + cls + '" aria-hidden="true">' + meteo + "</div>" +
       '<div class="rv-plot">' + griglia + '<div class="rv-colonne" role="group" aria-label="' + tr("Media e raffica di ogni giorno", "Mean and gust of each day") + '">' + colonne + "</div></div>" +
       '<div class="rv-assex" aria-hidden="true">' + assex + "</div>" +
-      '<div class="rv-dirx ' + r.per.tipo + '" aria-hidden="true"><b>' + tr("da", "from") + "</b>" + dirx + "</div>" +
+      '<div class="rv-dirx ' + cls + '" aria-hidden="true"><b>' + tr("da", "from") + "</b>" + dirx + "</div>" +
       '<div class="rv-legenda"><span><i class="rv-k-media"></i>' + tr("media del giorno", "daily mean") + "</span>" +
         '<span><i class="rv-k-raffica"></i>' + tr("raffica massima", "max gust") + "</span>" +
-        '<span><i class="rv-k-soglia"></i>' + SOGLIA + " kt</span>" +
+        (conSurf ? '<span><i class="rv-k-soglia"></i>' + SOGLIA + " kt</span>" : "") +
         "<span>" + freccia(67.5) + tr("ENE = direzione media, da dove viene", "ENE = mean direction, where it comes from") + "</span>" +
         "<span>" + ["sole", "variabile", "nuvoloso", "pioggia"].map(iconaMeteo).join("") + tr("sole · sole e nuvole · nuvoloso · pioggia", "sunny · sun and clouds · cloudy · rain") + "</span>" +
-        '<span>' + SURFISTA + tr("giornata surfabile (" + ORE_SURF + " h sopra i " + SOGLIA + " kt)", "surfable day (" + ORE_SURF + " h above " + SOGLIA + " kt)") + "</span></div>" +
+        (conSurf ? '<span>' + SURFISTA + tr("giornata surfabile (" + ORE_SURF + " h sopra i " + SOGLIA + " kt)", "surfable day (" + ORE_SURF + " h above " + SOGLIA + " kt)") + "</span>" : "") +
+        (r.opz.evento ? "<span>" + r.opz.evento.segno + " " + tr(r.opz.evento.nome[0], r.opz.evento.nome[1]) + "</span>" : "") + "</div>" +
       '<div class="rv-lettura" id="regLettura" aria-live="polite">' + letturaBase(r) + "</div>" +
-      (ordine.length > 1 ? '<div class="rv-mesi">' + tr("Mesi:", "Months:") + " " + ordine.map(function (k) {
+      (ordine.length > 1 && r.per.tipo !== "trenta" ? '<div class="rv-mesi">' + tr("Mesi:", "Months:") + " " + ordine.map(function (k) {
         return '<button type="button" data-rv-mese="' + k + '" aria-pressed="' + (r.per.tipo === "mese" && r.per.rif.slice(0, 7) === k) + '">' +
           maiuscola(dataFmt(k, { month: "long", year: "numeric" })) + ' ' + SURFISTA + mesi[k] + "</button>";
       }).join("") + "</div>" : "") +
@@ -529,7 +547,8 @@
       }
       if ((b = t.closest("[data-rv-sposta]"))) {
         var n = Number(b.getAttribute("data-rv-sposta"));
-        r.per.rif = r.per.tipo === "sett" ? sposta(lunedi(r.per.rif), 7 * n) : spostaMese(r.per.rif, n);
+        r.per.rif = r.per.tipo === "trenta" ? (sposta(r.per.rif, 30 * n) > oggiRoma() ? oggiRoma() : sposta(r.per.rif, 30 * n)) :
+          r.per.tipo === "sett" ? sposta(lunedi(r.per.rif), 7 * n) : spostaMese(r.per.rif, n);
         disegnaRiep(r);
       }
     });
@@ -557,7 +576,7 @@
       tr("troppo pochi dati (" + mg.n + " quarti d'ora su " + d.slot.length + ")", "not enough data (" + mg.n + " of " + d.slot.length + " quarter-hours)") + "</em></div>";
     mg.surf = surfabile(mg.q); mg.oggi = eOggi;
     return '<div class="rv-media"><span>' + (eOggi ? tr("Oggi finora", "Today so far") : tr("La giornata", "The day")) +
-      " · " + nomeC + " · " + d.slot[0] + "-" + d.slot[eOggi ? fine : d.slot.length - 1] + "</span>" + sintesi(mg) + "</div>";
+      " · " + nomeC + " · " + d.slot[0] + "-" + d.slot[eOggi ? fine : d.slot.length - 1] + "</span>" + sintesi(mg, r) + "</div>";
   }
 
   var RIGHE_BREVI = 12;   // ultime 3 ore; il resto con "Mostra tutta la giornata"
