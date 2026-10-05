@@ -28,7 +28,16 @@
   <meta name="twitter:image" content="https://ventotrieste.info/og-imagenew.jpg" />
 
   <!-- Favicon 💨 (SVG inline, nessuna richiesta esterna) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <!-- app installabile (5 ott 2026): icona "raffiche" gialla su nero, vedi /vt-app.js -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#07090c" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
     :root {
@@ -1592,14 +1601,19 @@
   <main>
     <!-- POPUP BARCOLANA (29 set 2026, al posto del banner fisso in alto): sale dal basso
          dopo un attimo, con i colori e il font della pagina /barcolana2026/. Si chiude con la X
-         (resta chiuso 24 ore, localStorage) e sparisce da solo dal 12 ottobre 2026. -->
-    <aside class="bc58-pop" id="bc58Pop" aria-label="Barcolana" hidden>
+         (resta chiuso 24 ore, localStorage) e sparisce da solo dal 12 ottobre 2026.
+         5 ott 2026, progetto approvato: logo ufficiale Barcolana (dal PDF), "Vento Barcolana",
+         collaborazione, quanto manca in una pastiglia; link con utm_source=popup-home. -->
+    <aside class="bc58-pop" id="bc58Pop" aria-label="Vento Barcolana" hidden>
       <button type="button" class="bc58-x" id="bc58X" aria-label="Chiudi" title="Chiudi">✕</button>
-      <a class="bc58-link" href="/barcolana2026/">
-        <span class="bc58-kicker">Barcolana · 11.10.2026</span>
-        <span class="bc58-titolo">Il vento sul percorso della Barcolana, lato per lato</span>
-        <span class="bc58-sub">Mappa con le boe, vento live dalle centraline, andatura e vele lato per lato<b id="bbCount"></b></span>
-        <span class="bc58-cta">Apri la pagina →</span>
+      <a class="bc58-link" href="/barcolana2026/?utm_source=popup-home">
+        <span class="bc58-testa">
+          <svg class="bc58-logo" viewBox="85 82.9 1259 125.3" role="img" aria-label="Barcolana" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M283.21 182.17C297.95 182.17 301.63 176.54 301.63 168.74C301.63 160.93 297.95 155.30 283.21 155.30L261.32 155.30L261.32 182.17ZM280.40 133.19C293.40 133.19 296.65 127.99 296.65 121.06C296.65 113.90 293.40 108.92 280.40 108.92L261.32 108.92L261.32 133.19ZM230.33 85.08L284.08 85.08C312.90 85.08 328.72 97.43 328.72 118.89C328.72 130.81 323.52 138.61 313.99 143.38C326.56 147.71 333.71 156.60 333.71 170.90C333.71 192.79 317.45 206.01 286.25 206.01L230.33 206.01ZM414.97 163.10L399.37 115.64L383.98 163.10ZM383.11 85.08L417.14 85.08L461.35 206.01L429.06 206.01L422.34 186.08L376.83 186.08L370.33 206.01L338.68 206.01ZM518.34 143.81C535.25 143.81 542.62 139.26 542.62 127.13C542.62 114.99 535.25 110.22 518.34 110.22L505.34 110.22L505.34 143.81ZM474.35 85.08L517.91 85.08C553.02 85.08 574.91 97.87 574.91 127.13C574.91 145.76 564.50 156.82 550.63 162.45L579.89 206.01L544.78 206.01L521.38 168.95L505.34 168.95L505.34 206.01L474.35 206.01ZM701.47 160.50C699.30 191.49 676.33 208.18 645.55 208.18C609.36 208.18 588.12 184.77 588.12 145.55C588.12 106.32 609.36 82.91 645.77 82.91C676.33 82.91 699.30 99.60 701.47 130.59L670.04 130.59C669.39 119.32 661.37 109.79 646.20 109.79C625.18 109.79 620.19 127.99 620.19 145.55C620.19 163.10 625.18 181.31 646.20 181.31C661.37 181.31 669.39 171.77 670.04 160.50ZM802.23 145.55C802.23 127.77 797.04 109.79 774.49 109.79C751.95 109.79 746.75 127.77 746.75 145.55C746.75 163.32 751.95 181.31 774.49 181.31C797.04 181.31 802.23 163.32 802.23 145.55M714.68 145.55C714.68 108.05 734.40 82.91 774.49 82.91C814.37 82.91 834.09 108.05 834.09 145.55C834.09 183.04 814.37 208.18 774.49 208.18C734.40 208.18 714.68 183.04 714.68 145.55M847.52 85.08L878.51 85.08L878.51 179.36L930.74 179.36L930.74 206.01L847.52 206.01ZM1018.51 163.10L1002.91 115.64L987.52 163.10ZM986.66 85.08L1020.68 85.08L1064.89 206.01L1032.60 206.01L1025.88 186.08L980.37 186.08L973.87 206.01L942.23 206.01ZM1076.59 85.08L1114.08 85.08L1155.91 165.70L1155.91 85.08L1185.39 85.08L1185.39 206.01L1147.89 206.01L1106.06 125.39L1106.06 206.01L1076.59 206.01ZM1273.37 163.10L1257.76 115.64L1242.38 163.10ZM1241.51 85.08L1275.53 85.08L1319.75 206.01L1287.46 206.01L1280.74 186.08L1235.22 186.08L1228.72 206.01L1197.08 206.01ZM206.09 206.01L85.04 206.01L85.04 84.96ZM1325.79 85.04C1315.77 85.04 1307.64 93.17 1307.64 103.20C1307.64 113.22 1315.77 121.35 1325.79 121.35C1335.82 121.35 1343.95 113.22 1343.95 103.20C1343.95 93.17 1335.82 85.04 1325.79 85.04M1325.79 87.89C1334.24 87.89 1341.10 94.75 1341.10 103.20C1341.10 111.64 1334.24 118.51 1325.79 118.51C1317.35 118.51 1310.48 111.64 1310.48 103.20C1310.48 94.75 1317.35 87.89 1325.79 87.89M1325.40 103.15C1328.40 103.15 1329.57 102.33 1329.57 100.25C1329.57 98.20 1328.40 97.34 1325.40 97.34L1323.11 97.34L1323.11 103.15ZM1318.78 93.79L1325.43 93.79C1330.80 93.79 1334.07 95.81 1334.07 100.25C1334.07 103.25 1332.44 104.96 1330.11 105.81L1334.96 112.85L1329.97 112.85L1326.02 106.70L1323.11 106.70L1323.11 112.85L1318.78 112.85Z"/></svg>
+          <span class="bc58-quando" id="bbCount">11.10.2026</span>
+        </span>
+        <span class="bc58-titolo">Vento Barcolana: il vento sul percorso, live</span>
+        <span class="bc58-sub">Mappa del percorso, vento live dalle centraline del Golfo, andatura e vele lato per lato. In collaborazione con Barcolana.</span>
+        <span class="bc58-cta">Apri Vento Barcolana <span aria-hidden="true">→</span></span>
       </a>
     </aside>
     <style>
@@ -1609,12 +1623,12 @@
         box-shadow: 0 18px 48px rgba(0,20,50,.45); font-family: "IBM Plex Sans", "Manrope", -apple-system, BlinkMacSystemFont, sans-serif; }
       .bc58-pop.aperto { transform: translate(-50%, 0); opacity: 1; }
       .bc58-pop[hidden] { display: none; }
-      .bc58-link { display: grid; gap: .2rem; padding: .95rem 3.2rem 1rem 1.1rem; color: #fff !important; text-decoration: none; }
-      .bc58-kicker { display: inline-flex; align-items: center; gap: .5rem; font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #fff; }
-      .bc58-kicker::before { content: ""; width: 22px; height: 3px; background: #e30613; }
-      .bc58-titolo { font-size: 1.12rem; font-weight: 700; line-height: 1.25; letter-spacing: -.01em; }
-      .bc58-sub { font-size: .8rem; line-height: 1.4; color: #c6d4e5; }
-      .bc58-sub b { color: #fff; white-space: nowrap; }
+      .bc58-link { display: grid; gap: .25rem; padding: 1rem 1.15rem 1.05rem; color: #fff !important; text-decoration: none; }
+      .bc58-testa { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; padding-right: 2.4rem; margin-bottom: .45rem; }
+      .bc58-logo { display: block; width: 150px; height: auto; color: #fff; flex: none; }
+      .bc58-quando { padding: .22rem .6rem; border-radius: 999px; background: rgba(255,255,255,.14); color: #fff; font-size: .72rem; font-weight: 700; letter-spacing: .04em; white-space: nowrap; }
+      .bc58-titolo { font-size: 1.15rem; font-weight: 700; line-height: 1.25; letter-spacing: -.01em; }
+      .bc58-sub { font-size: .82rem; line-height: 1.45; color: #c6d4e5; }
       .bc58-cta { justify-self: start; margin-top: .45rem; padding: .5rem .95rem; border-radius: 3px; background: #e30613; color: #fff; font-size: .85rem; font-weight: 700; transition: background .15s ease; }
       .bc58-link:hover .bc58-cta { background: #b10914; }
       #bc58Pop .bc58-x { position: absolute; top: .45rem; right: .45rem; width: 38px; height: 38px; min-height: 0; min-width: 0; margin: 0; padding: 0;
@@ -1634,8 +1648,10 @@
         var CHIAVE = "vt-bc58-pop-chiuso", chiuso = 0;
         try { chiuso = Number(localStorage.getItem(CHIAVE)) || 0; } catch (e) {}
         if (Date.now() - chiuso < 24 * 3600000) { pop.remove(); return; }
-        var g = Math.ceil((partenza - Date.now()) / 86400000), c = document.getElementById("bbCount");
-        if (c) c.textContent = g > 1 ? " · mancano " + g + " giorni" : g === 1 ? " · è domani!" : " · è oggi!";
+        // giorni di calendario (ora di Roma) fino a domenica 11: "tra 6 giorni", "domani", "oggi", poi "in corso"
+        var oggi = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome" }).format(new Date());
+        var g = Math.round((Date.parse("2026-10-11") - Date.parse(oggi)) / 86400000), c = document.getElementById("bbCount");
+        if (c) c.textContent = Date.now() >= partenza ? "Regata in corso ⛵" : g > 1 ? "11.10 · tra " + g + " giorni" : g === 1 ? "Domani · partenza 10:30" : "Oggi · partenza 10:30";
         // font della pagina Barcolana, caricato solo quando il popup serve
         var f = document.createElement("link");
         f.rel = "stylesheet";
@@ -3793,5 +3809,6 @@
       el.textContent = "☀ " + f(fJ(Jrise)) + " – " + f(fJ(Jset));
     })();
   </script>
+<script src="/vt-app.js?v=20261005" defer></script>
 </body>
 </html>

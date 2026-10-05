@@ -28,7 +28,16 @@
   <meta name="twitter:image" content="https://ventotrieste.info/og-imagenew.jpg" />
 
   <!-- Favicon 💨 (SVG inline, nessuna richiesta esterna) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E💨%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <!-- app installabile (5 ott 2026): icona "raffiche" gialla su nero, vedi /vt-app.js -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#07090c" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
   <style>
     :root {
@@ -2449,5 +2458,6 @@
       el.textContent = "☀ " + f(fJ(Jrise)) + " – " + f(fJ(Jset));
     })();
   </script>
+<script src="/vt-app.js?v=20261005" defer></script>
 </body>
 </html>
