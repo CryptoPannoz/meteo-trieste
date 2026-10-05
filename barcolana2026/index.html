@@ -929,9 +929,10 @@
     /* --- vento sul campo, ora --- */
     .bc-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: .6rem; flex-wrap: wrap; }
     .bc-card-head h2 { margin: 0; padding-top: .6rem; }
-    /* Aggiorna e, sotto, il pulsante info delle centraline */
-    .bc-card-azioni { display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; }
-    .bc-card-azioni .bc-refresh { min-width: 9.5rem; justify-content: center; }
+    /* Aggiorna in alto a destra, anche su telefono; l'info delle centraline sotto il loro elenco */
+    .bc-card-head { flex-wrap: nowrap; }
+    .bc-card-head .bc-refresh { flex: none; min-width: 8.5rem; justify-content: center; }
+    .bc-staz-info { margin: -.2rem 0 .85rem; }
     .bc-refresh { margin: 0; min-height: 38px; padding: .4rem .85rem; font-weight: 800; border-radius: 999px; }
     .bc-refresh[aria-busy="true"] { opacity: .7; cursor: progress; }
     .bc-refresh[aria-busy="true"] .bc-giro { display: inline-block; animation: bc-giro 1s linear infinite; }
@@ -1071,12 +1072,13 @@
 
     /* ---- ott 2026: logo, collaborazione, pulsanti info, sezioni a tendina ---- */
     .visually-hidden { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-    /* descrizione iniziale sopra la scheda del vento, con il logo Barcolana piccolo nella riga */
-    .bc-intro { display: grid; gap: .45rem; padding: .1rem .2rem .2rem; }
-    .bc-intro .bc-lead { margin: 0; font-size: 1rem; }
-    .bc-collab-riga { margin: 0; padding-left: .7rem; border-left: 3px solid var(--bcn-red, #e30613); font-size: .86rem; line-height: 1.6; color: var(--slate-2); }
+    /* testata su fascia blu: collaborazione (col logo Barcolana piccolo) e Telegram */
+    .bc-collab { display: flex; flex-wrap: wrap; align-items: stretch; gap: .6rem .8rem; margin-top: 1rem; }
+    .bc-collab p { flex: 1 1 320px; margin: 0; padding: .6rem .8rem; font-size: .84rem; line-height: 1.55; }
     .bc-collab-logo { display: inline-block; vertical-align: -.12em; margin-left: .15rem; line-height: 0; }
     .bc-collab-logo svg { display: block; height: .95em; width: auto; }
+    .bc-tg-btn { display: inline-flex; align-items: center; gap: .55rem; padding: .55rem .95rem; font-weight: 700; font-size: .88rem; text-decoration: none; }
+    .bc-tg-btn .bc-tg { width: 1.45rem; height: 1.45rem; }
     /* logo Barcolana nella barra fissa in alto */
     .bc-brand { display: flex; align-items: center; min-width: 0; }
     .bc-brand-logo { display: block; width: clamp(130px, 22vw, 210px); height: auto; }
@@ -1103,8 +1105,7 @@
     @media (max-width: 560px) {
       /* telefono: la finestra sale dal basso */
       .bc-dialog { width: 100vw; max-width: 100vw; max-height: 88vh; margin: auto 0 0; border-radius: 12px 12px 0 0; border-left: 0; border-right: 0; border-bottom: 0; }
-      .bc-card-azioni { flex-direction: row; flex-wrap: wrap; align-items: center; width: 100%; }
-      .bc-card-azioni .bc-refresh { min-width: 0; }
+      .bc-card-head .bc-refresh { min-width: 0; }
     }
     /* web app: pulsante in "Info utili" e finestra con le istruzioni per iPhone e Android */
     .bc-app-btn { display: flex; align-items: center; gap: .75rem; width: 100%; margin: .6rem 0 0; padding: .6rem .85rem; text-align: left; font: inherit; cursor: pointer; }
@@ -1125,6 +1126,18 @@
     .bc-app-os.tuo { border-color: var(--bcn-title, var(--ink)); box-shadow: inset 4px 0 0 var(--bcn-red, #e30613); }
     .bc-app-os.tuo .bc-app-tuo { display: inline-block; }
     .bc-share-ico { width: 1.15em; height: 1.15em; vertical-align: -.2em; }
+    /* sotto la firma, nella stessa sezione: "Supporta il progetto" (apre #infoSostieni) */
+    .bc-sostieni { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .6rem 1rem; margin-top: .2rem; padding-top: .85rem; }
+    .bc-sostieni p { flex: 1 1 260px; margin: 0; font-size: .86rem; line-height: 1.45; text-align: left; }
+    .bc-sostieni-btn { display: inline-flex; align-items: center; gap: .4rem; min-height: 40px; margin: 0; padding: .45rem 1rem; font: inherit; font-size: .9rem; font-weight: 700; cursor: pointer; }
+    .bc-dona { display: flex; flex-wrap: wrap; gap: .5rem; margin: .8rem 0 .2rem; }
+    .bc-dona-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 7rem; min-height: 42px; padding: .45rem 1rem; font-weight: 700; text-decoration: none; }
+    .bc-btc { margin: .2rem 0 .5rem !important; padding: .5rem .6rem; border: 1px solid var(--line); border-radius: 3px; background: var(--surface-soft); font-family: monospace !important; font-size: .8rem; word-break: break-all; color: var(--ink); }
+    .bc-sostenitori { display: flex; flex-wrap: wrap; gap: .3rem .4rem; }
+    .bc-sostenitori span { padding: .15rem .55rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-soft); font-size: .78rem; color: var(--ink); }
+    .bc-sostenitori span::before { content: "♥ "; color: var(--bcn-red, #e30613); }
+    details.bc-fonti { margin: 0 0 1rem; }
+    details.bc-fonti .sources { margin: 0; padding: 0 .9rem .9rem; border: 0; }
     /* chi l'ha fatto: firma ben visibile nel piede (Alberto, 5 ott 2026) */
     .bc-autore { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; margin: 0 0 1rem; padding: 1rem 1.1rem; }
     .bc-autore-chi { display: grid; gap: .15rem; min-width: 0; text-align: left; }
@@ -1262,8 +1275,23 @@
     html[data-theme] body.bcn .bc-lang button[aria-pressed="true"] { background: var(--bcn-btn); color: var(--bcn-btn-ink); }
 
     /* intestazione su fascia blu, come i riquadri istituzionali della regata */
-    /* dal 5 ott 2026 la pagina parte dalla scheda del vento: niente fascia blu attorno */
-    html[data-theme] body.bcn #vento.hero { background: transparent; padding: 0; box-shadow: none; border: 0; }
+    html[data-theme] body.bcn #vento.hero {
+      background: var(--bcn-hero); color: var(--bcn-hero-ink); border-radius: 4px;
+      padding: clamp(1rem, 3vw, 1.9rem); box-shadow: var(--bcn-shadow);
+      border-bottom: 4px solid var(--bcn-red);
+    }
+    html[data-theme] body.bcn #vento .eyebrow { display: inline-flex; align-items: center; gap: .55rem; color: var(--bcn-hero-ink); letter-spacing: .14em; font-weight: 700; }
+    html[data-theme] body.bcn #vento .eyebrow::before { content: ""; width: 26px; height: 4px; background: var(--bcn-red); }
+    html[data-theme] body.bcn #vento .site-page-title { color: var(--bcn-hero-ink); font-weight: 700; letter-spacing: -.02em !important; }
+    html[data-theme] body.bcn #vento .bc-lead { color: var(--bcn-hero-soft); }
+    html[data-theme] body.bcn #vento .bc-collab p { border: 1px solid rgba(255,255,255,.26); border-left: 4px solid var(--bcn-red); border-radius: 3px; background: rgba(255,255,255,.07); color: var(--bcn-hero-soft); }
+    html[data-theme] body.bcn #vento .bc-collab p strong { color: #fff; }
+    html[data-theme] body.bcn #vento .bc-collab p a:not(.bc-collab-logo) { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,.55); text-underline-offset: 2px; }
+    html[data-theme] body.bcn #vento .bc-collab p a:not(.bc-collab-logo):hover { text-decoration-color: var(--bcn-red); }
+    html[data-theme] body.bcn #vento .bc-collab-logo { color: #fff; }
+    html[data-theme] body.bcn #vento .bc-collab-logo:hover { color: #c6d4e5; }
+    html[data-theme] body.bcn #vento .bc-tg-btn { background: #fff; color: #003770; border: 0; border-radius: 3px; }
+    html[data-theme] body.bcn #vento .bc-tg-btn:hover { background: var(--bcn-red); color: #fff; }
 
     /* schede */
     html[data-theme] body.bcn .console-card, html[data-theme] body.bcn .section {
@@ -1336,9 +1364,6 @@
     /* logo nella barra in alto: blu Barcolana sul bianco, bianco nel tema scuro */
     html[data-theme] body.bcn .bc-brand { color: var(--bcn-title); }
     html[data-theme] body.bcn .bc-brand:hover { color: var(--bcn-accent); }
-    html[data-theme] body.bcn .bc-collab-logo { color: var(--bcn-title); }
-    html[data-theme] body.bcn .bc-collab-logo:hover { color: var(--bcn-accent); }
-    html[data-theme] body.bcn .bc-collab-riga strong { color: var(--ink); }
     html[data-theme] body.bcn .bc-i-btn { background: var(--bcn-th); border: 1px solid color-mix(in srgb, var(--bcn-title) 35%, transparent); color: var(--bcn-title); border-radius: 999px; }
     html[data-theme] body.bcn .bc-i-btn .bc-i { background: var(--bcn-title); color: var(--surface); }
     html[data-theme] body.bcn .bc-i-btn:hover { background: var(--bcn-btn); border-color: var(--bcn-btn); color: var(--bcn-btn-ink); }
@@ -1353,6 +1378,12 @@
     html[data-theme] body.bcn .bc-autore-chi span { color: var(--bcn-hero-soft); }
     html[data-theme] body.bcn .bc-autore-azioni a { background: #fff; color: #003770; border-radius: 3px; }
     html[data-theme] body.bcn .bc-autore-azioni a:hover { background: var(--bcn-red); color: #fff; }
+    html[data-theme] body.bcn .bc-sostieni { border-top: 1px solid rgba(255,255,255,.2); }
+    html[data-theme] body.bcn .bc-sostieni p { color: var(--bcn-hero-soft); }
+    html[data-theme] body.bcn .bc-sostieni-btn { background: var(--bcn-red); border: 0; border-radius: 3px; color: #fff; }
+    html[data-theme] body.bcn .bc-sostieni-btn:hover { background: #fff; color: #003770; }
+    html[data-theme] body.bcn .bc-dona-btn { background: var(--bcn-btn); color: var(--bcn-btn-ink); border-radius: 3px; }
+    html[data-theme] body.bcn .bc-dona-btn:hover { background: var(--bcn-red); color: #fff; }
     html[data-theme] body.bcn .bc-tend-tit strong { color: var(--bcn-title); }
     html[data-theme] body.bcn .bc-tend-tit strong::before { content: ""; display: block; width: 34px; height: 4px; margin-bottom: .55rem; background: var(--bcn-red); }
 
@@ -1394,22 +1425,22 @@
          20250204_BARCOLANA_b_CMYK, livello "B blu", reso in bianco sulla fascia blu), il box della
          collaborazione e il canale Telegram. Solo "Barcolana", mai il numero dell'edizione (sponsor). -->
     <section class="hero" id="vento">
-      <!-- 5 ott 2026: tolta la testata (logo, titolo, collaborazione, Telegram): il logo sta nella barra
-           in alto, collaborazione e Telegram restano nel piede e in "Info utili". Il titolo resta per
-           i motori di ricerca e i lettori di schermo. -->
-      <h1 class="visually-hidden"><span class="l-it">Vento Barcolana: il vento sul percorso della Barcolana in tempo reale</span><span class="l-en">Vento Barcolana: live wind on the Barcolana race course</span></h1>
-      <!-- descrizione iniziale e collaborazione, di nuovo in testa (Alberto, 5 ott 2026), col logo Barcolana piccolo nel testo -->
-      <div class="bc-intro">
+      <!-- testata su fascia blu (di nuovo dal 5 ott 2026 sera, chiesta da Jacopo): titolo bianco, descrizione,
+           collaborazione col logo Barcolana piccolo e canale Telegram. Il logo grande sta nella barra in alto. -->
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="l-it">Domenica 11.10.2026 · partenza 10:30</span><span class="l-en">Sunday 11.10.2026 · start 10:30</span></p>
+        <h1 class="site-page-title"><span class="l-it">Il vento sul percorso della Barcolana</span><span class="l-en">The Barcolana: the wind on the race course</span></h1>
         <p class="bc-lead"><span class="l-it">Mappa del percorso, vento in tempo reale dalle centraline e dalle boe del Golfo, andatura e vele lato per lato.</span><span class="l-en">Course map, live wind from the Gulf's weather stations and buoys, point of sail and sail choice for every leg.</span></p>
-        <p class="bc-collab-riga"><span class="l-it"><strong>Vento Barcolana</strong> nasce da una collaborazione tra <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, progetto indipendente di <a href="https://bebroggi.it" target="_blank" rel="noopener">Alberto Broggi (bebroggi.it)</a>, e</span><span class="l-en"><strong>Vento Barcolana</strong> is a collaboration between <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, an independent project by <a href="https://bebroggi.it" target="_blank" rel="noopener">Alberto Broggi (bebroggi.it)</a>, and</span> <a class="bc-collab-logo" href="https://www.barcolana.it/" target="_blank" rel="noopener" aria-label="Barcolana Srl – barcolana.it"><svg viewBox="85 82.9 1259 125.3" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M283.21 182.17C297.95 182.17 301.63 176.54 301.63 168.74C301.63 160.93 297.95 155.30 283.21 155.30L261.32 155.30L261.32 182.17ZM280.40 133.19C293.40 133.19 296.65 127.99 296.65 121.06C296.65 113.90 293.40 108.92 280.40 108.92L261.32 108.92L261.32 133.19ZM230.33 85.08L284.08 85.08C312.90 85.08 328.72 97.43 328.72 118.89C328.72 130.81 323.52 138.61 313.99 143.38C326.56 147.71 333.71 156.60 333.71 170.90C333.71 192.79 317.45 206.01 286.25 206.01L230.33 206.01ZM414.97 163.10L399.37 115.64L383.98 163.10ZM383.11 85.08L417.14 85.08L461.35 206.01L429.06 206.01L422.34 186.08L376.83 186.08L370.33 206.01L338.68 206.01ZM518.34 143.81C535.25 143.81 542.62 139.26 542.62 127.13C542.62 114.99 535.25 110.22 518.34 110.22L505.34 110.22L505.34 143.81ZM474.35 85.08L517.91 85.08C553.02 85.08 574.91 97.87 574.91 127.13C574.91 145.76 564.50 156.82 550.63 162.45L579.89 206.01L544.78 206.01L521.38 168.95L505.34 168.95L505.34 206.01L474.35 206.01ZM701.47 160.50C699.30 191.49 676.33 208.18 645.55 208.18C609.36 208.18 588.12 184.77 588.12 145.55C588.12 106.32 609.36 82.91 645.77 82.91C676.33 82.91 699.30 99.60 701.47 130.59L670.04 130.59C669.39 119.32 661.37 109.79 646.20 109.79C625.18 109.79 620.19 127.99 620.19 145.55C620.19 163.10 625.18 181.31 646.20 181.31C661.37 181.31 669.39 171.77 670.04 160.50ZM802.23 145.55C802.23 127.77 797.04 109.79 774.49 109.79C751.95 109.79 746.75 127.77 746.75 145.55C746.75 163.32 751.95 181.31 774.49 181.31C797.04 181.31 802.23 163.32 802.23 145.55M714.68 145.55C714.68 108.05 734.40 82.91 774.49 82.91C814.37 82.91 834.09 108.05 834.09 145.55C834.09 183.04 814.37 208.18 774.49 208.18C734.40 208.18 714.68 183.04 714.68 145.55M847.52 85.08L878.51 85.08L878.51 179.36L930.74 179.36L930.74 206.01L847.52 206.01ZM1018.51 163.10L1002.91 115.64L987.52 163.10ZM986.66 85.08L1020.68 85.08L1064.89 206.01L1032.60 206.01L1025.88 186.08L980.37 186.08L973.87 206.01L942.23 206.01ZM1076.59 85.08L1114.08 85.08L1155.91 165.70L1155.91 85.08L1185.39 85.08L1185.39 206.01L1147.89 206.01L1106.06 125.39L1106.06 206.01L1076.59 206.01ZM1273.37 163.10L1257.76 115.64L1242.38 163.10ZM1241.51 85.08L1275.53 85.08L1319.75 206.01L1287.46 206.01L1280.74 186.08L1235.22 186.08L1228.72 206.01L1197.08 206.01ZM206.09 206.01L85.04 206.01L85.04 84.96ZM1325.79 85.04C1315.77 85.04 1307.64 93.17 1307.64 103.20C1307.64 113.22 1315.77 121.35 1325.79 121.35C1335.82 121.35 1343.95 113.22 1343.95 103.20C1343.95 93.17 1335.82 85.04 1325.79 85.04M1325.79 87.89C1334.24 87.89 1341.10 94.75 1341.10 103.20C1341.10 111.64 1334.24 118.51 1325.79 118.51C1317.35 118.51 1310.48 111.64 1310.48 103.20C1310.48 94.75 1317.35 87.89 1325.79 87.89M1325.40 103.15C1328.40 103.15 1329.57 102.33 1329.57 100.25C1329.57 98.20 1328.40 97.34 1325.40 97.34L1323.11 97.34L1323.11 103.15ZM1318.78 93.79L1325.43 93.79C1330.80 93.79 1334.07 95.81 1334.07 100.25C1334.07 103.25 1332.44 104.96 1330.11 105.81L1334.96 112.85L1329.97 112.85L1326.02 106.70L1323.11 106.70L1323.11 112.85L1318.78 112.85Z"/></svg></a></p>
+        <div class="bc-collab">
+          <p><span class="l-it"><strong>Vento Barcolana</strong> nasce da una collaborazione tra <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, progetto indipendente di <a href="https://bebroggi.it" target="_blank" rel="noopener">Alberto Broggi (bebroggi.it)</a>, e</span><span class="l-en"><strong>Vento Barcolana</strong> is a collaboration between <a href="https://ventotrieste.info/" target="_blank" rel="noopener">Vento Trieste</a>, an independent project by <a href="https://bebroggi.it" target="_blank" rel="noopener">Alberto Broggi (bebroggi.it)</a>, and</span> <a class="bc-collab-logo" href="https://www.barcolana.it/" target="_blank" rel="noopener" aria-label="Barcolana Srl – barcolana.it"><svg viewBox="85 82.9 1259 125.3" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M283.21 182.17C297.95 182.17 301.63 176.54 301.63 168.74C301.63 160.93 297.95 155.30 283.21 155.30L261.32 155.30L261.32 182.17ZM280.40 133.19C293.40 133.19 296.65 127.99 296.65 121.06C296.65 113.90 293.40 108.92 280.40 108.92L261.32 108.92L261.32 133.19ZM230.33 85.08L284.08 85.08C312.90 85.08 328.72 97.43 328.72 118.89C328.72 130.81 323.52 138.61 313.99 143.38C326.56 147.71 333.71 156.60 333.71 170.90C333.71 192.79 317.45 206.01 286.25 206.01L230.33 206.01ZM414.97 163.10L399.37 115.64L383.98 163.10ZM383.11 85.08L417.14 85.08L461.35 206.01L429.06 206.01L422.34 186.08L376.83 186.08L370.33 206.01L338.68 206.01ZM518.34 143.81C535.25 143.81 542.62 139.26 542.62 127.13C542.62 114.99 535.25 110.22 518.34 110.22L505.34 110.22L505.34 143.81ZM474.35 85.08L517.91 85.08C553.02 85.08 574.91 97.87 574.91 127.13C574.91 145.76 564.50 156.82 550.63 162.45L579.89 206.01L544.78 206.01L521.38 168.95L505.34 168.95L505.34 206.01L474.35 206.01ZM701.47 160.50C699.30 191.49 676.33 208.18 645.55 208.18C609.36 208.18 588.12 184.77 588.12 145.55C588.12 106.32 609.36 82.91 645.77 82.91C676.33 82.91 699.30 99.60 701.47 130.59L670.04 130.59C669.39 119.32 661.37 109.79 646.20 109.79C625.18 109.79 620.19 127.99 620.19 145.55C620.19 163.10 625.18 181.31 646.20 181.31C661.37 181.31 669.39 171.77 670.04 160.50ZM802.23 145.55C802.23 127.77 797.04 109.79 774.49 109.79C751.95 109.79 746.75 127.77 746.75 145.55C746.75 163.32 751.95 181.31 774.49 181.31C797.04 181.31 802.23 163.32 802.23 145.55M714.68 145.55C714.68 108.05 734.40 82.91 774.49 82.91C814.37 82.91 834.09 108.05 834.09 145.55C834.09 183.04 814.37 208.18 774.49 208.18C734.40 208.18 714.68 183.04 714.68 145.55M847.52 85.08L878.51 85.08L878.51 179.36L930.74 179.36L930.74 206.01L847.52 206.01ZM1018.51 163.10L1002.91 115.64L987.52 163.10ZM986.66 85.08L1020.68 85.08L1064.89 206.01L1032.60 206.01L1025.88 186.08L980.37 186.08L973.87 206.01L942.23 206.01ZM1076.59 85.08L1114.08 85.08L1155.91 165.70L1155.91 85.08L1185.39 85.08L1185.39 206.01L1147.89 206.01L1106.06 125.39L1106.06 206.01L1076.59 206.01ZM1273.37 163.10L1257.76 115.64L1242.38 163.10ZM1241.51 85.08L1275.53 85.08L1319.75 206.01L1287.46 206.01L1280.74 186.08L1235.22 186.08L1228.72 206.01L1197.08 206.01ZM206.09 206.01L85.04 206.01L85.04 84.96ZM1325.79 85.04C1315.77 85.04 1307.64 93.17 1307.64 103.20C1307.64 113.22 1315.77 121.35 1325.79 121.35C1335.82 121.35 1343.95 113.22 1343.95 103.20C1343.95 93.17 1335.82 85.04 1325.79 85.04M1325.79 87.89C1334.24 87.89 1341.10 94.75 1341.10 103.20C1341.10 111.64 1334.24 118.51 1325.79 118.51C1317.35 118.51 1310.48 111.64 1310.48 103.20C1310.48 94.75 1317.35 87.89 1325.79 87.89M1325.40 103.15C1328.40 103.15 1329.57 102.33 1329.57 100.25C1329.57 98.20 1328.40 97.34 1325.40 97.34L1323.11 97.34L1323.11 103.15ZM1318.78 93.79L1325.43 93.79C1330.80 93.79 1334.07 95.81 1334.07 100.25C1334.07 103.25 1332.44 104.96 1330.11 105.81L1334.96 112.85L1329.97 112.85L1326.02 106.70L1323.11 106.70L1323.11 112.85L1318.78 112.85Z"/></svg></a></p>
+          <a class="bc-tg-btn" href="https://t.me/barcolana58" target="_blank" rel="noopener"><svg class="bc-tg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path fill="#fff" d="M5.43 11.87c3.5-1.52 5.83-2.53 6.99-3.01 3.33-1.39 4.02-1.63 4.48-1.64.1 0 .32.02.46.14.12.1.15.23.17.33.02.09.04.31.02.47-.18 1.9-.96 6.5-1.36 8.63-.17.9-.5 1.2-.82 1.23-.7.06-1.22-.46-1.9-.9-1.06-.7-1.65-1.13-2.68-1.8-1.18-.78-.42-1.21.26-1.91.18-.18 3.25-2.98 3.31-3.23 0-.03.01-.15-.06-.21-.07-.06-.17-.04-.25-.02-.1.02-1.79 1.14-5.06 3.35-.48.33-.91.49-1.3.48-.43-.01-1.25-.24-1.87-.44-.75-.24-1.35-.37-1.3-.79.03-.22.33-.44.9-.67z"/></svg><span><span class="l-it">Canale Telegram ufficiale</span><span class="l-en">Official Telegram channel</span></span> ↗</a>
+        </div>
       </div>
+
       <div class="console-card" id="campoOra">
         <div class="bc-card-head">
           <h2><span class="l-it">Vento sul campo di regata · adesso</span><span class="l-en">Wind on the race course · now</span></h2>
-          <div class="bc-card-azioni">
-            <button type="button" class="bc-refresh" id="bcAggiorna"><span class="bc-giro" aria-hidden="true">🔄</span> <span class="l-it">Aggiorna</span><span class="l-en">Refresh</span></button>
-            <button type="button" class="bc-i-btn" data-dialog="infoCentraline" aria-haspopup="dialog"><i class="bc-i" aria-hidden="true">i</i><span class="l-it">Come funzionano le centraline</span><span class="l-en">How the stations work</span></button>
-          </div>
+          <button type="button" class="bc-refresh" id="bcAggiorna"><span class="bc-giro" aria-hidden="true">🔄</span> <span class="l-it">Aggiorna</span><span class="l-en">Refresh</span></button>
         </div>
         <div class="bc-now">
           <div class="bc-now-kt" aria-live="polite"><span id="nowKt">–</span><small>kt</small></div>
@@ -1421,6 +1452,7 @@
         </div>
         <p class="bc-now-fonti" id="nowFonti"></p>
         <ul class="bc-staz-list" id="nowStazioni" aria-label="Centraline"></ul>
+        <div class="bc-staz-info"><button type="button" class="bc-i-btn" data-dialog="infoCentraline" aria-haspopup="dialog"><i class="bc-i" aria-hidden="true">i</i><span class="l-it">Come funzionano le centraline</span><span class="l-en">How the stations work</span></button></div>
         <div class="bc-mini-lati" id="nowLati"></div>
         <p class="stato" id="ultimoAggiornamento" style="margin:.6rem 0 0;"></p>
       </div>
@@ -1488,6 +1520,21 @@
         <p class="bc-nota"><span class="l-it">L'icona apre sempre la pagina online: serve la connessione, e i dati sono quelli del momento.</span><span class="l-en">The icon always opens the live page: you need a connection, and the data are always current.</span></p>
       </div>
     </dialog>
+    <dialog class="bc-dialog" id="infoSostieni" aria-labelledby="infoSostieniTit">
+      <div class="bc-dialog-testa"><h3 id="infoSostieniTit">♥ <span class="l-it">Supporta il progetto</span><span class="l-en">Support the project</span></h3><button type="button" class="bc-dialog-x" aria-label="Chiudi / Close" title="Chiudi">✕</button></div>
+      <div class="bc-dialog-corpo">
+        <p><span class="l-it">Vento Trieste e Vento Barcolana sono gratuiti, ma server, dati e manutenzione hanno qualche costo: grazie del supporto! Scegli come:</span><span class="l-en">Vento Trieste and Vento Barcolana are free, but servers, data and upkeep have some costs: thank you for your support! Choose how:</span></p>
+        <div class="bc-dona">
+          <a class="bc-dona-btn" href="https://revolut.me/albertjsz" target="_blank" rel="noopener">Revolut</a>
+          <a class="bc-dona-btn" href="https://paypal.me/bebroggi" target="_blank" rel="noopener">PayPal</a>
+        </div>
+        <h4>₿ Bitcoin</h4>
+        <p class="bc-btc" id="bcBtc">bc1q6fk5n46wa4wq6wumc4nzjsu0pd7xnfumxay65m</p>
+        <button type="button" class="bc-i-btn" id="bcBtcCopia">📋 <span class="l-it">Copia indirizzo</span><span class="l-en">Copy address</span></button>
+        <h4><span class="l-it">Chi sostiene il progetto</span><span class="l-en">Supporters</span></h4>
+        <p class="bc-sostenitori" id="bcSostenitori"></p>
+      </div>
+    </dialog>
     <dialog class="bc-dialog" id="infoMappa" aria-labelledby="infoMappaTit">
       <div class="bc-dialog-testa"><h3 id="infoMappaTit"><span class="l-it">Legenda della mappa</span><span class="l-en">Map legend</span></h3><button type="button" class="bc-dialog-x" aria-label="Chiudi / Close" title="Chiudi">✕</button></div>
       <div class="bc-dialog-corpo">
@@ -1542,7 +1589,7 @@
         <summary>
           <span class="bc-tend-tit">
             <strong><span class="l-it">📋 Registro del vento</span><span class="l-en">📋 Wind log</span></strong>
-            <small><span class="l-it">L'ultimo mese giorno per giorno · ogni 15 minuti dalle 8 alle 18 · CSV</span><span class="l-en">The last month day by day · every 15 minutes from 8:00 to 18:00 · CSV</span></small>
+            <small><span class="l-it">Il vento giorno per giorno, l'ultimo mese</span><span class="l-en">The wind day by day, over the last month</span></small>
           </span>
         </summary>
         <div id="registroVento"></div>
@@ -1552,7 +1599,7 @@
     <!-- CHE VENTO C'ERA (ott 2026: le classifiche sono state tolte, resta il vento delle ultime edizioni) -->
     <section class="section" id="edizioni">
       <h2><span class="l-it">Che vento c'era? Le ultime edizioni</span><span class="l-en">What was the wind like? Recent editions</span></h2>
-      <p class="bc-nota" style="margin:0 0 .6rem;"><span class="l-it">Vento medio tra le 10 e le 14 al centro del percorso, ricostruito dal modello ECMWF IFS (analisi, via Open-Meteo): è una ricostruzione, non una misura, e le raffiche dei modelli tendono a essere alte. Sotto, le andature dei 5 lati con quel vento.</span><span class="l-en">Mean wind between 10:00 and 14:00 at the centre of the course, reconstructed by the ECMWF IFS model (analysis, via Open-Meteo): a reconstruction, not a measurement, and model gusts tend to run high. Below, the points of sail of the 5 legs with that wind.</span></p>
+      <p class="bc-nota" style="margin:0 0 .6rem;"><span class="l-it">Vento medio tra le 10 e le 14 al centro del percorso, ricostruito dal modello ECMWF IFS (analisi, via Open-Meteo): è una ricostruzione, non una misura, e le raffiche dei modelli tendono a essere alte. Sotto, le andature dei 5 lati con quel vento; sotto l'anno il vincitore assoluto (albo d'oro del Bando di Regata 2026).</span><span class="l-en">Mean wind between 10:00 and 14:00 at the centre of the course, reconstructed by the ECMWF IFS model (analysis, via Open-Meteo): a reconstruction, not a measurement, and model gusts tend to run high. Below, the points of sail of the 5 legs with that wind; under the year, the overall winner (roll of honour from the 2026 Notice of Race).</span></p>
       <div class="bc-legenda" id="clVentoLeg" style="margin:0 0 .5rem;"></div>
       <div class="bc-tab-wrap"><table class="bc-tab bc-tab-wrapok" id="clVento"></table></div>
     </section>
@@ -1591,7 +1638,25 @@
     </section>
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
-  <!-- data-senza: su questa pagina niente box Visitatori né modulo richieste (restano sulle altre) -->
+  <!-- IL PROGETTO (5 ott 2026): firma e "Supporta il progetto" in un'unica sezione, prima di tutto il resto.
+       Il pulsante apre la finestra #infoSostieni (Revolut, PayPal, Bitcoin, chi sostiene il progetto). -->
+  <section class="bc-autore" aria-label="Il progetto">
+    <div class="bc-autore-chi">
+      <small><span class="l-it">Ideato e realizzato da</span><span class="l-en">Created and built by</span></small>
+      <strong>Alberto Broggi</strong>
+      <span><span class="l-it">Dati, database e automazione</span><span class="l-en">Data, databases and automation</span></span>
+    </div>
+    <div class="bc-autore-azioni">
+      <a class="bc-autore-btn" href="mailto:bebroggi@gmail.com?subject=Vento%20Barcolana">✉️ <span class="l-it">Suggerimenti e migliorie</span><span class="l-en">Suggestions</span></a>
+      <a class="bc-autore-btn" href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it ↗</a>
+    </div>
+    <div class="bc-sostieni">
+      <p><span class="l-it">Vento Trieste è un progetto indipendente: dati live e manutenzione restano gratuiti per tutti.</span><span class="l-en">Vento Trieste is an independent project: live data and upkeep stay free for everyone.</span></p>
+      <button type="button" class="bc-sostieni-btn" data-dialog="infoSostieni" aria-haspopup="dialog">♥ <span class="l-it">Supporta il progetto</span><span class="l-en">Support the project</span></button>
+    </div>
+  </section>
+  <!-- data-senza: su questa pagina niente box Visitatori. Il riquadro "Aiuta Vento Trieste" di footer-widgets.js
+       viene sostituito (script qui sotto) da una tendina con partner, dati e fonti; i sostenitori vanno nella finestra. -->
   <div class="footer-widgets" id="footerWidgets" data-lang="it" data-senza="visitatori"></div>
   <script src="/footer-widgets.js?v=20261005"></script>
   <script>/* footer-widgets.js mette il tema scuro se non c'è una scelta salvata: su questa pagina
@@ -1604,6 +1669,21 @@
       t.setAttribute("aria-pressed","true");t.setAttribute("aria-label",az);t.setAttribute("title",az);
       var i=t.querySelector(".theme-toggle-icon"),l=t.querySelector(".theme-toggle-label");
       if(i)i.textContent="\u263E";if(l)l.textContent=az;})();</script>
+  <script>/* "Aiuta Vento Trieste a restare gratuito" di footer-widgets.js: su questa pagina i nomi dei sostenitori
+     vanno nella finestra "Supporta il progetto", partner, dati e fonti in una tendina; il resto sparisce */
+    (function () {
+      var sw = document.querySelector("#footerWidgets .support-widget");
+      if (!sw) return;
+      var nomi = Array.prototype.map.call(sw.querySelectorAll(".supporters-group:first-child .supporter-name"), function (n) { return n.textContent; });
+      var box = document.getElementById("bcSostenitori");
+      if (box) box.innerHTML = nomi.map(function (n) { return "<span>" + n + "</span>"; }).join("");
+      var det = document.createElement("details");
+      det.className = "bc-albo bc-fonti";
+      det.innerHTML = '<summary><span class="l-it">Partner, dati e fonti</span><span class="l-en">Partners, data and sources</span></summary>';
+      var fonti = sw.querySelector(".sources");
+      if (fonti) det.appendChild(fonti);
+      sw.parentNode.replaceChild(det, sw);
+    })();</script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoBarcolanaSeo">
@@ -1617,17 +1697,6 @@
         </nav>
       </section>
     </section>
-    <div class="bc-autore">
-      <div class="bc-autore-chi">
-        <small><span class="l-it">Ideato e realizzato da</span><span class="l-en">Created and built by</span></small>
-        <strong>Alberto Broggi</strong>
-        <span><span class="l-it">Dati, database e automazione</span><span class="l-en">Data, databases and automation</span></span>
-      </div>
-      <div class="bc-autore-azioni">
-        <a class="bc-autore-btn" href="mailto:bebroggi@gmail.com?subject=Vento%20Barcolana">✉️ <span class="l-it">Suggerimenti e migliorie</span><span class="l-en">Suggestions</span></a>
-        <a class="bc-autore-btn" href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it ↗</a>
-      </div>
-    </div>
     <p class="credits-meta">
       <span class="l-it">Dati</span><span class="l-en">Data</span>: Barcola (Windguru), Monte Grisa (Vetercek), MAMBO1 (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>), Trieste molo, Muggia &amp; Paloma (Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · <span class="l-it">dati elaborati</span><span class="l-en">processed data</span>), <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <span class="l-it">percorso</span><span class="l-en">course</span>: <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>.<br>
       <span class="l-it">Vento Barcolana nasce da una collaborazione tra Vento Trieste, progetto indipendente di <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a>, e Barcolana Srl. Marchio e logo Barcolana appartengono ai rispettivi titolari.</span><span class="l-en">Vento Barcolana is a collaboration between Vento Trieste, an independent project by <a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it</a>, and Barcolana Srl. The Barcolana name and logo belong to their respective owners.</span><br>
@@ -1643,7 +1712,7 @@
           async src="//gc.zgo.at/count.js"></script>
   <script src="/eventi.js?v=20261005" defer></script>
   <script src="/dati-live.js?v=20260929b"></script>
-  <script src="/registro-vento.js?v=20261005"></script>
+  <script src="/registro-vento.js?v=20261005c"></script>
   <script src="./costa.js?v=2"></script>
   <script src="./strade.js?v=1" defer onload="window.disegnaBaseBarcolana && window.disegnaBaseBarcolana()"></script>
   <script>
@@ -2419,6 +2488,9 @@
       [2019, "2019-10-13", 2.5, 241, 11.7], [2018, "2018-10-14", 10.6, 69, 29.5], [2017, "2017-10-08", 6.3, 165, 18.3]
     ];
     const NON_DISPUTATA = [2020];
+    /* vincitori assoluti dall'albo d'oro del Bando di Regata 2026 (tolti con le classifiche, rimessi il 5 ott 2026) */
+    const VINCITORI = { 2025: "Arca Sgr", 2024: "Arca Sgr", 2023: "Arca Sgr", 2022: "Deep Blue", 2021: "Arca Sgr",
+      2019: "Way of Life", 2018: "Spirit of Portopiccolo", 2017: "Spirit of Portopiccolo" };
     function disegnaVentoStorico() {
       document.getElementById("clVento").innerHTML = "<thead><tr><th>" + tr("Anno", "Year") + "</th><th>" + tr("Vento 10–14", "Wind 10–14") + "</th><th>" + tr("Lati 1–5", "Legs 1–5") + "</th></tr></thead><tbody>" +
         VENTO_STORICO.map(v => {
@@ -2427,7 +2499,7 @@
             return '<i style="--c:' + ANDATURE[an.k].c + '" title="' + tr("Lato ", "Leg ") + l.n + ": " + an.testo + '">' + l.n + "</i>";
           }).join("") + "</span>";
           return "<tr><td><b>" + v[0] + "</b> <small>" + new Date(v[1] + "T12:00:00").toLocaleDateString(LANG === "en" ? "en-GB" : "it-IT", { day: "numeric", month: "short" }) + "</small>" +
-            (NON_DISPUTATA.indexOf(v[0]) !== -1 ? '<span class="bc-sub">' + tr("regata non disputata", "race not held") + "</span>" : "") + "</td>" +
+            '<span class="bc-sub">' + (NON_DISPUTATA.indexOf(v[0]) !== -1 ? tr("regata non disputata", "race not held") : VINCITORI[v[0]] ? "🏆 " + VINCITORI[v[0]] : "") + "</span></td>" +
             "<td><b>" + fmt(v[2], 0) + " kt</b> " + frecciaSvg(v[3]) + "<small>" + cardinale(v[3]) + "</small><span class=\"bc-sub\">" + nomeVento(v[3], v[2]) + " · " + tr("raff. ", "gust ") + Math.round(v[4]) + "</span></td>" +
             "<td>" + lati + "</td></tr>";
         }).join("") + "</tbody>";
@@ -2529,6 +2601,15 @@
     }
     document.querySelectorAll("[data-lang-btn]").forEach(b => b.addEventListener("click", () => impostaLingua(b.getAttribute("data-lang-btn"))));
 
+    /* ---------- supporta il progetto: copia dell'indirizzo Bitcoin ---------- */
+    document.getElementById("bcBtcCopia").addEventListener("click", function () {
+      const b = this, orig = b.innerHTML, t = document.getElementById("bcBtc").textContent.trim();
+      const fatto = () => { b.textContent = tr("✅ Copiato", "✅ Copied"); setTimeout(() => { b.innerHTML = orig; }, 2000); };
+      if (navigator.clipboard) navigator.clipboard.writeText(t).then(fatto).catch(() => {});
+      if (window.vtConta) window.vtConta("birra: copia bitcoin");
+    });
+    window.apriBirra = e => { if (e && e.preventDefault) e.preventDefault(); const d = document.getElementById("infoSostieni"); if (d && d.showModal) d.showModal(); };
+
     /* ---------- web app: "Installa l'app sul telefono" ----------
        Evidenzia le istruzioni del telefono in uso (Android per primo su Android); con Chrome,
        se il browser lo consente, c'è anche il tasto per installare subito. Già aperta dall'icona
@@ -2585,10 +2666,10 @@
       const det = document.getElementById("registroDettagli");
       if (!det || !window.RegistroVento) return;
       const oggi = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome" }).format(new Date());
-      const rv = RegistroVento.monta(document.getElementById("registroVento"), {
-        attendi: true, giorno: (oggi > GIORNO_GARA && oggi <= "2026-10-31") ? GIORNO_GARA : oggi,
-        finestra: ["08:00", "18:00"],      // il registro va dalle 6 alle 19: alla Barcolana serve 8-18
-        riepilogo: true, senzaSurf: true, periodo: "30",
+      // 5 ott 2026 sera: solo il grafico (niente scelta del giorno né tabella ogni 15 minuti), niente link al registro di Vento Trieste
+      const rv = RegistroVento.grafico(document.getElementById("registroVento"), {
+        attendi: true, giorno: (oggi > GIORNO_GARA && oggi <= "2026-10-31") ? GIORNO_GARA : null,
+        nomeCampo: ["Campo di regata", "Race course"], senzaSurf: true, periodo: "30", linkRegistro: false,
         evento: { giorno: GIORNO_GARA, segno: "⛵", nome: ["giorno della Barcolana", "Barcolana race day"] } });
       det.addEventListener("toggle", () => { if (det.open) rv.carica(); });
       // dal menu ("Registro") o da un link con #registro la tendina si apre da sola

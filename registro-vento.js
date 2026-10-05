@@ -50,7 +50,7 @@
   };
   var FONTE_PC = '<a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · ' +
     '<a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a>';
-  var istanze = [];
+  var istanze = [], grafici = [];
 
   function lingua() { return document.documentElement.getAttribute("data-lang") === "en" ? "en" : "it"; }
   function tr(it, en) { return lingua() === "en" ? en : it; }
@@ -383,8 +383,8 @@
   function nomeGiorno(g) { return maiuscola(dataFmt(g, { weekday: "long", day: "numeric", month: "long" })); }
 
   function lettura(r, g) {
-    var x = datoGiorno(r, g), vai = g !== r.giorno ? "" : r.opz.soloGrafico ?
-      '<a class="rv-vai" href="' + (r.opz.linkRegistro || "/registro/") + "?giorno=" + g + '">' + tr("Apri nel registro →", "Open in the log →") + "</a>" :
+    var x = datoGiorno(r, g), vai = g !== r.giorno ? "" : r.opz.soloGrafico ? (r.opz.linkRegistro === false ? "" :     // linkRegistro: false = niente link (Barcolana)
+      '<a class="rv-vai" href="' + (r.opz.linkRegistro || "/registro/") + "?giorno=" + g + '">' + tr("Apri nel registro →", "Open in the log →") + "</a>") :
       '<button type="button" data-rv-vai>' + tr("Vedi il registro ↓", "See the log ↓") + "</button>";
     if (!x) return "<span>" + nomeGiorno(g) + "</span><em>" + (g > oggiRoma() ? tr("ancora da venire", "still to come") : tr("nessuna media per questo giorno", "no average for this day")) + "</em>" + vai;
     return "<span>" + nomeGiorno(g) + "</span>" + sintesi(x, r) + nomeEvento(r, g) +
@@ -460,6 +460,7 @@
       var dd = Number(g.slice(8));
       return "<span>" + (r.per.tipo === "sett" ? dataFmt(g, { weekday: "short" }).replace(".", "") + " " + dd :
         r.per.tipo === "trenta" && dd === 1 ? dataFmt(g, { day: "numeric", month: "short" }).replace(".", "").replace(/^1° /, "1 ") :
+        r.per.tipo === "trenta" && dd >= 29 ? "" :            // il 30 si accavallava a "1 ott" sul telefono
         ((dd === 1 || dd % 5 === 0) && dd < 31 ? dd : "")) + "</span>";
     }).join("");
     // sopra il grafico, il meteo di ogni giorno
@@ -487,8 +488,10 @@
     var giorni = function (n) { return n + " " + (n === 1 ? tr("giorno", "day") : tr("giorni", "days")); };
     box.innerHTML = "<h3>" + (conSurf ? tr("Giornate surfabili", "Surfable days") : tr("Il vento giorno per giorno", "The wind day by day")) + "</h3>" +
       '<p class="rv-nota">' + (!conSurf ? tr(
-        "Ogni colonna è un giorno, dalle 6 alle 19: in blu la <b>media</b> della colonna «" + nomeC + "», sopra fino alla <b>raffica massima</b>, il picco più alto tra Barcola, Trieste molo, Muggia e Paloma. Tocca un giorno per aprirlo nel registro qui sotto.",
-        "Each column is one day, 6:00-19:00: the <b>mean</b> of the «" + nomeC + "» column in blue, topped up to the <b>max gust</b>, the highest peak among Barcola, Trieste pier, Muggia and Paloma. Tap a day to open it in the log below.") : tr(
+        "Ogni colonna è un giorno, dalle 6 alle 19: in blu la <b>media</b> della colonna «" + nomeC + "», sopra fino alla <b>raffica massima</b>, il picco più alto tra Barcola, Trieste molo, Muggia e Paloma. " +
+          (r.opz.soloGrafico ? "Tocca un giorno per leggerne media, raffica e direzione." : "Tocca un giorno per aprirlo nel registro qui sotto."),
+        "Each column is one day, 6:00-19:00: the <b>mean</b> of the «" + nomeC + "» column in blue, topped up to the <b>max gust</b>, the highest peak among Barcola, Trieste pier, Muggia and Paloma. " +
+          (r.opz.soloGrafico ? "Tap a day to read its mean, gust and direction." : "Tap a day to open it in the log below.")) : tr(
         "Ogni colonna è un giorno, dalle 6 alle 19: in blu la <b>media</b> della colonna «" + nomeC + "», sopra fino alla <b>raffica massima</b>, il picco più alto tra Barcola, Trieste molo, Muggia e Paloma. " +
           SURFISTA + " = <b>giornata surfabile</b>: la media è stata sopra i " + SOGLIA + " nodi per almeno " + ORE_SURF + " ore.",
         "Each column is one day, 6:00-19:00: the <b>mean</b> of the «" + nomeC + "» column in blue, topped up to the <b>max gust</b>, the highest peak among Barcola, Trieste pier, Muggia and Paloma. " +
@@ -751,7 +754,9 @@
     opz.soloGrafico = true;
     stili();
     root.innerHTML = '<section class="rv-riep" id="regRiep" aria-label="Giornate surfabili" hidden></section>';
-    var r = { root: root, opz: opz, giorno: null, $: function (id) { return root.querySelector("#" + id); }, caricato: false, ultimoOggi: 0 };
+    // giorno: il giorno selezionato all'apertura (Barcolana dopo la regata: l'11 ottobre, e il grafico finisce lì)
+    var r = { root: root, opz: opz, giorno: opz.giorno || null, $: function (id) { return root.querySelector("#" + id); }, caricato: false, ultimoOggi: 0 };
+    grafici.push(r);
     ascoltaGrafico(r);
     var oggi = function () {
       var g = oggiRoma();
@@ -779,6 +784,9 @@
   window.RegistroVento = {
     grafico: grafico,
     monta: monta,
-    ridisegna: function () { istanze.forEach(function (r) { testi(r); disegna(r); }); }
+    ridisegna: function () {
+      istanze.forEach(function (r) { testi(r); disegna(r); });
+      grafici.forEach(function (r) { if (r.riep) disegnaRiep(r); });     // solo grafico: dopo un cambio di lingua
+    }
   };
 })();
