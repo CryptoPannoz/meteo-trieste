@@ -9,7 +9,6 @@
      aggiorna: <pagina>            tasto Aggiorna
      esce: <sito>                  link verso altri siti (titolo = indirizzo completo)
      email                         link mailto
-     richiesta modifica: <tipo>    modulo "Richiedi una modifica" nel piede
      birra: apri | copia bitcoin   sostegno al progetto (Revolut/PayPal = "esce: ...")
      popup barcolana: apri|chiudi  popup in basso della home
      tema: chiaro|scuro · lingua: it|en · menu: apri · dock: <voce>
@@ -123,12 +122,4 @@
     }
   }, true);
 
-  document.addEventListener("submit", function (ev) {
-    var f = ev.target;
-    if (!f || f.id !== "footerRequestForm") return;
-    var tipo = document.getElementById("footerRequestType");
-    var msg = document.getElementById("footerRequestText");
-    if (msg && !msg.value.trim()) return;                // modulo vuoto: non parte nulla
-    conta("richiesta modifica: " + (tipo ? tipo.value : "?"));
-  }, true);
 })();

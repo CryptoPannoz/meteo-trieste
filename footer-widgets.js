@@ -343,10 +343,7 @@
   var sl = root.dataset.lang === "sl";
   var proxy = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
   var t = sl ? {
-    visitors: "Obiskovalci", since: "obiskovalcev od začetka", request: "Predlagaj spremembo ali dopolnitev",
-    placeholder: "Opiši želeno spremembo ali dopolnitev…", send: "📩 Pošlji predlog",
-    note: "Odpre se že pripravljeno sporočilo v tvojem e-poštnem programu.", modify: "Sprememba / izboljšava",
-    integrate: "Dopolnitev (vir, kamera, spot)", problem: "Prijava težave", other: "Drugo",
+    visitors: "Obiskovalci", since: "obiskovalcev od začetka",
     supportKicker: "Neodvisen projekt", supportTitle: "Pomagaj, da Vento Trieste ostane brezplačen",
     supportText: "Podatki v živo, napovedi in vzdrževanje ostajajo dostopni vsem. Če ti je storitev uporabna, lahko podpreš njeno prihodnost.",
     supportCta: "Plačaj mi pivo", supportMethods: "Prostovoljni prispevek · PayPal, Revolut ali Bitcoin",
@@ -355,10 +352,7 @@
     dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri",
     guides: "Vodniki in orodja"
   } : {
-    visitors: "Visitatori", since: "visitatori dall’inizio", request: "Richiedi una modifica o integrazione",
-    placeholder: "Descrivi la modifica o l’integrazione che vorresti…", send: "📩 Invia richiesta",
-    note: "La richiesta si apre nella tua app di posta, già compilata: basta premere invia.", modify: "Modifica / miglioria",
-    integrate: "Integrazione (fonte, webcam, spot)", problem: "Segnalazione problema", other: "Altro",
+    visitors: "Visitatori", since: "visitatori dall’inizio",
     supportKicker: "Progetto indipendente", supportTitle: "Aiuta Vento Trieste a restare gratuito",
     supportText: "Dati live, previsioni e manutenzione restano accessibili a tutti. Se il servizio ti è utile, puoi contribuire al suo futuro.",
     supportCta: "Offrimi una birra", supportMethods: "Donazione libera · PayPal, Revolut o Bitcoin",
@@ -435,14 +429,13 @@
     return '<a class="partner-card" href="' + partner.url + '" target="_blank" rel="noopener">' +
       '<span class="partner-mark" aria-hidden="true">↗</span><span><strong>' + partner.name + '</strong><small>' + partner.detail + '</small></span></a>';
   }).join("");
-  /* data-senza="visitatori richiesta" sul contenitore toglie quei box dalla pagina
-     (pagina Barcolana); senza l'attributo restano tutti. */
+  /* data-senza="visitatori" sul contenitore toglie quel box dalla pagina (pagina Barcolana).
+     Il riquadro "Richiedi una modifica o integrazione" non c'è più (5 ott 2026): suggerimenti e
+     migliorie passano dalla firma "Ideato e realizzato da Alberto Broggi" (vt-app.js). */
   var senza = (root.dataset.senza || "").split(/\s+/);
   var conVisitatori = senza.indexOf("visitatori") < 0;
-  var conRichiesta = senza.indexOf("richiesta") < 0;
   root.innerHTML =
     (conVisitatori ? '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' : '') +
-    (conRichiesta ? '<section class="footer-widget footer-request" aria-labelledby="footerRequestTitle"><h2 id="footerRequestTitle">💬 ' + t.request + '</h2><form id="footerRequestForm"><label class="visually-hidden" for="footerRequestType">' + t.request + '</label><select id="footerRequestType"><option>' + t.modify + '</option><option>' + t.integrate + '</option><option>' + t.problem + '</option><option>' + t.other + '</option></select><label class="visually-hidden" for="footerRequestText">' + t.placeholder + '</label><textarea id="footerRequestText" required maxlength="1500" placeholder="' + t.placeholder + '"></textarea><button class="dona-btn" type="submit">' + t.send + '</button></form><p class="stato">' + t.note + '</p></section>' : '') +
     '<section class="footer-widget support-widget" aria-labelledby="footerSupportTitle">' +
       '<div class="support-hero"><span class="support-kicker">' + t.supportKicker + '</span>' +
       '<span class="support-symbol" aria-hidden="true">🍺</span><h2 id="footerSupportTitle">' + t.supportTitle + '</h2>' +
@@ -463,13 +456,6 @@
     if (v && v.total != null) document.getElementById("footerVisitorTotal").textContent = Number(v.total).toLocaleString(sl ? "sl-SI" : "it-IT");
   }).catch(function () {});
 
-  if (conRichiesta) document.getElementById("footerRequestForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    var type = document.getElementById("footerRequestType").value;
-    var msg = document.getElementById("footerRequestText").value.trim();
-    if (!msg) return;
-    location.href = "mailto:bebroggi@gmail.com?subject=" + encodeURIComponent("[ventotrieste.info] " + type) + "&body=" + encodeURIComponent(msg);
-  });
   document.getElementById("footerSupportButton").addEventListener("click", function (e) {
     e.preventDefault(); if (typeof window.apriBirra === "function") window.apriBirra(e);
   });
