@@ -1412,7 +1412,7 @@
             <li><span class="l-it"><strong>Barcola</strong>: anemometro al porticciolo di Barcola, dati Windguru. Un nuovo valore ogni 1–5 minuti.</span><span class="l-en"><strong>Barcola</strong>: anemometer at Barcola harbour, Windguru data. A new reading every 1–5 minutes.</span></li>
             <li><span class="l-it"><strong>Trieste molo, Muggia e boa Paloma</strong>: rete meteorologica regionale. Un valore ogni 15 minuti. Trieste molo è sul molo F.lli Bandiera, vicino all'arrivo; la boa Paloma è in mezzo al Golfo.</span><span class="l-en"><strong>Trieste pier, Muggia and Paloma buoy</strong>: regional weather network. A reading every 15 minutes. Trieste pier is on the F.lli Bandiera pier, near the finish; the Paloma buoy is in the middle of the Gulf.</span></li>
             <li><span class="l-it"><strong>Monte Grisa</strong>: stazione Vetercek in quota sopra Barcola, ogni pochi minuti. Con la Bora segna prima e più forte del mare.</span><span class="l-en"><strong>Monte Grisa</strong>: Vetercek station high above Barcola, every few minutes. In Bora it reads earlier and stronger than at sea.</span></li>
-            <li><span class="l-it"><strong>Boa Mambo</strong> (OGS), davanti a Miramare: pubblica un dato all'ora con 1–2 ore di ritardo.</span><span class="l-en"><strong>Mambo buoy</strong> (OGS), off Miramare: publishes one reading per hour, 1–2 hours late.</span></li>
+            <li><span class="l-it"><strong>Boa Mambo</strong> (OGS), davanti al castello di Miramare: pubblica un dato all'ora con 1–2 ore di ritardo. In mappa compare solo quando il dato è aggiornato.</span><span class="l-en"><strong>Mambo buoy</strong> (OGS), off Miramare castle: publishes one reading per hour, 1–2 hours late. It appears on the map only when its reading is up to date.</span></li>
           </ul>
           <h4><span class="l-it">Come si legge</span><span class="l-en">How to read it</span></h4>
           <ul>
@@ -1651,10 +1651,12 @@
     const STAZIONI = [
       { id: "barcola", nome: "Barcola", lat: 45.680, lon: 13.754, interp: true, fresco: 10, max: 20,
         ruolo: ["Porticciolo di Barcola: zona di partenza, boa 4 e ultimo lato.", "Barcola harbour: start area, mark 4 and the last leg."] },
-      // Mambo NON va in mappa (29 set 2026): sta a 250 m dalla boa 3 e andava spostata con una
-      // linea tratteggiata che confondeva; in più il suo dato è quasi sempre vecchio. Resta nell'elenco.
-      { id: "mambo", nome: "Boa Mambo", lat: 45.6983, lon: 13.7000, interp: true, fresco: 30, max: 30, mappa: false,
-        ruolo: ["Boa OGS davanti a Miramare, a 250 m dalla boa 3. Pubblica un dato all'ora con 1-2 ore di ritardo: se è vecchio non entra nella stima.", "OGS buoy off Miramare, 250 m from mark 3. It publishes hourly, 1-2 hours late: when stale it is left out of the estimate."] },
+      // Mambo in mappa SOLO col dato aggiornato (mappa: "seVivo", Alberto 5 ott 2026): con il dato vecchio
+      // non compare, resta nell'elenco. Posizione dai metadati OGS (MAMBO1_TS: 45.6976667, 13.7083333),
+      // davanti al castello di Miramare a ~780 m dalla boa 3: fino al 5 ott era 45.6983/13.7000, sbagliata,
+      // e la boa finiva sopra la boa 3 (per questo il 29 set era stata tolta dalla mappa).
+      { id: "mambo", nome: "Boa Mambo", lat: 45.6977, lon: 13.7083, interp: true, fresco: 30, max: 30, mappa: "seVivo",
+        ruolo: ["Boa OGS davanti al castello di Miramare, a circa 800 m dalla boa 3. Pubblica un dato all'ora con 1-2 ore di ritardo: in mappa e nella stima solo quando il dato è aggiornato.", "OGS buoy off Miramare castle, about 800 m from mark 3. It publishes hourly, 1-2 hours late: on the map and in the estimate only when its reading is up to date."] },
       // Paloma è fuori inquadratura, a ovest: dal 5 ott 2026 (richiesta di Alberto) la si disegna DENTRO la
       // mappa, nell'angolo in basso a sinistra (qui), con la distanza dalla posizione vera. Stima e distanze
       // usano sempre lat/lon veri.
@@ -1962,6 +1964,13 @@
       });
       svg.appendChild(gR);
 
+      // centraline SOTTO linee e boe: con la Bora la freccia di Mambo punta sulla boa 3, che deve restare leggibile
+      if (opt.stazioni) {
+        const gS = el("g", {});
+        STAZIONI.filter(st => st.mappa === "seVivo" ? !!vivo(st) : st.mappa !== false).forEach(st => disegnaStazione(gS, st, vivo(st), vb, s, opt));
+        svg.appendChild(gS);
+      }
+
       // linee di partenza (P1 - P/4) e di arrivo (A1 - A), tratteggiate come sull'originale
       const linea = (a, b, dash, w) => {
         const x1 = px(a.lon), y1 = py(a.lat), x2 = px(b.lon), y2 = py(b.lat);
@@ -1985,12 +1994,6 @@
       triangolo(gB, BOA.A1, s, "A1", [-9, -6, "end"], tr("A1: arrivo", "A1: finish"));
       triangolo(gB, BOA.A, s, "A", [8, -6, "start"], tr("A: arrivo, testata della diga", "A: finish, breakwater head"));
       svg.appendChild(gB);
-
-      if (opt.stazioni) {
-        const gS = el("g", {});
-        STAZIONI.filter(st => st.mappa !== false).forEach(st => disegnaStazione(gS, st, vivo(st), vb, s, opt));
-        svg.appendChild(gS);
-      }
 
       // nord e scala (1 miglio = 1/60 di grado di latitudine)
       const unitaMiglio = KY / 60;
@@ -2048,7 +2051,7 @@
         }
         g.appendChild(el("circle", { cx: sx, cy: sy, r: 11 * s, fill: "var(--bc-staz)", stroke: col, "stroke-width": 2.4 * s }));
         g.appendChild(el("text", { x: sx, y: sy + 3.8 * s, "text-anchor": "middle", "font-size": 10.5 * s, "font-weight": 900, fill: "#fff" }, v ? String(kt) : "–"));
-        const ds = { barcola: [14, 18, "start"], monteGrisa: [14, -8, "start"], mambo: [-14, -10, "end"], paloma: [14, -2, "start"], muggia: [14, 4, "start"], trieste: [-14, 4, "end"] }[st.id];
+        const ds = { barcola: [14, 18, "start"], monteGrisa: [14, -8, "start"], mambo: [14, 4, "start"], paloma: [14, -2, "start"], muggia: [14, 4, "start"], trieste: [-14, 4, "end"] }[st.id];
         testo(g, sx + ds[0] * s, sy + ds[1] * s, st.nome, s * .9, { "text-anchor": ds[2], "font-weight": 800 });
         if (lontano) testo(g, sx + ds[0] * s, sy + (ds[1] + 13) * s, "◀ " + lontano, s * .74, { "text-anchor": ds[2], "font-weight": 600, "font-style": "italic" });
       }
@@ -2402,6 +2405,7 @@
         '<b class="bc-leg-tit">' + tr("Centraline", "Stations") + "</b>" +
         "<span>" + staz("12", coloreKt(12), true) + tr("vento medio in nodi · la freccia va dove va il vento", "mean wind in knots · the arrow points where the wind blows to") + "</span>" +
         "<span>" + staz("–", "#6b7780", false) + tr("offline o dato troppo vecchio", "offline or data too old") + "</span>" +
+        "<span>" + tr("Boa Mambo (davanti a Miramare): in mappa solo quando il dato è aggiornato", "Mambo buoy (off Miramare): on the map only when its reading is up to date") + "</span>" +
         '<span class="bc-leg-sep"></span>' +
         '<span><span class="bc-scala">' + FASCE.map((f, i) => '<em style="--c:' + f.c + '">' + fasce[i] + "</em>").join("") + "</span>" +
         tr("colore dell'anello: forza del vento in nodi", "ring colour: wind strength in knots") + "</span>" +
