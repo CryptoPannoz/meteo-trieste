@@ -8,3 +8,6 @@ og-source.png
 .claude/
 .wrangler/
 barcolana2026/overpass-strade.json
+
+# variabili locali dei Worker (chiavi API di prova)
+.dev.vars

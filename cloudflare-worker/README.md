@@ -1,6 +1,6 @@
 # Cloudflare Worker del progetto
 
-Due worker sull'account Cloudflare **bebroggi@gmail.com** (`*.bebroggi.workers.dev`):
+Tre worker sull'account Cloudflare **bebroggi@gmail.com** (`*.bebroggi.workers.dev`):
 
 - **`vetercek-relay`** (questa cartella): ponte verso vetercek.com, descritto sotto.
 - **`ventotrieste-dati`** ([`dati/`](dati/), set 2026): copia del payload del proxy Apps
@@ -15,6 +15,9 @@ Due worker sull'account Cloudflare **bebroggi@gmail.com** (`*.bebroggi.workers.d
   Trieste molo, Muggia, Paloma (Protezione Civile FVG), Monte Grisa (registrata dal cron in KV
   `grisa:<giorno>` dal 30 set 2026), Mambo (OGS, orario) e la media sul campo di regata.
   Oggi si ricalcola ogni 5 minuti dal cron; i giorni passati restano salvati in KV.
+- **`ventotrieste-api`** ([`api/`](api/), ott 2026): API JSON con chiave per i partner
+  (RAI, diretta Barcolana 58): vento sui punti del percorso dalle stazioni della Protezione
+  Civile FVG, riletto ogni 5 minuti. Vedi [`api/README.md`](api/README.md).
 
 # vetercek-relay (Cloudflare Worker)
 

@@ -1,0 +1,16 @@
+# Worker ventotrieste-api: API JSON per i partner (RAI, Barcolana 2026).
+# Deploy: npx wrangler deploy  (da questa cartella, account bebroggi@gmail.com)
+# Chiavi: npx wrangler secret put CHIAVI  (separate da virgola; in locale: file .dev.vars)
+name = "ventotrieste-api"
+main = "ventotrieste-api.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+# stesso namespace KV di ventotrieste-dati, chiave diversa ("api-stazioni")
+[[kv_namespaces]]
+binding = "DATI"
+id = "68193427366a461cbac52b1512d487f1"
+
+# ogni 5 minuti: ultima misura delle stazioni Protezione Civile FVG
+[triggers]
+crons = ["*/5 * * * *"]
