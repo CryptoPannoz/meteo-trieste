@@ -1143,9 +1143,10 @@
     .bc-sostenitori span::before { content: "♥ "; color: var(--bcn-red, #e30613); }
     details.bc-fonti { margin: 0 0 1rem; }
     .bc-fonti-dati { margin: 0; padding: 0 .9rem .7rem; font-size: .76rem; line-height: 1.5; color: var(--label); text-align: left; }
-    .bc-mappa .bc-osm { position: absolute; right: 0; bottom: 0; z-index: 2; padding: .1rem .35rem; border-top-left-radius: 3px; background: rgba(255,255,255,.75); font-size: .62rem; line-height: 1.4; color: #3d4b5c; }
-    .bc-mappa .bc-osm a { color: inherit !important; text-decoration: none; }
-    html[data-theme="dark"] .bc-mappa .bc-osm { background: rgba(0,20,40,.7); color: #b9cbe0; }
+    /* credito OpenStreetMap SOTTO la mappa (8 ott 2026, richiesta di Alberto: non sopra il disegno); obbligatorio per la licenza ODbL */
+    .bc-osm { margin: .3rem .15rem 0; text-align: right; font-size: .66rem; line-height: 1.3; color: #6b7a8c; }
+    .bc-osm a { color: inherit !important; text-decoration: none; }
+    html[data-theme="dark"] .bc-osm { color: #8fa3ba; }
     details.bc-fonti .sources { margin: 0; padding: 0 .9rem .9rem; border: 0; }
     /* chi l'ha fatto: firma ben visibile nel piede (Alberto, 5 ott 2026) */
     .bc-autore { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; margin: 0 0 1rem; padding: 1rem 1.1rem; }
@@ -1568,8 +1569,8 @@
           <div class="bc-mappa" id="bcMappa">
             <svg class="bc-base" id="bcBase" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"></svg>
             <svg id="bcSvg" role="img" xmlns="http://www.w3.org/2000/svg"></svg>
-            <span class="bc-osm">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></span>
           </div>
+          <div class="bc-osm"><span class="l-it">Mappa</span><span class="l-en">Map</span> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
           <div class="bc-info" id="bcInfo" aria-live="polite"></div>
         </div>
 
@@ -1671,7 +1672,7 @@
        viene sostituito (script qui sotto) da una tendina con partner, dati e fonti; i sostenitori vanno nella finestra. -->
   <div class="footer-widgets" id="footerWidgets" data-lang="it" data-senza="visitatori"></div>
   <!-- in fondo solo "Buon vento!" (Alberto, 5 ott 2026): le attribuzioni dei dati stanno nella tendina
-       "Partner, dati e fonti" (questo paragrafo, che lo script qui sotto ci sposta dentro), OpenStreetMap sulla mappa -->
+       "Partner, dati e fonti" (questo paragrafo, che lo script qui sotto ci sposta dentro), OpenStreetMap sotto la mappa -->
   <p class="bc-fonti-dati" id="bcFontiDati"><span class="l-it">Dati</span><span class="l-en">Data</span>: Barcola (Windguru), Monte Grisa (Vetercek), MAMBO1 (<a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a>), Trieste molo, Muggia &amp; Paloma (Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · <span class="l-it">dati elaborati</span><span class="l-en">processed data</span>), <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, <span class="l-it">percorso</span><span class="l-en">course</span>: <a href="https://www.barcolana.it/" target="_blank" rel="noopener">barcolana.it</a>. <span class="l-it">Foto di anteprima</span><span class="l-en">Preview photo</span>: Barcolana 2025 © Martina Orsini.</p>
   <script src="/footer-widgets.js?v=20261005"></script>
   <script>/* footer-widgets.js mette il tema scuro se non c'è una scelta salvata: su questa pagina
@@ -1804,15 +1805,17 @@
       // Paloma è fuori inquadratura, a ovest: dal 5 ott 2026 (richiesta di Alberto) la si disegna DENTRO la
       // mappa, nell'angolo in basso a sinistra (qui), con la distanza dalla posizione vera. Stima e distanze
       // usano sempre lat/lon veri.
-      // pos = posizione esatta per il 📍 Google Maps (8 ott 2026): per Paloma, Trieste molo e Muggia è quella
-      // dell'API della Protezione Civile FVG (/api/stations/<id>); senza pos il link usa lat/lon.
-      { id: "paloma", nome: "Boa Paloma", lat: 45.619, lon: 13.565, interp: true, fresco: 20, max: 30, qui: { lat: 45.6095, lon: 13.632 }, pos: [45.61858, 13.5653],
+      // Paloma e Muggia: coordinate ufficiali dell'API della Protezione Civile FVG (/api/stations/574, 500),
+      // dall'8 ott 2026 (prima Muggia era ~1,5 km fuori). Trieste molo (/api/stations/212) è in punta al molo
+      // F.lli Bandiera, a ~230 m dalla boa d'arrivo A1: lì il pallino copriva l'arrivo, quindi in mappa (e nella
+      // stima) resta dov'era e la posizione ufficiale serve solo al 📍 Google Maps (pos), scelta di Alberto.
+      { id: "paloma", nome: "Boa Paloma", lat: 45.61858, lon: 13.5653, interp: true, fresco: 20, max: 30, qui: { lat: 45.6095, lon: 13.632 },
         ruolo: ["In mezzo al Golfo, a ovest delle boe 1 e 2: vento di mare aperto. In mappa è nell'angolo in basso a sinistra: la boa vera è più a ovest.", "Mid-Gulf, west of marks 1 and 2: open-sea wind. On the map it sits in the bottom-left corner: the real buoy is further west."] },
       { id: "trieste", nome: "Trieste molo", lat: 45.636806, lon: 13.750556, interp: true, fresco: 20, max: 30, pos: [45.649981, 13.752239],
         ruolo: ["Stazione della rete meteorologica regionale sul molo F.lli Bandiera, a sud dell'arrivo: il vento in porto, ogni 15 minuti. Fonte: Protezione Civile della Regione Friuli Venezia Giulia.", "Regional weather network station on the F.lli Bandiera pier, south of the finish: the wind in the harbour, every 15 minutes. Source: Protezione Civile della Regione Friuli Venezia Giulia."] },
       { id: "monteGrisa", nome: "Monte Grisa", lat: 45.712, lon: 13.757, interp: false, fresco: 12, max: 20,
         ruolo: ["In quota sopra Barcola: con la Bora segna prima e più forte del mare.", "High above Barcola: in Bora it reads earlier and stronger than at sea."] },
-      { id: "muggia", nome: "Muggia", lat: 45.602, lon: 13.768, interp: true, fresco: 20, max: 30, pos: [45.610448, 13.752571],
+      { id: "muggia", nome: "Muggia", lat: 45.610448, lon: 13.752571, interp: true, fresco: 20, max: 30,
         ruolo: ["Sud del Golfo: dice quanto vento c'è verso la zona della boa 1.", "Southern Gulf: tells you how much wind there is towards mark 1."] }
     ];
     const LUOGHI = [
@@ -2333,7 +2336,8 @@
           '" aria-label="' + st.nome + tr(": posizione su Google Maps", ": position on Google Maps") + '">📍</a>';
         // direzione in gradi (da dove viene il vento), il punto cardinale resta nel tooltip
         return '<li><i class="dot ' + cls + '"></i><span><span class="bc-staz-nome"><b>' + st.nome + "</b>" + pin + "</span>" + quando + '</span><span class="v">' +
-          (w ? Math.round(w.kt) + " kt" + (!isNaN(w.raffica) ? " / " + Math.round(w.raffica) : "") +
+          // intensità come "media-raffica kt" (8 ott 2026, richiesta di Alberto: "3-5 kt", non "3 kt / 5")
+          (w ? Math.round(w.kt) + (!isNaN(w.raffica) && Math.round(w.raffica) > Math.round(w.kt) ? "-" + Math.round(w.raffica) : "") + " kt" +
             (w.deg != null ? ' <span title="' + tr("da ", "from ") + cardinale(w.deg) + '">' + frecciaSvg(w.deg, "") + "</span>" + Math.round(norm360(w.deg)) + "°" : "") : "–") + "</span></li>";
       }).join("");
       $("nowLati").innerHTML = LATI.map(l => {
