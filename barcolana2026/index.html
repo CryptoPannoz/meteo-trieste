@@ -952,6 +952,8 @@
     .bc-staz-list .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bc-off); }
     .bc-staz-list .dot.ok { background: var(--bc-ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bc-ok) 25%, transparent); }
     .bc-staz-list .dot.warn { background: var(--bc-warn); }
+    /* dato vecchio (8 ott 2026): grigio e sbiadito verso lo sfondo, più è vecchio più sbiadisce (--sb dal JS) */
+    .bc-staz-list li.bc-vecchio > span { opacity: var(--sb, .5); filter: grayscale(1); }
     .bc-staz-list b { font-weight: 800; }
     /* nome + 📍 su una riga; sotto l'ora del dato e, ancora sotto, quanto tempo fa (8 ott 2026:
        su PC "12:30 · 7 min fa" andava a capo a metà ed era poco leggibile) */
@@ -1485,15 +1487,15 @@
           <h4><span class="l-it">Come si legge</span><span class="l-en">How to read it</span></h4>
           <ul>
             <li><span class="l-it">Il <strong>numero grande</strong> è il vento medio stimato al centro del percorso, in nodi; sotto, da dove viene e le raffiche.</span><span class="l-en">The <strong>big number</strong> is the estimated mean wind at the centre of the course, in knots; below it, where it comes from and the gusts.</span></li>
-            <li><span class="l-it">In ogni riga: <strong>vento medio / raffica</strong> in nodi. La freccia va dove va il vento, la sigla (ENE, SO…) dice da dove viene.</span><span class="l-en">On each line: <strong>mean wind / gust</strong> in knots. The arrow points where the wind blows to, the letters (ENE, SW…) say where it comes from.</span></li>
+            <li><span class="l-it">In ogni riga: <strong>vento medio-raffica</strong> in nodi (per esempio 12-16 kt). La freccia va dove va il vento, la sigla (ENE, SO…) dice da dove viene.</span><span class="l-en">On each line: <strong>mean wind-gust</strong> in knots (for example 12-16 kt). The arrow points where the wind blows to, the letters (ENE, SW…) say where it comes from.</span></li>
             <li><span class="l-it"><strong>Vento medio</strong> = la media dell'intervallo di misura della centralina; <strong>raffica</strong> = il colpo più forte nello stesso intervallo. Le vele si regolano sulle raffiche.</span><span class="l-en"><strong>Mean wind</strong> = the average over the station's measuring interval; <strong>gust</strong> = the strongest blow in the same interval. Trim the sails for the gusts.</span></li>
-            <li><span class="l-it">Pallino <strong>verde</strong>: dato fresco. <strong>Giallo</strong>: un po' vecchio, ancora usato. <strong>Grigio</strong>: offline o troppo vecchio, non entra nei calcoli. Accanto, l'ora del dato e quanti minuti fa.</span><span class="l-en"><strong>Green</strong> dot: fresh data. <strong>Yellow</strong>: a bit old, still used. <strong>Grey</strong>: offline or too old, left out of the calculations. Next to it, the time of the reading and how many minutes ago.</span></li>
+            <li><span class="l-it">Pallino <strong>verde</strong>: dato fresco. <strong>Giallo</strong>: un po' vecchio, ancora usato. <strong>Grigio</strong>: offline o troppo vecchio, non entra nei calcoli. Il dato vecchio resta visibile ma sbiadito, e più invecchia più si confonde con lo sfondo. Accanto, l'ora del dato e quanto tempo fa.</span><span class="l-en"><strong>Green</strong> dot: fresh data. <strong>Yellow</strong>: a bit old, still used. <strong>Grey</strong>: offline or too old, left out of the calculations. A stale reading stays visible but faded, and the older it gets the more it blends into the background. Next to it, the time of the reading and how long ago.</span></li>
           </ul>
           <h4><span class="l-it">Come si calcola la media sul campo</span><span class="l-en">How the race-course average works</span></h4>
           <ul>
             <li><span class="l-it">È la media delle centraline <strong>a mare</strong> in linea, pesata sulla distanza: la più vicina conta di più (peso 1/d²). Lo stesso calcolo, fatto sul punto medio di ogni lato, colora il percorso sulla mappa.</span><span class="l-en">It is the average of the live <strong>sea-level</strong> stations, weighted by distance: the closest counts most (weight 1/d²). The same calculation, at the midpoint of each leg, colours the course on the map.</span></li>
             <li><span class="l-it"><strong>Monte Grisa non entra nella media</strong>: è in quota e con la Bora esagera rispetto al mare.</span><span class="l-en"><strong>Monte Grisa is left out of the average</strong>: it is high up and overstates the Bora compared with the sea.</span></li>
-            <li><span class="l-it"><strong>Niente dati vecchi</strong>: Barcola e Monte Grisa escono dal calcolo dopo 20 minuti, le altre dopo 30. La boa Mambo, oraria e in ritardo, di solito è fuori.</span><span class="l-en"><strong>No stale data</strong>: Barcola and Monte Grisa drop out after 20 minutes, the others after 30. The Mambo buoy, hourly and late, is usually out.</span></li>
+            <li><span class="l-it"><strong>Niente dati vecchi</strong>: Barcola e Monte Grisa escono dal calcolo dopo 20 minuti, le altre dopo 30 (restano visibili, sbiadite). La boa Mambo, oraria e in ritardo, di solito è fuori.</span><span class="l-en"><strong>No stale data</strong>: Barcola and Monte Grisa drop out after 20 minutes, the others after 30 (they stay visible, faded). The Mambo buoy, hourly and late, is usually out.</span></li>
           </ul>
           <h4><span class="l-it">Ogni quanto si aggiorna</span><span class="l-en">How often it updates</span></h4>
           <p><span class="l-it">La pagina riscarica tutte le centraline ogni 5 minuti e quando ci torni sopra; il tasto <strong>Aggiorna</strong> lo fa subito. Ogni centralina ha però il suo ritmo (vedi sopra): il dato di una stazione ogni 15 minuti cambia solo ogni 15 minuti.</span><span class="l-en">The page reloads every station every 5 minutes and whenever you come back to it; the <strong>Refresh</strong> button does it straight away. Each station has its own pace, though (see above): a station reporting every 15 minutes only changes every 15 minutes.</span></p>
@@ -1789,19 +1791,21 @@
     /* ---------- stazioni ----------
        Età del dato (set 2026: "un dato vecchio è un dato inutile"). fresco = oltre
        questi minuti il pallino diventa giallo; max = oltre, il dato NON entra nella
-       stima del vento né in mappa (resta solo nell'elenco, marcato come vecchio).
+       stima del vento. Dall'8 ott 2026 (Andrea Micalli / Alberto: "se il dato è vecchio
+       non toglierlo, rendilo meno visibile, come se stesse sbiadendo") resta visibile in
+       elenco e in mappa, grigio e sempre più sbiadito; oltre VECCHIO_MAX = offline.
        Le soglie seguono il ritmo di ogni fonte: Barcola e Monte Grisa ogni 1-5 min
        (più i 5 min del proxy), Muggia, Paloma e Trieste molo ogni 15 min. Mambo
        pubblica un dato all'ora con 1-2 ore di ritardo: quasi sempre è fuori. */
     const STAZIONI = [
       { id: "barcola", nome: "Barcola", lat: 45.680, lon: 13.754, interp: true, fresco: 10, max: 20,
         ruolo: ["Porticciolo di Barcola: zona di partenza, boa 4 e ultimo lato.", "Barcola harbour: start area, mark 4 and the last leg."] },
-      // Mambo in mappa SOLO col dato aggiornato (mappa: "seVivo", Alberto 5 ott 2026): con il dato vecchio
-      // non compare, resta nell'elenco. Posizione dai metadati OGS (MAMBO1_TS: 45.6976667, 13.7083333),
+      // Mambo in mappa solo se ha un dato (mappa: "seDato"): dal 5 ott 2026 compariva solo col dato aggiornato,
+      // dall'8 ott col dato vecchio c'è ma sbiadita come le altre. Posizione dai metadati OGS (MAMBO1_TS: 45.6976667, 13.7083333),
       // davanti al castello di Miramare a ~780 m dalla boa 3: fino al 5 ott era 45.6983/13.7000, sbagliata,
       // e la boa finiva sopra la boa 3 (per questo il 29 set era stata tolta dalla mappa).
-      { id: "mambo", nome: "Boa Mambo", lat: 45.6977, lon: 13.7083, interp: true, fresco: 30, max: 30, mappa: "seVivo",
-        ruolo: ["Boa OGS davanti al castello di Miramare, a circa 800 m dalla boa 3. Pubblica un dato all'ora con 1-2 ore di ritardo: in mappa e nella stima solo quando il dato è aggiornato.", "OGS buoy off Miramare castle, about 800 m from mark 3. It publishes hourly, 1-2 hours late: on the map and in the estimate only when its reading is up to date."] },
+      { id: "mambo", nome: "Boa Mambo", lat: 45.6977, lon: 13.7083, interp: true, fresco: 30, max: 30, mappa: "seDato",
+        ruolo: ["Boa OGS davanti al castello di Miramare, a circa 800 m dalla boa 3. Pubblica un dato all'ora con 1-2 ore di ritardo: nella stima solo quando il dato è aggiornato, altrimenti compare sbiadita.", "OGS buoy off Miramare castle, about 800 m from mark 3. It publishes hourly, 1-2 hours late: in the estimate only when its reading is up to date, otherwise it is shown faded."] },
       // Paloma è fuori inquadratura, a ovest: dal 5 ott 2026 (richiesta di Alberto) la si disegna DENTRO la
       // mappa, nell'angolo in basso a sinistra (qui), con la distanza dalla posizione vera. Stima e distanze
       // usano sempre lat/lon veri.
@@ -1943,6 +1947,21 @@
       const eta = (Date.now() - v.t) / 60000;
       return eta <= st.max ? v : null;
     }
+    /* dato vecchio (oltre max, entro VECCHIO_MAX): si mostra grigio e sbiadito, MAI nella stima */
+    const VECCHIO_MAX = 12 * 60;
+    function datoVecchio(st) {
+      const v = stato.live[st.id];
+      if (!v || !v.t || vivo(st)) return null;
+      return (Date.now() - v.t) / 60000 <= VECCHIO_MAX ? v : null;
+    }
+    // opacità del dato vecchio: .6 appena scaduto, poi cala fino a .28 dopo altre 3 ore (si avvicina allo sfondo)
+    function opacitaVecchio(st, v) {
+      const f = Math.min(Math.max(((Date.now() - v.t) / 60000 - st.max) / 180, 0), 1);
+      return +(.6 - .32 * f).toFixed(2);
+    }
+    const etaTesto = m => m < 60 ? m + " min" : Math.floor(m / 60) + " h" + (m % 60 ? " " + (m % 60) + " min" : "");
+    // intensità come "media-raffica kt" (8 ott 2026, richiesta di Alberto: "3-5 kt", non "3 kt / 5")
+    const intensita = d => Math.round(d.kt) + (!isNaN(d.raffica) && Math.round(d.raffica) > Math.round(d.kt) ? "-" + Math.round(d.raffica) : "") + " kt";
     function stimaVento(punto) {
       const fonti = STAZIONI.filter(s => s.interp && vivo(s));
       const usa = fonti.length ? fonti : STAZIONI.filter(s => vivo(s));
@@ -2116,7 +2135,7 @@
       // centraline SOTTO linee e boe: con la Bora la freccia di Mambo punta sulla boa 3, che deve restare leggibile
       if (opt.stazioni) {
         const gS = el("g", {});
-        STAZIONI.filter(st => st.mappa === "seVivo" ? !!vivo(st) : st.mappa !== false).forEach(st => disegnaStazione(gS, st, vivo(st), vb, s, opt));
+        STAZIONI.filter(st => st.mappa === "seDato" ? !!(vivo(st) || datoVecchio(st)) : st.mappa !== false).forEach(st => disegnaStazione(gS, st, vivo(st), vb, s, opt));
         svg.appendChild(gS);
       }
 
@@ -2161,10 +2180,14 @@
       const pos = st.qui || st, x = px(pos.lon), y = py(pos.lat);
       const dentro = x > vb.x + 8 * s && x < vb.x + vb.w - 8 * s && y > vb.y + 8 * s && y < vb.y + vb.h - 8 * s;
       const g = el("g", { "class": "bc-staz-g" + (opt.sel === "s" + st.id ? " sel" : ""), role: "button", tabindex: "0" });
-      const kt = v ? Math.round(v.kt) : null;
+      // dato vecchio: disegnato lo stesso, grigio e sbiadito (d = dato da mostrare, v = solo se fresco)
+      const old = v ? null : datoVecchio(st), d = v || old;
+      if (old) { g.setAttribute("opacity", opacitaVecchio(st, old)); g.style.filter = "grayscale(1)"; }
+      const kt = d ? Math.round(d.kt) : null;
       const col = v ? coloreKt(v.kt) : "#6b7780";
       const lontano = st.qui ? fmt(distNm(st, st.qui), 1) + tr(" mn più a ovest", " nm further west") : "";
-      const titolo = st.nome + (v ? ": " + kt + " kt" + (v.deg != null ? tr(" da ", " from ") + cardinale(v.deg) : "") : tr(": dato non disponibile", ": no data")) +
+      const titolo = st.nome + (d ? ": " + kt + " kt" + (d.deg != null ? tr(" da ", " from ") + cardinale(d.deg) : "") : tr(": dato non disponibile", ": no data")) +
+        (old ? " · " + tr("dato vecchio di ", "stale, ") + etaTesto(etaMin(old)) + tr(", non usato", " old, not used") : "") +
         (lontano ? " (" + tr("la boa vera è ", "the real buoy is ") + lontano + ")" : "");
       g.setAttribute("aria-label", titolo);
       if (!dentro) {
@@ -2175,7 +2198,7 @@
         const cy = Math.min(Math.max(st.bordo ? py(st.bordo) : y, vb.y + pad + 30 * s), vb.y + vb.h - pad);
         const ex = lato === "sx" ? vb.x + pad : lato === "dx" ? vb.x + vb.w - pad : cx;
         const ey = lato === "su" ? vb.y + pad : lato === "giu" ? vb.y + vb.h - pad : cy;
-        const lab = (lato === "sx" ? "◀ " : "") + st.nome + (v ? " " + kt + " kt" : " –") + (lato === "dx" ? " ▶" : lato === "giu" ? " ▼" : lato === "su" ? " ▲" : "");
+        const lab = (lato === "sx" ? "◀ " : "") + st.nome + (d ? " " + kt + " kt" : " –") + (lato === "dx" ? " ▶" : lato === "giu" ? " ▼" : lato === "su" ? " ▲" : "");
         const w = (lab.length * 6.6 + 14) * s, h = 20 * s;
         const rx = lato === "dx" ? ex - w : lato === "sx" ? ex : ex - w / 2;
         g.appendChild(el("rect", { x: rx, y: ey - h / 2, width: w, height: h, rx: h / 2, fill: "var(--bc-alone)", stroke: col, "stroke-width": 1.8 * s, opacity: .92 }));
@@ -2189,9 +2212,9 @@
         }
         g.appendChild(el("circle", { cx: sx, cy: sy, r: 22 * s, fill: "transparent" }));
         g.appendChild(el("circle", { "class": "bc-halo", cx: sx, cy: sy, r: 16 * s, fill: col, "fill-opacity": .08, stroke: col, "stroke-width": 2.2 * s, "stroke-opacity": .35 }));
-        if (v && v.deg != null && v.kt >= 1) {
-          const k = Math.min(v.kt, 40), L = (28 + k * .6) * s, sw = (3.4 + k * .05) * s, hw = sw * 1.5 + 3 * s;
-          const fr = el("g", { transform: "translate(" + sx + " " + sy + ") rotate(" + norm360(v.deg + 180) + ")" });
+        if (d && d.deg != null && d.kt >= 1) {
+          const k = Math.min(d.kt, 40), L = (28 + k * .6) * s, sw = (3.4 + k * .05) * s, hw = sw * 1.5 + 3 * s;
+          const fr = el("g", { transform: "translate(" + sx + " " + sy + ") rotate(" + norm360(d.deg + 180) + ")" });
           fr.appendChild(el("line", { x1: 0, y1: -11 * s, x2: 0, y2: -L + 7 * s, stroke: "var(--bc-alone)", "stroke-width": sw + 3.5 * s, "stroke-linecap": "round" }));
           fr.appendChild(el("line", { x1: 0, y1: -11 * s, x2: 0, y2: -L + 7 * s, stroke: col, "stroke-width": sw, "stroke-linecap": "round" }));
           fr.appendChild(el("path", { d: "M0," + (-L - 3 * s) + " L" + (-hw) + "," + (-L + 8 * s) + " L0," + (-L + 4 * s) + " L" + hw + "," + (-L + 8 * s) + " Z",
@@ -2199,7 +2222,7 @@
           g.appendChild(fr);
         }
         g.appendChild(el("circle", { cx: sx, cy: sy, r: 11 * s, fill: "var(--bc-staz)", stroke: col, "stroke-width": 2.4 * s }));
-        g.appendChild(el("text", { x: sx, y: sy + 3.8 * s, "text-anchor": "middle", "font-size": 10.5 * s, "font-weight": 900, fill: "#fff" }, v ? String(kt) : "–"));
+        g.appendChild(el("text", { x: sx, y: sy + 3.8 * s, "text-anchor": "middle", "font-size": 10.5 * s, "font-weight": 900, fill: "#fff" }, d ? String(kt) : "–"));
         const ds = { barcola: [14, 18, "start"], monteGrisa: [14, -8, "start"], mambo: [14, 4, "start"], paloma: [14, -2, "start"], muggia: [14, 4, "start"], trieste: [-14, 4, "end"] }[st.id];
         testo(g, sx + ds[0] * s, sy + ds[1] * s, st.nome, s * .9, { "text-anchor": ds[2], "font-weight": 800 });
         if (lontano) testo(g, sx + ds[0] * s, sy + (ds[1] + 13) * s, "◀ " + lontano, s * .74, { "text-anchor": ds[2], "font-weight": 600, "font-style": "italic" });
@@ -2299,11 +2322,12 @@
           (a.v ? "<br>" + a.an.testo + " (" + Math.round(a.twa) + tr("° dal vento", "° off the wind") + (a.mure ? ", " + a.mure : "") + ")" + tr(" con ", " with ") + Math.round(a.v.kt) + " kt" + tr(" da ", " from ") + cardinale(a.v.deg) + "." +
             (a.v.fonti && a.v.fonti.length ? " " + tr("Stima da ", "Estimated from ") + a.v.fonti.join(", ") + "." : "") : "");
       } else {
-        const st = STAZIONI.find(x => "s" + x.id === stato.sel), v = vivo(st), vecchio = stato.live[st.id];
+        const st = STAZIONI.find(x => "s" + x.id === stato.sel), v = vivo(st), vecchio = datoVecchio(st);
         box.innerHTML = "<strong>" + st.nome + "</strong> — " + tr(st.ruolo[0], st.ruolo[1]) + (v ? "<br>" + Math.round(v.kt) + " kt" +
           (!isNaN(v.raffica) ? ", " + tr("raffica ", "gust ") + Math.round(v.raffica) + " kt" : "") + (v.deg != null ? tr(", da ", ", from ") + cardinale(v.deg) + " (" + Math.round(v.deg) + "°)" : "") +
           (v.ora ? " · " + tr("agg. ", "updated ") + v.ora : "") :
-          vecchio ? "<br>" + tr("Ultimo dato delle ", "Last reading at ") + vecchio.ora + " (" + etaMin(vecchio) + tr(" min fa): troppo vecchio, non usato.", " min ago): too old, not used.") :
+          vecchio ? "<br>" + tr("Ultimo dato delle ", "Last reading at ") + vecchio.ora + " (" + etaTesto(etaMin(vecchio)) + tr(" fa): ", " ago): ") + intensita(vecchio) +
+            (vecchio.deg != null ? tr(" da ", " from ") + cardinale(vecchio.deg) : "") + ". " + tr("Troppo vecchio: è sbiadito e non entra nella stima.", "Too old: shown faded and left out of the estimate.") :
           "<br>" + tr("Dato al momento non disponibile.", "No data right now."));
       }
     }
@@ -2324,21 +2348,21 @@
         $("nowFonti").textContent = tr("Carico le centraline…", "Loading stations…");
       }
       $("nowStazioni").innerHTML = STAZIONI.map(st => {
-        const w = vivo(st), vecchio = stato.live[st.id], eta = etaMin(w);
+        const w = vivo(st), vecchio = datoVecchio(st), eta = etaMin(w), d = w || vecchio;
         const cls = !w ? "" : (eta != null && eta > st.fresco ? "warn" : "ok");
         // l'ora del dato su una riga, "x min fa" sotto
         const quando = w ? "<small>" + (w.ora || "") + "</small>" + (eta != null ? "<small>" + (eta < 1 ? tr("adesso", "just now") : eta + tr(" min fa", " min ago")) + "</small>" : "") :
-          vecchio ? "<small>" + vecchio.ora + "</small><small>" + etaMin(vecchio) + tr(" min fa · dato vecchio, non usato", " min ago · stale, not used") + "</small>" :
+          vecchio ? "<small>" + vecchio.ora + "</small><small>" + etaTesto(etaMin(vecchio)) + tr(" fa · vecchio, non usato", " ago · stale, not used") + "</small>" :
           "<small>offline</small>";
         const pos = st.pos || [st.lat, st.lon];
         const pin = '<a class="bc-pin" href="https://www.google.com/maps/search/?api=1&query=' + pos[0] + "," + pos[1] +
           '" target="_blank" rel="noopener" data-conta="centralina google maps: ' + st.id + '" title="' + tr("Posizione esatta su Google Maps", "Exact position on Google Maps") +
           '" aria-label="' + st.nome + tr(": posizione su Google Maps", ": position on Google Maps") + '">📍</a>';
         // direzione in gradi (da dove viene il vento), il punto cardinale resta nel tooltip
-        return '<li><i class="dot ' + cls + '"></i><span><span class="bc-staz-nome"><b>' + st.nome + "</b>" + pin + "</span>" + quando + '</span><span class="v">' +
-          // intensità come "media-raffica kt" (8 ott 2026, richiesta di Alberto: "3-5 kt", non "3 kt / 5")
-          (w ? Math.round(w.kt) + (!isNaN(w.raffica) && Math.round(w.raffica) > Math.round(w.kt) ? "-" + Math.round(w.raffica) : "") + " kt" +
-            (w.deg != null ? ' <span title="' + tr("da ", "from ") + cardinale(w.deg) + '">' + frecciaSvg(w.deg, "") + "</span>" + Math.round(norm360(w.deg)) + "°" : "") : "–") + "</span></li>";
+        // dato vecchio: la riga resta, grigia e sbiadita (--sb = opacità, cala con l'età)
+        return "<li" + (vecchio ? ' class="bc-vecchio" style="--sb:' + opacitaVecchio(st, vecchio) + '"' : "") + '><i class="dot ' + cls + '"></i><span><span class="bc-staz-nome"><b>' + st.nome + "</b>" + pin + "</span>" + quando + '</span><span class="v">' +
+          (d ? intensita(d) +
+            (d.deg != null ? ' <span title="' + tr("da ", "from ") + cardinale(d.deg) + '">' + frecciaSvg(d.deg, "") + "</span>" + Math.round(norm360(d.deg)) + "°" : "") : "–") + "</span></li>";
       }).join("");
       $("nowLati").innerHTML = LATI.map(l => {
         const w = stimaVento(l.mid);
@@ -2564,8 +2588,9 @@
         "<span>" + tr("Accanto a ogni lato: rotta × lunghezza", "Next to each leg: bearing × length") + "</span>" +
         '<b class="bc-leg-tit">' + tr("Centraline", "Stations") + "</b>" +
         "<span>" + staz("12", coloreKt(12), true) + tr("vento medio in nodi · la freccia va dove va il vento", "mean wind in knots · the arrow points where the wind blows to") + "</span>" +
-        "<span>" + staz("–", "#6b7780", false) + tr("offline o dato troppo vecchio", "offline or data too old") + "</span>" +
-        "<span>" + tr("Boa Mambo (davanti a Miramare): in mappa solo quando il dato è aggiornato", "Mambo buoy (off Miramare): on the map only when its reading is up to date") + "</span>" +
+        '<span><span style="opacity:.45;filter:grayscale(1);display:inline-flex">' + staz("5", "#6b7780", true) + "</span>" + tr("dato vecchio: grigio e sempre più sbiadito, non entra nella stima", "stale reading: grey and fading with age, left out of the estimate") + "</span>" +
+        "<span>" + staz("–", "#6b7780", false) + tr("offline", "offline") + "</span>" +
+        "<span>" + tr("Boa Mambo (davanti a Miramare): oraria e in ritardo, di solito è sbiadita", "Mambo buoy (off Miramare): hourly and late, usually shown faded") + "</span>" +
         '<span class="bc-leg-sep"></span>' +
         '<span><span class="bc-scala">' + FASCE.map((f, i) => '<em style="--c:' + f.c + '">' + fasce[i] + "</em>").join("") + "</span>" +
         tr("colore dell'anello: forza del vento in nodi", "ring colour: wind strength in knots") + "</span>" +
