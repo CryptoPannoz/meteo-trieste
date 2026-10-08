@@ -2,6 +2,7 @@
    ha i suoi) mette
    - la firma "Ideato e realizzato da Alberto Broggi", ben visibile prima del piè di pagina
      (Alberto: deve essere chiaro che il sito l'ha fatto lui);
+   - "Copia URL" nella firma, accanto agli altri pulsanti (8 ott 2026);
    - "Installa l'app": pulsante nella firma e voce nel menu, che aprono una finestra con i passi per
      aggiungere Vento Trieste alla schermata Home di iPhone e Android (manifest in /manifest.webmanifest).
      Il telefono in uso va per primo ed è evidenziato; con Chrome, se il browser lo consente, c'è
@@ -16,7 +17,7 @@
   var sl = (document.documentElement.lang || "").indexOf("sl") === 0;
   var T = sl ? {
     da: "Zasnoval in izdelal", mestiere: "Podatki, podatkovne baze in avtomatizacija",
-    suggerimenti: "Predlogi in izboljšave", installa: "Namesti aplikacijo", menu: "📲 Namesti aplikacijo",
+    copia: "Kopiraj URL", copiato: "URL kopiran", suggerimenti: "Predlogi in izboljšave", installa: "Namesti aplikacijo", menu: "📲 Namesti aplikacijo",
     titolo: "Vento Trieste na telefonu", chiudi: "Zapri",
     intro: "Dodaj stran na začetni zaslon: dobil boš ikono <strong>Vento Trieste</strong>, ki se odpre čez cel zaslon kot aplikacija, vedno s svežimi podatki. Brezplačno, nič ni treba prenašati iz trgovine.",
     ora: "Namesti zdaj", tuo: "tvoj telefon",
@@ -31,7 +32,7 @@
     nota: "Ikona vedno odpre spletno stran: potrebuješ povezavo, podatki so vedno sveži."
   } : {
     da: "Ideato e realizzato da", mestiere: "Dati, database e automazione",
-    suggerimenti: "Suggerimenti e migliorie", installa: "Installa l'app", menu: "📲 Installa l'app",
+    copia: "Copia URL", copiato: "URL copiato", suggerimenti: "Suggerimenti e migliorie", installa: "Installa l'app", menu: "📲 Installa l'app",
     titolo: "Vento Trieste sul telefono", chiudi: "Chiudi",
     intro: "Aggiungi il sito alla schermata Home: avrai l'icona <strong>Vento Trieste</strong> e si aprirà a schermo intero, come un'app, sempre con i dati aggiornati. Gratis, niente da scaricare dagli store.",
     ora: "Installa adesso", tuo: "il tuo telefono",
@@ -67,11 +68,12 @@
     ".vt-autore-chi strong{display:block;font-size:1.4rem;line-height:1.15;font-weight:800;color:#fff}" +
     ".vt-autore-chi span{display:block;font-size:.84rem;color:#b1bcc4}" +
     ".vt-autore-azioni{display:flex;flex-wrap:wrap;gap:.5rem}" +
-    ".vt-autore-azioni a,.vt-autore-azioni button{display:inline-flex;align-items:center;gap:.4rem;min-height:40px;margin:0;padding:.45rem .95rem;border-radius:10px;" +
+    // "html .vt-autore …": devono battere ":root[data-theme=light] a/button" di footer-widgets.css
+    "html .vt-autore .vt-autore-azioni a,html .vt-autore .vt-autore-azioni button{display:inline-flex;align-items:center;gap:.4rem;min-height:40px;margin:0;padding:.45rem .95rem;border-radius:10px;" +
       "border:1px solid #33414c;background:#151b21;color:#eef2f5;font:inherit;font-size:.88rem;font-weight:700;text-decoration:none;cursor:pointer;box-shadow:none}" +
-    ".vt-autore-azioni a:hover,.vt-autore-azioni button:hover{border-color:#f0f43c;color:#fff;background:#1c242b}" +
-    ".vt-autore-azioni .vt-app-btn{background:#f0f43c;border-color:#f0f43c;color:#07090c}" +
-    ".vt-autore-azioni .vt-app-btn:hover{background:#fff;border-color:#fff;color:#07090c}" +
+    "html .vt-autore .vt-autore-azioni a:hover,html .vt-autore .vt-autore-azioni button:hover{border-color:#f0f43c;color:#fff;background:#1c242b}" +
+    "html .vt-autore .vt-autore-azioni .vt-app-btn{background:#f0f43c;border-color:#f0f43c;color:#07090c}" +
+    "html .vt-autore .vt-autore-azioni .vt-app-btn:hover{background:#fff;border-color:#fff;color:#07090c}" +
     ".vt-autore [hidden],.vt-app-dlg [hidden]{display:none!important}" +
     "@media (max-width:560px){.vt-autore{margin:1rem .75rem}.vt-autore-azioni{width:100%}.vt-autore-azioni>*{flex:1 1 auto;justify-content:center}}" +
     ".vt-app-dlg{width:min(620px,calc(100vw - 24px));max-height:min(86vh,760px);padding:0;border:1px solid #2a343d;border-top:4px solid #f0f43c;border-radius:14px;" +
@@ -106,11 +108,36 @@
       "<div><small>" + T.da + "</small><strong>Alberto Broggi</strong><span>" + T.mestiere + "</span></div></div>" +
     '<div class="vt-autore-azioni">' +
       '<button type="button" class="vt-app-btn" data-vt-app' + (standalone ? " hidden" : "") + '><span aria-hidden="true">📲</span><span>' + T.installa + "</span></button>" +
+      '<button type="button" data-vt-copia><span aria-hidden="true">🔗</span><span>' + T.copia + "</span></button>" +
       '<a href="mailto:bebroggi@gmail.com?subject=' + encodeURIComponent("[ventotrieste.info] " + T.suggerimenti) + '"><span aria-hidden="true">✉️</span><span>' + T.suggerimenti + "</span></a>" +
       '<a href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it ↗</a></div>';
   var piede = document.querySelector("footer.site-footer, footer.page-footer, body > footer");
   if (piede && piede.parentNode) piede.parentNode.insertBefore(card, piede);
   else (document.querySelector("main") || document.body).appendChild(card);
+
+  // ---- "Copia URL" (8 ott 2026): indirizzo pulito della pagina, senza ?utm_… e #sezione.
+  // Serve anche aperto dall'icona, dove la barra degli indirizzi non c'è.
+  var copia = card.querySelector("[data-vt-copia]"), copiaTimer = null;
+  copia.addEventListener("click", function () {
+    var url = location.origin + location.pathname;
+    var icona = copia.firstElementChild, etichetta = copia.lastElementChild;
+    function fatto() {
+      icona.textContent = "✓"; etichetta.textContent = T.copiato;
+      clearTimeout(copiaTimer);
+      copiaTimer = setTimeout(function () { icona.textContent = "🔗"; etichetta.textContent = T.copia; }, 2200);
+    }
+    function aMano() {   // Clipboard API assente o negata: copia classica, se no mostro l'indirizzo
+      var ta = document.createElement("textarea"), ok = false;
+      ta.value = url; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+      document.body.appendChild(ta); ta.select();
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      ta.remove();
+      if (ok) fatto(); else try { window.prompt(T.copia, url); } catch (e) {}
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(fatto, aMano);
+    else aMano();
+    conta("condividi: copia url");
+  });
 
   if (standalone) return;
 

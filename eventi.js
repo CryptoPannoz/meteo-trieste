@@ -15,7 +15,7 @@
      apri sezione: <id>            gruppi a scomparsa (es. "istria")
      guida: <spot o bora> · webcam: aggiorna | play
      barcolana vento: live|prev · barcolana previsione: <ora> · barcolana lato: <n>
-     barcolana centralina: <nome> · barcolana classifiche: <anno> · condividi: whatsapp|copia link
+     barcolana centralina: <nome> · barcolana classifiche: <anno> · condividi: whatsapp|copia link|copia url (firma, vt-app.js)
      registro: scarica csv | cambia giorno | mostra tutto | centralina <id>   (/registro/ e Barcolana; titolo = pagina)
      registro: giorno dal grafico | grafico mese|sett   grafico dei giorni ventosi (/registro/)
 

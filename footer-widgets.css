@@ -76,6 +76,26 @@
 @keyframes supporters-scroll { to { transform: translateX(-50%); } }
 .sources-heading { align-items: end; }
 .sources-heading p { max-width: 430px; margin: 0; color: var(--label); font-size: .7rem; line-height: 1.45; text-align: right; }
+/* "Partner e riferimenti" a tendina chiusa (8 ott 2026): il titolo sta nel summary */
+.sources-tendina { border-top: 1px solid #2a343d; }
+.sources-tendina > summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 1rem clamp(1rem, 3vw, 1.8rem); list-style: none; cursor: pointer;
+}
+.sources-tendina > summary::-webkit-details-marker { display: none; }
+.sources-tendina-titolo { color: var(--ink); font-size: .9rem; font-weight: 800; }
+.sources-tendina-titolo small { display: block; margin-top: .2rem; color: var(--label); font-size: .68rem; font-weight: 600; }
+.sources-tendina > summary::after {   /* stessa pillola "apri ▾" delle sezioni della pagina */
+  content: "apri ▾"; flex: none; padding: .28rem .6rem; border: 1px solid var(--signal); border-radius: 999px;
+  background: var(--signal); color: #090b0d; font-size: .78rem; font-weight: 800;
+}
+.sources-tendina[open] > summary::after { content: "chiudi ▴"; }
+.sources-tendina-sl > summary::after { content: "odpri ▾"; }
+.sources-tendina-sl[open] > summary::after { content: "zapri ▴"; }
+.sources-tendina > summary:hover .sources-tendina-titolo { color: var(--signal); }
+.sources-tendina .sources { padding-top: 0; border-top: 0; }
+.sources-tendina .sources-heading h3 { display: none; }
+.sources-tendina .sources-heading p { max-width: none; text-align: left; }
 .partner-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .55rem; margin-bottom: 1.2rem; }
 .partner-card {
   min-width: 0; min-height: 76px; padding: .7rem; display: flex; align-items: center; gap: .65rem;
@@ -844,19 +864,18 @@ footer { color: var(--label); }
 .fonte-note summary:hover { color: var(--ink); }
 .fonte-note[open] summary { margin-bottom: .25rem; }
 .fonte-note .stato { margin: .25rem 0; }
-/* dettagli compatti sotto la scala della pressione di bora */
-.bora-note { margin-top: .65rem; text-align: left; }
-.bora-note summary {
-  min-height: 38px; padding: .45rem .6rem; display: flex; align-items: center;
-  border: 1px solid var(--bordo); border-radius: 10px; background: rgba(21,27,33,.68);
-  color: var(--label); font-size: .78rem; font-weight: 700; cursor: pointer;
+/* pulsante sotto la scala della pressione di bora: apre subito la finestra "come si legge" */
+.bora-note {
+  width: 100%; min-height: 38px; margin: .65rem 0 0; padding: .45rem .6rem; display: flex; align-items: center;
+  border: 1px solid var(--bordo); border-radius: 10px; background: rgba(21,27,33,.68); box-shadow: none;
+  color: var(--label); font: inherit; font-size: .78rem; font-weight: 700; text-align: left; cursor: pointer;
 }
-.bora-note summary:hover { color: var(--ink); border-color: #46535d; }
-.bora-note[open] summary { margin-bottom: .35rem; }
-.bora-note .bd-spiega { margin: .55rem .4rem .25rem; }
-.bora-note .stato { margin: .25rem .4rem .1rem; }
-:root[data-theme="light"] .bora-note summary { background: #f3f6f7; border-color: var(--line); }
-:root[data-theme="light"] .bora-note summary:hover { border-color: var(--sea); }
+.bora-note:hover { color: var(--ink); border-color: #46535d; background: rgba(21,27,33,.68); }
+:root[data-theme="light"] .bora-note { background: #f3f6f7; border-color: var(--line); color: var(--label); }
+:root[data-theme="light"] .bora-note:hover { background: #f3f6f7; border-color: var(--sea); color: var(--ink); }
+/* frase breve e riga della fonte, spostate in testa alla finestra */
+#modalDeltaBora .bd-spiega { margin: .2rem 0 .35rem; font-size: .92rem; text-align: left; color: inherit; }
+#modalDeltaBora #deltaBoraStato { margin: 0 0 .8rem; font-size: .78rem; text-align: left; }
 /* verdetto "Bassa differenza di pressione": testo lungo, corpo ridotto per non andare a capo male */
 .bd-verdetto.assente { font-size: 1.3rem; }
 #barcolaLive .bd-verdetto.assente { font-size: 1.5rem; }
@@ -951,7 +970,10 @@ footer { color: var(--label); }
 :root[data-theme="light"] .loader-txt { color: var(--ink); }
 :root[data-theme="light"] .site-footer { background: #e3eaec; border-color: var(--line); box-shadow: 0 12px 34px rgba(22,35,44,.1); }
 :root[data-theme="light"] .supporters,
-:root[data-theme="light"] .sources { border-top-color: var(--line); }
+:root[data-theme="light"] .sources,
+:root[data-theme="light"] .sources-tendina { border-top-color: var(--line); }
+:root[data-theme="light"] .sources-tendina > summary::after { color: #17200a; }
+:root[data-theme="light"] .sources-tendina > summary:hover .sources-tendina-titolo { color: var(--sea-dark); }
 :root[data-theme="light"] .site-credits .seo-footer-copy { border-bottom-color: var(--line); }
 :root[data-theme="light"] .seo-spot-pages { background: #f3f6f7; border-color: var(--line); }
 :root[data-theme="light"] .origin-story { background: linear-gradient(135deg, #f1f5f6, #f6f7df); border-color: var(--line); }

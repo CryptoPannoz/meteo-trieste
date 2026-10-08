@@ -308,28 +308,41 @@
 })();
 
 /* Pressione di bora compatta: verdetto, valore e scala restano sempre visibili;
-   spiegazione, fonte e guida finiscono in un dropdown come quello del
-   Surfometro. Il riepilogo segue l'orario quando i dati live si aggiornano. */
+   sotto c'è un solo pulsante "Spiegazione e fonte" che apre direttamente la
+   finestra "Differenza di pressione e Bora" (8 ott 2026, Alberto: prima erano
+   due clic, tendina e poi "come si legge"). Frase breve e riga della fonte
+   salgono in testa alla finestra; il pulsante segue l'orario dei dati live. */
 (function () {
   var sl = document.documentElement.lang === "sl" ||
     ((document.getElementById("footerWidgets") || { dataset: {} }).dataset.lang === "sl");
+  var modal = document.getElementById("modalDeltaBora");
+  var titolo = modal && modal.querySelector("h3");
+  if (!titolo) return;
   document.querySelectorAll("#barcolaLive, .bora-delta").forEach(function (box) {
     var spiega = box.querySelector(".bd-spiega");
     var stato = box.querySelector("#deltaBoraStato");
-    if (!spiega || !stato || spiega.closest(".bora-note")) return;
+    if (!spiega || !stato || box.querySelector(".bora-note")) return;
 
-    var det = document.createElement("details");
-    det.className = "bora-note";
-    var sum = document.createElement("summary");
-    det.appendChild(sum);
-    spiega.parentNode.insertBefore(det, spiega);
-    det.appendChild(spiega);
-    det.appendChild(stato);
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "bora-note";
+    btn.setAttribute("aria-haspopup", "dialog");
+    spiega.parentNode.insertBefore(btn, spiega);
+    titolo.parentNode.insertBefore(stato, titolo.nextSibling);
+    titolo.parentNode.insertBefore(spiega, stato);
+    btn.addEventListener("click", function () { modal.style.display = "block"; });
 
     function sync() {
+      // dentro la finestra il rimando "ℹ️ come si legge" non serve più (con il suo " · ")
+      var info = stato.querySelector(".bd-info");
+      if (info) {
+        var prima = info.previousSibling;
+        if (prima && prima.nodeType === 3) prima.textContent = prima.textContent.replace(/\s*·\s*$/, "");
+        info.remove();
+      }
       var testo = stato.textContent.replace(/\s+/g, " ").trim();
       var ora = testo.match(/(?:agg|posod)\.\s*([0-2]?\d:\d{2})/i);
-      sum.textContent = (sl ? "ℹ️ Razlaga in vir" : "ℹ️ Spiegazione e fonte") +
+      btn.textContent = (sl ? "ℹ️ Razlaga in vir" : "ℹ️ Spiegazione e fonte") +
         (ora ? " · " + (sl ? "posod. " : "agg. ") + ora[1] : "");
     }
     sync();
@@ -349,6 +362,7 @@
     supportCta: "Plačaj mi pivo", supportMethods: "Prostovoljni prispevek · PayPal, Revolut ali Bitcoin",
     supporters: "Podporniki projekta",
     partners: "Partnerji in reference", partnersText: "Ljudje in ustanove, ki širijo kulturo vetra in deljenje podatkov.",
+    partnersCount: function (p, f) { return p + " partnerji · " + f + " virov podatkov in kamer"; },
     dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri",
     guides: "Vodniki in orodja"
   } : {
@@ -358,6 +372,7 @@
     supportCta: "Offrimi una birra", supportMethods: "Donazione libera · PayPal, Revolut o Bitcoin",
     supporters: "Chi sostiene il progetto",
     partners: "Partner e riferimenti", partnersText: "Persone e realtà che valorizzano la cultura del vento e la condivisione dei dati.",
+    partnersCount: function (p, f) { return p + " partner · " + f + " fonti di dati e webcam"; },
     dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali",
     guides: "Guide e strumenti"
   };
@@ -431,7 +446,10 @@
   }).join("");
   /* data-senza="visitatori" sul contenitore toglie quel box dalla pagina (pagina Barcolana).
      Il riquadro "Richiedi una modifica o integrazione" non c'è più (5 ott 2026): suggerimenti e
-     migliorie passano dalla firma "Ideato e realizzato da Alberto Broggi" (vt-app.js). */
+     migliorie passano dalla firma "Ideato e realizzato da Alberto Broggi" (vt-app.js).
+     "Partner e riferimenti" è una tendina chiusa (8 ott 2026, come "Partner, dati e fonti" della
+     pagina Barcolana): il <div class="sources"> dentro resta uguale, perché la pagina Barcolana
+     lo prende e lo sposta nella sua tendina (e la nostra sparisce con il riquadro). */
   var senza = (root.dataset.senza || "").split(/\s+/);
   var conVisitatori = senza.indexOf("visitatori") < 0;
   root.innerHTML =
@@ -446,10 +464,12 @@
       '<div class="supporters-marquee" tabindex="0" aria-label="' + t.supporters + ': ' + supporters.join(', ') + '">' +
       '<div class="supporters-track"><div class="supporters-group">' + supporterNames + '</div>' +
       '<div class="supporters-group" aria-hidden="true">' + supporterNames + '</div></div></div></div>' +
+      '<details class="sources-tendina' + (sl ? ' sources-tendina-sl' : '') + '"><summary><span class="sources-tendina-titolo">🤝 ' + t.partners +
+        '<small>' + t.partnersCount(partners.length, dataSources.length + localSources.length) + '</small></span></summary>' +
       '<div class="sources"><div class="sources-heading"><h3>' + t.partners + '</h3><p>' + t.partnersText + '</p></div>' +
       '<div class="partner-grid">' + partnerCards + '</div>' +
       '<h4>' + t.dataSources + '</h4><div class="source-pills">' + sourcePills(dataSources) + '</div>' +
-      '<h4>' + t.localSources + '</h4><div class="source-pills">' + sourcePills(localSources) + '</div></div>' +
+      '<h4>' + t.localSources + '</h4><div class="source-pills">' + sourcePills(localSources) + '</div></div></details>' +
     '</section>';
 
   if (conVisitatori) fetch(proxy + "?views=1&ts=" + Date.now()).then(function (r) { return r.json(); }).then(function (v) {
