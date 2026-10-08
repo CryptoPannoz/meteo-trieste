@@ -947,15 +947,20 @@
     :root[data-theme="light"] .bc-now-nome { color: var(--sea-dark); }
     .bc-now-raffica { font-size: .92rem; color: var(--slate-2); font-weight: 650; }
     .bc-now-fonti { margin: .45rem 0 .6rem; font-size: .78rem; color: var(--label); line-height: 1.45; }
-    .bc-staz-list { list-style: none; margin: 0 0 .7rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: .35rem; }
+    .bc-staz-list { list-style: none; margin: 0 0 .7rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: .35rem; }
     .bc-staz-list li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: .5rem; align-items: center; padding: .38rem .55rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-soft); font-size: .82rem; color: var(--ink); }
     .bc-staz-list .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bc-off); }
     .bc-staz-list .dot.ok { background: var(--bc-ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bc-ok) 25%, transparent); }
     .bc-staz-list .dot.warn { background: var(--bc-warn); }
     .bc-staz-list b { font-weight: 800; }
-    .bc-staz-list .v { font-weight: 700; color: var(--slate-2); white-space: nowrap; }
-    .bc-staz-list .v svg { width: 1rem; height: 1rem; vertical-align: -.2rem; }
-    .bc-staz-list small { display: block; color: var(--label); font-size: .7rem; font-weight: 650; }
+    /* nome + 📍 su una riga; sotto l'ora del dato e, ancora sotto, quanto tempo fa (8 ott 2026:
+       su PC "12:30 · 7 min fa" andava a capo a metà ed era poco leggibile) */
+    .bc-staz-nome { display: flex; align-items: center; gap: .25rem; white-space: nowrap; }
+    .bc-staz-list .bc-pin { text-decoration: none; font-size: .85rem; line-height: 1; padding: .1rem; border-radius: 4px; }
+    .bc-staz-list .bc-pin:hover, .bc-staz-list .bc-pin:focus-visible { background: color-mix(in srgb, var(--bc-staz) 12%, transparent); }
+    .bc-staz-list .v { display: flex; align-items: center; gap: .2rem; font-weight: 700; color: var(--slate-2); white-space: nowrap; }
+    .bc-staz-list .v svg { width: 1.6rem; height: 1.6rem; flex: none; }
+    .bc-staz-list small { display: block; color: var(--label); font-size: .7rem; font-weight: 650; line-height: 1.3; }
     .bc-mini-lati { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .35rem; }
     .bc-mini-lato { border: 1px solid var(--line); border-top: 4px solid var(--c, var(--bc-neutro)); border-radius: 10px; padding: .4rem .3rem; text-align: center; background: var(--surface-soft); min-width: 0; cursor: pointer; color: var(--ink); font: inherit; margin: 0; }
     .bc-mini-lato:hover { border-color: var(--c, var(--line)); background: var(--surface-soft); }
@@ -1799,13 +1804,15 @@
       // Paloma è fuori inquadratura, a ovest: dal 5 ott 2026 (richiesta di Alberto) la si disegna DENTRO la
       // mappa, nell'angolo in basso a sinistra (qui), con la distanza dalla posizione vera. Stima e distanze
       // usano sempre lat/lon veri.
-      { id: "paloma", nome: "Boa Paloma", lat: 45.619, lon: 13.565, interp: true, fresco: 20, max: 30, qui: { lat: 45.6095, lon: 13.632 },
+      // pos = posizione esatta per il 📍 Google Maps (8 ott 2026): per Paloma, Trieste molo e Muggia è quella
+      // dell'API della Protezione Civile FVG (/api/stations/<id>); senza pos il link usa lat/lon.
+      { id: "paloma", nome: "Boa Paloma", lat: 45.619, lon: 13.565, interp: true, fresco: 20, max: 30, qui: { lat: 45.6095, lon: 13.632 }, pos: [45.61858, 13.5653],
         ruolo: ["In mezzo al Golfo, a ovest delle boe 1 e 2: vento di mare aperto. In mappa è nell'angolo in basso a sinistra: la boa vera è più a ovest.", "Mid-Gulf, west of marks 1 and 2: open-sea wind. On the map it sits in the bottom-left corner: the real buoy is further west."] },
-      { id: "trieste", nome: "Trieste molo", lat: 45.636806, lon: 13.750556, interp: true, fresco: 20, max: 30,
+      { id: "trieste", nome: "Trieste molo", lat: 45.636806, lon: 13.750556, interp: true, fresco: 20, max: 30, pos: [45.649981, 13.752239],
         ruolo: ["Stazione della rete meteorologica regionale sul molo F.lli Bandiera, a sud dell'arrivo: il vento in porto, ogni 15 minuti. Fonte: Protezione Civile della Regione Friuli Venezia Giulia.", "Regional weather network station on the F.lli Bandiera pier, south of the finish: the wind in the harbour, every 15 minutes. Source: Protezione Civile della Regione Friuli Venezia Giulia."] },
       { id: "monteGrisa", nome: "Monte Grisa", lat: 45.712, lon: 13.757, interp: false, fresco: 12, max: 20,
         ruolo: ["In quota sopra Barcola: con la Bora segna prima e più forte del mare.", "High above Barcola: in Bora it reads earlier and stronger than at sea."] },
-      { id: "muggia", nome: "Muggia", lat: 45.602, lon: 13.768, interp: true, fresco: 20, max: 30,
+      { id: "muggia", nome: "Muggia", lat: 45.602, lon: 13.768, interp: true, fresco: 20, max: 30, pos: [45.610448, 13.752571],
         ruolo: ["Sud del Golfo: dice quanto vento c'è verso la zona della boa 1.", "Southern Gulf: tells you how much wind there is towards mark 1."] }
     ];
     const LUOGHI = [
@@ -2316,11 +2323,18 @@
       $("nowStazioni").innerHTML = STAZIONI.map(st => {
         const w = vivo(st), vecchio = stato.live[st.id], eta = etaMin(w);
         const cls = !w ? "" : (eta != null && eta > st.fresco ? "warn" : "ok");
-        const quando = w ? (w.ora || "") + (eta != null ? " · " + (eta < 1 ? tr("adesso", "just now") : eta + tr(" min fa", " min ago")) : "") :
-          vecchio ? tr("dato vecchio (", "stale (") + vecchio.ora + ", " + etaMin(vecchio) + tr(" min fa): non usato", " min ago): not used") :
-          tr("offline", "offline");
-        return '<li><i class="dot ' + cls + '"></i><span><b>' + st.nome + "</b><small>" + quando + '</small></span><span class="v">' +
-          (w ? Math.round(w.kt) + " kt" + (!isNaN(w.raffica) ? " / " + Math.round(w.raffica) : "") + " " + frecciaSvg(w.deg, "") + (w.deg != null ? " " + cardinale(w.deg) : "") : "–") + "</span></li>";
+        // l'ora del dato su una riga, "x min fa" sotto
+        const quando = w ? "<small>" + (w.ora || "") + "</small>" + (eta != null ? "<small>" + (eta < 1 ? tr("adesso", "just now") : eta + tr(" min fa", " min ago")) + "</small>" : "") :
+          vecchio ? "<small>" + vecchio.ora + "</small><small>" + etaMin(vecchio) + tr(" min fa · dato vecchio, non usato", " min ago · stale, not used") + "</small>" :
+          "<small>offline</small>";
+        const pos = st.pos || [st.lat, st.lon];
+        const pin = '<a class="bc-pin" href="https://www.google.com/maps/search/?api=1&query=' + pos[0] + "," + pos[1] +
+          '" target="_blank" rel="noopener" data-conta="centralina google maps: ' + st.id + '" title="' + tr("Posizione esatta su Google Maps", "Exact position on Google Maps") +
+          '" aria-label="' + st.nome + tr(": posizione su Google Maps", ": position on Google Maps") + '">📍</a>';
+        // direzione in gradi (da dove viene il vento), il punto cardinale resta nel tooltip
+        return '<li><i class="dot ' + cls + '"></i><span><span class="bc-staz-nome"><b>' + st.nome + "</b>" + pin + "</span>" + quando + '</span><span class="v">' +
+          (w ? Math.round(w.kt) + " kt" + (!isNaN(w.raffica) ? " / " + Math.round(w.raffica) : "") +
+            (w.deg != null ? ' <span title="' + tr("da ", "from ") + cardinale(w.deg) + '">' + frecciaSvg(w.deg, "") + "</span>" + Math.round(norm360(w.deg)) + "°" : "") : "–") + "</span></li>";
       }).join("");
       $("nowLati").innerHTML = LATI.map(l => {
         const w = stimaVento(l.mid);
@@ -2617,6 +2631,11 @@
       if (window.vtConta) window.vtConta("birra: copia bitcoin");
     });
     window.apriBirra = e => { if (e && e.preventDefault) e.preventDefault(); const d = document.getElementById("infoSostieni"); if (d && d.showModal) d.showModal(); };
+    // 📍 delle centraline: quante volte si apre Google Maps (la lista si riscrive ogni minuto: ascolto sul contenitore)
+    document.getElementById("nowStazioni").addEventListener("click", e => {
+      const a = e.target.closest("[data-conta]");
+      if (a && window.vtConta) window.vtConta(a.dataset.conta);
+    });
 
     /* ---------- web app: "Installa l'app sul telefono" ----------
        Evidenzia le istruzioni del telefono in uso (Android per primo su Android); con Chrome,
