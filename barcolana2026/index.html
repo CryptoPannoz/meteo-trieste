@@ -1288,12 +1288,14 @@
     html[data-theme] body.bcn #vento .eyebrow::before { content: ""; width: 26px; height: 4px; background: var(--bcn-red); }
     html[data-theme] body.bcn #vento .site-page-title { color: var(--bcn-hero-ink); font-weight: 700; letter-spacing: -.02em !important; }
     html[data-theme] body.bcn #vento .bc-lead { color: var(--bcn-hero-soft); }
-    html[data-theme] body.bcn #vento .bc-collab p { border: 1px solid rgba(255,255,255,.26); border-left: 4px solid var(--bcn-red); border-radius: 3px; background: rgba(255,255,255,.07); color: var(--bcn-hero-soft); }
-    html[data-theme] body.bcn #vento .bc-collab p strong { color: #fff; }
-    html[data-theme] body.bcn #vento .bc-collab p a:not(.bc-collab-logo) { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,.55); text-underline-offset: 2px; }
+    /* box collaborazione: bianco sulla fascia blu, deve risaltare (richiesta di Alberto, 8 ott) */
+    html[data-theme] body.bcn #vento .bc-collab p { border: 0; border-left: 4px solid var(--bcn-red); border-radius: 3px; background: #fff; color: #3d4b5c; font-size: .88rem; box-shadow: 0 8px 22px rgba(0,20,45,.28); }
+    html[data-theme] body.bcn #vento .bc-collab p strong { color: var(--bcn-navy); }
+    html[data-theme] body.bcn #vento .bc-collab p a:not(.bc-collab-logo) { color: var(--bcn-navy); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(0,55,112,.35); text-underline-offset: 2px; }
     html[data-theme] body.bcn #vento .bc-collab p a:not(.bc-collab-logo):hover { text-decoration-color: var(--bcn-red); }
-    html[data-theme] body.bcn #vento .bc-collab-logo { color: #fff; }
-    html[data-theme] body.bcn #vento .bc-collab-logo:hover { color: #c6d4e5; }
+    html[data-theme] body.bcn #vento .bc-collab-logo { color: var(--bcn-navy); }
+    html[data-theme] body.bcn #vento .bc-collab-logo svg { height: 1.05em; }
+    html[data-theme] body.bcn #vento .bc-collab-logo:hover { color: var(--bcn-red); }
     html[data-theme] body.bcn #vento .bc-tg-btn { background: #fff; color: #003770; border: 0; border-radius: 3px; }
     html[data-theme] body.bcn #vento .bc-tg-btn:hover { background: var(--bcn-red); color: #fff; }
 
