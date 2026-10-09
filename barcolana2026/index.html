@@ -1039,9 +1039,10 @@
     .bc-lato-titolo { display: flex; justify-content: space-between; gap: .4rem; flex-wrap: wrap; align-items: baseline; }
     .bc-lato-titolo strong { font-size: .92rem; color: var(--ink); }
     .bc-lato-titolo span { font-size: .75rem; color: var(--label); font-weight: 700; white-space: nowrap; }
-    .bc-lato-and { margin-top: .12rem; font-size: .88rem; font-weight: 800; color: var(--c, var(--ink)); }
+    .bc-lato-and { margin-top: .12rem; font-size: .88rem; font-weight: 700; color: var(--ink); }
+    .bc-lato-and b { font-weight: 800; text-transform: uppercase; letter-spacing: .02em; color: var(--c, var(--ink)); }
     .bc-lato-and small { color: var(--slate-2); font-weight: 650; font-size: .78rem; }
-    .bc-lato-vento { font-size: .78rem; color: var(--slate-2); margin-top: .1rem; }
+    .bc-lato-vento { font-size: .88rem; font-weight: 700; color: var(--slate-2); margin-top: .1rem; font-variant-numeric: tabular-nums; }
     .bc-lato-vele { font-size: .82rem; color: var(--ink); margin-top: .3rem; line-height: 1.4; }
     .bc-lato-vele em { display: block; font-style: normal; color: var(--label); font-size: .76rem; margin-top: .15rem; }
 
@@ -1405,6 +1406,49 @@
     html[data-theme] body.bcn .ux-mobile-dock { background: var(--bcn-dock); border-color: var(--line); border-radius: 6px; }
     html[data-theme] body.bcn .ux-mobile-dock a, html[data-theme] body.bcn .ux-mobile-dock button { background: transparent; border: 0; color: var(--slate-2); border-radius: 3px; }
     html[data-theme] body.bcn .ux-mobile-dock a.is-active { background: var(--bcn-btn); color: var(--bcn-btn-ink); }
+
+    /* badge del vincitore (9 ott 2026, Alberto): dalle 16:00 dell'11/10, classifica ufficiale via Worker */
+    @property --bc-vinc-ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+    .bc-vinc { position: relative; max-width: 1160px; margin: 1rem auto 0; }
+    .bc-vinc[hidden] { display: none; }
+    html[data-theme] body.bcn .bc-vinc-card { position: relative; overflow: hidden; isolation: isolate; text-align: center; padding: 2.2rem 1.2rem 1.4rem; border-radius: 14px;
+      color: #fff; background: radial-gradient(120% 90% at 50% 0%, #0a4a8f 0%, #003770 55%, #001f42 100%); box-shadow: 0 18px 50px rgba(0, 31, 66, .35); }
+    html[data-theme] body.bcn .bc-vinc-card::before { content: ""; position: absolute; inset: 0; z-index: -1; padding: 4px; border-radius: inherit;
+      background: conic-gradient(from var(--bc-vinc-ang), #ffc93c, #fff3c4, #e30613, #ffc93c, #00b1eb, #ffc93c);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: bc-vinc-giro 6s linear infinite; }
+    html[data-theme] body.bcn .bc-vinc-card::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+      background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.16) 50%, transparent 65%); transform: translateX(-100%); animation: bc-vinc-luce 4.5s ease-in-out 1s infinite; }
+    @keyframes bc-vinc-giro { to { --bc-vinc-ang: 360deg; } }
+    @keyframes bc-vinc-luce { 0% { transform: translateX(-100%); } 45%, 100% { transform: translateX(100%); } }
+    .bc-vinc-sigillo { position: absolute; top: .7rem; right: .7rem; padding: .25rem .6rem; border-radius: 999px; font-size: .7rem; font-weight: 800; letter-spacing: .03em;
+      background: #ffc93c; color: #001f42 !important; text-decoration: none; transform: rotate(4deg); }
+    .bc-vinc-coppa { font-size: clamp(4rem, 13vw, 6.5rem); line-height: 1; filter: drop-shadow(0 8px 18px rgba(255, 201, 60, .45)); animation: bc-vinc-coppa 2.6s ease-in-out infinite; display: inline-block; }
+    @keyframes bc-vinc-coppa { 0%, 100% { transform: translateY(0) rotate(-4deg) scale(1); } 50% { transform: translateY(-10px) rotate(4deg) scale(1.06); } }
+    html[data-theme] body.bcn .bc-vinc-eyebrow { margin: .6rem 0 .2rem; font-size: .82rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #ffc93c; }
+    html[data-theme] body.bcn .bc-vinc h2.bc-vinc-yacht { margin: 0 auto .35rem; max-width: 22ch; font-family: "IBM Plex Sans Condensed", "IBM Plex Sans", sans-serif; font-weight: 700;
+      font-size: clamp(2.3rem, 8.5vw, 4.8rem); line-height: .98; letter-spacing: -.01em; color: #fff; text-shadow: 0 4px 22px rgba(0, 177, 235, .45);
+      overflow-wrap: anywhere; animation: bc-vinc-entra .9s cubic-bezier(.2, 1.4, .4, 1) both; }
+    @keyframes bc-vinc-entra { from { opacity: 0; transform: scale(.6) translateY(16px); } }
+    html[data-theme] body.bcn .bc-vinc-chi { margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff; }
+    html[data-theme] body.bcn .bc-vinc-barca { margin: .15rem 0 0; font-size: .86rem; color: #b9cbe0; }
+    .bc-vinc-podio { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem .6rem; list-style: none; margin: .9rem 0 0; padding: 0; }
+    html[data-theme] body.bcn .bc-vinc-podio li { padding: .3rem .75rem; border-radius: 999px; background: rgba(255,255,255,.1); color: #fff; font-size: .86rem; font-weight: 650; }
+    html[data-theme] body.bcn .bc-vinc-podio b { color: #ffc93c; margin-right: .25rem; }
+    html[data-theme] body.bcn .bc-vinc-msg { margin: 1rem 0 .9rem; font-size: 1rem; color: #fff; }
+    html[data-theme] body.bcn .bc-vinc-msg strong { color: #ffc93c; }
+    .bc-vinc-azioni { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
+    html[data-theme] body.bcn .bc-vinc-azioni a, html[data-theme] body.bcn .bc-vinc-azioni button { display: inline-flex; align-items: center; gap: .35rem; min-height: 42px; margin: 0;
+      padding: .45rem 1rem; border: 0; border-radius: 4px; background: #fff; color: #003770; font: inherit; font-size: .9rem; font-weight: 800; text-decoration: none; cursor: pointer; }
+    html[data-theme] body.bcn .bc-vinc-azioni .primario { background: #ffc93c; color: #001f42; }
+    html[data-theme] body.bcn .bc-vinc-azioni a:hover, html[data-theme] body.bcn .bc-vinc-azioni button:hover { background: #e30613; color: #fff; }
+    html[data-theme] body.bcn .bc-vinc-fonte { margin: .9rem 0 0; font-size: .72rem; color: #9fb6d1; }
+    .bc-vinc-coriandoli { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+    .bc-vinc-coriandoli i { position: absolute; top: -12%; width: 8px; height: 14px; border-radius: 2px; opacity: 0; animation: bc-vinc-cade 3.8s cubic-bezier(.3, .6, .5, 1) 2 both; }
+    @keyframes bc-vinc-cade { 0% { opacity: 1; transform: translateY(0) rotate(0); } 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(560px) rotate(var(--r, 540deg)); } }
+    @media (prefers-reduced-motion: reduce) {
+      html[data-theme] body.bcn .bc-vinc-card::before, html[data-theme] body.bcn .bc-vinc-card::after, .bc-vinc-coppa, html[data-theme] body.bcn .bc-vinc h2.bc-vinc-yacht, .bc-vinc-coriandoli i { animation: none; }
+      html[data-theme] body.bcn .bc-vinc-card::after { display: none; }
+    }
   </style>
 </head>
 <body class="bcn">
@@ -1434,6 +1478,10 @@
   </header>
 
   <main>
+    <!-- 0. VINCITORE (9 ott 2026, Alberto): badge grande e animato dalle 16:00 di domenica 11/10, riempito dallo
+         script "badge del vincitore" con la classifica ufficiale (Worker ventotrieste-dati /vincitore).
+         Per vederlo prima: ?provaVincitore=2025 -->
+    <section class="bc-vinc" id="bcVincitore" hidden aria-live="polite"></section>
     <!-- 1. VENTO SUL CAMPO DI REGATA
          Ott 2026: progetto approvato dall'organizzazione. In testa il logo ufficiale (dal PDF
          20250204_BARCOLANA_b_CMYK, livello "B blu", reso in bianco sulla fascia blu), il box della
@@ -1663,7 +1711,7 @@
     </div>
     <div class="bc-autore-azioni">
       <a class="bc-autore-btn" href="mailto:bebroggi@gmail.com?subject=Vento%20Barcolana">✉️ <span class="l-it">Suggerimenti e migliorie</span><span class="l-en">Suggestions</span></a>
-      <a class="bc-autore-btn" href="https://bebroggi.it" target="_blank" rel="noopener">bebroggi.it ↗</a>
+      <a class="bc-autore-btn bc-autore-cta" href="https://ventotrieste.info/?utm_source=barcolana2026&amp;utm_medium=firma" target="_blank" rel="noopener">🌬️ <span class="l-it">Il vento di Trieste su</span><span class="l-en">Trieste wind on</span> ventotrieste.info ↗</a>
     </div>
     <div class="bc-sostieni">
       <p><span class="l-it">Vento Trieste è un progetto indipendente: dati live e manutenzione restano gratuiti per tutti.</span><span class="l-en">Vento Trieste is an independent project: live data and upkeep stay free for everyone.</span></p>
@@ -1807,14 +1855,14 @@
       { id: "mambo", nome: "Boa Mambo", lat: 45.6977, lon: 13.7083, interp: true, fresco: 30, max: 30, mappa: "seDato",
         ruolo: ["Boa OGS davanti al castello di Miramare, a circa 800 m dalla boa 3. Pubblica un dato all'ora con 1-2 ore di ritardo: nella stima solo quando il dato è aggiornato, altrimenti compare sbiadita.", "OGS buoy off Miramare castle, about 800 m from mark 3. It publishes hourly, 1-2 hours late: in the estimate only when its reading is up to date, otherwise it is shown faded."] },
       // Paloma è fuori inquadratura, a ovest: dal 5 ott 2026 (richiesta di Alberto) la si disegna DENTRO la
-      // mappa, nell'angolo in basso a sinistra (qui), con la distanza dalla posizione vera. Stima e distanze
+      // mappa, sul bordo sinistro alla sua latitudine (qui, dal 9 ott 2026), con la distanza dalla posizione vera. Stima e distanze
       // usano sempre lat/lon veri.
       // Paloma e Muggia: coordinate ufficiali dell'API della Protezione Civile FVG (/api/stations/574, 500),
       // dall'8 ott 2026 (prima Muggia era ~1,5 km fuori). Trieste molo (/api/stations/212) è in punta al molo
       // F.lli Bandiera, a ~230 m dalla boa d'arrivo A1: lì il pallino copriva l'arrivo, quindi in mappa (e nella
       // stima) resta dov'era e la posizione ufficiale serve solo al 📍 Google Maps (pos), scelta di Alberto.
-      { id: "paloma", nome: "Boa Paloma", lat: 45.61858, lon: 13.5653, interp: true, fresco: 20, max: 30, qui: { lat: 45.6095, lon: 13.632 },
-        ruolo: ["In mezzo al Golfo, a ovest delle boe 1 e 2: vento di mare aperto. In mappa è nell'angolo in basso a sinistra: la boa vera è più a ovest.", "Mid-Gulf, west of marks 1 and 2: open-sea wind. On the map it sits in the bottom-left corner: the real buoy is further west."] },
+      { id: "paloma", nome: "Boa Paloma", lat: 45.61858, lon: 13.5653, interp: true, fresco: 20, max: 30, qui: { lat: 45.61858, lon: 13.606 },
+        ruolo: ["In mezzo al Golfo, a ovest delle boe 1 e 2: vento di mare aperto. In mappa è sul bordo sinistro, alla sua latitudine: la boa vera è poco più a ovest.", "Mid-Gulf, west of marks 1 and 2: open-sea wind. On the map it sits on the left edge, at its own latitude: the real buoy is a little further west."] },
       { id: "trieste", nome: "Trieste molo", lat: 45.636806, lon: 13.750556, interp: true, fresco: 20, max: 30, pos: [45.649981, 13.752239],
         ruolo: ["Stazione della rete meteorologica regionale sul molo F.lli Bandiera, a sud dell'arrivo: il vento in porto, ogni 15 minuti. Fonte: Protezione Civile della Regione Friuli Venezia Giulia.", "Regional weather network station on the F.lli Bandiera pier, south of the finish: the wind in the harbour, every 15 minutes. Source: Protezione Civile della Regione Friuli Venezia Giulia."] },
       { id: "monteGrisa", nome: "Monte Grisa", lat: 45.712, lon: 13.757, interp: false, fresco: 12, max: 20,
@@ -1825,7 +1873,8 @@
     const LUOGHI = [
       { nome: ["Miramare", "Miramare"], lat: 45.7026, lon: 13.7124, dx: 10, dy: -2 },
       { nome: ["Grignano", "Grignano"], lat: 45.7097, lon: 13.7108, dx: 10, dy: -8 },
-      { nome: ["Trieste", "Trieste"], lat: 45.6405, lon: 13.7760, dx: 0, dy: 0, grande: true },
+      // lon 13.768 (piazza Unità) dal 9 ott 2026: con lo zoom out a 13.776 su telefono usciva dal bordo destro
+      { nome: ["Trieste", "Trieste"], lat: 45.6405, lon: 13.768, dx: 0, dy: 0, grande: true },
       { nome: ["Golfo di Trieste", "Gulf of Trieste"], lat: 45.672, lon: 13.638, dx: 0, dy: 0, golfo: true }
     ];
 
@@ -1891,6 +1940,7 @@
       const rel = norm360(daDeg - rotta);
       return { twa: rel > 180 ? 360 - rel : rel, rel, dritta: rel < 180 };
     }
+    const PREP_AND = LANG === "en" ? { bolina: "", traverso: "", lasco: "", poppa: "" } : { bolina: "in ", traverso: "al ", lasco: "in ", poppa: "in " };
     function andatura(twa) {
       if (twa < 45) return { k: "bolina", testo: tr("Bolina stretta", "Close-hauled"), nota: tr("rotta diretta impossibile: si bordeggia", "can't lay the mark: tacking") };
       if (twa < 70) return { k: "bolina", testo: tr("Bolina larga", "Close reach"), nota: "" };
@@ -2006,9 +2056,12 @@
     const SVG_NS = "http://www.w3.org/2000/svg";
     /* Inquadratura come la mappa ufficiale del percorso (29 set 2026): il campo di regata
        riempie la mappa. Fino ad allora era tutto il Golfo, col percorso schiacciato a destra;
-       Paloma, fuori quadro, è disegnata nell'angolo in basso a sinistra (STAZIONI, "qui"). */
+       Paloma, fuori quadro, è disegnata sul bordo sinistro (STAZIONI, "qui"). */
+    // 9 ott 2026 (Alberto): zoom out leggero (x1,14, stesse proporzioni) allargando verso ovest, così
+    // Paloma sta più vicina alla sua posizione vera. Limiti dentro costa.js (fino a 13.54/45.575) e
+    // strade.js (13.60-13.82 × 45.585-45.73: a ovest di 13.60 c'è solo mare).
     const VISTA = (() => {
-      const x0 = px(13.612), x1 = px(13.80), y0 = py(45.718), y1 = py(45.594);
+      const x0 = px(13.585), x1 = px(13.80), y0 = py(45.7265), y1 = py(45.5847);
       return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
     })();
     function el(tag, attrs, testo) {
@@ -2163,15 +2216,12 @@
       triangolo(gB, BOA.A, s, "A", [8, -6, "start"], tr("A: arrivo, testata della diga", "A: finish, breakwater head"));
       svg.appendChild(gB);
 
-      // nord e scala (1 miglio = 1/60 di grado di latitudine)
+      // scala (1 miglio = 1/60 di grado di latitudine); la freccia del nord è stata tolta il 9 ott 2026
       const unitaMiglio = KY / 60;
       const sx0 = vb.x + 16 * s, sy0 = vb.y + 24 * s;
       svg.appendChild(el("line", { x1: sx0, y1: sy0, x2: sx0 + unitaMiglio, y2: sy0, stroke: "var(--bc-etichetta)", "stroke-width": 2.4 * s }));
       [0, unitaMiglio].forEach(d => svg.appendChild(el("line", { x1: sx0 + d, y1: sy0 - 5 * s, x2: sx0 + d, y2: sy0 + 1 * s, stroke: "var(--bc-etichetta)", "stroke-width": 2 * s })));
       testo(svg, sx0 + unitaMiglio / 2, sy0 + 15 * s, tr("1 miglio", "1 nm"), s * .9, { "text-anchor": "middle" });
-      const nx0 = sx0 + unitaMiglio + 26 * s, ny0 = vb.y + 22 * s;
-      svg.appendChild(el("path", { d: "M" + nx0 + "," + (ny0 - 12 * s) + " l" + (6 * s) + "," + (16 * s) + " l" + (-6 * s) + "," + (-4.5 * s) + " l" + (-6 * s) + "," + (4.5 * s) + "z", fill: "var(--bc-etichetta)", opacity: .85 }));
-      testo(svg, nx0, ny0 + 17 * s, "N", s * .9, { "text-anchor": "middle", "font-weight": 900 });
     }
 
     /* simbolo stazione: cerchio con i nodi + freccia verso dove VA il vento;
@@ -2259,9 +2309,11 @@
         if (!a.v) {
           corpo = '<div class="bc-lato-vento">' + (opt.modo === "prev" ? tr("Previsione non ancora disponibile per quest'ora.", "Forecast not yet available for this time.") : tr("In attesa dei dati delle centraline…", "Waiting for station data…")) + "</div>";
         } else {
-          corpo = '<div class="bc-lato-and">' + a.an.testo + ' <small>· ' + [Math.round(a.twa) + tr("° dal vento", "° off the wind"), a.mure, a.an.nota].filter(Boolean).join(" · ") + "</small></div>" +
-            ('<div class="bc-lato-vento">' + Math.round(a.v.kt) + " kt" + (!isNaN(a.v.raffica) ? " (" + tr("raff. ", "gust ") + Math.round(a.v.raffica) + ")" : "") +
-              tr(" da ", " from ") + cardinale(a.v.deg) + " " + Math.round(a.v.deg) + "° · " + nomeVento(a.v.deg, a.v.kt) + "</div>") +
+          // 9 ott 2026, Alberto: "in LASCO: 119° TWA mure a sinistra" / "13-18 kt · 93° TWD", più compatto da leggere
+          const kt = Math.round(a.v.kt), raff = !isNaN(a.v.raffica) ? Math.round(a.v.raffica) : null;
+          corpo = '<div class="bc-lato-and">' + PREP_AND[a.an.k] + "<b>" + a.an.testo + "</b>: " + Math.round(a.twa) + "° TWA" + (a.mure ? " " + a.mure : "") +
+              (a.an.nota ? " <small>· " + a.an.nota + "</small>" : "") + "</div>" +
+            ('<div class="bc-lato-vento">' + (raff != null && raff > kt ? kt + "-" + raff : kt) + " kt · " + Math.round(norm360(a.v.deg)) + "° TWD</div>") +
             '<div class="bc-lato-vele">⛵ ' + a.vele.v + (a.vele.nota ? "<em>" + a.vele.nota + "</em>" : "") + "</div>";
         }
         return '<li class="bc-lato' + (opt.sel === "l" + l.n ? " sel" : "") + '" data-lato="' + l.n + '" style="--c:' + col + '"' + (opt.onLato ? ' tabindex="0"' : "") + ">" +
@@ -2594,7 +2646,7 @@
         '<span class="bc-leg-sep"></span>' +
         '<span><span class="bc-scala">' + FASCE.map((f, i) => '<em style="--c:' + f.c + '">' + fasce[i] + "</em>").join("") + "</span>" +
         tr("colore dell'anello: forza del vento in nodi", "ring colour: wind strength in knots") + "</span>" +
-        "<span>" + tr("◀ Boa Paloma: disegnata nell'angolo in basso a sinistra, la boa vera è più a ovest", "◀ Paloma buoy: drawn in the bottom-left corner, the real buoy is further west") + "</span>";
+        "<span>" + tr("◀ Boa Paloma: disegnata sul bordo sinistro, la boa vera è poco più a ovest", "◀ Paloma buoy: drawn on the left edge, the real buoy is a little further west") + "</span>";
     }
 
     function countdown() {
@@ -2660,6 +2712,83 @@
       if (window.vtConta) window.vtConta("birra: copia bitcoin");
     });
     window.apriBirra = e => { if (e && e.preventDefault) e.preventDefault(); const d = document.getElementById("infoSostieni"); if (d && d.showModal) d.showModal(); };
+    /* ---------- badge del vincitore (9 ott 2026, Alberto) ----------
+       Dalle 16:00 dell'11/10 la pagina chiede al Worker il vincitore dalla classifica ufficiale
+       (iscrizioni.barcolana.it non ha CORS) e, appena c'è, mostra il badge in testa. Ricontrolla ogni
+       5 minuti (la classifica dei primi può cambiare per le proteste) fino al giorno dopo.
+       ?provaVincitore=2025 mostra subito il badge con la classifica 2025, per provarlo. */
+    (function () {
+      const VINC_DA = Date.parse("2026-10-11T16:00:00+02:00");
+      const URL_VINC = "https://ventotrieste-dati.bebroggi.workers.dev/vincitore";
+      const box = document.getElementById("bcVincitore");
+      const prova = new URLSearchParams(location.search).get("provaVincitore");
+      const anno = /^20\d\d$/.test(prova || "") ? prova : "2026";
+      const conta = n => { if (window.vtConta) window.vtConta(n); };
+      let timer = null, mostrato = "";
+      const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+      // la classifica ha nomi tutti minuscoli o tutti maiuscoli: "furio benussi" -> "Furio Benussi"
+      const bello = t => { t = String(t || "").trim(); return t && (t === t.toLowerCase() || t === t.toUpperCase()) ? t.toLowerCase().replace(/(^|[\s'’-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()) : t; };
+      function pianifica(d) {
+        clearTimeout(timer);
+        const ora = Date.now();
+        if (!prova && ora < VINC_DA) timer = setTimeout(carica, Math.min(VINC_DA - ora, 6 * 3600e3));
+        else if (prova || !d || !d.vincitore || ora < VINC_DA + 24 * 3600e3) timer = setTimeout(carica, 5 * 60e3);
+      }
+      async function carica() {
+        if (!prova && Date.now() < VINC_DA) { pianifica(); return; }
+        let d = null;
+        try { d = await (await fetch(URL_VINC + "?anno=" + anno)).json(); } catch (e) { d = null; }
+        if (d && d.vincitore) disegna(d);
+        pianifica(d);
+      }
+      function disegna(d) {
+        const v = d.vincitore, chiave = JSON.stringify(d.podio) + d.link;
+        if (chiave === mostrato) return;
+        const prima = !mostrato;
+        mostrato = chiave;
+        const yacht = esc(String(v.yacht).toUpperCase());
+        const chi = [v.timoniere ? tr("Timoniere ", "Helm: ") + esc(bello(v.timoniere)) : "", esc(v.club)].filter(Boolean).join(" · ");
+        const barca = [esc(v.modello), v.mascone ? tr("mascone ", "bow no. ") + esc(v.mascone) : ""].filter(Boolean).join(" · ");
+        const podio = d.podio.slice(1).map(b => "<li><b>" + b.pos + "°</b>" + esc(bello(b.yacht)) + "</li>").join("");
+        const colori = ["#ffc93c", "#ffffff", "#e30613", "#00b1eb", "#fff3c4"];
+        const coriandoli = prima ? Array.from({ length: 44 }, (_, i) => '<i style="left:' + (Math.random() * 100).toFixed(1) + "%;background:" + colori[i % colori.length] +
+          ";animation-delay:" + (Math.random() * 2.2).toFixed(2) + "s;--r:" + Math.round(360 + Math.random() * 540) * (i % 2 ? 1 : -1) + "deg;width:" + (6 + Math.random() * 5).toFixed(0) + 'px"></i>').join("") : "";
+        const letta = new Date(d.aggiornato || Date.now());
+        box.innerHTML = '<div class="bc-vinc-card">' +
+          '<div class="bc-vinc-coriandoli" aria-hidden="true">' + coriandoli + "</div>" +
+          '<a class="bc-vinc-sigillo" href="https://ventotrieste.info/?utm_source=barcolana2026&amp;utm_medium=badge-vincitore" target="_blank" rel="noopener">' + tr("da", "by") + " ventotrieste.info</a>" +
+          '<div class="bc-vinc-coppa" aria-hidden="true">🏆</div>' +
+          '<p class="bc-vinc-eyebrow">Barcolana ' + d.anno + " · " + tr("vincitore", "winner") + "</p>" +
+          '<h2 class="bc-vinc-yacht">' + yacht + "</h2>" +
+          (chi ? '<p class="bc-vinc-chi">' + chi + "</p>" : "") + (barca ? '<p class="bc-vinc-barca">' + barca + "</p>" : "") +
+          (podio ? '<ol class="bc-vinc-podio" aria-label="' + tr("Podio", "Podium") + '">' + podio + "</ol>" : "") +
+          '<p class="bc-vinc-msg">' + tr("Complimenti da <strong>Vento Trieste</strong> e buon vento a tutti gli equipaggi! ⛵", "Congratulations from <strong>Vento Trieste</strong>, and fair winds to every crew! ⛵") + "</p>" +
+          '<div class="bc-vinc-azioni">' +
+            '<a class="primario" href="' + esc(d.link) + '" target="_blank" rel="noopener" data-conta="vincitore: classifica">🏁 ' + tr("Classifica ufficiale", "Official results") + " ↗</a>" +
+            '<a href="#registro" data-conta="vincitore: vento della regata">📈 ' + tr("Il vento della regata", "The race-day wind") + "</a>" +
+            '<button type="button" data-condividi data-conta="vincitore: condividi">📤 ' + tr("Condividi", "Share") + "</button>" +
+            '<a href="https://ventotrieste.info/?utm_source=barcolana2026&amp;utm_medium=badge-vincitore" target="_blank" rel="noopener" data-conta="vincitore: ventotrieste.info">🌬️ ventotrieste.info ↗</a>' +
+          "</div>" +
+          '<p class="bc-vinc-fonte">' + tr("Dalla classifica ufficiale della Barcolana, letta alle ", "From the official Barcolana results, read at ") + oraHHMM(letta) +
+            tr(" · si aggiorna da sola", " · updates automatically") + "</p>" +
+          "</div>";
+        box.hidden = false;
+        if (prima) conta("vincitore: badge visto");
+      }
+      box.addEventListener("click", e => {
+        const t = e.target.closest("[data-conta]");
+        if (t) conta(t.dataset.conta);
+        const b = e.target.closest("[data-condividi]");
+        if (!b) return;
+        const yacht = box.querySelector(".bc-vinc-yacht").textContent;
+        const testo = tr("🏆 " + yacht + " vince la Barcolana! Il vento della regata su Vento Barcolana:", "🏆 " + yacht + " wins the Barcolana! The race-day wind on Vento Barcolana:");
+        const url = URL_PAGINA + "?utm_source=condividi-vincitore";
+        if (navigator.share) navigator.share({ title: "Barcolana · " + yacht, text: testo, url }).catch(() => {});
+        else if (navigator.clipboard) navigator.clipboard.writeText(testo + " " + url).then(() => { b.textContent = tr("✅ Copiato", "✅ Copied"); }).catch(() => {});
+      });
+      document.addEventListener("visibilitychange", () => { if (!document.hidden && (prova || Date.now() >= VINC_DA)) carica(); });
+      carica();
+    })();
     // 📍 delle centraline: quante volte si apre Google Maps (la lista si riscrive ogni minuto: ascolto sul contenitore)
     document.getElementById("nowStazioni").addEventListener("click", e => {
       const a = e.target.closest("[data-conta]");

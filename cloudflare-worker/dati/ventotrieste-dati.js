@@ -456,6 +456,28 @@ async function riepilogo(env) {
   return { dal: RIEP_DAL, fino: ieri, giorni, mancanti, aggiornato: new Date().toISOString() };
 }
 
+/* Classifica ufficiale: un elenco con poge = posizione generale (0 = non classificato), yacht,
+   modello, timoniere, armatore, club, mascone. La pagina ufficiale dell'edizione (barcolana.it/
+   it/regata/classifica-barcolanaNN, NN = anno - 1968) di solito esce dopo: se non c'è ancora
+   si linka l'elenco delle classifiche. */
+async function vincitore(anno) {
+  const r = await fetch('https://iscrizioni.barcolana.it/Proxy/Classifica' + anno, { cf: { cacheTtl: 120, cacheEverything: true } });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const elenco = (await r.json()).filter(b => b && +b.poge > 0).sort((a, b) => a.poge - b.poge);
+  const barca = b => ({ pos: +b.poge, yacht: b.yacht || '', modello: b.modello || '', timoniere: b.timoniere || '',
+    armatore: b.armatore || '', club: b.club || '', mascone: b.mascone || null, nazione: b.armatore_nazione || '' });
+  const edizione = 'https://www.barcolana.it/it/regata/classifica-barcolana' + (anno - 1968);
+  const pagina = elenco.length ? await fetch(edizione, { method: 'HEAD', cf: { cacheTtl: 300 } }).then(x => x.ok).catch(() => false) : false;
+  return {
+    anno: +anno,
+    vincitore: elenco[0] && elenco[0].poge == 1 ? barca(elenco[0]) : null,
+    podio: elenco.slice(0, 3).map(barca),
+    classificati: elenco.length,
+    link: pagina ? edizione : 'https://www.barcolana.it/it/regata/classifiche-edizioni-precedenti',
+    aggiornato: new Date().toISOString(),
+  };
+}
+
 function json(obj, extra) {
   return new Response(typeof obj === 'string' ? obj : JSON.stringify(obj), {
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...CORS, ...(extra || {}) },
@@ -493,6 +515,18 @@ export default {
         return json(await riepilogo(env), { 'Cache-Control': 'public, max-age=300' });
       } catch (err) {
         return json({ errore: 'riepilogo non disponibile: ' + err });
+      }
+    }
+
+    // /vincitore?anno=2026 — vincitore e podio della Barcolana dalla classifica ufficiale (9 ott 2026,
+    // per il badge sulla pagina /barcolana2026/ dalle 16:00 del giorno di regata). L'API di
+    // iscrizioni.barcolana.it non ha CORS: la leggiamo qui, in cache al bordo 2 minuti.
+    if (indirizzo.pathname === '/vincitore') {
+      const anno = /^20\d\d$/.test(params.get('anno') || '') ? params.get('anno') : '2026';
+      try {
+        return json(await vincitore(anno), { 'Cache-Control': 'public, max-age=120' });
+      } catch (err) {
+        return json({ anno: +anno, vincitore: null, errore: 'classifica non disponibile: ' + err });
       }
     }
 
