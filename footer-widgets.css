@@ -1287,3 +1287,257 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
     transition-duration: .01ms !important;
   }
 }
+
+/* ======================================================================
+   Spinta della Bora con grafico (spinta-bora.js, 13 ott 2026)
+   Numero, colore e linea vanno nella stessa direzione: più alto = più bora.
+   Colori delle fasce come variabili, così il gradiente SVG segue il tema.
+   ====================================================================== */
+.sb-box, #modalDeltaBora { --sb-c1: #8d979f; --sb-c2: #f2c230; --sb-c3: #ff8a3d; --sb-c4: #ff5a4f; }
+:root[data-theme="light"] .sb-box,
+:root[data-theme="light"] #modalDeltaBora { --sb-c1: #7b858c; --sb-c2: #c49300; --sb-c3: #d9620c; --sb-c4: #cf2e22; }
+.sb { display: grid; gap: .5rem; margin-top: .45rem; }
+.sb-ora { display: flex; align-items: center; gap: .85rem; min-height: 3.1rem; }
+.sb .tws-hero.sb-hero { margin: 0; flex: none; font-size: 2.45rem; line-height: 1; white-space: nowrap; }
+.sb .sb-hero .bd-sign { font-size: 1.8rem; }
+.sb .sb-hero .bd-sign:empty { display: none; }
+.sb .sb-hero .u { margin-left: .2rem; font-size: .85rem; }
+.sb-stato { display: grid; gap: .18rem; min-width: 0; }
+.sb-verdetto { font-size: 1.18rem; line-height: 1.1; font-weight: 800; letter-spacing: -.01em; }
+.sb-v0, .sb-v1 { color: var(--label); }
+.sb-v2 { color: var(--sb-c2); }
+.sb-v3 { color: var(--sb-c3); }
+.sb-v4 { color: var(--sb-c4); }
+.sb-trend { color: var(--ink); opacity: .82; font-size: .78rem; font-weight: 650; line-height: 1.32; }
+.sb-grafico { position: relative; margin: 0 -.15rem; touch-action: pan-y; -webkit-user-select: none; user-select: none; cursor: crosshair; }
+.sb-grafico svg { display: block; width: 100%; height: auto; overflow: visible; font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif; }
+.sb-fascia { opacity: .14; }
+.sb-f2 { fill: var(--sb-c2); }
+.sb-f3 { fill: var(--sb-c3); }
+.sb-f4 { fill: var(--sb-c4); }
+.sb-nome { font-size: 8.5px; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+.sb-t2 { fill: var(--sb-c2); }
+.sb-t3 { fill: var(--sb-c3); }
+.sb-t4 { fill: var(--sb-c4); }
+.sb-asse { fill: var(--label); font-size: 9.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sb-asse.sb-giorno { fill: var(--ink); font-weight: 850; }
+.sb-zero { stroke: var(--label); stroke-opacity: .5; stroke-width: 1; }
+.sb-soglia { stroke: var(--sb-c2); stroke-width: 1; stroke-dasharray: 3 3; }
+.sb-notte { stroke: var(--label); stroke-opacity: .2; stroke-width: 1; }
+.sb-linea { fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.sb-futuro { stroke-width: 2; stroke-dasharray: 5 4; }
+.sb-area { opacity: .18; }
+.sb-adesso { stroke: var(--ink); stroke-opacity: .6; stroke-width: 1; stroke-dasharray: 2 3; }
+.sb-adesso-t { fill: var(--ink); font-size: 8.5px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.sb-punto, .sb-cursore-p { stroke: #10151a; stroke-width: 2.5; }
+.sb-p1 { fill: var(--sb-c1); }
+.sb-p2 { fill: var(--sb-c2); }
+.sb-p3 { fill: var(--sb-c3); }
+.sb-p4 { fill: var(--sb-c4); }
+.sb-cursore { stroke: var(--ink); stroke-opacity: .55; stroke-width: 1; }
+.sb-tip {
+  position: absolute; z-index: 3; top: -4px; transform: translate(-50%, -100%);
+  padding: .32rem .55rem; border: 1px solid #3a454f; border-radius: 8px;
+  background: #0b0f13; color: #f4f7f8; box-shadow: 0 8px 22px rgba(0,0,0,.4);
+  font-size: .74rem; line-height: 1.25; white-space: nowrap; pointer-events: none;
+}
+.sb-tip small { display: block; color: #aab4bc; font-size: .66rem; font-weight: 700; }
+.sb-tip[hidden] { display: none; }
+.sb-legenda { display: flex; justify-content: space-between; gap: .6rem; margin-top: -.15rem; color: var(--label); font-size: .66rem; font-weight: 750; }
+.sb-legenda span { display: inline-flex; align-items: center; gap: .3rem; }
+.sb-legenda span::before { content: ""; width: 14px; border-top: 2.5px solid currentColor; }
+.sb-legenda .sb-leg-dopo::before { border-top-style: dashed; border-top-width: 2px; }
+.sb .bora-note { margin-top: .1rem; }
+#modalDeltaBora .sb-live { grid-template-columns: repeat(2, 1fr); margin: .6rem 0 .3rem; }
+#modalDeltaBora .sb-diff { text-align: center; margin: .2rem 0 .7rem; }
+#modalDeltaBora .sb-scala i { background: var(--sb-c1); }
+#modalDeltaBora .sb-scala i.sb-c2 { background: var(--sb-c2); }
+#modalDeltaBora .sb-scala i.sb-c3 { background: var(--sb-c3); }
+#modalDeltaBora .sb-scala i.sb-c4 { background: var(--sb-c4); }
+#modalDeltaBora .sb-fonte { margin: .8rem 0 0; font-size: .74rem; text-align: left; }
+#modalDeltaBora .sb-guida-link { margin: .6rem 0 0; font-weight: 800; }
+:root[data-theme="light"] .sb-punto,
+:root[data-theme="light"] .sb-cursore-p { stroke: #fff; }
+:root[data-theme="light"] .sb-tip { background: #fff; border-color: var(--line); color: var(--ink); box-shadow: 0 8px 22px rgba(22,35,44,.18); }
+:root[data-theme="light"] .sb-tip small { color: var(--label); }
+/* pagine spot: il box sta dentro la scheda del surfometro */
+.bora-delta.sb-box { margin-top: 1rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+
+/* ======================================================================
+   Menu raggruppato (footer-widgets.js, 13 ott 2026)
+   Sezioni a riquadri su 2 colonne, Spot e Guida a pastiglie, azioni in fondo.
+   Specificità "#topnav.mn" per battere le regole storiche di .topnav.
+   ====================================================================== */
+.topbar > #topnav.mn {
+  display: block;
+  width: min(440px, calc(100vw - 1.2rem));
+  max-height: calc(100vh - var(--section-sticky-top, 78px) - 10px);
+  max-height: calc(100dvh - var(--section-sticky-top, 78px) - 10px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: .7rem .7rem .75rem;
+  border-radius: 14px;
+}
+#topnav.mn .mn-gruppo + .mn-gruppo { margin-top: .7rem; padding-top: .65rem; border-top: 1px solid #222b33; }
+#topnav.mn .mn-titolo { margin: 0 0 .42rem; color: var(--label); font-size: .62rem; font-weight: 850; letter-spacing: .12em; line-height: 1; text-transform: uppercase; }
+#topnav.mn .mn-griglia { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; }
+.topbar > #topnav.mn a { box-shadow: none; }
+.topbar > #topnav.mn a.mn-sez {
+  min-height: 42px; gap: .5rem; padding: .4rem .55rem; border-radius: 9px;
+  font-size: .8rem; font-weight: 750; line-height: 1.15;
+}
+.topbar > #topnav.mn a.mn-sez > span:last-child { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+.topbar > #topnav.mn a.mn-guida,
+.topbar > #topnav.mn a.mn-sez { text-align: left; }
+#topnav.mn .mn-ico {
+  display: inline-flex; flex: none; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 7px; background: rgba(240,244,60,.1); color: var(--signal);
+}
+#topnav.mn .mn-ico svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.topbar > #topnav.mn a.mn-sez.is-active { border-color: rgba(240,244,60,.55); background: rgba(240,244,60,.12); color: var(--ink); }
+:root[data-theme="light"] .topbar > #topnav.mn a.mn-sez.is-active { border-color: var(--sea); background: rgba(23,111,128,.1); }
+.topbar > #topnav.mn a.mn-sez:hover .mn-ico { background: rgba(0,0,0,.13); color: #090b0d; }
+#topnav.mn .mn-chips { display: flex; flex-wrap: wrap; gap: .3rem; }
+.topbar > #topnav.mn a.mn-chip {
+  min-height: 34px; padding: .32rem .66rem; border-radius: 999px;
+  font-size: .74rem; font-weight: 750; line-height: 1.1;
+}
+.topbar > #topnav.mn a.mn-chip.is-qui { border-color: var(--signal); background: rgba(240,244,60,.09); color: var(--signal); }
+.topbar > #topnav.mn a.mn-guida {
+  min-height: 50px; gap: .6rem; margin-bottom: .4rem; padding: .48rem .6rem; border-radius: 10px;
+  border-color: rgba(240,244,60,.45); background: linear-gradient(105deg, #272a12, #161a0c);
+}
+#topnav.mn .mn-guida strong { display: block; color: var(--ink); font-size: .84rem; line-height: 1.2; }
+#topnav.mn .mn-guida small { display: block; margin-top: .12rem; color: var(--label); font-size: .68rem; font-weight: 650; }
+.topbar > #topnav.mn a.mn-guida:hover strong { color: #090b0d; }
+.topbar > #topnav.mn a.mn-guida:hover small { color: #2b3000; }
+.topbar > #topnav.mn a.mn-guida:hover .mn-ico { background: rgba(0,0,0,.13); color: #090b0d; }
+#topnav.mn .mn-azioni { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; margin-top: .75rem; }
+.topbar > #topnav.mn .mn-azioni a { min-height: 42px; justify-content: center; padding: .4rem .45rem; font-size: .78rem; text-align: center; }
+.topbar > #topnav.mn .mn-azioni .topnav-birra { grid-column: auto; }
+.topbar > #topnav.mn .mn-azioni a:only-child { grid-column: 1 / -1; }
+.topbar > #topnav.mn .mn-azioni .mn-app { border-color: var(--signal); background: var(--signal); color: #090b0d; }
+.topbar > #topnav.mn .mn-azioni .mn-app:hover { background: #fff; border-color: #fff; }
+.mn-velo { position: fixed; inset: 0; z-index: 140; background: rgba(0,0,0,.52); }
+.mn-velo[hidden] { display: none; }
+:root[data-theme="light"] #topnav.mn .mn-gruppo + .mn-gruppo { border-top-color: var(--line); }
+:root[data-theme="light"] #topnav.mn .mn-ico { background: rgba(23,111,128,.1); color: var(--sea-dark); }
+:root[data-theme="light"] .topbar > #topnav.mn a.mn-chip.is-qui { border-color: var(--sea); background: rgba(23,111,128,.08); color: var(--sea-dark); }
+:root[data-theme="light"] .topbar > #topnav.mn a.mn-guida { border-color: #d9dd7a; background: linear-gradient(105deg, #fdfee9, #f4f7c9); }
+:root[data-theme="light"] .mn-velo { background: rgba(18,31,39,.35); }
+@media (max-width: 560px) {
+  .topbar > #topnav.mn { left: .55rem; right: .55rem; width: auto; }
+}
+
+/* ======================================================================
+   Telefono: tutto più compatto (13 ott 2026, "ottimizza al 100% da mobile")
+   Le tendine chiuse erano alte ~120 px con 30 px di vuoto tra l'una e l'altra,
+   l'intestazione incollata della sezione aperta si prendeva 125 px di schermo.
+   html.vt-compatto: tutte le pagine tranne /barcolana2026/ (body.bcn), che ha la sua grafica approvata.
+   ====================================================================== */
+@media (max-width: 700px) {
+  html.vt-compatto .site-page-title { margin: .5rem 0 .45rem; font-size: 1.12rem; line-height: 1.2; letter-spacing: -.01em; }
+  html.vt-compatto .meteo-phase { margin: .95rem 0 .5rem; padding: .42rem .6rem; gap: .55rem; align-items: center; border-left-width: 4px; border-radius: 9px; box-shadow: none; }
+  html.vt-compatto .hero > .meteo-phase { margin: 0; }
+  html.vt-compatto .meteo-phase h2 { font-size: .88rem; }
+  html.vt-compatto .meteo-phase p { display: none; }
+  html.vt-compatto .meteo-phase-kicker { margin-top: 0; padding: .26rem .5rem; font-size: .58rem; }
+  html.vt-compatto .hero { gap: .6rem; margin-top: 0; }
+  html.vt-compatto .console-card,
+  html.vt-compatto .side-card { padding: .85rem .9rem; border-radius: 12px; }
+
+  /* tendine: una riga di titolo, sottotitolo su una riga, "apri" piccolo */
+  html.vt-compatto .gruppo-collapse { margin-top: .55rem; scroll-margin-top: 70px; }
+  html.vt-compatto .gruppo-sum {
+    min-height: 54px; margin-bottom: .55rem; padding: .5rem .65rem .5rem .8rem;
+    gap: .6rem; border-left-width: 4px; border-radius: 10px;
+  }
+  html.vt-compatto .gruppo-sum-main { min-width: 0; }
+  html.vt-compatto .gruppo-sum-main strong { font-size: .94rem; line-height: 1.15; letter-spacing: .03em; }
+  html.vt-compatto .gruppo-sum-main span {
+    font-size: .72rem; font-weight: 650; line-height: 1.3;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  html.vt-compatto .gruppo-sum::after { flex: none; min-height: 28px; padding: .2rem .6rem; font-size: .7rem; white-space: nowrap; }
+  /* aperta e incollata sotto la barra: solo il titolo */
+  html.vt-compatto .gruppo-collapse[open] > .gruppo-sum { min-height: 42px; padding-top: .35rem; padding-bottom: .35rem; }
+  html.vt-compatto .gruppo-collapse[open] > .gruppo-sum .gruppo-sum-main span { display: none; }
+
+  html.vt-compatto .section { margin-bottom: .6rem; padding: .8rem; border-radius: 10px; }
+  html.vt-compatto .page-collapse > .section:first-of-type { margin-top: .4rem; }
+  html.vt-compatto .section h2 { font-size: 1rem; }
+
+  /* badge "SOLO BORA · NE" sulla riga del titolo, non su una riga a sé */
+  html.vt-compatto .side-card h2 .bora-only-badge,
+  html.vt-compatto .bd-titolo .bora-only-badge { display: inline-flex; margin: 0 0 0 .45rem; }
+}
+/* blocco centraline dentro "Mappa e centraline live" */
+.centraline-titolo { margin: 1rem 0 .5rem; color: var(--label); font-size: .7rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.aggiorna-riga { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1rem; }
+
+/* ======================================================================
+   Webcam: tocco = schermo intero (footer-widgets.js) e telefono in orizzontale
+   ====================================================================== */
+.cam-zoom { position: relative; display: block; width: fit-content; max-width: 100%; margin-left: auto; margin-right: auto; }
+.cam-zoom-badge {
+  position: absolute; right: .5rem; bottom: .55rem; display: inline-flex; align-items: center; gap: .3rem;
+  padding: .3rem .55rem; border-radius: 999px; background: rgba(5,7,9,.72); color: #fff;
+  font-size: .7rem; font-weight: 800; line-height: 1; pointer-events: none;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.cam-zoom:not(.cam-pronta) .cam-zoom-badge { display: none; }
+.cam-lb {
+  position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center;
+  background: #000; color: #fff; touch-action: pinch-zoom;
+}
+.cam-lb[hidden] { display: none; }
+.cam-lb img { display: block; max-width: 100vw; max-height: 100vh; max-height: 100dvh; width: auto; height: auto; object-fit: contain; }
+.cam-lb-barra {
+  position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; gap: .8rem;
+  padding: max(.6rem, env(safe-area-inset-top)) max(.8rem, env(safe-area-inset-right)) .6rem max(.8rem, env(safe-area-inset-left));
+  background: linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,0)); font-size: .85rem; font-weight: 800;
+}
+html .cam-lb .cam-lb-x {
+  flex: none; width: 44px; height: 44px; min-height: 0; margin: 0; padding: 0; display: grid; place-items: center;
+  border: 1px solid rgba(255,255,255,.35); border-radius: 50%; background: rgba(0,0,0,.45); color: #fff; font-size: 1.1rem; box-shadow: none;
+}
+.cam-lb-hint {
+  position: absolute; left: 50%; bottom: max(.8rem, env(safe-area-inset-bottom)); transform: translateX(-50%);
+  margin: 0; padding: .35rem .7rem; border-radius: 999px; background: rgba(0,0,0,.55); color: #d8dee2;
+  font-size: .72rem; font-weight: 700; white-space: nowrap;
+}
+@media (orientation: landscape) { .cam-lb-hint { display: none; } }
+html.cam-lb-aperto, html.cam-lb-aperto body { overflow: hidden; }
+
+/* Telefono in orizzontale (poca altezza): prima barra in alto + intestazione incollata
+   della sezione coprivano un terzo dello schermo e la webcam non si vedeva mai intera.
+   Qui la barra scorre via con la pagina, niente intestazioni incollate né barra in basso,
+   e ogni webcam sta dentro lo schermo. */
+@media (orientation: landscape) and (max-height: 520px) {
+  html.vt-compatto .topbar { position: relative; }
+  html.vt-compatto .gruppo-collapse[open] > .gruppo-sum { position: static; }
+  html.vt-compatto .ux-mobile-dock { display: none !important; }
+  html.vt-compatto body { padding-bottom: 1rem; }
+  html.vt-compatto { scroll-padding-top: 8px; }
+  html.vt-compatto a > img.webcam { display: block; width: auto; max-width: 100%; max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); margin: 0 auto; object-fit: contain; }
+  html.vt-compatto .cam-video { display: block; width: min(100%, calc((100vh - 2rem) * 16 / 9)); width: min(100%, calc((100dvh - 2rem) * 16 / 9)); margin-left: auto; margin-right: auto; }
+  html.vt-compatto #radarImg, html.vt-compatto #boraImg, html.vt-compatto #aladinImg { display: block; width: auto; max-width: 100%; max-height: calc(100dvh - 2rem); margin: 0 auto; }
+  .bc58-pop { display: none; }
+}
+
+/* Schede delle centraline (home, dentro Mappa e centraline): numero a sinistra, direzione e
+   raffica a destra, invece di tre righe centrate. Da ~200 a ~90 px per scheda. */
+#centraline .pannello {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "hero dir" "hero raff";
+  align-items: center; column-gap: .9rem; row-gap: .25rem; text-align: left;
+}
+#centraline .pannello > .tws-hero { grid-area: hero; margin: 0; font-size: 3rem; line-height: 1; }
+#centraline .pannello > .tws-dir { grid-area: dir; justify-content: flex-start; align-self: end; margin: 0; }
+#centraline .pannello > .tws-raffica { grid-area: raff; align-self: start; margin: 0; text-align: left; }
+#centraline .section > h2 { margin-bottom: .55rem; }
+@media (max-width: 700px) {
+  #centraline .quick-grid { gap: .6rem; }
+  #centraline .section { margin-bottom: 0; }
+  #centraline .trend { margin-top: .6rem; }
+}

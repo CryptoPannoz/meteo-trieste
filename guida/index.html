@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guida a Vento Trieste: surfometro, spinta della bora, previsioni e Windguru</title>
+  <meta name="description" content="Come si legge Vento Trieste, spiegato semplice: il surfometro, la spinta della bora, la mappa e le centraline, le previsioni OSMER, ALADIN e Windguru con il modello WG." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://ventotrieste.info/guida/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content="Guida a Vento Trieste: come si legge" />
+  <meta property="og:description" content="Surfometro, spinta della bora, mappa, previsioni e Windguru spiegati in modo semplice." />
+  <meta property="og:url" content="https://ventotrieste.info/guida/" />
+  <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#07090c" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Guida a Vento Trieste: come si legge","description":"Surfometro, spinta della bora, mappa, previsioni e Windguru spiegati in modo semplice.","inLanguage":"it-IT","mainEntityOfPage":"https://ventotrieste.info/guida/","author":{"@type":"Person","name":"Alberto Broggi","url":"https://bebroggi.it/"},"publisher":{"@type":"Organization","name":"Vento Trieste","url":"https://ventotrieste.info/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Guida","item":"https://ventotrieste.info/guida/"}]}]}</script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261013" />
+  <!-- Guida unica (13 ott 2026, Alberto: "una guida semplice: surfometro, spinta della bora, previsioni,
+       modello WG, tutto in una guida, e tutto nel menu"). Stesso header, menu e barra in basso del
+       sito (footer-widgets.js); i capitoli hanno ancore fisse (#surfometro, #spinta-bora, #mappa,
+       #webcam, #previsioni, #windguru, #registro, #parole) usate dal menu raggruppato. -->
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+    body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+    .brand { display: inline-flex; flex-direction: column; color: var(--ink); line-height: 1.05; text-decoration: none; }
+    .brand strong { font-size: 1.02rem; font-weight: 700; letter-spacing: -.02em; }
+    .brand span { margin-top: .15rem; color: var(--label); font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; }
+    .theme-toggle-label { display: inline; }
+
+    .g { max-width: 760px; margin: 0 auto; }
+    .g-briciole { margin: 1rem 0 .6rem; color: var(--label); font-size: .76rem; }
+    .g-briciole a { font-weight: 750; }
+    .g-testa { padding: 1.15rem 1.15rem 1.05rem; border: 1px solid var(--line); border-left: 5px solid var(--signal); border-radius: 14px;
+      background: linear-gradient(105deg, #1b1e0e, #10151a 70%); }
+    .g-kicker { display: inline-flex; padding: .26rem .55rem; border-radius: 999px; background: var(--signal); color: #090b0d;
+      font-size: .62rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+    .g-testa h1 { margin: .55rem 0 .4rem; font-size: clamp(1.6rem, 6vw, 2.3rem); line-height: 1.08; letter-spacing: -.03em; }
+    .g-testa p { margin: 0; color: var(--label); font-size: .95rem; }
+    .g-indice { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .9rem; }
+    .g-indice a { display: inline-flex; align-items: center; min-height: 34px; padding: .3rem .7rem; border: 1px solid #2f3942; border-radius: 999px;
+      background: #151b21; color: var(--ink); font-size: .76rem; font-weight: 750; text-decoration: none; }
+    .g-indice a:hover { border-color: var(--signal); background: var(--signal); color: #090b0d; }
+
+    .g-sez { margin: .8rem 0; padding: 1.05rem 1.1rem 1.1rem; border: 1px solid var(--line); border-radius: 14px; background: #10151a; }
+    .g-sez h2 { display: flex; align-items: center; gap: .55rem; margin: 0 0 .55rem; font-size: 1.22rem; line-height: 1.2; letter-spacing: -.01em; }
+    .g-n { display: inline-grid; flex: none; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 8px; background: var(--signal); color: #090b0d;
+      font-size: .82rem; font-weight: 900; }
+    .g-sez h3 { margin: 1.05rem 0 .3rem; font-size: .98rem; }
+    .g-sez p, .g-sez li { color: var(--ink); font-size: .95rem; }
+    .g-sez p { margin: .35rem 0 .7rem; }
+    .g-sez ul, .g-sez ol { margin: .3rem 0 .8rem; padding-left: 1.2rem; }
+    .g-sez li { margin-bottom: .35rem; }
+    .g-sez li::marker { color: var(--signal); }
+    .g-in-breve { margin: .2rem 0 .8rem; padding: .7rem .8rem; border-radius: 10px; background: rgba(240,244,60,.08); border: 1px solid rgba(240,244,60,.28); }
+    .g-in-breve strong:first-child { color: var(--signal); }
+    .g-nota { color: var(--label) !important; font-size: .84rem !important; }
+    .g-vai { display: inline-flex; align-items: center; gap: .35rem; min-height: 40px; margin-top: .3rem; padding: .45rem .85rem; border-radius: 10px;
+      background: var(--signal); color: #090b0d !important; font-size: .84rem; font-weight: 800; text-decoration: none; }
+    .g-vai:hover { background: #fff; }
+
+    /* scala del surfometro */
+    .g-scala { display: grid; gap: .3rem; margin: .5rem 0 .8rem; }
+    .g-scala div { display: grid; grid-template-columns: 6.6rem 4.6rem 1fr; align-items: center; gap: .55rem; padding: .42rem .55rem; border-radius: 8px; background: #151b21; font-size: .86rem; }
+    .g-scala b { display: inline-flex; align-items: center; gap: .4rem; }
+    .g-scala i { flex: none; width: 12px; height: 12px; border-radius: 3px; }
+    .g-scala span { color: var(--label); font-variant-numeric: tabular-nums; font-weight: 700; }
+    .g-scala em { font-style: normal; color: var(--ink); opacity: .85; }
+
+    /* fasce della spinta */
+    .g-fasce { display: grid; gap: .3rem; margin: .5rem 0 .8rem; }
+    .g-fasce div { display: grid; grid-template-columns: 4.6rem 1fr; gap: .6rem; align-items: start; padding: .45rem .6rem; border-radius: 8px; background: #151b21; border-left: 4px solid var(--c); font-size: .88rem; }
+    .g-fasce span { color: var(--c); font-weight: 850; font-variant-numeric: tabular-nums; }
+    .g-figura { margin: .4rem 0 .8rem; padding: .6rem .5rem .4rem; border: 1px solid var(--line); border-radius: 10px; background: #0b0f13; }
+    .g-figura svg { display: block; width: 100%; height: auto; }
+    .g-figura figcaption { margin-top: .3rem; color: var(--label); font-size: .76rem; text-align: center; }
+
+    .g-tabella { width: 100%; margin: .5rem 0 .9rem; border-collapse: collapse; font-size: .86rem; }
+    .g-tabella th, .g-tabella td { padding: .5rem .45rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .g-tabella th { color: var(--signal); font-size: .74rem; letter-spacing: .04em; text-transform: uppercase; }
+    .g-tabella td:first-child { font-weight: 800; white-space: nowrap; }
+
+    .g-parole { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .45rem; margin-top: .4rem; }
+    .g-parole div { padding: .55rem .65rem; border-radius: 9px; background: #151b21; font-size: .86rem; line-height: 1.45; }
+    .g-parole b { display: block; color: var(--signal); }
+    .g-link { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .45rem; }
+    .g-link a { display: block; padding: .6rem .7rem; border: 1px solid #2f3942; border-radius: 10px; background: #151b21; color: var(--ink); text-decoration: none; font-size: .86rem; }
+    .g-link a b { display: block; color: var(--signal); font-size: .9rem; }
+    .g-link a:hover { border-color: var(--signal); }
+    .page-footer { max-width: 760px; margin: 1.2rem auto 0; color: var(--label); font-size: .76rem; text-align: center; }
+
+    :root[data-theme="light"] .g-testa { background: linear-gradient(105deg, #fdfee9, #fff 70%); border-left-color: var(--sea); }
+    :root[data-theme="light"] .g-sez { background: #fff; }
+    :root[data-theme="light"] .g-indice a,
+    :root[data-theme="light"] .g-scala div,
+    :root[data-theme="light"] .g-fasce div,
+    :root[data-theme="light"] .g-parole div,
+    :root[data-theme="light"] .g-link a { background: #f3f6f7; border-color: var(--line); }
+    :root[data-theme="light"] .g-figura { background: #f7f9f9; }
+    :root[data-theme="light"] .g-in-breve { background: #f7f9df; border-color: #d9dd7a; }
+    :root[data-theme="light"] .g-in-breve strong:first-child,
+    :root[data-theme="light"] .g-parole b,
+    :root[data-theme="light"] .g-link a b,
+    :root[data-theme="light"] .g-tabella th { color: var(--sea-dark); }
+    :root[data-theme="light"] .g-n { background: var(--signal); }
+    @media (max-width: 560px) {
+      body { padding: 0 .7rem 1.5rem; }
+      .topbar { margin-left: -.7rem; margin-right: -.7rem; padding: .55rem .7rem; }
+      .theme-toggle-label { display: none; }
+      .g-sez { padding: .9rem .85rem 1rem; border-radius: 12px; }
+      .g-sez h2 { font-size: 1.1rem; }
+      .g-scala div { grid-template-columns: 6.2rem 4.2rem 1fr; gap: .4rem; font-size: .8rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle-label">Chiaro</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
+        <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+        Menu
+      </button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni del sito" data-dock="/#vento,/#webcam,/#radarLive,/#previsioni" hidden>
+      <a href="/#vento">Vento ora</a>
+      <a href="/#mappaVento">Mappa e centraline</a>
+      <a href="/#webcam">Webcam</a>
+      <a href="/#radarLive">Radar pioggia</a>
+      <a href="/#boe">Boe e onde</a>
+      <a href="/#previsioni">Previsioni</a>
+      <a href="/registro/">Registro del vento</a>
+    </nav>
+  </header>
+
+  <main class="g">
+    <nav class="g-briciole" aria-label="Percorso"><a href="/">Vento Trieste</a> / Guida</nav>
+
+    <header class="g-testa">
+      <span class="g-kicker">Guida</span>
+      <h1>Come si legge Vento Trieste</h1>
+      <p>Tutto quello che c'è nel sito, spiegato semplice: cinque minuti e sai leggere vento, bora e previsioni del Golfo.</p>
+      <nav class="g-indice" aria-label="Capitoli">
+        <a href="#surfometro">Surfometro</a>
+        <a href="#spinta-bora">Spinta della Bora</a>
+        <a href="#mappa">Mappa e centraline</a>
+        <a href="#webcam">Webcam</a>
+        <a href="#previsioni">Previsioni</a>
+        <a href="#windguru">Windguru e WG</a>
+        <a href="#registro">Registro</a>
+        <a href="#parole">Parole del vento</a>
+      </nav>
+    </header>
+
+    <section class="g-sez" aria-labelledby="t-breve">
+      <h2 id="t-breve"><span class="g-n">⚡</span>In 30 secondi</h2>
+      <ol>
+        <li><strong>Surfometro</strong>: quanto vento c'è <em>adesso</em> a Barcola, con una parola in triestino.</li>
+        <li><strong>Spinta della Bora</strong>: se la bora sta arrivando, c'è o sta finendo.</li>
+        <li><strong>Mappa e centraline</strong>: com'è il vento negli altri punti del Golfo.</li>
+        <li><strong>Previsioni</strong>: cosa succede nelle prossime ore e nei prossimi giorni.</li>
+      </ol>
+      <p class="g-nota">Regola d'oro: guarda sempre l'<strong>ora del dato</strong>. Un dato vecchio non dice com'è il vento adesso: il sito lo segnala e non lo usa.</p>
+    </section>
+
+    <!-- 1. SURFOMETRO -->
+    <section class="g-sez" id="surfometro" aria-labelledby="t-surf">
+      <h2 id="t-surf"><span class="g-n">1</span>Il surfometro</h2>
+      <p class="g-in-breve"><strong>In breve:</strong> è il vento di adesso a Barcola. La parola grande dice se si esce, i due numeri dicono quanto vento c'è.</p>
+      <h3>I due numeri</h3>
+      <ul>
+        <li><strong>Vento medio</strong> (riquadro giallo): il vento che c'è davvero, in modo costante. È quello che decide la parola grande.</li>
+        <li><strong>Raffica</strong> (riquadro azzurro): il colpo più forte degli ultimi minuti. Se è molto più alta della media il vento è "a strappi": più difficile da gestire.</li>
+      </ul>
+      <p>Si misura in <strong>nodi (kt)</strong>, l'unità del mare: 1 nodo = 1,85 km/h. Quindi 10 kt sono circa 18,5 km/h, 20 kt circa 37 km/h.</p>
+      <h3>La scala, in triestino</h3>
+      <div class="g-scala" role="list">
+        <div role="listitem"><b><i style="background:#888780"></i>Bavisela</b><span>0–8 kt</span><em>brezza leggera, vento troppo debole</em></div>
+        <div role="listitem"><b><i style="background:#2AA198"></i>Arietta</b><span>8–13 kt</span><em>wingfoil con vele grandi</em></div>
+        <div role="listitem"><b><i style="background:#6FA83C"></i>Sufia</b><span>13–18 kt</span><em>tutti in acqua: xe aria!</em></div>
+        <div role="listitem"><b><i style="background:#4E8718"></i>Sufia ben</b><span>18–25 kt</span><em>wingfoil con vele piccole e windsurf</em></div>
+        <div role="listitem"><b><i style="background:#2F5A0E"></i>Sufia sai ben</b><span>25–35 kt</span><em>pochi wing, tanti windsurf</em></div>
+        <div role="listitem"><b><i style="background:#D63A3A"></i>Buriana!</b><span>oltre 35</span><em>meglio restare a terra</em></div>
+      </div>
+      <p>Sulla barra colorata la <strong>linea gialla</strong> è il vento medio, quella <strong>azzurra</strong> la raffica: più sono distanti, più il vento è irregolare.</p>
+      <h3>Direzione</h3>
+      <p>L'etichetta (es. <strong>NE · BORA</strong>) dice <strong>da dove viene</strong> il vento. La freccia invece punta <strong>dove va</strong>: con la bora, che arriva da nord-est, la freccia punta verso sud-ovest, cioè verso il mare aperto.</p>
+      <h3>Da dove arriva il dato</h3>
+      <p>Prima scelta la centralina di <strong>Barcola</strong>. Se non si aggiorna da più di 20 minuti il surfometro passa a <strong>Monte Grisa</strong> e poi alla boa <strong>MAMBO1</strong> davanti a Miramare. In "ℹ️ Fonte dati", sotto la barra, c'è sempre quale fonte sta usando e di che ora è il dato. In alto a destra: alba e tramonto di oggi.</p>
+      <a class="g-vai" href="/#vento">Apri il surfometro →</a>
+    </section>
+
+    <!-- 2. SPINTA DELLA BORA -->
+    <section class="g-sez" id="spinta-bora" aria-labelledby="t-bora">
+      <h2 id="t-bora"><span class="g-n">2</span>La spinta della Bora</h2>
+      <p class="g-in-breve"><strong>In breve:</strong> dice quanto "spinge" la bora. Più il numero è alto, più bora c'è o sta per arrivare. Sopra <strong>3,5</strong> la bora si accende.</p>
+      <h3>Come funziona</h3>
+      <p>La bora nasce quando dall'altra parte del Carso, verso <strong>Maribor</strong> in Slovenia, si accumula aria fredda e pesante: lì la pressione diventa più alta che sul golfo. Come acqua dietro una diga, quell'aria a un certo punto <strong>trabocca giù dall'altipiano verso il mare</strong>: è la bora.</p>
+      <p>Il numero è proprio questa differenza: <strong>pressione di Maribor − pressione di Trieste</strong>, in ettopascal (hPa), riportate al livello del mare per poterle confrontare.</p>
+      <div class="g-fasce">
+        <div style="--c:#8d979f"><span>sotto 3,5</span><p style="margin:0"><strong>Spinta debole</strong> — non basta per la bora. Se c'è vento, di solito è un altro (brezza, scirocco, maestrale).</p></div>
+        <div style="--c:#e0a80f"><span>3,5 – 5</span><p style="margin:0"><strong>Genesi della Bora</strong> — la soglia è superata: la bora si sta accendendo, arrivano i primi rinforzi da nord-est.</p></div>
+        <div style="--c:#e2680f"><span>5 – 8</span><p style="margin:0"><strong>Bora consistente</strong> — bora ben stabilita, raffiche decise.</p></div>
+        <div style="--c:#cf2e22"><span>oltre 8</span><p style="margin:0"><strong>Bora forte</strong> — raffiche violente: attenzione in mare e in città.</p></div>
+      </div>
+      <h3>Il grafico</h3>
+      <figure class="g-figura">
+        <svg viewBox="0 0 340 128" role="img" aria-label="Esempio di grafico della spinta: la linea sale oltre la soglia 3,5 e poi scende">
+          <rect x="24" y="8" width="310" height="22" fill="#cf2e22" opacity=".14"/>
+          <rect x="24" y="30" width="310" height="28" fill="#e2680f" opacity=".14"/>
+          <rect x="24" y="58" width="310" height="14" fill="#e0a80f" opacity=".14"/>
+          <line x1="24" x2="334" y1="72" y2="72" stroke="#e0a80f" stroke-dasharray="3 3"/>
+          <line x1="24" x2="334" y1="105" y2="105" stroke="#8d979f" stroke-opacity=".5"/>
+          <g fill="#8d979f" font-size="9" font-weight="700" text-anchor="end" font-family="Manrope, sans-serif"><text x="20" y="108">0</text><text x="20" y="75">3,5</text><text x="20" y="61">5</text><text x="20" y="33">8</text></g>
+          <g font-size="8" font-weight="800" text-anchor="end" font-family="Manrope, sans-serif"><text x="330" y="68" fill="#e0a80f">GENESI</text><text x="330" y="47" fill="#e2680f">CONSISTENTE</text><text x="330" y="22" fill="#cf2e22">FORTE</text></g>
+          <path d="M24 96 L50 94 L76 90 L100 86" fill="none" stroke="#8d979f" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M100 86 L124 78 L140 70 L160 58 L182 46 L204 42 L226 50 L250 66 L272 80 L300 92 L334 96" fill="none" stroke="#e2680f" stroke-width="2" stroke-dasharray="5 4" stroke-linecap="round"/>
+          <line x1="100" x2="100" y1="8" y2="112" stroke="#d6dde1" stroke-opacity=".6" stroke-dasharray="2 3"/>
+          <text x="104" y="17" fill="#d6dde1" font-size="8.5" font-weight="800" font-family="Manrope, sans-serif">ORA</text>
+          <circle cx="100" cy="86" r="4.5" fill="#8d979f" stroke="#10151a" stroke-width="2.5"/>
+          <g fill="#8d979f" font-size="9" font-weight="700" text-anchor="middle" font-family="Manrope, sans-serif"><text x="60" y="124">ultime 12 h</text><text x="220" y="124">prossime 36 h · previsione</text></g>
+        </svg>
+        <figcaption>Esempio: adesso la spinta è debole, ma la linea tratteggiata sale oltre 3,5 → bora in arrivo.</figcaption>
+      </figure>
+      <ul>
+        <li><strong>Linea piena</strong>: le ultime 12 ore. <strong>Linea tratteggiata</strong>: la previsione delle prossime 36 ore. La <strong>riga verticale</strong> è adesso.</li>
+        <li>Le <strong>fasce colorate</strong> sono le soglie: quando la linea entra nel giallo la bora si accende.</li>
+        <li>La frase sotto il verdetto riassume la tendenza, ad esempio <em>"soglia bora domani verso le 06"</em> o <em>"in calo · sotto soglia verso le 15"</em>.</li>
+        <li><strong>Tocca il grafico</strong> per leggere ora e valore di ogni punto.</li>
+      </ul>
+      <h3>La pressione anticipa, le centraline confermano</h3>
+      <p>La spinta sale spesso <strong>qualche ora prima</strong> che la bora arrivi sul golfo. Se la spinta è alta ma il surfometro è ancora calmo, la bora è in arrivo; se la spinta cala, la bora sta finendo anche se soffia ancora. Le soglie sono indicative: conta anche quanta aria fredda c'è in quota.</p>
+      <p class="g-nota">I valori vengono da Open-Meteo: sono stime di modello aggiornate ogni 15 minuti, non misure di una stazione. Il <strong>Grafico della Bora</strong> nelle Previsioni (profiwetter.ch, modello DWD) mostra la stessa differenza per 6 giorni ma con il segno opposto (Trieste − Maribor): lì la bora sta <em>sotto</em> lo zero e la soglia è la riga tratteggiata a −4.</p>
+      <a class="g-vai" href="/#vento">Guarda la spinta adesso →</a>
+    </section>
+
+    <!-- 3. MAPPA E CENTRALINE -->
+    <section class="g-sez" id="mappa" aria-labelledby="t-mappa">
+      <h2 id="t-mappa"><span class="g-n">3</span>Mappa e centraline live</h2>
+      <p class="g-in-breve"><strong>In breve:</strong> il vento misurato adesso in tutto il Golfo e in Istria. Serve a capire se il vento è dappertutto o solo in un punto.</p>
+      <h3>La mappa</h3>
+      <ul>
+        <li>Il <strong>numero</strong> è il vento medio in nodi; la <strong>freccia</strong> punta dove va il vento.</li>
+        <li>Il <strong>colore</strong> dice l'intensità: grigio sotto 8 kt, verde 8–14, arancio 15–24, rosso 25–34, viola da 35 in su.</li>
+        <li><strong>Tocca un numero</strong> per vedere stazione, raffica, direzione e ora del dato.</li>
+        <li>Le centraline ferme da più di 30 minuti non compaiono: niente dati vecchi spacciati per attuali.</li>
+      </ul>
+      <h3>Le schede delle centraline</h3>
+      <p>Sotto la mappa ci sono Trieste molo, Monte Grisa, Muggia, Marina Julia e Grado. Ogni scheda ha vento medio, raffica, direzione e il grafico delle ultime ore con la tendenza (<em>in aumento</em>, <em>in calo</em>, <em>stabile</em>). Nella "Tabella dettaglio" ci sono i valori uno per uno.</p>
+      <p class="g-nota"><strong>Monte Grisa</strong> sta in alto, sul Carso: legge il vento in quota, non quello sull'acqua. Per la pagina di un singolo spot usa il menu → Spot.</p>
+      <a class="g-vai" href="/#mappaVento">Apri mappa e centraline →</a>
+    </section>
+
+    <!-- 4. WEBCAM -->
+    <section class="g-sez" id="webcam" aria-labelledby="t-webcam">
+      <h2 id="t-webcam"><span class="g-n">4</span>Webcam</h2>
+      <p>Barcola, la Società Velica di Barcola e Grignano, Sistiana, Monfalcone e Grado. Guarda il mare: tante <strong>pecorelle bianche</strong> vogliono dire circa 12 nodi o più.</p>
+      <ul>
+        <li><strong>Tocca una webcam</strong> per vederla a schermo intero; <strong>gira il telefono</strong> per vederla più grande. Tocca di nuovo o la ✕ per tornare.</li>
+        <li>I video live hanno il loro pulsante schermo intero in basso a destra.</li>
+        <li>Una webcam ferma da ore sparisce da sola e torna quando riparte.</li>
+      </ul>
+      <a class="g-vai" href="/#webcam">Apri le webcam →</a>
+    </section>
+
+    <!-- 5. PREVISIONI -->
+    <section class="g-sez" id="previsioni" aria-labelledby="t-prev">
+      <h2 id="t-prev"><span class="g-n">5</span>Le previsioni</h2>
+      <p class="g-in-breve"><strong>In breve:</strong> il live dice com'è adesso, le previsioni come sarà. Nella sezione Previsioni ci sono quattro strumenti, dal più semplice al più tecnico.</p>
+      <table class="g-tabella">
+        <thead><tr><th>Strumento</th><th>Cosa ti dice</th></tr></thead>
+        <tbody>
+          <tr><td>OSMER FVG</td><td>Il bollettino scritto dai previsori della Regione (ARPA FVG - S.O.C. OSMER e GRN), giorno per giorno. Il punto di partenza.</td></tr>
+          <tr><td>Grafico della Bora</td><td>La differenza di pressione Trieste − Maribor per i prossimi 6 giorni (profiwetter.ch, modello DWD). Bora quando la linea scende sotto −4.</td></tr>
+          <tr><td>Modello ALADIN</td><td>Mappe del vento sul golfo ogni 3 ore (ARSO, Slovenia): frecce e colori. Usa ◀ ▶ per scorrere le ore.</td></tr>
+          <tr><td>Windguru</td><td>La tabella ora per ora per lo spot Trieste: vento, raffiche, direzione, temperatura, nuvole e pioggia. Vedi il capitolo successivo.</td></tr>
+        </tbody>
+      </table>
+      <p>Il <strong>radar della pioggia</strong> (ARSO) invece non è una previsione: mostra la pioggia caduta nelle ultime ore, per questo sta tra le sezioni live.</p>
+      <a class="g-vai" href="/#previsioni">Apri le previsioni →</a>
+    </section>
+
+    <!-- 6. WINDGURU -->
+    <section class="g-sez" id="windguru" aria-labelledby="t-wg">
+      <h2 id="t-wg"><span class="g-n">6</span>Windguru e il modello WG</h2>
+      <p class="g-in-breve"><strong>In breve:</strong> <strong>WG</strong> per decidere il giorno, <strong>ALADIN</strong> e <strong>ICON-2I</strong> per decidere l'ora, le <strong>centraline</strong> per decidere se uscire.</p>
+      <h3>Come si legge la tabella</h3>
+      <ul>
+        <li>Ogni <strong>colonna</strong> è un momento della giornata (giorno e ora in alto); si scorre di lato per i giorni successivi.</li>
+        <li>Le righe principali sono <strong>vento medio</strong> e <strong>raffiche</strong> in nodi: più la casella è colorata e "calda", più vento c'è.</li>
+        <li>La <strong>freccia</strong> indica dove va il vento (come sulla nostra mappa): una freccia che punta in basso a sinistra è vento da nord-est, la bora.</li>
+        <li>Sotto: temperatura, nuvole e pioggia prevista.</li>
+      </ul>
+      <h3>Cos'è il modello WG</h3>
+      <p><strong>WG non è un modello meteo a sé</strong>: è la sintesi di Windguru, che mette insieme più modelli e ne fa una media pesata. Per questo è più stabile e comodo per un'idea veloce dei prossimi giorni, ma tende ad <strong>ammorbidire i picchi</strong> e i fenomeni molto locali, come le raffiche di bora o la brezza del pomeriggio.</p>
+      <h3>ALADIN e ICON-2I</h3>
+      <p>Sono modelli <strong>ad alta risoluzione</strong> (griglia di circa 2 km): "vedono" la costa, il Carso e le brezze. <strong>ALADIN</strong> (2,3 km) è un modello locale molto preciso sul Nord Adriatico e sulla bora; <strong>ICON-2I</strong> (2,2 km) è la versione italiana del modello tedesco ICON, attenta a brezze e raffiche. Se i due dicono la stessa cosa la previsione è più affidabile; se divergono c'è incertezza.</p>
+      <p class="g-nota">Un modello non è una misura: confronta sempre la previsione con quello che dicono le centraline in quel momento. Windguru si carica solo quando apri Previsioni, per non appesantire la pagina.</p>
+      <a class="g-vai" href="/#windy">Apri Windguru →</a>
+    </section>
+
+    <!-- 7. REGISTRO -->
+    <section class="g-sez" id="registro" aria-labelledby="t-reg">
+      <h2 id="t-reg"><span class="g-n">7</span>Il registro del vento</h2>
+      <p>Il diario del vento del Golfo, giorno per giorno dalle 6 alle 19: media e raffica massima. Una giornata è <strong>surfabile</strong> quando il vento medio sul golfo resta <strong>sopra i 12 nodi per almeno 4 ore</strong>. Il grafico le conta per mese o per settimana.</p>
+      <p>Il registro completo, con ogni centralina ogni 15 minuti e il file CSV da scaricare, è su una pagina a parte.</p>
+      <a class="g-vai" href="/registro/">Apri il registro completo →</a>
+    </section>
+
+    <!-- 8. PAROLE -->
+    <section class="g-sez" id="parole" aria-labelledby="t-parole">
+      <h2 id="t-parole"><span class="g-n">8</span>Parole del vento</h2>
+      <div class="g-parole">
+        <div><b>Nodo (kt)</b>1 kt = 1,85 km/h. 15 kt ≈ 28 km/h.</div>
+        <div><b>Raffica</b>Il colpo più forte di vento in pochi secondi.</div>
+        <div><b>Bora (NE)</b>Da nord-est, fredda, secca e a raffiche. Scende dal Carso: soffia da terra verso il mare.</div>
+        <div><b>Scirocco (SE)</b>Da sud-est, caldo e umido: più costante, porta onda e mare mosso.</div>
+        <div><b>Maestrale (NW–W)</b>La brezza estiva del pomeriggio, regolare: il vento classico di Žusterna.</div>
+        <div><b>Libeccio (SW)</b>Da sud-ovest, dal mare aperto: porta onda.</div>
+        <div><b>hPa</b>Ettopascal, l'unità della pressione dell'aria (1013 è la media al livello del mare).</div>
+        <div><b>Osservazione e previsione</b>Osservazione = misura di adesso (surfometro, mappa). Previsione = stima di un modello per il futuro.</div>
+      </div>
+    </section>
+
+    <!-- APPROFONDIRE -->
+    <section class="g-sez" aria-labelledby="t-altro">
+      <h2 id="t-altro"><span class="g-n">+</span>Per approfondire</h2>
+      <div class="g-link">
+        <a href="/bora-trieste/"><b>Guida alla Bora</b>Come nasce e come leggerla</a>
+        <a href="/come-leggere-surfometro/"><b>Il surfometro nel dettaglio</b>Media, raffica, freschezza del dato</a>
+        <a href="/modelli-vento-trieste/"><b>Modelli del vento</b>Live e previsione a confronto</a>
+        <a href="/mappa/"><b>Mappa a schermo intero</b>Tutte le centraline</a>
+        <a href="/spot/"><b>Gli spot</b>Muggia, Žusterna, Grado, Lignano…</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="page-footer">Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+
+  <script src="/footer-widgets.js?v=20261013"></script>
+  <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
+  <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script src="/eventi.js?v=20261005" defer></script>
+  <script src="/vt-app.js?v=20261008" defer></script>
+</body>
+</html>

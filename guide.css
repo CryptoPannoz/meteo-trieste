@@ -73,7 +73,7 @@ h1 { position: relative; max-width: 800px; margin: .85rem 0 .8rem; font-size: cl
 .page-footer { padding: 1.5rem 1rem 2.5rem; color: var(--muted); text-align: center; font-size: .74rem; }
 .page-footer nav { display: flex; justify-content: center; flex-wrap: wrap; gap: .7rem; margin-bottom: .7rem; }
 @media (max-width: 760px) {
-  .toplinks a:not(:first-child) { display: none; }
+  .toplinks a:not(:first-child):not(.tl-guida) { display: none; }   /* su telefono: Vento ora + Guida */
   main { width: min(calc(100% - 1rem), 1080px); padding-top: 1rem; }
   .hero-guide { border-radius: 18px; }
   .content-grid { grid-template-columns: 1fr; }

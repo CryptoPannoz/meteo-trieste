@@ -918,12 +918,13 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20261008" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261013" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
   <!-- Mappa del vento: qui la vista è centrata su Marina Julia, quindi i punti
        del lato Trieste (boa Mambo, Barcola, Muggia) e Žusterna non si disegnano. -->
   <script>window.__mappaEscludi = ["mambo", "barcola", "trieste", "muggia", "zusterna"];</script>
   <script src="/mappa-golfo.js?v=20261002" defer></script>
+  <script src="/spinta-bora.js?v=20261013"></script>
 </head>
 <body>
 
@@ -2312,6 +2313,7 @@
        (la pressione di superficie sarebbe ~30 hPa più bassa solo per via dell'altitudine). */
     function apriDeltaBora(){ document.getElementById("modalDeltaBora").style.display = "block"; }
     function caricaDeltaBora() {
+      if (window.SpintaBora) return window.SpintaBora.aggiorna();   // grafico e tendenza: /spinta-bora.js
       const stato = document.getElementById("deltaBoraStato");
       const infoBtn = ' · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>';
       const api = (lat, lon) =>
@@ -2480,7 +2482,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js?v=20261012"></script>
+  <script src="/footer-widgets.js?v=20261013"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoMarinaJuliaSeo">

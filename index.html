@@ -1554,9 +1554,10 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261008" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261013" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261002" defer></script>
+  <script src="./spinta-bora.js?v=20261013"></script>
 </head>
 <body>
 
@@ -1587,13 +1588,12 @@
     </div>
     <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" data-dock="#vento,#webcam,#radarLive,#previsioni" hidden>
       <a href="#vento">Vento ora</a>
-      <a href="#centraline">Centraline</a>
-      <a href="#boe">Boe meteo</a>
-      <a href="#mappaVento">Mappa vento</a>
-      <a href="#previsioni">Previsioni</a>
+      <a href="#mappaVento">Mappa e centraline</a>
       <a href="#webcam">Webcam</a>
+      <a href="#boe">Boe e onde</a>
+      <a href="#previsioni">Previsioni</a>
+      <a href="#registro">Registro del vento</a>
       <a href="#istria" onclick="apriSpotIstria(event)">Spot Istria</a>
-      <a href="#registro">📋 Registro del vento</a>
       <a href="#" class="topnav-birra" onclick="apriBirra(event)" aria-label="Offrimi una birra">♥ Offrimi una birra</a>
     </nav>
   </header>
@@ -1738,18 +1738,41 @@
 
     </section>
 
-  <!-- DATI CENTRALINE -->
-  <details class="gruppo-collapse page-collapse" id="centraline">
+  <!-- MAPPA E CENTRALINE LIVE (13 ott 2026): una tendina sola con la mappa del Golfo e, sotto,
+       le schede delle centraline (prima erano due tendine separate, "Centraline" e "Mappa live").
+       id="centraline" resta sul blocco delle schede: i vecchi link /#centraline aprono questa
+       tendina e portano alle schede. data-sum-fisso: footer-widgets.js non riscrive il sottotitolo. -->
+  <details class="gruppo-collapse page-collapse" id="mappaVento" data-sum-fisso>
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
-      <strong>📡 Centraline</strong>
-      <span>Trieste, Monte Grisa, Muggia, Marina Julia e Grado</span>
+      <strong>🌬️ Mappa e centraline live</strong>
+      <span>Mappa del Golfo e 5 centraline a confronto</span>
     </span>
   </summary>
 
+  <div class="section" id="mappaVentoContenuto">
+    <h2>Vento adesso – Golfo e Istria <span class="mappa-beta">BETA</span></h2>
+    <div class="mappa-nowcast-head">
+      <p>Dati osservati dalle stazioni attive, non una previsione.</p>
+      <span class="mappa-nowcast-hint">Tocca un numero → si apre il dettaglio</span>
+    </div>
+    <div class="mappa-canvas">
+      <svg id="mappaGolfo" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento osservato nel Golfo di Trieste e in Istria"></svg>
+    </div>
+    <div class="mappa-legenda" aria-label="Legenda intensità del vento">
+      <span><i style="background:#8a94a0;"></i> &lt;8 kt</span>
+      <span><i style="background:#3b6d11;"></i> 8–15 kt</span>
+      <span><i style="background:#b35c00;"></i> 15–25 kt</span>
+      <span><i style="background:#c20202;"></i> &gt;25 kt</span>
+    </div>
+    <p class="stato" id="mappaIstruzioni">La freccia indica dove va il vento; selezionala per vedere stazione, intensità, raffica, direzione e ora. Le centraline offline non vengono mostrate. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
+  </div>
+
+  <div class="centraline-blocco" id="centraline">
+  <p class="centraline-titolo">📡 Centraline · dati osservati</p>
   <div class="quick-grid">
   <div class="section" id="trieste">
-    <h2>Trieste (molo F.lli Bandiera) – dati in tempo reale</h2>
+    <h2>Trieste · molo F.lli Bandiera</h2>
     <div id="triesteCards"></div>
     <div class="trend" id="triesteTrend"></div>
     <details class="dettaglio">
@@ -1765,7 +1788,7 @@
   </div>
 
   <div class="section" id="grisa">
-    <h2>Monte Grisa – dati in tempo reale</h2>
+    <h2>Monte Grisa</h2>
     <div id="grisaCards"></div>
     <div class="trend" id="grisaTrend"></div>
     <details class="dettaglio">
@@ -1781,7 +1804,7 @@
   </div>
 
   <div class="section" id="muggia">
-    <h2>Muggia – dati in tempo reale</h2>
+    <h2>Muggia</h2>
     <div id="muggiaCards"></div>
     <div class="trend" id="muggiaTrend"></div>
     <details class="dettaglio">
@@ -1797,7 +1820,7 @@
   </div>
 
   <div class="section" id="marinajulia">
-    <h2>Marina Julia (Monfalcone) – dati in tempo reale</h2>
+    <h2>Marina Julia · Monfalcone</h2>
     <div id="marinajuliaCards"></div>
     <div class="trend" id="marinajuliaTrend"></div>
     <details class="dettaglio">
@@ -1813,7 +1836,7 @@
   </div>
 
   <div class="section" id="grado">
-    <h2>Grado – dati in tempo reale</h2>
+    <h2>Grado</h2>
     <div id="gradoCards"></div>
     <div class="trend" id="gradoTrend"></div>
     <details class="dettaglio">
@@ -1831,11 +1854,84 @@
     </div>
   </div>
   </div>
+  </div>
 
-  <div class="section" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+  <div class="section aggiorna-riga">
     <button id="btnAggiorna">🔄 Aggiorna dati</button>
     <span class="stato" id="ultimoAggiornamento"></span>
   </div>
+  </details>
+
+  <details class="gruppo-collapse page-collapse" id="webcam">
+  <summary class="gruppo-sum">
+    <span class="gruppo-sum-main">
+      <strong>📷 Webcam</strong>
+      <span>Barcola, Sistiana, Monfalcone e Grado</span>
+    </span>
+  </summary>
+
+  <!-- WEBCAM · BARCOLA / TRIESTE -->
+  <div class="webcam-luogo">📍 Barcola · Trieste</div>
+  <div class="section" id="barcola">
+    <div id="camBarcolaBlock" data-cam-box>
+      <div class="webcam-intestazione">
+        <h2>Webcam Barcola</h2>
+        <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+      </div>
+      <a id="barcolaLink" href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank" rel="noopener">
+        <img class="webcam" data-src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" loading="lazy" />
+      </a>
+    </div>
+
+    <div id="camSvbgBlock">
+      <h2 style="margin-top:1.25rem;">Webcam Barcola – S.V.B.G.</h2>
+      <div id="camSvbgWrap">
+        <button class="cam-play" onclick="caricaCamSvbg()">▶ Avvia webcam live (Soc. Velica Barcola Grignano)</button>
+      </div>
+      <p class="stato">Fonte: <a href="https://www.svbg.it/" target="_blank" rel="noopener">svbg.it</a> · stream live (HLS)</p>
+    </div>
+  </div>
+
+  <!-- WEBCAM SATURNIA (Sacchetta): la sezione compare solo se lo stream rtsp.me è online -->
+  <div class="section" id="saturniaCam" style="display:none;">
+    <h2>Webcam – Canottieri Saturnia</h2>
+    <div id="camSaturniaWrap"></div>
+    <p class="stato">Fonte: <a href="https://www.canottierisaturniatrieste.com/webcam/" target="_blank" rel="noopener">canottierisaturniatrieste.com</a> · stream live (rtsp.me)</p>
+  </div>
+
+  <!-- WEBCAM · SISTIANA: HLS whatsupcams, nascosta se lo stream è offline -->
+  <div class="webcam-luogo">📍 Sistiana</div>
+  <div class="section" id="sistianaCam">
+    <h2>Webcam Baia di Sistiana</h2>
+    <div id="camSistianaWrap">
+      <button class="cam-play" onclick="caricaCamSistiana()">▶ Avvia webcam live (Baia di Sistiana)</button>
+    </div>
+    <p class="stato">Fonte: <a href="https://www.whatsupcams.com/it/webcams/italia/friuli-venezia-giulia-it/sistiana-it/webcam-sistiana/" target="_blank" rel="noopener">whatsupcams.com</a> · stream live (HLS)</p>
+  </div>
+
+  <!-- WEBCAM · MONFALCONE -->
+  <div class="webcam-luogo">📍 Monfalcone</div>
+  <div class="section" id="monfalconeCam">
+    <h2>Webcam Marina Monfalcone – panoramica 360°</h2>
+    <div id="camMonfalconeWrap">
+      <button class="cam-play" onclick="caricaCamMonfalcone()">▶ Avvia webcam live (Marina Monfalcone · Panomax 360°)</button>
+    </div>
+    <p class="stato">Fonte: <a href="https://marinamonfalcone.panomax.com/" target="_blank" rel="noopener">marinamonfalcone.panomax.com</a> · panorama live (Panomax)</p>
+  </div>
+
+  <!-- WEBCAM · GRADO: immagine statica Kite Life FVG, se offline il blocco sparisce -->
+  <div class="webcam-luogo" id="gradoCamLuogo">📍 Grado</div>
+  <div class="section" id="gradoCam" data-cam-box data-cam-label="gradoCamLuogo">
+    <div class="webcam-intestazione">
+      <h2>Webcam Grado</h2>
+      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
+    </div>
+    <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">
+      <img class="webcam" data-src="https://cam.kitelifefvg.it/webcam_grado.php" alt="Webcam Grado – spiaggia kite" loading="lazy" />
+    </a>
+    <p class="stato">Fonte: <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">cam.kitelifefvg.it</a> · Kite Life FVG</p>
+  </div>
+
   </details>
 
   <!-- BOE OGS: MARE E ONDE -->
@@ -1870,34 +1966,6 @@
     </div>
     <p class="stato" id="statoPiran"></p>
     <p class="stato">Fonte: <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB – boa Vida</a> · <a href="https://maps.google.com/?q=45.548750,13.550700" target="_blank" rel="noopener">📍 Posizione esatta</a> (45°32.925′ N, 13°33.042′ E)</p>
-  </div>
-  </details>
-
-  <!-- MAPPA DEL VENTO (beta) -->
-  <details class="gruppo-collapse page-collapse" id="mappaVento">
-  <summary class="gruppo-sum">
-    <span class="gruppo-sum-main">
-      <strong>🌬️ Mappa live</strong>
-      <span>Nowcasting nel Golfo e in Istria</span>
-    </span>
-  </summary>
-
-  <div class="section" id="mappaVentoContenuto">
-    <h2>Vento adesso – Golfo e Istria <span class="mappa-beta">BETA</span></h2>
-    <div class="mappa-nowcast-head">
-      <p>Dati osservati dalle stazioni attive, non una previsione.</p>
-      <span class="mappa-nowcast-hint">Tocca un numero → si apre il dettaglio</span>
-    </div>
-    <div class="mappa-canvas">
-      <svg id="mappaGolfo" viewBox="0 0 762 1000" role="img" aria-label="Mappa del vento osservato nel Golfo di Trieste e in Istria"></svg>
-    </div>
-    <div class="mappa-legenda" aria-label="Legenda intensità del vento">
-      <span><i style="background:#8a94a0;"></i> &lt;8 kt</span>
-      <span><i style="background:#3b6d11;"></i> 8–15 kt</span>
-      <span><i style="background:#b35c00;"></i> 15–25 kt</span>
-      <span><i style="background:#c20202;"></i> &gt;25 kt</span>
-    </div>
-    <p class="stato" id="mappaIstruzioni">La freccia indica dove va il vento; selezionala per vedere stazione, intensità, raffica, direzione e ora. Le centraline offline non vengono mostrate. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
   </div>
   </details>
 
@@ -2029,7 +2097,7 @@
         • Più il <strong>gradiente è negativo</strong> (entroterra ≫ costa), più <strong>forte</strong> sarà la Bora prevista in quel momento.<br>
         • Tratti vicini allo zero = <strong>niente Bora</strong>.
       </p>
-      <p class="guida-meta">Questa è la <em>previsione</em> a più giorni. Per la situazione <em>in tempo reale</em> usa il box “Differenza di pressione ora” in cima alla pagina. Fonte: profiwetter.ch (modello DWD).</p>
+      <p class="guida-meta">Questa è la <em>previsione</em> a più giorni. Per adesso e le prossime 36 ore guarda la <strong>Spinta della Bora</strong> in cima alla pagina: è la stessa differenza col segno girato (Maribor − Trieste), quindi lì più il numero è alto più bora c'è, e la soglia è +3,5. Fonte: profiwetter.ch (modello DWD). <a href="/guida/#spinta-bora">Guida →</a></p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="document.getElementById('modalGuidaBora').style.display='none'">Chiudi</button>
       </div>
@@ -2048,87 +2116,15 @@
     </div>
   </div>
 
-  <details class="gruppo-collapse page-collapse" id="webcam">
-  <summary class="gruppo-sum">
-    <span class="gruppo-sum-main">
-      <strong>📷 Webcam</strong>
-      <span>Barcola, Sistiana, Monfalcone e Grado</span>
-    </span>
-  </summary>
-
-  <!-- WEBCAM · BARCOLA / TRIESTE -->
-  <div class="webcam-luogo">📍 Barcola · Trieste</div>
-  <div class="section" id="barcola">
-    <div id="camBarcolaBlock" data-cam-box>
-      <div class="webcam-intestazione">
-        <h2>Webcam Barcola</h2>
-        <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
-      </div>
-      <a id="barcolaLink" href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank" rel="noopener">
-        <img class="webcam" data-src="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" alt="Webcam Barcola" loading="lazy" />
-      </a>
-    </div>
-
-    <div id="camSvbgBlock">
-      <h2 style="margin-top:1.25rem;">Webcam Barcola – S.V.B.G.</h2>
-      <div id="camSvbgWrap">
-        <button class="cam-play" onclick="caricaCamSvbg()">▶ Avvia webcam live (Soc. Velica Barcola Grignano)</button>
-      </div>
-      <p class="stato">Fonte: <a href="https://www.svbg.it/" target="_blank" rel="noopener">svbg.it</a> · stream live (HLS)</p>
-    </div>
-  </div>
-
-  <!-- WEBCAM SATURNIA (Sacchetta): la sezione compare solo se lo stream rtsp.me è online -->
-  <div class="section" id="saturniaCam" style="display:none;">
-    <h2>Webcam – Canottieri Saturnia</h2>
-    <div id="camSaturniaWrap"></div>
-    <p class="stato">Fonte: <a href="https://www.canottierisaturniatrieste.com/webcam/" target="_blank" rel="noopener">canottierisaturniatrieste.com</a> · stream live (rtsp.me)</p>
-  </div>
-
-  <!-- WEBCAM · SISTIANA: HLS whatsupcams, nascosta se lo stream è offline -->
-  <div class="webcam-luogo">📍 Sistiana</div>
-  <div class="section" id="sistianaCam">
-    <h2>Webcam Baia di Sistiana</h2>
-    <div id="camSistianaWrap">
-      <button class="cam-play" onclick="caricaCamSistiana()">▶ Avvia webcam live (Baia di Sistiana)</button>
-    </div>
-    <p class="stato">Fonte: <a href="https://www.whatsupcams.com/it/webcams/italia/friuli-venezia-giulia-it/sistiana-it/webcam-sistiana/" target="_blank" rel="noopener">whatsupcams.com</a> · stream live (HLS)</p>
-  </div>
-
-  <!-- WEBCAM · MONFALCONE -->
-  <div class="webcam-luogo">📍 Monfalcone</div>
-  <div class="section" id="monfalconeCam">
-    <h2>Webcam Marina Monfalcone – panoramica 360°</h2>
-    <div id="camMonfalconeWrap">
-      <button class="cam-play" onclick="caricaCamMonfalcone()">▶ Avvia webcam live (Marina Monfalcone · Panomax 360°)</button>
-    </div>
-    <p class="stato">Fonte: <a href="https://marinamonfalcone.panomax.com/" target="_blank" rel="noopener">marinamonfalcone.panomax.com</a> · panorama live (Panomax)</p>
-  </div>
-
-  <!-- WEBCAM · GRADO: immagine statica Kite Life FVG, se offline il blocco sparisce -->
-  <div class="webcam-luogo" id="gradoCamLuogo">📍 Grado</div>
-  <div class="section" id="gradoCam" data-cam-box data-cam-label="gradoCamLuogo">
-    <div class="webcam-intestazione">
-      <h2>Webcam Grado</h2>
-      <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
-    </div>
-    <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">
-      <img class="webcam" data-src="https://cam.kitelifefvg.it/webcam_grado.php" alt="Webcam Grado – spiaggia kite" loading="lazy" />
-    </a>
-    <p class="stato">Fonte: <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">cam.kitelifefvg.it</a> · Kite Life FVG</p>
-  </div>
-
-  </details>
-
   <!-- REGISTRO DEL VENTO (2 ott 2026): solo il grafico delle giornate surfabili, per mese o
        settimana (registro-vento.js, RegistroVento.grafico); il registro completo sta su /registro/.
-       Dopo le previsioni: è storico, non nowcasting (footer-widgets.js sposta webcam e radar
-       prima delle previsioni, il registro resta qui sotto). -->
+       Dopo le previsioni: è storico, non nowcasting (le webcam stanno subito dopo Mappa e centraline,
+       footer-widgets.js mette il radar dopo le webcam, il registro resta qui sotto). -->
   <details class="gruppo-collapse page-collapse" id="registro">
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>📋 Registro del vento</strong>
-      <span>Giornate surfabili, media e raffica giorno per giorno</span>
+      <span>Giornate surfabili, media e raffica</span>
     </span>
   </summary>
 
@@ -2143,7 +2139,7 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>🏖️ Spot Istria</strong>
-      <span>Žusterna, Antenal, Preluka, Ližnjan e Premantura</span>
+      <span>Žusterna, Antenal, Preluka e Premantura</span>
     </span>
   </summary>
 
@@ -3473,6 +3469,7 @@
        (la pressione di superficie sarebbe ~30 hPa più bassa solo per via dell'altitudine). */
     function apriDeltaBora(){ document.getElementById("modalDeltaBora").style.display = "block"; }
     function caricaDeltaBora() {
+      if (window.SpintaBora) return window.SpintaBora.aggiorna();   // grafico e tendenza: /spinta-bora.js
       const stato = document.getElementById("deltaBoraStato");
       const infoBtn = ' · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>';
       const api = (lat, lon) =>
@@ -3733,7 +3730,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261012"></script>
+  <script src="./footer-widgets.js?v=20261013"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">

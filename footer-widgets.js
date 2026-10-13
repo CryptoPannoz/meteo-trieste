@@ -119,7 +119,7 @@
   });
 
   var map = document.getElementById("mappaVento");
-  if (map) {
+  if (map && !map.hasAttribute("data-sum-fisso")) {   // la home ha già titolo e sottotitolo suoi
     var mapTitle = map.querySelector(":scope > .gruppo-sum .gruppo-sum-main > strong");
     var mapText = map.querySelector(":scope > .gruppo-sum .gruppo-sum-main > span");
     if (mapTitle) mapTitle.textContent = sl ? "🌬️ Zemljevid in postaje v živo" : "🌬️ Mappa e centraline live";
@@ -136,7 +136,7 @@
     radarLive.className = "gruppo-collapse page-collapse" + (sl ? " page-collapse-sl" : "");
     radarLive.innerHTML = '<summary class="gruppo-sum"><span class="gruppo-sum-main">' +
       '<strong>' + (sl ? "🌧️ Radar padavin v živo" : "🌧️ Radar pioggia live") + '</strong>' +
-      '<span>' + (sl ? "Opazovanja ARSO · animacija zadnjih ur" : "Osservazioni ARSO · animazione delle ultime ore") + '</span>' +
+      '<span>' + (sl ? "Opazovane padavine · ARSO, zadnje ure" : "Pioggia osservata · ARSO, ultime ore") + '</span>' +
       '</span></summary>';
     radar.parentNode.insertBefore(radarLive, radar);
     radarLive.appendChild(radar);
@@ -144,9 +144,16 @@
     if (location.hash === "#radarLive" || location.hash === "#radar") radarLive.open = true;
   }
 
+  /* Webcam e radar sono "ora": stanno prima delle previsioni. Se la pagina le ha già messe prima
+     (home, 13 ott 2026: subito dopo Mappa e centraline) restano lì e il radar va dopo le webcam. */
   var webcam = document.getElementById("webcam");
-  if (webcam && webcam.parentNode === main) main.insertBefore(webcam, forecast);
-  if (radarLive) main.insertBefore(radarLive, forecast);
+  var webcamPrima = webcam && webcam.parentNode === main &&
+    (webcam.compareDocumentPosition(forecast) & Node.DOCUMENT_POSITION_FOLLOWING);
+  if (webcam && webcam.parentNode === main && !webcamPrima) main.insertBefore(webcam, forecast);
+  if (radarLive) {
+    if (webcam && webcam.parentNode === main) main.insertBefore(radarLive, webcam.nextSibling);
+    else main.insertBefore(radarLive, forecast);
+  }
 
   var forecastSummary = forecast.querySelector(":scope > .gruppo-sum .gruppo-sum-main > span");
   if (forecastSummary) forecastSummary.textContent = sl ? "OSMER, burja, Aladin in Windguru" : "OSMER, Bora, Aladin e Windguru";
@@ -350,6 +357,165 @@
   });
 })();
 
+/* Menu raggruppato (13 ott 2026, Alberto: "compatta e ragiona meglio su come costruire il menu").
+   Prima era una colonna di 13 pulsanti a tutta larghezza in ordine sparso, con le guide nascoste
+   dietro un "+". Ora il pannello è diviso per domanda:
+     Sezioni  — dove vado in questa pagina (riquadri a 2 colonne con icona, i link reali della pagina)
+     Spot     — le altre pagine locali, quella aperta evidenziata
+     Guida    — la guida unica /guida/ e i suoi capitoli, più mappa e registro a pagina intera
+     in fondo — Installa l'app e Offrimi una birra, affiancati.
+   Il menu si costruisce dai link che ogni pagina ha già in <nav id="topnav">, quindi home, spot e
+   pagina slovena restano allineati. data-menu-semplice sul nav lascia il vecchio elenco (Barcolana).
+   La voce "Installa l'app" la creiamo qui con data-vt-app: vt-app.js la trova e non ne aggiunge
+   un'altra (inserirla accanto alla birra, che ora sta in un gruppo, darebbe errore). */
+(function () {
+  var nav = document.getElementById("topnav");
+  if (!nav || nav.hasAttribute("data-menu-semplice") || nav.querySelector(".mn-gruppo")) return;
+  var doc = document.documentElement;
+  var sl = doc.lang === "sl" ||
+    ((document.getElementById("footerWidgets") || { dataset: {} }).dataset.lang === "sl");
+  var T = sl ? {
+    sezioni: "Razdelki", spot: "Spoti", guida: "Vodnik in orodja",
+    guidaTutta: "Vodnik: kako brati Vento Trieste", guidaSub: "v italijanščini",
+    app: "Namesti aplikacijo", birra: "Plačaj mi pivo",
+    mappaCentraline: "Zemljevid in postaje", radar: "Radar padavin", boe: "Boje in valovi"
+  } : {
+    sezioni: "Sezioni", spot: "Spot", guida: "Guida e strumenti",
+    guidaTutta: "Guida: come si legge Vento Trieste", guidaSub: "surfometro, bora, previsioni",
+    app: "Installa l'app", birra: "Offrimi una birra",
+    mappaCentraline: "Mappa e centraline", radar: "Radar pioggia", boe: "Boe e onde"
+  };
+  var ICONE = {
+    vento: '<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h7"/>',
+    mappa: '<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>',
+    webcam: '<path d="M4 8h3l2-2h6l2 2h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+    radar: '<path d="M7 16a4 4 0 0 1-.5-8 5.5 5.5 0 0 1 10.6 1.2A3.5 3.5 0 0 1 17 16H7z"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/>',
+    onde: '<path d="M3 9c2 0 2.5-2 4.5-2s2.5 2 4.5 2 2.5-2 4.5-2 2.5 2 4.5 2"/><path d="M3 15c2 0 2.5-2 4.5-2s2.5 2 4.5 2 2.5-2 4.5-2 2.5 2 4.5 2"/>',
+    previsioni: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    registro: '<path d="M5 20V10M10 20V4M15 20v-7M20 20V8"/>',
+    spot: '<path d="M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>',
+    guida: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>',
+    lago: '<path d="M3 16c2 0 2.5-1.5 4.5-1.5S10 16 12 16s2.5-1.5 4.5-1.5S19 16 21 16"/><path d="M5 12l4-6 3 4 2-2 5 4"/>',
+    partner: '<path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z"/>',
+    punto: '<circle cx="12" cy="12" r="3"/>'
+  };
+  function svg(nome) {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true">' + (ICONE[nome] || ICONE.punto) + "</svg>";
+  }
+  function hashDi(a) {
+    var h = a.getAttribute("href") || "";
+    var i = h.indexOf("#");
+    return i < 0 ? h : h.slice(i);
+  }
+  function iconaPer(a) {
+    var h = (a.getAttribute("href") || "").toLowerCase();
+    if (/radar/.test(h)) return "radar";
+    if (/mappa|centraline/.test(h)) return "mappa";
+    if (/#vento/.test(h)) return "vento";
+    if (/webcam/.test(h)) return "webcam";
+    if (/boe|onde|mare/.test(h)) return "onde";
+    if (/previsioni/.test(h)) return "previsioni";
+    if (/registro/.test(h)) return "registro";
+    if (/istria/.test(h)) return "spot";
+    if (/lago/.test(h)) return "lago";
+    if (/partner/.test(h)) return "partner";
+    return "punto";
+  }
+
+  var birra = nav.querySelector(".topnav-birra");
+  var sezioni = Array.prototype.filter.call(nav.querySelectorAll(":scope > a"), function (a) {
+    return a !== birra && !a.hasAttribute("data-vt-app");
+  });
+  // centraline e mappa sono una sezione sola ("Mappa e centraline live"): basta una voce
+  var mappaLink = sezioni.find(function (a) { return /#mappaVento$/.test(a.getAttribute("href") || ""); });
+  var centralineLink = sezioni.find(function (a) { return /#centraline$/.test(a.getAttribute("href") || ""); });
+  if (mappaLink && centralineLink) {
+    sezioni.splice(sezioni.indexOf(centralineLink), 1);
+    centralineLink.remove();
+  }
+  var ORDINE = ["#vento", "#mappaVento", "#centraline", "#webcam", "#radarLive", "#lago", "#onde", "#boe", "#previsioni", "#registro", "#istria", "#island-partner"];
+  function posto(a) {
+    var h = hashDi(a);
+    if (/\/registro\/?$/.test(a.getAttribute("href") || "")) h = "#registro";
+    var i = ORDINE.indexOf(h);
+    return i < 0 ? 99 : i;
+  }
+  sezioni.sort(function (a, b) { return posto(a) - posto(b); });
+  sezioni.forEach(function (a) {
+    var h = hashDi(a);
+    var testo = (a.textContent || "").replace(/^[^\p{L}\p{N}]+/u, "").trim();
+    if (h === "#mappaVento" || h === "#centraline") testo = T.mappaCentraline;
+    if (h === "#radarLive") testo = T.radar;
+    if (h === "#boe") testo = T.boe;
+    a.classList.add("mn-sez");
+    a.innerHTML = '<span class="mn-ico">' + svg(iconaPer(a)) + "</span><span>" + testo + "</span>";
+  });
+
+  var qui = location.pathname.replace(/index\.html$/, "");
+  var SPOT = [
+    ["/", sl ? "Trst · Barcola" : "Trieste · Barcola"], ["/muggia/", "Muggia"], ["/zusterna/", "Žusterna"],
+    ["/marinajulia/", "Marina Julia"], ["/grado/", "Grado"], ["/lignano/", "Lignano"],
+    ["/lago-di-cavazzo/", sl ? "Jezero Cavazzo" : "Lago di Cavazzo"]
+  ];
+  var GUIDA = sl ? [
+    ["/guida/#surfometro", "Surfometer"], ["/guida/#spinta-bora", "Potisk burje"], ["/guida/#previsioni", "Napovedi in WG"],
+    ["/mappa/", "Zemljevid čez cel zaslon"], ["/registro/", "Dnevnik vetra"]
+  ] : [
+    ["/guida/#surfometro", "Surfometro"], ["/guida/#spinta-bora", "Spinta della Bora"], ["/guida/#previsioni", "Previsioni e WG"],
+    ["/mappa/", "Mappa a schermo intero"], ["/registro/", "Registro completo"]
+  ];
+  function chip(v, extra) {
+    var attuale = v[0] === qui;
+    return '<a class="mn-chip' + (extra || "") + (attuale ? " is-qui" : "") + '" href="' + v[0] + '"' +
+      (attuale ? ' aria-current="page"' : "") + ">" + v[1] + "</a>";
+  }
+  var gruppoSez = document.createElement("div");
+  gruppoSez.className = "mn-gruppo mn-gruppo-sezioni";
+  gruppoSez.innerHTML = '<p class="mn-titolo">' + T.sezioni + '</p><div class="mn-griglia"></div>';
+  var griglia = gruppoSez.querySelector(".mn-griglia");
+  sezioni.forEach(function (a) { griglia.appendChild(a); });
+
+  var gruppoSpot = document.createElement("div");
+  gruppoSpot.className = "mn-gruppo";
+  gruppoSpot.innerHTML = '<p class="mn-titolo">' + T.spot + '</p><div class="mn-chips">' +
+    SPOT.map(function (v) { return chip(v); }).join("") + "</div>";
+
+  var gruppoGuida = document.createElement("div");
+  gruppoGuida.className = "mn-gruppo";
+  gruppoGuida.innerHTML = '<p class="mn-titolo">' + T.guida + "</p>" +
+    '<a class="mn-guida' + (qui === "/guida/" ? " is-qui" : "") + '" href="/guida/"><span class="mn-ico">' + svg("guida") + "</span>" +
+    "<span><strong>" + T.guidaTutta + "</strong><small>" + T.guidaSub + "</small></span></a>" +
+    '<div class="mn-chips">' + GUIDA.map(function (v) { return chip(v); }).join("") + "</div>";
+
+  var azioni = document.createElement("div");
+  azioni.className = "mn-azioni";
+  var standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  if (!standalone) azioni.insertAdjacentHTML("beforeend", '<a href="#" class="mn-app vt-app-voce" data-vt-app>📲 ' + T.app + "</a>");
+  if (birra) {
+    birra.textContent = "♥ " + T.birra;
+    azioni.appendChild(birra);
+  }
+
+  nav.innerHTML = "";
+  nav.classList.add("mn");
+  nav.appendChild(gruppoSez);
+  nav.appendChild(gruppoSpot);
+  nav.appendChild(gruppoGuida);
+  if (azioni.children.length) nav.appendChild(azioni);
+
+  // velo scuro sotto il pannello aperto: un tocco fuori lo chiude (lo fa già il gestore dei clic)
+  var velo = document.createElement("div");
+  velo.className = "mn-velo";
+  velo.hidden = true;
+  document.body.appendChild(velo);
+  function sync() {
+    velo.hidden = nav.hidden;
+    doc.classList.toggle("mn-aperto", !nav.hidden);
+  }
+  new MutationObserver(sync).observe(nav, { attributes: true, attributeFilter: ["hidden"] });
+  sync();
+})();
+
 (function () {
   var root = document.getElementById("footerWidgets");
   if (!root) return;
@@ -363,8 +529,7 @@
     supporters: "Podporniki projekta",
     partners: "Partnerji in reference", partnersText: "Ljudje in ustanove, ki širijo kulturo vetra in deljenje podatkov.",
     partnersCount: function (p, f) { return p + " partnerji · " + f + " virov podatkov in kamer"; },
-    dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri",
-    guides: "Vodniki in orodja"
+    dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri"
   } : {
     visitors: "Visitatori", since: "visitatori dall’inizio",
     supportKicker: "Progetto indipendente", supportTitle: "Aiuta Vento Trieste a restare gratuito",
@@ -373,8 +538,7 @@
     supporters: "Chi sostiene il progetto",
     partners: "Partner e riferimenti", partnersText: "Persone e realtà che valorizzano la cultura del vento e la condivisione dei dati.",
     partnersCount: function (p, f) { return p + " partner · " + f + " fonti di dati e webcam"; },
-    dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali",
-    guides: "Guide e strumenti"
+    dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali"
   };
   var supporters = ["Cristina Codrini", "Paolo Perusco", "Pier Paolo Nistri", "Pietro Silvestri", "Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop", "Stefano Davini", "Gianpaolo Maso", "Matteo Momic", "Martina Marin", "Roberto Piretti", "Elio Massimo Polo", "Paolo Bastiani", "Carlo Capelli", "Luigi Apicella", "Luca Barbaresco"];
   var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
@@ -408,32 +572,7 @@
     { name: "Bibione.com", url: "https://www.bibione.com/" },
     { name: "Island Surf", url: "https://www.islandsurf.it/" }
   ];
-  var guides = sl ? [
-    { name: "Zemljevid vetra", url: "/mappa/" },
-    { name: "Dnevnik vetra", url: "/registro/" },
-    { name: "Burja v Trstu", url: "/bora-trieste/" },
-    { name: "Kako brati surfometer", url: "/come-leggere-surfometro/" },
-    { name: "Modeli vetra", url: "/modelli-vento-trieste/" },
-    { name: "Spoti v zalivu", url: "/spot/" }
-  ] : [
-    { name: "Mappa vento live", url: "/mappa/" },
-    { name: "Registro del vento", url: "/registro/" },
-    { name: "Guida alla Bora", url: "/bora-trieste/" },
-    { name: "Come leggere il surfometro", url: "/come-leggere-surfometro/" },
-    { name: "Modelli vento", url: "/modelli-vento-trieste/" },
-    { name: "Spot del Golfo", url: "/spot/" }
-  ];
-  var topnav = document.getElementById("topnav");
-  if (topnav && !topnav.querySelector(".topnav-guides")) {
-    var guideMenu = document.createElement("details");
-    var supportLink = topnav.querySelector(".topnav-birra");
-    guideMenu.className = "topnav-guides";
-    guideMenu.innerHTML = '<summary>🧭 ' + t.guides + '</summary><div class="topnav-guides-menu">' +
-      guides.map(function (guide) {
-        return '<a class="topnav-guide-link" href="' + guide.url + '">' + guide.name + '</a>';
-      }).join("") + '</div>';
-    topnav.insertBefore(guideMenu, supportLink || null);
-  }
+  /* Le guide stanno nel menu raggruppato (blocco "Menu raggruppato" più su, 13 ott 2026). */
   function sourcePills(list) {
     return list.map(function (source) {
       return '<a class="source-pill" href="' + source.url + '" target="_blank" rel="noopener">' +
@@ -612,6 +751,8 @@
   };
 
   doc.classList.add("ux-enhanced");
+  // regole compatte da telefono e telefono in orizzontale (13 ott 2026): non sulla pagina Barcolana
+  if (!document.body.classList.contains("bcn")) doc.classList.add("vt-compatto");
 
   var topbar = document.querySelector(".topbar");
   var progressFill = null;
@@ -672,7 +813,8 @@
 
   var nav = document.getElementById("topnav");
   var menuButton = document.getElementById("menuToggle");
-  var navLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll('a:not(.topnav-birra):not(.topnav-guide-link)')) : [];
+  // solo le voci di sezione: non chip degli spot, guida, "Installa l'app" del menu raggruppato
+  var navLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll('a:not(.topnav-birra):not(.topnav-guide-link):not(.mn-chip):not(.mn-guida):not([data-vt-app])')) : [];
   function trovaLink(parola) {
     return navLinks.find(function (link) {
       return (link.getAttribute("href") || "").toLowerCase().indexOf(parola.toLowerCase()) !== -1;
@@ -881,4 +1023,71 @@
     }, { rootMargin: "0px 0px -7% 0px", threshold: .04 });
     revealTargets.forEach(function (element) { revealObserver.observe(element); });
   }
+})();
+
+/* Webcam a schermo intero (13 ott 2026, Alberto: "quando metto la webcam in orizzontale sballa tutto").
+   Le webcam a immagine (Barcola, Grado, …) prima aprivano il JPG grezzo in una nuova scheda; ora un
+   tocco le apre a tutto schermo sopra la pagina, nera, con la ✕: girando il telefono l'immagine
+   riempie la larghezza. Su Android si chiede anche lo schermo intero del browser. Esc, ✕ o un tocco
+   chiudono. Video e iframe hanno già il loro pulsante schermo intero. */
+(function () {
+  // solo le webcam dentro un link (le strisce ritagliate dell'anemometro di Marina Julia restano come sono)
+  var imgs = document.querySelectorAll("a > img.webcam");
+  if (!imgs.length) return;
+  var doc = document.documentElement;
+  var sl = doc.lang === "sl" ||
+    ((document.getElementById("footerWidgets") || { dataset: {} }).dataset.lang === "sl");
+  var T = sl ? { badge: "Cel zaslon", chiudi: "Zapri", hint: "Obrni telefon za večjo sliko · dotik zapre" }
+             : { badge: "Schermo intero", chiudi: "Chiudi", hint: "Gira il telefono per vederla più grande · tocca per chiudere" };
+  var lb = document.createElement("div");
+  lb.className = "cam-lb";
+  lb.hidden = true;
+  lb.setAttribute("role", "dialog");
+  lb.setAttribute("aria-modal", "true");
+  lb.innerHTML = '<img alt=""><div class="cam-lb-barra"><span class="cam-lb-titolo"></span>' +
+    '<button type="button" class="cam-lb-x" aria-label="' + T.chiudi + '">✕</button></div>' +
+    '<p class="cam-lb-hint">' + T.hint + "</p>";
+  document.body.appendChild(lb);
+  var big = lb.querySelector("img"), titolo = lb.querySelector(".cam-lb-titolo");
+  var prima = null;
+  function apri(img) {
+    prima = document.activeElement;
+    big.src = img.currentSrc || img.src;
+    big.alt = img.alt || "";
+    titolo.textContent = img.alt || "";
+    lb.hidden = false;
+    doc.classList.add("cam-lb-aperto");
+    lb.querySelector(".cam-lb-x").focus({ preventScroll: true });
+    if (/Android/i.test(navigator.userAgent) && lb.requestFullscreen) lb.requestFullscreen().catch(function () {});
+    if (window.vtConta) window.vtConta("webcam: schermo intero");
+  }
+  function chiudi() {
+    if (lb.hidden) return;
+    lb.hidden = true;
+    doc.classList.remove("cam-lb-aperto");
+    if (document.fullscreenElement === lb && document.exitFullscreen) document.exitFullscreen().catch(function () {});
+    if (prima && prima.focus) prima.focus({ preventScroll: true });
+  }
+  lb.addEventListener("click", chiudi);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") chiudi(); });
+  document.addEventListener("fullscreenchange", function () { if (!document.fullscreenElement && !lb.hidden && /Android/i.test(navigator.userAgent)) chiudi(); });
+  Array.prototype.forEach.call(imgs, function (img) {
+    var link = img.parentNode;
+    link.classList.add("cam-zoom");
+    var badge = document.createElement("span");
+    badge.className = "cam-zoom-badge";
+    badge.setAttribute("aria-hidden", "true");
+    badge.textContent = "⛶ " + T.badge;
+    link.appendChild(badge);
+    // l'etichetta "Schermo intero" compare solo a immagine caricata
+    function pronta() { link.classList.toggle("cam-pronta", img.complete && img.naturalWidth > 0); }
+    img.addEventListener("load", pronta);
+    img.addEventListener("error", pronta);
+    pronta();
+    link.addEventListener("click", function (e) {
+      if (!img.src || img.style.display === "none") return;   // non ancora caricata: lascia il link
+      e.preventDefault();
+      apri(img);
+    });
+  });
 })();
