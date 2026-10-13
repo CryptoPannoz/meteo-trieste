@@ -6,7 +6,7 @@
  * Endpoint: doGet -> { trieste, triesteFonte, monteGrisa, muggia, grado, lignano, lignanoLive, cavazzo, preluka, antenal, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
  * trieste, muggia, marinajulia, lignano: righe a 15 min dalla Protezione Civile FVG (rete regionale, CC BY 4.0)
- * barcola: dati correnti stazione Windguru 5307 (Terrapieno di Barcola)
+ * barcola: stazione Windguru 5307 (Terrapieno di Barcola), media e raffica sugli ultimi 10 minuti
  * gps: coordinate di ogni centralina (dal feed API, in parte stimate da vetercek)
  *
  * Dati correnti: feed JSON ufficiale di vetercek (VETERCEK_API, accordo con Jaka
@@ -42,6 +42,15 @@ var STATIONS = {
 };
 
 var BARCOLA_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data_current&id_station=5307';
+/* Barcola su 10 minuti (13 ott 2026, segnalazione di un utente: "segna bavisela anche quando
+   fuori soffia bene"). Il dato "current" di Windguru è un solo campione di ~2 minuti: con la
+   bora salta da 1 a 4 kt da una lettura all'altra e il surfometro cambiava parola 130-150
+   volte al giorno (9 e 12 ott). Ora wind_avg = media dei campioni degli ultimi 10 minuti
+   (la definizione WMO del vento medio), wind_max = raffica più alta negli stessi 10 minuti.
+   Stessi nomi di campo di prima, così le pagine non cambiano; "istantaneo" tiene il campione
+   corrente. Se lo storico non risponde resta il dato "current" come prima. */
+var BARCOLA_10MIN_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data&id_station=5307&avg_minutes=1';
+var BARCOLA_FINESTRA_MIN = 10;
 var OSMER_URL = 'https://www.osmer.fvg.it/previsioni.php?ln=';
 // Boa oceanografica Vida (NIB, Pirano): pagina dati leggera (solo blocco <pre>)
 var PIRAN_URL = 'https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2?tmpl=component';
@@ -420,6 +429,54 @@ function storicoBarcola(giorno) {
   }
 }
 
+/* Media e raffica di Barcola sugli ultimi BARCOLA_FINESTRA_MIN minuti (vedi BARCOLA_10MIN_URL).
+   j = station_data di Windguru (array paralleli), corrente = station_data_current o null.
+   Il campione corrente entra se è più recente dell'ultimo dello storico. Direzione = media
+   vettoriale pesata sul vento. null se ci sono meno di 2 campioni (il chiamante tiene "current"). */
+function barcolaDieciMinuti(j, corrente) {
+  if (!j || j['return'] === 'error' || !Array.isArray(j.unixtime) || !j.unixtime.length) return null;
+  var campioni = [];
+  for (var i = 0; i < j.unixtime.length; i++) {
+    if (j.wind_avg[i] == null || isNaN(j.wind_avg[i])) continue;
+    campioni.push({ t: j.unixtime[i], avg: +j.wind_avg[i], max: +j.wind_max[i], min: +j.wind_min[i],
+                    dir: j.wind_direction[i], temp: j.temperature ? j.temperature[i] : null,
+                    rh: j.rh ? j.rh[i] : null, mslp: j.mslp ? j.mslp[i] : null });
+  }
+  if (corrente && corrente.unixtime && corrente.wind_avg != null &&
+      (!campioni.length || corrente.unixtime > campioni[campioni.length - 1].t)) {
+    campioni.push({ t: corrente.unixtime, avg: +corrente.wind_avg, max: +corrente.wind_max, min: +corrente.wind_min,
+                    dir: corrente.wind_direction, temp: corrente.temperature, rh: corrente.rh, mslp: corrente.mslp });
+  }
+  if (!campioni.length) return null;
+  var ultimo = campioni[campioni.length - 1].t;
+  campioni = campioni.filter(function (c) { return ultimo - c.t < BARCOLA_FINESTRA_MIN * 60; });
+  if (campioni.length < 2) return null;
+  var somma = 0, raffica = 0, minimo = Infinity, vx = 0, vy = 0;
+  campioni.forEach(function (c) {
+    somma += c.avg;
+    if (!isNaN(c.max) && c.max > raffica) raffica = c.max;
+    if (!isNaN(c.min) && c.min < minimo) minimo = c.min;
+    if (c.dir != null && !isNaN(c.dir)) {
+      var r = c.dir * Math.PI / 180, w = Math.max(c.avg, 0.1);
+      vx += Math.sin(r) * w; vy += Math.cos(r) * w;
+    }
+  });
+  var dir = (vx || vy) ? Math.round((Math.atan2(vx, vy) * 180 / Math.PI + 360) % 360) : null;
+  var u = campioni[campioni.length - 1];
+  return {
+    wind_avg: Math.round(somma / campioni.length * 10) / 10,
+    wind_max: Math.round(raffica * 10) / 10,
+    wind_min: minimo === Infinity ? null : Math.round(minimo * 10) / 10,
+    wind_direction: dir,
+    temperature: u.temp, rh: u.rh, mslp: u.mslp,
+    datetime: Utilities.formatDate(new Date(ultimo * 1000), 'Europe/Rome', 'yyyy-MM-dd HH:mm:ss z'),
+    unixtime: ultimo,
+    finestra_min: BARCOLA_FINESTRA_MIN,
+    campioni: campioni.length,
+    istantaneo: corrente ? { wind_avg: corrente.wind_avg, wind_max: corrente.wind_max, unixtime: corrente.unixtime } : null
+  };
+}
+
 // true se il payload contiene almeno una fonte con dati reali (non tutto errori).
 function datiValidi(d) {
   if (!d) return false;
@@ -471,6 +528,13 @@ function buildData() {
                     muteHttpExceptions: true, followRedirects: true });
   });
 
+  // in fondo: Barcola, campioni a ~1-2 minuti dell'ultimo quarto d'ora (media e raffica su 10 minuti)
+  var iBarcola10 = requests.length;
+  var daB = Utilities.formatDate(new Date(Date.now() - 16 * 60000), 'Europe/Rome', 'yyyy-MM-dd HH:mm');
+  var aB = Utilities.formatDate(new Date(Date.now() + 2 * 60000), 'Europe/Rome', 'yyyy-MM-dd HH:mm');
+  requests.push({ url: BARCOLA_10MIN_URL + '&from=' + encodeURIComponent(daB) + '&to=' + encodeURIComponent(aB),
+                  headers: { Referer: 'https://www.windguru.cz/station/5307' }, muteHttpExceptions: true });
+
   var responses = fetchAllResilient(requests);
 
   // Feed API: fonte primaria per i valori correnti. Se non risponde, feed = {} e
@@ -510,6 +574,12 @@ function buildData() {
   } catch (e) {
     out.barcola = null;
     out.barcolaError = String(e);
+  }
+  try {
+    var b10 = barcolaDieciMinuti(JSON.parse(responses[iBarcola10].getContentText()), out.barcola);
+    if (b10) { out.barcola = b10; delete out.barcolaError; }
+  } catch (e) {
+    out.barcola10Error = String(e);                    // resta il dato "current"
   }
 
   try {

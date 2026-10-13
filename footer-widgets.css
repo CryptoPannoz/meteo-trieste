@@ -1541,3 +1541,10 @@ html.cam-lb-aperto, html.cam-lb-aperto body { overflow: hidden; }
   #centraline .section { margin-bottom: 0; }
   #centraline .trend { margin-top: .6rem; }
 }
+
+/* Surfometro di Barcola: nota sotto la parola quando la parola viene dalla raffica (13 ott 2026) */
+html .console-card .surf2-verdetto small.surf-base {
+  max-width: 34rem; margin-top: .35rem; color: var(--label); opacity: .9;
+  font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: .72rem; font-weight: 600; font-style: italic; letter-spacing: 0; line-height: 1.35; text-transform: none;
+}

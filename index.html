@@ -1554,7 +1554,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261013" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261013b" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261002" defer></script>
   <script src="./spinta-bora.js?v=20261013"></script>
@@ -1709,6 +1709,7 @@
           <summary id="surfNoteSum">ℹ️ Fonte dati</summary>
           <p class="stato" id="surfFonte"></p>
           <p class="stato surf-catena">Fonti, in ordine: centralina <strong>Barcola</strong> → <strong>Monte Grisa</strong> (backup) → boa <strong>MAMBO1</strong> OGS (backup 2, oraria)</p>
+          <p class="stato surf-catena">A Barcola vento medio e raffica sono calcolati sugli <strong>ultimi 10 minuti</strong>. La centralina è sul Terrapieno, al riparo: il suo vento medio è circa la metà di quello di Trieste molo, Muggia e boa MAMBO1, mentre la sua raffica corrisponde al loro vento medio. Per questo la parola del surfometro si basa sulla <strong>raffica</strong>. <a href="/guida/#surfometro">Guida →</a></p>
         </details>
       </div>
 
@@ -2403,7 +2404,9 @@
     const SURF_LIMITE = 35;
     const SURF_RAFFICA_VICINA = 1.5;
     function posSurf(kt) { return Math.min(Math.max(kt, 0), SURF_LIMITE) / SURF_SCALA * 100; }
-    function aggiornaSurfometro(kt, gust, dir, offlineTxt) {
+    /* ktParola (13 ott 2026): il vento su cui si sceglie la parola, se diverso dal medio.
+       A Barcola è la raffica: vedi BARCOLA_PAROLA_SU_RAFFICA. */
+    function aggiornaSurfometro(kt, gust, dir, offlineTxt, ktParola) {
       const verd  = document.getElementById("verdettoBig");
       const ptr   = document.getElementById("meterPointer");
       const val   = document.getElementById("meterVal");
@@ -2448,13 +2451,17 @@
           dirEl.style.display = "none";
         }
       }
-      const ver = verdetto(kt);
+      const usaParola = ktParola != null && !isNaN(ktParola);
+      const ver = verdetto(usaParola ? ktParola : kt);
+      // la parola sale grazie alla raffica: lo si dice, in piccolo
+      const notaParola = usaParola && verdetto(kt).i < ver.i
+        ? '<small class="surf-base">dalla raffica: la centralina di Barcola è al riparo e il suo vento medio sottostima quello in acqua</small>' : "";
       const ventoNome = nomeVento(dir);
       const ventoBadge = ventoNome
         ? '<span class="surf-wind-badge">' + windArrowHtml(dir, "") +
           '<span>' + gradiInDirezione(dir) + ' · ' + ventoNome + '</span></span>'
         : "";
-      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + ventoBadge;
+      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + notaParola + ventoBadge;
       verd.style.color = ver.bg;
       // La raffica resta sempre leggibile. Se è vicina al medio, i marker si fondono
       // in un'unica linea bicolore per evitare sovrapposizioni illeggibili.
@@ -2500,6 +2507,18 @@
        proxy li rilegge ogni 5: un dato sano ha al massimo ~10 minuti. Oltre i 20 è una
        centralina ferma, e un vento di 40 minuti fa mostrato come "adesso" è inutile. */
     const BARCOLA_STALE_MIN = 20;   // dati più vecchi di così → centralina considerata ferma
+    /* La parola del surfometro di Barcola segue la RAFFICA, non il vento medio (13 ott 2026,
+       segnalazione di un utente: "segna bavisela anche quando fuori soffia bene").
+       La centralina Windguru 5307 sta sul Terrapieno, al riparo: confrontata con le stazioni
+       vicine (registro 18 set-13 ott, 621 quarti d'ora con almeno 6 kt sul golfo) il suo vento
+       medio è la METÀ della mediana di Trieste molo, Muggia e boa MAMBO1 (-5,6 kt; con 12 kt
+       e più sul golfo -7,4 kt e parola più bassa nel 91% dei casi), uguale da maggio contro
+       MAMBO1. La sua raffica invece coincide col loro vento medio (+0,2 kt): con la raffica la
+       parola giusta passa dal 35% al 52%, "bavisela" con vento vero da 69% a 30%; a golfo calmo
+       un falso "arietta" nel 7% dei casi. Media e raffica arrivano dal proxy sugli ultimi 10
+       minuti. I numeri mostrati restano quelli misurati; Monte Grisa e MAMBO1 (backup) usano
+       il medio, perché non sono riparati. */
+    const BARCOLA_PAROLA_SU_RAFFICA = true;
     const GRISA_STALE_MIN = 20;     // stessa soglia per il backup di Monte Grisa
     function barcolaMinutiFa(b) {
       if (!b || !b.datetime) return null;
@@ -2610,7 +2629,7 @@
         if (titolo) titolo.textContent = "Surfometro – Barcola";
         if (sum)    sum.textContent = "🕒 Fonte: Barcola" + (bTws.ts ? " · agg. " + oraBreve(bTws.ts) : "");
         if (fonte)  fonte.innerHTML = testoUltimoAgg(bTws.ts);
-        aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir);
+        aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir, null, BARCOLA_PAROLA_SU_RAFFICA ? bTws.gust : null);
         return;
       }
       // Barcola offline → passa a Monte Grisa
