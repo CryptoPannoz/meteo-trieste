@@ -1450,8 +1450,76 @@
       html[data-theme] body.bcn .bc-vinc-card::after { display: none; }
     }
   </style>
+  <style id="dopo-regata">
+    /* DOPO LA REGATA (13 ott 2026): parti live nascoste, link a Vento Trieste, Barcolana 59 */
+    .bc-dopo { display: none; }
+    body.bc-archivio .bc-dopo { display: grid; gap: .8rem; margin: 0 0 1.2rem; }
+    body.bc-archivio #vento, body.bc-archivio #mappaVento, body.bc-archivio #regata, body.bc-archivio .topbar-live { display: none !important; }
+    /* il link "da paura": nero e giallo di Vento Trieste, uguale nei due temi */
+    html[data-theme] body.bcn a.bc-vt {
+      position: relative; overflow: hidden; display: grid; gap: .55rem; padding: 1.3rem 1.25rem 1.2rem;
+      border-radius: 18px; border: 1px solid #2a343d; background: #07090c; color: #f4f7f8; text-decoration: none;
+      box-shadow: 0 22px 50px rgba(0,20,50,.35); font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    html[data-theme] body.bcn a.bc-vt::before {
+      content: ""; position: absolute; right: -90px; top: -110px; width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,244,60,.28), transparent 65%); pointer-events: none;
+    }
+    html[data-theme] body.bcn a.bc-vt:hover { transform: translateY(-2px); box-shadow: 0 28px 60px rgba(0,20,50,.45); }
+    .bc-vt-marca { display: flex; align-items: center; gap: .6rem; color: #f0f43c; font-size: .78rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .bc-vt-marca img { width: 40px; height: 40px; border-radius: 10px; }
+    .bc-vt-titolo { position: relative; color: #fff; font-size: clamp(1.75rem, 7vw, 2.6rem); font-weight: 800; line-height: 1.04; letter-spacing: -.03em; }
+    .bc-vt-testo { position: relative; max-width: 36rem; color: #b9c3ca; font-size: .95rem; line-height: 1.5; }
+    .bc-vt-live {
+      position: relative; display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .55rem; margin-top: .2rem;
+      padding: .6rem .75rem; border-radius: 12px; border: 1px solid rgba(240,244,60,.35); background: rgba(240,244,60,.08);
+    }
+    .bc-vt-live[hidden] { display: none; }
+    .bc-vt-live > small { flex-basis: 100%; color: #f0f43c; font-size: .66rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .bc-vt-live > strong { color: #fff; font-size: 1.55rem; font-weight: 800; letter-spacing: -.02em; }
+    .bc-vt-live > span { color: #e6ecef; font-size: .95rem; font-weight: 700; }
+    .bc-vt-live > em { color: #98a4ad; font-size: .78rem; font-style: normal; }
+    .bc-vt-cta {
+      position: relative; justify-self: start; display: inline-flex; align-items: center; gap: .45rem; margin-top: .35rem;
+      padding: .8rem 1.15rem; border-radius: 12px; background: #f0f43c; color: #07090c; font-size: 1.02rem; font-weight: 800;
+    }
+    html[data-theme] body.bcn a.bc-vt:hover .bc-vt-cta { background: #fff; }
+    /* link ufficiali */
+    .bc-dopo-link { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .5rem; }
+    html[data-theme] body.bcn .bc-dopo-link a {
+      display: flex; align-items: center; justify-content: center; gap: .4rem; min-height: 48px; padding: .6rem .8rem;
+      border-radius: 4px; border: 1px solid var(--line); background: var(--surface, #fff); color: var(--bcn-title);
+      font-weight: 700; text-decoration: none; box-shadow: var(--bcn-shadow);
+    }
+    html[data-theme] body.bcn .bc-dopo-link a:hover { border-color: var(--bcn-red); color: var(--bcn-red); }
+    /* Barcolana 59: blu e rosso del sito ufficiale */
+    html[data-theme] body.bcn a.bc-59 {
+      display: grid; gap: .35rem; padding: 1.15rem 1.2rem; border-radius: 4px; border-top: 4px solid #e30613;
+      background: #003770; color: #fff; text-decoration: none; box-shadow: 0 16px 38px rgba(0,20,50,.3);
+    }
+    .bc-59-eyebrow { color: #c6d4e5; font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .bc-59-titolo { color: #fff; font-size: 1.45rem; font-weight: 700; line-height: 1.2; }
+    .bc-59-testo { color: #c6d4e5; font-size: .9rem; }
+    .bc-59-cta { justify-self: start; margin-top: .3rem; padding: .5rem .95rem; border-radius: 3px; background: #e30613; color: #fff; font-weight: 700; }
+    html[data-theme] body.bcn a.bc-59:hover .bc-59-cta { background: #b10914; }
+    .bc-dopo-collab { margin: .1rem 0 0; color: var(--label); font-size: .82rem; line-height: 1.5; text-align: center; }
+    /* bottoni del vincitore: testo bianco su bianco col tema scuro (main a:not([class]) vinceva) */
+    html[data-theme] body.bcn main .bc-vinc-azioni a:not(.primario), html[data-theme] body.bcn main .bc-vinc-azioni button { background: #fff; color: #003770; }
+    html[data-theme] body.bcn main .bc-vinc-azioni a:not(.primario):hover, html[data-theme] body.bcn main .bc-vinc-azioni button:hover { background: #e30613; color: #fff; }
+    @media (max-width: 560px) {
+      html[data-theme] body.bcn a.bc-vt { padding: 1.1rem 1rem 1rem; border-radius: 14px; }
+      .bc-vt-cta { justify-self: stretch; justify-content: center; }
+      .bc-dopo-link { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body class="bcn">
+  <!-- DOPO LA REGATA (13 ott 2026, Alberto): dal 12/10 la pagina rimanda a Vento Trieste, tiene vincitore,
+       classifica ufficiale, vento della regata ed edizioni passate, e per il resto rimanda alla Barcolana 59.
+       Le parti live (vento sul campo, mappa del percorso, info regata) restano nel codice, nascoste, per
+       riusarle l'anno prossimo; ?live=1 le rimostra. -->
+  <script>if (Date.now() >= Date.parse("2026-10-12T00:00:00+02:00") && !/[?&]live=1/.test(location.search)) document.body.classList.add("bc-archivio");</script>
 
   <header class="topbar">
     <!-- logo Barcolana nella barra fissa al posto di "Vento Trieste" (Jacopo, digital SVBG, 5 ott 2026) -->
@@ -1467,13 +1535,13 @@
       <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☀</span><span class="theme-toggle-label">Chiaro</span></button>
       <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav"><span class="menu-toggle-icon" aria-hidden="true">☰</span>Menu</button>
     </div>
-    <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" data-dock="#vento,#mappaVento,#registro,#edizioni" data-menu-semplice hidden>
-      <a href="#vento"><span class="l-it">Vento ora</span><span class="l-en">Wind now</span></a>
-      <a href="#mappaVento"><span class="l-it">Percorso</span><span class="l-en">Course</span></a>
-      <a href="#registro"><span class="l-it">Registro</span><span class="l-en">Wind log</span></a>
+    <nav class="topnav" id="topnav" aria-label="Sezioni della pagina" data-dock="#bcVincitore,#bcVentoTrieste,#registro,#edizioni" data-menu-semplice hidden>
+      <a href="#bcVincitore"><span class="l-it">🏆 Vincitore</span><span class="l-en">🏆 Winner</span></a>
+      <a href="#bcVentoTrieste"><span class="l-it">🌬️ Il vento di Trieste, ogni giorno</span><span class="l-en">🌬️ Trieste wind, every day</span></a>
+      <a href="#registro"><span class="l-it">📈 Il vento della regata</span><span class="l-en">📈 Race-day wind</span></a>
       <a href="#edizioni"><span class="l-it">Edizioni passate</span><span class="l-en">Past editions</span></a>
-      <a href="#regata"><span class="l-it">Info regata</span><span class="l-en">Race info</span></a>
-      <a href="https://ventotrieste.info/">Vento Trieste</a>
+      <a href="#bc59"><span class="l-it">⛵ Barcolana 59</span><span class="l-en">⛵ Barcolana 59</span></a>
+      <a href="https://ventotrieste.info/?utm_source=barcolana2026&amp;utm_medium=menu">Vento Trieste ↗</a>
     </nav>
   </header>
 
@@ -1482,6 +1550,32 @@
          script "badge del vincitore" con la classifica ufficiale (Worker ventotrieste-dati /vincitore).
          Per vederlo prima: ?provaVincitore=2025 -->
     <section class="bc-vinc" id="bcVincitore" hidden aria-live="polite"></section>
+
+    <!-- DOPO LA REGATA: link a Vento Trieste (con il vento di adesso a Barcola), link ufficiali, Barcolana 59 -->
+    <section class="bc-dopo" id="bcDopo">
+      <a class="bc-vt" id="bcVentoTrieste" href="https://ventotrieste.info/?utm_source=barcolana2026&amp;utm_medium=dopo-regata" data-conta="dopo regata: ventotrieste.info">
+        <span class="bc-vt-marca"><img src="/icon-192.png" alt="" width="40" height="40" /><span>Vento Trieste</span></span>
+        <span class="bc-vt-titolo"><span class="l-it">Il vento della Barcolana,<br>tutto l'anno.</span><span class="l-en">The Barcolana wind,<br>all year round.</span></span>
+        <span class="bc-vt-testo"><span class="l-it">Le centraline che hai seguito in regata, ogni giorno nel Golfo: surfometro, spinta della bora, mappa, webcam e previsioni. Gratis, dal telefono.</span><span class="l-en">The stations you followed during the race, every day in the Gulf: wind meter, Bora push, map, webcams and forecasts. Free, on your phone.</span></span>
+        <span class="bc-vt-live" id="bcVtLive" hidden></span>
+        <span class="bc-vt-cta"><span class="l-it">Apri ventotrieste.info</span><span class="l-en">Open ventotrieste.info</span> <span aria-hidden="true">→</span></span>
+      </a>
+
+      <div class="bc-dopo-link">
+        <a href="https://iscrizioni.barcolana.it/staticpage/classifica2026" target="_blank" rel="noopener" data-conta="dopo regata: classifica">🏁 <span class="l-it">Classifica ufficiale</span><span class="l-en">Official results</span> ↗</a>
+        <a href="https://foto.barcolana.it/?categories=barcolana-58" target="_blank" rel="noopener" data-conta="dopo regata: foto">📸 <span class="l-it">Le foto della regata</span><span class="l-en">Race photos</span> ↗</a>
+        <a href="https://www.barcolana.it/it/news/2026/la-cronaca-della-regata" target="_blank" rel="noopener" data-conta="dopo regata: cronaca">📰 <span class="l-it">La cronaca della regata</span><span class="l-en">Race report</span> ↗</a>
+      </div>
+
+      <a class="bc-59" id="bc59" href="https://www.barcolana.it/?utm_source=ventotrieste&amp;utm_medium=barcolana2026" target="_blank" rel="noopener" data-conta="dopo regata: barcolana 59">
+        <span class="bc-59-eyebrow"><span class="l-it">Prossima edizione · ottobre 2027</span><span class="l-en">Next edition · October 2027</span></span>
+        <span class="bc-59-titolo"><span class="l-it">Ci vediamo alla Barcolana&nbsp;59</span><span class="l-en">See you at Barcolana&nbsp;59</span></span>
+        <span class="bc-59-testo"><span class="l-it">Programma, iscrizioni e novità sul sito ufficiale.</span><span class="l-en">Programme, entries and news on the official website.</span></span>
+        <span class="bc-59-cta">barcolana.it ↗</span>
+      </a>
+
+      <p class="bc-dopo-collab"><span class="l-it"><strong>Vento Barcolana</strong> è nato dalla collaborazione tra Vento Trieste, progetto indipendente di Alberto Broggi (bebroggi.it), e Barcolana. Grazie a tutti gli equipaggi e a chi ha seguito il vento con noi.</span><span class="l-en"><strong>Vento Barcolana</strong> was born from a collaboration between Vento Trieste, an independent project by Alberto Broggi (bebroggi.it), and Barcolana. Thanks to every crew and to everyone who followed the wind with us.</span></p>
+    </section>
     <!-- 1. VENTO SUL CAMPO DI REGATA
          Ott 2026: progetto approvato dall'organizzazione. In testa il logo ufficiale (dal PDF
          20250204_BARCOLANA_b_CMYK, livello "B blu", reso in bianco sulla fascia blu), il box della
@@ -1795,6 +1889,45 @@
     const PARTENZA_ORA = Date.parse("2026-10-11T10:30:00+02:00");
     const GIORNO_GARA = "2026-10-11";
     const URL_PAGINA = "https://ventotrieste.info/barcolana2026/";
+    // dopo la regata (classe messa dallo script in testa al body): niente dati live sul percorso
+    const ARCHIVIO = document.body.classList.contains("bc-archivio");
+
+    /* ---------- dopo la regata: il vento di adesso a Barcola nel link a Vento Trieste ----------
+       Stessa regola del surfometro di ventotrieste.info (13 ott 2026): la centralina di Barcola è al
+       riparo, quindi la parola segue la raffica; media e raffica sono degli ultimi 10 minuti (proxy v50).
+       Un dato con più di 20 minuti non si mostra (un dato vecchio non è il vento di adesso): la riga resta nascosta. */
+    let vtLive = null;
+    function disegnaVtLive() {
+      const box = document.getElementById("bcVtLive");
+      if (!box || !vtLive) return;
+      const { avg, gust, dir, ts } = vtLive;
+      const k = isNaN(gust) ? avg : gust;
+      const parole = ["Bavisela", "Arietta", "Sufia", "Sufia ben", "Sufia sai ben", "Buriana!"];
+      const i = k < 8 ? 0 : k < 13 ? 1 : k < 18 ? 2 : k < 25 ? 3 : k <= 35 ? 4 : 5;
+      const kt = Math.round(avg) + (isNaN(gust) || Math.round(gust) <= Math.round(avg) ? "" : "-" + Math.round(gust)) + " kt";
+      const nome = isNaN(dir) ? "" : nomeVento(dir, avg);
+      box.innerHTML = "<small>" + tr("Adesso a Barcola", "Now at Barcola") + "</small><strong>" + parole[i] + "</strong>" +
+        "<span>" + kt + (isNaN(dir) ? "" : " · " + cardinale(dir) + (nome ? " · " + nome : "")) + "</span>" +
+        "<em>" + tr("agg. ", "upd. ") + oraHHMM(ts) + "</em>";
+      box.hidden = false;
+    }
+    function caricaVtLive() {
+      fetch("https://ventotrieste-dati.bebroggi.workers.dev/?ts=" + Date.now()).then(r => r.json()).then(d => {
+        const b = d && d.barcola;
+        const m = b && String(b.datetime || "").match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+        const box = document.getElementById("bcVtLive");
+        if (!m || !box) return;
+        const ts = new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5]);
+        const avg = parseFloat(b.wind_avg), gust = parseFloat(b.wind_max), dir = parseFloat(b.wind_direction);
+        if (isNaN(avg) || (Date.now() - ts) / 60000 > 20 || (avg === 0 && !(gust > 0))) { vtLive = null; box.hidden = true; return; }
+        vtLive = { avg, gust, dir, ts };
+        disegnaVtLive();
+      }).catch(() => {});
+    }
+    document.getElementById("bcDopo").addEventListener("click", e => {
+      const t = e.target.closest("[data-conta]");
+      if (t && window.vtConta) window.vtConta(t.dataset.conta);
+    });
 
     /* ---------- proiezione: identica a genera-costa.py ---------- */
     const COSTA = window.BARCOLANA_COSTA || { w: 1000, h: 842, terra: "", dighe: "", moli: "" };
@@ -2679,10 +2812,20 @@
 
     /* il dock mobile di footer-widgets.js ha etichette solo in italiano */
     function etichetteDock() {
-      const nomi = { "#vento": ["Ora", "Now"], "#mappaVento": ["Mappa", "Map"], "#registro": ["Registro", "Log"], "#edizioni": ["Edizioni", "Past"] };
+      const nomi = { "#vento": ["Ora", "Now"], "#mappaVento": ["Mappa", "Map"], "#registro": ["Registro", "Log"], "#edizioni": ["Edizioni", "Past"],
+        "#bcVincitore": ["Vincitore", "Winner"], "#bcVentoTrieste": ["Vento", "Wind"] };
+      if (ARCHIVIO) nomi["#registro"] = ["Regata", "Race"];
+      // dopo la regata: icone a tratto per le voci nuove (footer-widgets.js metterebbe un pallino)
+      const ICO = {
+        "#bcVincitore": '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M9 20h6M10 17h4"/>',
+        "#registro": '<path d="M5 20V10M10 20V4M15 20v-7M20 20V8"/>',
+        "#edizioni": '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'
+      };
       document.querySelectorAll(".ux-mobile-dock a").forEach(a => {
-        const n = nomi[a.getAttribute("href")], lab = a.querySelector(".ux-dock-label");
+        const h = a.getAttribute("href"), n = nomi[h], lab = a.querySelector(".ux-dock-label");
         if (n && lab) lab.textContent = tr(n[0], n[1]);
+        const ico = a.querySelector(".ux-dock-icon");
+        if (ARCHIVIO && ICO[h] && ico && !ico.dataset.bc) { ico.dataset.bc = "1"; ico.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICO[h] + "</svg>"; }
       });
       const altro = document.querySelector(".ux-mobile-dock button .ux-dock-label");
       if (altro) altro.textContent = tr("Altro", "More");
@@ -2693,7 +2836,9 @@
       document.documentElement.lang = LANG;
       try { localStorage.setItem("vento-trieste-lang", LANG); } catch (e) {}
       document.querySelectorAll("[data-lang-btn]").forEach(b => b.setAttribute("aria-pressed", String(b.getAttribute("data-lang-btn") === LANG)));
-      document.title = tr("Vento Barcolana – il vento sul percorso in tempo reale", "Vento Barcolana – live wind on the race course");
+      document.title = ARCHIVIO ? tr("Barcolana 2026: vincitore e vento della regata – Vento Barcolana", "Barcolana 2026: winner and race-day wind – Vento Barcolana")
+        : tr("Vento Barcolana – il vento sul percorso in tempo reale", "Vento Barcolana – live wind on the race course");
+      disegnaVtLive();
       disegnaLegenda(); disegnaVentoStorico(); notaPrevisione(); if (window.RegistroVento) RegistroVento.ridisegna();
       aggiornaHero(); aggiornaPercorso(); countdown(); aggiornaCondivisione(); etichetteDock();
       const agg = document.getElementById("ultimoAggiornamento");
@@ -2742,6 +2887,9 @@
         pianifica(d);
       }
       function disegna(d) {
+        // la pagina "classifica-barcolanaNN" di barcolana.it per il 2026 non c'è (404): meglio la classifica
+        // ufficiale completa di iscrizioni.barcolana.it che l'elenco generico delle edizioni precedenti
+        if (!d.link || /classifiche-edizioni-precedenti/.test(d.link)) d.link = "https://iscrizioni.barcolana.it/staticpage/classifica" + d.anno;
         const v = d.vincitore, chiave = JSON.stringify(d.podio) + d.link;
         if (chiave === mostrato) return;
         const prima = !mostrato;
@@ -2829,17 +2977,23 @@
     impostaLingua(LANG);
     setInterval(countdown, 30000);
     // ogni minuto: eta' "min fa" e dati che invecchiano oltre la soglia escono da stima e mappa
-    setInterval(() => { if (!document.hidden) { controllaPrevisione(); aggiornaHero(); aggiornaPercorso(); } }, 60000);
-    caricaLive();
-    caricaPrevisioni();
-    setInterval(caricaPrevisioni, 60 * 60 * 1000);
-    setInterval(() => { if (!document.hidden) caricaLive(); }, 5 * 60 * 1000);
+    setInterval(() => { if (!document.hidden && !ARCHIVIO) { controllaPrevisione(); aggiornaHero(); aggiornaPercorso(); } }, 60000);
+    if (ARCHIVIO) {
+      caricaVtLive();
+      setInterval(() => { if (!document.hidden) caricaVtLive(); }, 5 * 60 * 1000);
+      document.addEventListener("visibilitychange", () => { if (!document.hidden) caricaVtLive(); });
+    } else {
+      caricaLive();
+      caricaPrevisioni();
+      setInterval(caricaPrevisioni, 60 * 60 * 1000);
+      setInterval(() => { if (!document.hidden) caricaLive(); }, 5 * 60 * 1000);
+    }
     /* Telefono in tasca, tab in background: i timer si fermano e al rientro la pagina
        mostrerebbe i dati di quando l'avevi lasciata. Al rientro ridisegno subito (le
        eta' si ricalcolano, i dati vecchi escono) e riscarico se l'ultimo giro ha piu'
        di un minuto. */
     document.addEventListener("visibilitychange", () => {
-      if (document.hidden) return;
+      if (document.hidden || ARCHIVIO) return;
       controllaPrevisione(); aggiornaHero(); aggiornaPercorso();
       if (Date.now() - ultimoCaricamento > 60 * 1000) caricaLive();
     });
