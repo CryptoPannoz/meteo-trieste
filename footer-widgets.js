@@ -543,7 +543,31 @@
     dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali"
   };
   var supporters = ["Cristina Codrini", "Paolo Perusco", "Pier Paolo Nistri", "Pietro Silvestri", "Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop", "Stefano Davini", "Gianpaolo Maso", "Matteo Momic", "Martina Marin", "Roberto Piretti", "Elio Massimo Polo", "Paolo Bastiani", "Carlo Capelli", "Luigi Apicella", "Luca Barbaresco", "Maurizio Barillaro", "Carlo Valle"];
-  var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
+  /* Sostenitori automatici (20 ott 2026, Alberto: "ogni pagamento 'Hai ricevuto denaro' finisce
+     direttamente tra i sostenitori"). Chi dona con PayPal dal 16 ott 2026 arriva dalla web app
+     apps-script-sostenitori/ (legge in sola lettura le email PayPal e restituisce solo i nomi) e
+     si aggiunge in coda a questo elenco scritto a mano, senza doppioni. La copia in localStorage
+     li mostra subito alla visita dopo (Apps Script risponde in 2-40 s). URL vuoto = spento. */
+  var SOSTENITORI_URL = "";
+  var CHIAVE_SOST = "vt-sostenitori-auto";
+  function chiaveNome(n) { return String(n).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim(); }
+  function escNome(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function aggiungiSostenitori(nomi) {
+    if (!Array.isArray(nomi)) return false;
+    var noti = supporters.map(chiaveNome), aggiunti = false;
+    nomi.forEach(function (n) {
+      if (typeof n !== "string" || !n.trim() || n.length > 60 || noti.indexOf(chiaveNome(n)) !== -1) return;
+      supporters.push(n.trim());
+      noti.push(chiaveNome(n));
+      aggiunti = true;
+    });
+    return aggiunti;
+  }
+  if (SOSTENITORI_URL) {
+    try { var copiaSost = JSON.parse(localStorage.getItem(CHIAVE_SOST) || "null"); if (copiaSost) aggiungiSostenitori(copiaSost.nomi); } catch (e) {}
+  }
+  function nomiSostenitori() { return supporters.map(function (name) { return '<span class="supporter-name">' + escNome(name) + '</span>'; }).join(""); }
+  var supporterNames = nomiSostenitori();
   var partners = [
     { name: "Jaka87 · Vetercek", detail: sl ? "mreža postaj v živo" : "rete di centraline live", url: "https://vetercek.com/" },
     { name: "Museo della Bora", detail: sl ? "kultura burje in vetra" : "cultura della Bora e del vento", url: "https://museobora.org/" },
@@ -602,7 +626,7 @@
       '<span aria-hidden="true">♥</span><span>' + t.supportCta + '</span><span aria-hidden="true">→</span></a>' +
       '<span class="support-methods">' + t.supportMethods + '</span></div>' +
       '<div class="supporters"><div class="supporters-heading"><h3>' + t.supporters + '</h3></div>' +
-      '<div class="supporters-marquee" tabindex="0" aria-label="' + t.supporters + ': ' + supporters.join(', ') + '">' +
+      '<div class="supporters-marquee" tabindex="0" aria-label="' + t.supporters + ': ' + escNome(supporters.join(', ')) + '">' +
       '<div class="supporters-track"><div class="supporters-group">' + supporterNames + '</div>' +
       '<div class="supporters-group" aria-hidden="true">' + supporterNames + '</div></div></div></div>' +
       '<details class="sources-tendina' + (sl ? ' sources-tendina-sl' : '') + '"><summary><span class="sources-tendina-titolo">🤝 ' + t.partners +
@@ -615,6 +639,16 @@
 
   if (conVisitatori) fetch(proxy + "?views=1&ts=" + Date.now()).then(function (r) { return r.json(); }).then(function (v) {
     if (v && v.total != null) document.getElementById("footerVisitorTotal").textContent = Number(v.total).toLocaleString(sl ? "sl-SI" : "it-IT");
+  }).catch(function () {});
+
+  if (SOSTENITORI_URL) fetch(SOSTENITORI_URL).then(function (r) { return r.json(); }).then(function (j) {
+    if (!j || !Array.isArray(j.sostenitori)) return;
+    try { localStorage.setItem(CHIAVE_SOST, JSON.stringify({ nomi: j.sostenitori, t: Date.now() })); } catch (e) {}
+    if (!aggiungiSostenitori(j.sostenitori)) return;
+    var html = nomiSostenitori();
+    Array.prototype.forEach.call(root.querySelectorAll(".supporters-group"), function (g) { g.innerHTML = html; });
+    var marquee = root.querySelector(".supporters-marquee");
+    if (marquee) marquee.setAttribute("aria-label", t.supporters + ": " + supporters.join(", "));
   }).catch(function () {});
 
   document.getElementById("footerSupportButton").addEventListener("click", function (e) {
