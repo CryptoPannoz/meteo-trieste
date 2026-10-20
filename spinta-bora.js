@@ -61,7 +61,7 @@
     mappaSotto: "Potisk burje je pod ničlo: burje ni. Tu je, kje piha zdaj, od zaliva do Istre.",
     mappaSpinta: "Potisk burje", mappaGrafico: "📈 Graf potiska", mappaTorna: "🗺️ Ni burje: pokaži zemljevid",
     mappaIstria: "📍 Spoti v Istri",
-    mappaFonte: "Izmerjeni podatki postaj, ne napoved · dotakni se številke za podrobnosti · obala © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors",
+    mappaFonte: "Izmerjeni podatki postaj, ne napoved · dotakni se številke za podrobnosti · obala © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · relief Copernicus EU-DEM, USGS, NOAA",
     mappaQui: "🗺️ Zdaj ni burje: zemljevid je na vrhu strani, namesto potiska burje.", mappaVai: "Na zemljevid ↑"
   } : {
     fasce: ["Nessuna spinta", "Spinta debole", "Genesi della Bora", "Bora consistente", "Bora forte"],
@@ -96,7 +96,7 @@
     mappaSotto: "La spinta della bora è sotto zero: niente bora. Ecco dove soffia adesso, dal Golfo all'Istria.",
     mappaSpinta: "Spinta della Bora", mappaGrafico: "📈 Grafico della spinta", mappaTorna: "🗺️ Niente bora: mostra la mappa",
     mappaIstria: "📍 Spot Istria",
-    mappaFonte: "Dati osservati dalle centraline, non una previsione · tocca un numero per il dettaglio · costa © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors",
+    mappaFonte: "Dati osservati dalle centraline, non una previsione · tocca un numero per il dettaglio · costa © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · rilievo Copernicus EU-DEM, USGS, NOAA",
     mappaQui: "🗺️ Adesso non c'è bora: la mappa è salita in cima alla pagina, al posto della Spinta della Bora.", mappaVai: "Vai alla mappa ↑"
   };
 
@@ -497,6 +497,10 @@
     }
     mp.sezione.classList.toggle("sb-mappa-via", dentro);
     mp.qui.hidden = !dentro;
+    // in cima serve vedere fino all'Istria; nella tendina basta il Golfo (mappa-golfo.js)
+    var svgMappa = mp.canvas.querySelector("svg");
+    if (svgMappa) svgMappa.setAttribute("data-vista", dentro ? "tutto" : "golfo");
+    if (window.MappaGolfo && MappaGolfo.vista) MappaGolfo.vista(dentro ? "tutto" : "golfo", false);
   }
 
   // true se il box mostra la mappa (il grafico allora non si disegna)

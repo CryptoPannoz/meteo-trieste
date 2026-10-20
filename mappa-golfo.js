@@ -16,43 +16,49 @@
   function px(lon) { return (lon - LON0) * KX; }
   function py(lat) { return (LAT1 - lat) * KY; }
 
+  /* Etichette della carta. Restano della stessa grandezza sullo schermo a ogni zoom
+     (layout()); zoomMin/zoomMax: da che ingrandimento si vedono. tipo: "citta" (pallino),
+     "vetta" (triangolo), "mare" (corsivo azzurro), "regione" (maiuscoletto spaziato). */
   var CITTA = [
     /* Monfalcone è spostata a nord-ovest per non entrare nel simbolo di Marina Julia. */
     { nome: "Monfalcone", lon: 13.53,  lat: 45.805, dx: -8, dy: -10, anchor: "end" },
+    { nome: "Trieste",    lon: 13.776, lat: 45.650, dx: 9, dy: 4, zoomMin: 1.6, zoomMax: 2.3 },
+    { nome: "Koper",      lon: 13.730, lat: 45.548, dx: 9, dy: 4, zoomMin: 1.6, zoomMax: 2.3 },
     { nome: "Umag",       lon: 13.545, lat: 45.435 },
     { nome: "Pula",       lon: 13.85,  lat: 44.875 },
-    { nome: "Opatija",    lon: 14.315, lat: 45.335 }
+    { nome: "Opatija",    lon: 14.315, lat: 45.335, dx: -8, dy: 4, anchor: "end", zoomMin: 1.6 },
+    { nome: "Učka 1401",  lon: 14.202, lat: 45.286, tipo: "vetta" },
+    { nome: "Golfo di Trieste", lon: 13.53, lat: 45.715, tipo: "mare", zoomMin: 1.6 },
+    { nome: "Kvarner",    lon: 14.22,  lat: 44.92, tipo: "mare" },
+    { nome: "CARSO · KRAS", lon: 13.70, lat: 45.80, tipo: "regione", zoomMin: 1.6 },
+    { nome: "ISTRA · ISTRIA", lon: 13.80, lat: 45.20, tipo: "regione", zoomMax: 2.2 }
   ];
 
   /* id = chiave nel JSON del proxy (tranne "mambo": boa OGS, dati a parte).
-     lato: dove sta l'etichetta; dy: scostamento verticale extra (Barcola sta
-     sotto il blocco di Monte Grisa).
-     sposta: [dx, dy] in unità della mappa. Davanti a Trieste le centraline distano
-     26-31 unità, ma un simbolo con la freccia ne occupa almeno 25 di raggio: si
-     accavallavano (Alberto, 2 ott 2026, "illeggibile"). Il simbolo si sposta dove c'è
-     posto, con un filo che lo lega al punto vero (pallino scuro), e tra due simboli
-     restano almeno ~47 unità. */
+     Coordinate VERE delle centraline. Fino al 20 ott 2026 i simboli troppo vicini
+     (Monte Grisa, Barcola, Trieste molo: 26-31 unità) si spostavano a mano con
+     "sposta": [dx, dy]; ora li separa da sola dispostiSimboli() a ogni zoom, con un
+     filo verso il punto vero solo quando serve. */
   var STAZIONI = [
-    { id: "grado",       nome: "Grado",        lon: 13.395, lat: 45.678, lato: "sopra"    },
-    { id: "marinajulia", nome: "Marina Julia", lon: 13.565, lat: 45.782, lato: "sinistra" },
-    { id: "monteGrisa",  nome: "Monte Grisa",  lon: 13.757, lat: 45.712, lato: "destra", sposta: [16, -17] },
-    { id: "barcola",     nome: "Barcola",      lon: 13.754, lat: 45.680, lato: "destra", dy: 16, tipo: "barcola" },
+    { id: "grado",       nome: "Grado",        lon: 13.395, lat: 45.678 },
+    { id: "marinajulia", nome: "Marina Julia", lon: 13.565, lat: 45.782 },
+    { id: "monteGrisa",  nome: "Monte Grisa",  lon: 13.757, lat: 45.712 },
+    { id: "barcola",     nome: "Barcola",      lon: 13.754, lat: 45.680, tipo: "barcola" },
     /* Trieste molo F.lli Bandiera: stazione OSMER, dal set 2026 a 15 minuti (Protezione
        Civile FVG via proxy). Prima era oraria da vetercek, per questo non era in mappa. */
-    { id: "trieste",     nome: "Trieste molo", lon: 13.7506, lat: 45.6368, lato: "destra", sposta: [-36, 7] },
-    /* posizione reale 13.708/45.698 (davanti al castello di Miramare), spostata
-       un po' al largo per non accavallarsi al gruppo Monte Grisa/Barcola */
-    { id: "mambo",       nome: "Boa Mambo",    lon: 13.660, lat: 45.685, lato: "sopra",    tipo: "mambo" },
+    { id: "trieste",     nome: "Trieste molo", lon: 13.7506, lat: 45.6368 },
+    /* davanti al castello di Miramare (fino al 20 ott 2026 disegnata più al largo, a 13.660/45.685) */
+    { id: "mambo",       nome: "Boa Mambo",    lon: 13.708, lat: 45.698, tipo: "mambo" },
     /* boa Paloma: rete Protezione Civile FVG, fetch autonomo (API aperta, vedi caricaPaloma) */
-    { id: "paloma",      nome: "Boa Paloma",   lon: 13.565, lat: 45.619, lato: "sinistra", tipo: "paloma" },
-    { id: "muggia",      nome: "Muggia",       lon: 13.768, lat: 45.602, lato: "destra"   },
+    { id: "paloma",      nome: "Boa Paloma",   lon: 13.565, lat: 45.619, tipo: "paloma" },
+    { id: "muggia",      nome: "Muggia",       lon: 13.768, lat: 45.602 },
     /* Savudrija, Poreč e Rovinj tolte il 29 set 2026: spente su vetercek dal 24 ago */
-    { id: "zusterna",    nome: "Zusterna",     lon: 13.712, lat: 45.543, lato: "destra"   },
-    { id: "piran",       nome: "Boa Piran",    lon: 13.551, lat: 45.549, lato: "sinistra", tipo: "piran" },
-    { id: "antenal",     nome: "Antenal",      lon: 13.574, lat: 45.314, lato: "destra"   },
-    { id: "preluka",     nome: "Preluka",      lon: 14.288, lat: 45.377, lato: "sinistra" },
-    { id: "premantura",  nome: "Premantura",   lon: 13.908, lat: 44.797, lato: "sinistra" },
-    { id: "liznjan",     nome: "Ližnjan", lon: 13.955, lat: 44.824, lato: "destra"   }
+    { id: "zusterna",    nome: "Zusterna",     lon: 13.712, lat: 45.543 },
+    { id: "piran",       nome: "Boa Piran",    lon: 13.551, lat: 45.549, tipo: "piran" },
+    { id: "antenal",     nome: "Antenal",      lon: 13.574, lat: 45.314 },
+    { id: "preluka",     nome: "Preluka",      lon: 14.288, lat: 45.377 },
+    { id: "premantura",  nome: "Premantura",   lon: 13.908, lat: 44.797 },
+    { id: "liznjan",     nome: "Ližnjan", lon: 13.955, lat: 44.824 }
   ];
 
   var GRADI_CARDINALE = { N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
@@ -131,11 +137,8 @@
       deg: (deg === undefined) ? null : deg, ora: r0.ora || "" };
   }
 
-  /* dove si disegna il simbolo (x, y) e dove sta davvero la centralina (x0, y0) */
-  function posizione(st) {
-    var x0 = px(st.lon), y0 = py(st.lat), d = st.sposta || [0, 0];
-    return { x: x0 + d[0], y: y0 + d[1], x0: x0, y0: y0, spostata: !!st.sposta };
-  }
+  /* dove sta davvero la centralina, in unità della mappa */
+  function punto(st) { return { x: px(st.lon), y: py(st.lat) }; }
 
   function el(tag, attrs, testo) {
     var n = document.createElementNS(SVG_NS, tag);
@@ -144,8 +147,29 @@
     return n;
   }
 
-  var svg = null, gStazioni = null, gMambo = null, gPaloma = null, htmlDettaglio = null;
+  var svg = null, gStazioni = null, gMambo = null, gPaloma = null, gFili = null, gEtichette = null, htmlDettaglio = null;
   var stazioneSelezionata = null;
+
+  /* ---------- zoom (20 ott 2026) ----------
+     Alberto: "migliorare la mappa da mobile: zoomare, ricentrare, la logica delle
+     centraline". Lo zoom cambia il viewBox dell'SVG (niente librerie): la carta
+     (mare, rilievo, costa) si ingrandisce, simboli ed etichette restano della stessa
+     grandezza sullo schermo e si ridispongono a ogni cambio (layout()).
+     Viste pronte: Golfo, Istria, Tutto. Gesti "cooperativi", come le mappe incorporate
+     nelle pagine: un dito scorre la pagina, due dita spostano e ingrandiscono la mappa;
+     doppio tocco = avvicina; col mouse si trascina e Ctrl+rotella ingrandisce. */
+  var MAPPA_W = 762, MAPPA_H = 1000, ZOOM_MAX = 6;
+  var VISTE = {
+    golfo:  { x: 118, y: 55,  w: 322, h: 285 },
+    istria: { x: 180, y: 400, w: 540, h: 590 },
+    tutto:  { x: 0,   y: 0,   w: MAPPA_W, h: MAPPA_H }
+  };
+  var vb = { x: 0, y: 0, w: MAPPA_W, h: MAPPA_H };
+  var vistaAttiva = null, animazione = null;
+  var simboli = {};          // id -> { st, v, g } dei simboli disegnati
+  var citta = [];            // { c, g } delle etichette
+  var ctrl = null;           // pulsanti di zoom e viste
+  var rilievoGolfo = null;   // dettaglio del rilievo, caricato al primo zoom sul Golfo
 
   function installaStili() {
     if (document.getElementById("mappaGolfoStili")) return;
@@ -168,6 +192,24 @@
       "#mappaVentoContenuto>.stato{margin-top:.55rem}" +
       "@media(max-width:540px){.mappa-nowcast-head{align-items:flex-start}.mappa-nowcast-hint{font-size:.68rem}.mappa-legenda span{min-height:28px;padding:.28rem .42rem;font-size:.62rem}.mappa-legenda em{display:none}.mg-halo{opacity:.06}}" +
       "@media(prefers-reduced-motion:no-preference){.mg-stazione{transition:opacity .15s ease}.mg-stazione:hover .mg-halo,.mg-stazione:focus .mg-halo{opacity:.9}.mappa-popover:not([hidden]){animation:mg-in .16s ease-out}@keyframes mg-in{from{opacity:0}to{opacity:1}}}";
+    style.textContent +=
+      /* zoom: la grandezza della mappa la decide il CSS, non il viewBox che cambia */
+      ".mappa-canvas svg{aspect-ratio:762/1000;touch-action:pan-x pan-y;-webkit-user-select:none;user-select:none}" +
+      ".mappa-canvas.mg-trascina svg{cursor:grabbing}" +
+      ".mg-ctrl{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px;border-bottom:1px solid #b9d6dd;background:#eef7f9}" +
+      ".mg-ctrl>div{display:flex;gap:4px}" +
+      ".mg-ctrl button{min-width:0;min-height:34px;margin:0;padding:.3rem .62rem;border:1px solid rgba(15,92,108,.28);border-radius:999px;background:rgba(255,255,255,.93);color:#0f5c6c;box-shadow:0 2px 8px rgba(16,47,56,.16);font:inherit;font-size:.72rem;font-weight:800;line-height:1;cursor:pointer;transform:none}" +
+      ".mg-ctrl button:hover{background:#fff;color:#15313a;border-color:#0f5c6c}" +
+      ".mg-ctrl button[aria-pressed=true]{background:#15313a;border-color:#15313a;color:#fff}" +
+      ".mg-ctrl .mg-zoom button{width:34px;padding:0;font-size:1.1rem;font-weight:700}" +
+      ".mg-ctrl button:disabled{opacity:.4;cursor:default}" +
+      ".mg-ctrl button:focus-visible{outline:3px solid #0f6f7e;outline-offset:1px}" +
+      ".mg-aiuto{position:absolute;z-index:3;left:50%;top:55%;transform:translate(-50%,-50%);margin:0;padding:.55rem .8rem;border-radius:10px;background:rgba(16,32,38,.86);color:#fff;font-size:.8rem;font-weight:750;pointer-events:none;white-space:nowrap}" +
+      ".mg-aiuto[hidden]{display:none}" +
+      ".mg-nome{display:none;font-weight:850;fill:#15313a;paint-order:stroke;stroke:#fff;stroke-width:3.2px;stroke-linejoin:round}" +
+      ".mg-con-nome .mg-nome{display:inline}" +
+      /* telefono: il dettaglio diventa una barra in fondo alla mappa invece di coprirne il centro */
+      ".mappa-canvas.mg-stretta .mappa-popover{left:8px!important;right:8px!important;width:auto;transform:none}";
     document.head.appendChild(style);
   }
 
@@ -188,30 +230,69 @@
       '<filter id="mgOmbra" x="-60%" y="-60%" width="220%" height="220%">' +
       '<feDropShadow dx="0" dy="1.8" stdDeviation="2.2" flood-color="#102f38" flood-opacity="0.34"/>' +
       '</filter>' +
+      '<path id="mgTerra" d="' + TERRA + '"/>' +
+      '<clipPath id="mgTerraClip"><use href="#mgTerra"/></clipPath>' +
       '<style>.mg-stazione{cursor:pointer}.mg-halo{opacity:.16}.mg-stazione:focus{outline:none}.mg-stazione:focus .mg-halo,.mg-stazione.mg-selected .mg-halo{opacity:.9}' +
       '.mg-invito .mg-halo{animation:mg-pulse 1.4s ease-in-out 3}@keyframes mg-pulse{0%,100%{opacity:.16}50%{opacity:.95}}' +
       '@media(prefers-reduced-motion:reduce){.mg-invito .mg-halo{animation:none}}</style>';
     svg.appendChild(defs);
-    svg.appendChild(el("rect", { x: 0, y: 0, width: 762, height: 1000, fill: "url(#mgMare)" }));
-    svg.appendChild(el("path", { d: TERRA, fill: "#f7f3e9", stroke: "#5f8b96",
-      "stroke-width": 1.8, "stroke-linejoin": "round" }));
+    svg.appendChild(el("rect", { x: -MAPPA_W, y: -MAPPA_H, width: MAPPA_W * 3, height: MAPPA_H * 3, fill: "url(#mgMare)" }));
+    /* terra: colore pieno subito, poi il rilievo (mappa/genera-rilievo.py) ritagliato sulla
+       costa OSM; il dettaglio del Golfo arriva solo quando si ingrandisce (caricaRilievoGolfo) */
+    svg.appendChild(el("use", { href: "#mgTerra", fill: "#f3efe2" }));
+    var rilievo = el("image", { href: "/mappa/rilievo.webp", x: 0, y: 0, width: MAPPA_W, height: MAPPA_H,
+      preserveAspectRatio: "none", "clip-path": "url(#mgTerraClip)" });
+    rilievo.addEventListener("error", function () { rilievo.remove(); });
+    svg.appendChild(rilievo);
+    rilievoGolfo = el("g", { "clip-path": "url(#mgTerraClip)" });
+    svg.appendChild(rilievoGolfo);
+    svg.appendChild(el("use", { href: "#mgTerra", fill: "none", stroke: "#5f8b96",
+      "stroke-width": 1.6, "stroke-linejoin": "round", "vector-effect": "non-scaling-stroke" }));
 
-    svg.appendChild(el("text", { x: px(14.22), y: py(44.92), "font-size": 17, "font-style": "italic",
-      fill: "#326c79", "text-anchor": "middle", "font-weight": 750 }, "Kvarner"));
-
-    CITTA.forEach(function (c) {
-      svg.appendChild(el("circle", { cx: px(c.lon), cy: py(c.lat), r: 2.7, fill: "#395a64" }));
-      svg.appendChild(el("text", { x: px(c.lon) + (c.dx == null ? 7 : c.dx), y: py(c.lat) + (c.dy == null ? 5 : c.dy), "font-size": 14,
-        fill: "#3d5158", "font-weight": 750, stroke: "#ffffff", "stroke-width": 2.6,
-        "paint-order": "stroke", "text-anchor": c.anchor || "start", "class": "mg-city-label" }, c.nome));
+    gEtichette = el("g", { "class": "mg-etichette", "aria-hidden": "true" });
+    citta = CITTA.map(function (c) {
+      var g = el("g", {});
+      var tipo = c.tipo || "citta";
+      var stile = {
+        citta:   { size: 14, fill: "#3d5158", weight: 750, style: "normal", spazio: 0 },
+        vetta:   { size: 12.5, fill: "#5b4a36", weight: 750, style: "normal", spazio: 0 },
+        mare:    { size: 14, fill: "#2f6f7d", weight: 700, style: "italic", spazio: 0.5 },
+        regione: { size: 12.5, fill: "#6b6a55", weight: 800, style: "normal", spazio: 2.4 }
+      }[tipo];
+      if (tipo === "citta") g.appendChild(el("circle", { cx: 0, cy: 0, r: 2.9, fill: "#395a64", stroke: "#fff", "stroke-width": 1.2 }));
+      if (tipo === "vetta") g.appendChild(el("path", { d: "M0 -5.5L5 3H-5Z", fill: "#7a654a", stroke: "#fff", "stroke-width": 1.2 }));
+      var centrata = tipo === "mare" || tipo === "regione";
+      g.appendChild(el("text", {
+        x: centrata ? 0 : (c.dx == null ? 7 : c.dx), y: centrata ? 4 : (c.dy == null ? 5 : c.dy),
+        "font-size": stile.size, fill: stile.fill, "font-weight": stile.weight, "font-style": stile.style,
+        "letter-spacing": stile.spazio, stroke: tipo === "mare" ? "rgba(255,255,255,.7)" : "#ffffff",
+        "stroke-width": tipo === "mare" ? 2 : 2.6, "paint-order": "stroke",
+        "text-anchor": centrata ? "middle" : (c.anchor || "start"), "class": "mg-city-label" }, c.nome));
+      gEtichette.appendChild(g);
+      return { c: c, g: g };
     });
+    svg.appendChild(gEtichette);
 
+    gFili = el("g", { "class": "mg-fili", "aria-hidden": "true" });
     gStazioni = el("g", {});
     gMambo = el("g", {});
     gPaloma = el("g", {});
+    svg.appendChild(gFili);
     svg.appendChild(gStazioni);
     svg.appendChild(gMambo);
     svg.appendChild(gPaloma);
+  }
+
+  /* Dettaglio del rilievo sul Golfo (4 px per unità): solo quando si ingrandisce, per
+     non pesare su chi guarda la mappa intera. */
+  var RILIEVO_GOLFO = { x: 90, y: 30, w: 360, h: 310 };
+  function caricaRilievoGolfo() {
+    if (!rilievoGolfo || rilievoGolfo.__caricato) return;
+    rilievoGolfo.__caricato = true;
+    var img = el("image", { href: "/mappa/rilievo-golfo.webp", x: RILIEVO_GOLFO.x, y: RILIEVO_GOLFO.y,
+      width: RILIEVO_GOLFO.w, height: RILIEVO_GOLFO.h, preserveAspectRatio: "none" });
+    img.addEventListener("error", function () { img.remove(); });
+    rilievoGolfo.appendChild(img);
   }
 
   function aggiornaLegenda() {
@@ -250,14 +331,24 @@
     if (marker) marker.classList.add("mg-selected");
     stazioneSelezionata = st.id;
 
-    var pos = posizione(st), x = pos.x, y = pos.y;
     var colore = classeColore(v.kt);
     var kt = Math.round(v.kt), gu = Math.round(v.raffica);
     var valoreRaffica = !isNaN(v.raffica) && gu > kt ? " · raffica " + gu + " kt" : "";
     htmlDettaglio.style.setProperty("--mappa-accent", colore);
-    htmlDettaglio.style.top = Math.max(12, Math.min(88, y / 10)) + "%";
-    htmlDettaglio.style.left = x > 381 ? "12px" : "auto";
-    htmlDettaglio.style.right = x > 381 ? "auto" : "12px";
+    // dove sta il simbolo sullo schermo (in percentuale della mappa): il riquadro va dall'altra parte
+    var s = simboli[st.id], r = svg.getBoundingClientRect();
+    var sopra = r.top - svg.parentNode.getBoundingClientRect().top;   // altezza della barra dei pulsanti (gli svg non hanno offsetTop)
+    var fx = s && r.width ? s.qx / r.width : 0.5, fy = s && r.height ? s.qy / r.height : 0.5;
+    if (svg.parentNode.classList.contains("mg-stretta")) {
+      // telefono: barra a tutta larghezza, in alto o in basso, dalla parte opposta al simbolo
+      htmlDettaglio.style.top = fy > 0.5 ? (sopra + 8).toFixed(0) + "px" : "auto";
+      htmlDettaglio.style.bottom = fy > 0.5 ? "auto" : "8px";
+    } else {
+      htmlDettaglio.style.top = (sopra + Math.max(0.16, Math.min(0.84, fy)) * r.height).toFixed(0) + "px";
+      htmlDettaglio.style.bottom = "auto";
+      htmlDettaglio.style.left = fx > 0.5 ? "12px" : "auto";
+      htmlDettaglio.style.right = fx > 0.5 ? "auto" : "12px";
+    }
     htmlDettaglio.querySelector("strong").textContent = st.nome;
     htmlDettaglio.querySelector(".mappa-popover-valore").textContent = kt + " kt · " + fasciaVento(v.kt).nome + valoreRaffica;
     htmlDettaglio.querySelector(".mappa-popover-meta").textContent = "Da " + direzioneCardinale(v.deg) + (v.ora ? " · agg. " + v.ora : "");
@@ -282,13 +373,39 @@
       '<button class="mappa-popover-close" type="button" aria-label="Chiudi dettaglio">×</button>';
     htmlDettaglio.querySelector("button").addEventListener("click", chiudiDettaglio);
     contenitore.appendChild(htmlDettaglio);
+
+    ctrl = document.createElement("div");
+    ctrl.className = "mg-ctrl";
+    ctrl.innerHTML =
+      '<div class="mg-viste" role="group" aria-label="Inquadratura della mappa">' +
+        '<button type="button" data-vista="golfo" aria-pressed="false">Golfo</button>' +
+        '<button type="button" data-vista="istria" aria-pressed="false">Istria</button>' +
+        '<button type="button" data-vista="tutto" aria-pressed="false">Tutto</button>' +
+      '</div>' +
+      '<div class="mg-zoom"><button type="button" data-zoom="in" aria-label="Avvicina">+</button>' +
+      '<button type="button" data-zoom="out" aria-label="Allontana">−</button></div>';
+    ctrl.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("button");
+      if (!b) return;
+      if (b.dataset.vista) vista(b.dataset.vista, true);
+      else zoomCentro(b.dataset.zoom === "in" ? 1.7 : 1 / 1.7);
+    });
+    contenitore.insertBefore(ctrl, svg);
+
+    var aiuto = document.createElement("p");
+    aiuto.className = "mg-aiuto";
+    aiuto.hidden = true;
+    aiuto.textContent = "Usa due dita per spostare la mappa";
+    contenitore.appendChild(aiuto);
   }
 
-  /* freccia centrata sulla stazione, orientata dove VA il vento (deg + 180);
+  /* Simbolo disegnato attorno all'origine, in "unità simbolo" (cerchio di raggio 12,5):
+     posizione e scala le decide layout(), così resta della stessa grandezza sullo
+     schermo a ogni zoom. Freccia orientata dove VA il vento (deg + 180);
      centralina offline (v null) -> punto spento, non si disegna nulla */
   function disegnaStazione(dest, st, v) {
     if (!v || isNaN(v.kt)) return null;
-    var pos = posizione(st), x = pos.x, y = pos.y;
+    var x = 0, y = 0;
     var g = el("g", { "class": "mg-stazione", role: "button", tabindex: "0", "data-stazione": st.id });
     var colore = classeColore(v.kt);
     var kt = Math.round(v.kt), gu = Math.round(v.raffica);
@@ -297,12 +414,6 @@
       (v.deg != null ? " da " + Math.round(v.deg) + "°" : "") +
       (v.ora ? " · agg. " + v.ora : "");
     g.setAttribute("aria-label", titolo + ". Apri dettaglio");
-    /* simbolo spostato: filo e pallino sul punto vero, sotto a tutto il resto */
-    if (pos.spostata) {
-      g.appendChild(el("line", { x1: pos.x0, y1: pos.y0, x2: x, y2: y, stroke: "#ffffff", "stroke-width": 3.4, "stroke-linecap": "round", opacity: .9 }));
-      g.appendChild(el("line", { x1: pos.x0, y1: pos.y0, x2: x, y2: y, stroke: "#15313a", "stroke-width": 1.4, "stroke-linecap": "round" }));
-      g.appendChild(el("circle", { cx: pos.x0, cy: pos.y0, r: 3.2, fill: "#15313a", stroke: "#ffffff", "stroke-width": 1.4 }));
-    }
     g.appendChild(el("circle", { cx: x, cy: y, r: 25, fill: "transparent", "pointer-events": "all" }));
     g.appendChild(el("circle", { cx: x, cy: y, r: 17.5, fill: colore, "fill-opacity": .07, stroke: colore,
       "stroke-width": 2.6, "class": "mg-halo" }));
@@ -338,9 +449,13 @@
     speed.appendChild(el("text", { x: x, y: y + 4.1,
       fill: "#ffffff", "font-size": 11.5, "font-weight": 900, "text-anchor": "middle" }, String(kt)));
     g.appendChild(speed);
+    /* nome della centralina, visibile da vicino (classe mg-con-nome): il lato lo sceglie
+       piazzaNome() a ogni zoom, lontano dalla freccia e dentro la mappa */
+    g.appendChild(el("text", { "class": "mg-nome", x: 0, y: 30, "font-size": 11, "text-anchor": "middle" }, st.nome));
     g.appendChild(el("title", {}, titolo));
     function apri(e) {
       e.stopPropagation();
+      if (trascinato) return;
       if (stazioneSelezionata === st.id) { chiudiDettaglio(); return; }
       mostraDettaglio(st, v, g);
     }
@@ -350,6 +465,7 @@
       if (e.key === "Escape") chiudiDettaglio();
     });
     dest.appendChild(g);
+    simboli[st.id] = { st: st, v: v, g: g };
     return g;
   }
 
@@ -374,6 +490,7 @@
       var g = disegnaStazione(gStazioni, st, v);
       if (g) disegnate.push({ st: st, v: v, g: g });
     });
+    layout();
     caricaPaloma();   // throttled: al massimo un fetch ogni 4 minuti
     /* Invito all'uso (solo al primo disegno): gli aloni pulsano tre volte e il
        dettaglio della stazione più ventosa si apre da solo, così si capisce che i
@@ -398,6 +515,7 @@
     var st = STAZIONI.filter(function (s) { return s.tipo === "mambo"; })[0];
     if (!st || escluso(st)) return;
     disegnaStazione(gMambo, st, v);
+    layout();
   }
 
   /* Boa Paloma: rete idrometeo Protezione Civile FVG. API aperta (CORS *, CC BY 4.0,
@@ -411,6 +529,7 @@
     var st = STAZIONI.filter(function (s) { return s.tipo === "paloma"; })[0];
     if (!st || escluso(st)) return;
     disegnaStazione(gPaloma, st, v);
+    layout();
   }
   function caricaPaloma() {
     if (Date.now() - palomaUltimoFetch < 4 * 60 * 1000) return;
@@ -460,6 +579,341 @@
       .catch(function () {});   // boa offline: punto spento
   }
 
+  /* ---------- disposizione di simboli ed etichette ---------- */
+
+  function misure() {
+    var r = svg.getBoundingClientRect();
+    var w = r.width || 700, h = r.height || w * MAPPA_H / MAPPA_W;
+    return { w: w, h: h, u: vb.w / w };   // u = unità della mappa per pixel
+  }
+  function zoomAttuale() { return vistaIntera().w / vb.w; }
+
+  /* Ridispone tutto per il viewBox attuale: etichette e simboli a grandezza fissa sullo
+     schermo, simboli separati se si toccano. Costa poco (una ventina di elementi):
+     gira a ogni fotogramma di zoom. */
+  var layoutChiesto = false;
+  function layout() {
+    if (!svg || !gStazioni) return;
+    var m = misure(), u = m.u, z = zoomAttuale();
+    var cornice = svg.parentNode;
+    if (cornice && cornice.classList) cornice.classList.toggle("mg-stretta", m.w < 520);
+
+    citta.forEach(function (o) {
+      var c = o.c, visibile = (!c.zoomMin || z >= c.zoomMin) && (!c.zoomMax || z < c.zoomMax);
+      o.g.setAttribute("display", visibile ? "inline" : "none");
+      if (visibile) o.g.setAttribute("transform", "translate(" + px(c.lon).toFixed(1) + " " + py(c.lat).toFixed(1) + ") scale(" + (u * 0.8).toFixed(4) + ")");
+    });
+
+    // raggio del cerchio in pixel: 10 sul telefono a mappa intera, cresce un po' avvicinando
+    var R = Math.min(15, Math.max(10, m.w / 52) + 1.6 * Math.log(Math.max(1, z)) / Math.LN2);
+    var nomi = z >= 2.3 && m.w >= 280;
+    var lista = [];
+    Object.keys(simboli).forEach(function (id) {
+      var o = simboli[id];
+      if (!o.g.parentNode) { delete simboli[id]; return; }
+      var p = punto(o.st);
+      o.sx = (p.x - vb.x) / u; o.sy = (p.y - vb.y) / u;    // punto vero, in pixel
+      o.qx = o.sx; o.qy = o.sy;                            // dove va il simbolo
+      o.dentro = o.sx > -R && o.sx < m.w + R && o.sy > -R && o.sy < m.h + R;
+      lista.push(o);
+    });
+    dispostiSimboli(lista, 2 * R + (nomi ? 18 : 6), R, m);
+
+    var k = R / 12.5 * u, fili = [];
+    lista.forEach(function (o) {
+      var x = vb.x + o.qx * u, y = vb.y + o.qy * u;
+      o.g.setAttribute("transform", "translate(" + x.toFixed(2) + " " + y.toFixed(2) + ") scale(" + k.toFixed(4) + ")");
+      o.g.classList.toggle("mg-con-nome", nomi);
+    });
+    var occupati = [];
+    if (nomi) lista.forEach(function (o) { if (o.dentro) piazzaNome(o, R, m, lista, occupati); });
+    lista.forEach(function (o) {
+      var x = vb.x + o.qx * u, y = vb.y + o.qy * u;
+      if (Math.abs(o.qx - o.sx) + Math.abs(o.qy - o.sy) > 4) {
+        var x0 = vb.x + o.sx * u, y0 = vb.y + o.sy * u;
+        fili.push('<line x1="' + x0.toFixed(2) + '" y1="' + y0.toFixed(2) + '" x2="' + x.toFixed(2) + '" y2="' + y.toFixed(2) +
+          '" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".9" vector-effect="non-scaling-stroke"/>' +
+          '<line x1="' + x0.toFixed(2) + '" y1="' + y0.toFixed(2) + '" x2="' + x.toFixed(2) + '" y2="' + y.toFixed(2) +
+          '" stroke="#15313a" stroke-width="1.4" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
+          '<circle cx="' + x0.toFixed(2) + '" cy="' + y0.toFixed(2) + '" r="' + (3 * u).toFixed(3) +
+          '" fill="#15313a" stroke="#fff" stroke-width="1.3" vector-effect="non-scaling-stroke"/>');
+      }
+    });
+    gFili.innerHTML = fili.join("");
+    if (z >= 1.8) caricaRilievoGolfo();
+    if (htmlDettaglio && !htmlDettaglio.hidden && stazioneSelezionata && simboli[stazioneSelezionata]) {
+      var sel = simboli[stazioneSelezionata];
+      mostraDettaglio(sel.st, sel.v, sel.g);
+    }
+  }
+  function layoutPresto() {
+    if (layoutChiesto) return;
+    layoutChiesto = true;
+    requestAnimationFrame(function () { layoutChiesto = false; layout(); });
+  }
+
+  /* Lato del nome: prima quello da cui arriva il vento (opposto alla freccia), poi sotto,
+     sopra, destra, sinistra; si scarta un lato troppo vicino alla freccia o che esce dalla
+     mappa. Misure in pixel, poi convertite in unità simbolo (cerchio = 12,5). */
+  function piazzaNome(o, R, m, lista, occupati) {
+    var t = o.g.querySelector(".mg-nome");
+    if (!t) return;
+    var su = 12.5 / R;                                       // pixel -> unità simbolo
+    var largo = o.st.nome.length * 6.2 * R / 12.5 + 4;      // larghezza stimata del nome, px
+    var freccia = o.v && o.v.deg != null && o.v.kt >= 1 ? (o.v.deg + 180) % 360 : null;
+    var lati = [freccia == null ? 180 : (freccia + 180) % 360, 180, 0, 90, 270];
+    var scelta = null, dentroMappa = null, primo = null;
+    for (var i = 0; i < lati.length && !scelta; i++) {
+      var a = lati[i];
+      if (freccia != null) {
+        var diff = Math.abs(((a - freccia) % 360 + 540) % 360 - 180);
+        if (diff < 70) continue;                             // troppo vicino alla freccia
+      }
+      var nx = Math.sin(a * Math.PI / 180), ny = -Math.cos(a * Math.PI / 180);
+      var cx = o.qx + nx * (R + 4), cy = o.qy + ny * (R + 4);
+      var anc = Math.abs(nx) < 0.45 ? "middle" : nx > 0 ? "start" : "end";
+      var x0 = anc === "start" ? cx : anc === "end" ? cx - largo : cx - largo / 2;
+      var base = cy + (Math.abs(ny) < 0.45 ? 4 : ny > 0 ? 10 : -2);
+      var cand = { x: cx, y: base, anc: anc, box: { x0: x0, x1: x0 + largo, y0: base - 10, y1: base + 2 } };
+      if (!primo) primo = cand;
+      if (x0 < 2 || x0 + largo > m.w - 2 || base - 10 < 2 || base + 2 > m.h - 2) continue;
+      if (libero(cand.box, o, R, lista, occupati)) scelta = cand;
+      else if (!dentroMappa) dentroMappa = cand;
+    }
+    // nessun lato libero: meglio un nome che tocca un vicino di uno tagliato dal bordo
+    scelta = scelta || dentroMappa || primo || { x: o.qx, y: o.qy + R + 14, anc: "middle" };
+    if (scelta.box) occupati.push(scelta.box);
+    t.setAttribute("x", ((scelta.x - o.qx) * su).toFixed(1));
+    t.setAttribute("y", ((scelta.y - o.qy) * su).toFixed(1));
+    t.setAttribute("text-anchor", scelta.anc);
+  }
+
+  // il riquadro di un nome non tocca altri simboli né nomi già messi
+  function libero(b, o, R, lista, occupati) {
+    for (var i = 0; i < lista.length; i++) {
+      var a = lista[i];
+      if (a === o || !a.dentro) continue;
+      var nx = Math.max(b.x0, Math.min(a.qx, b.x1)), ny = Math.max(b.y0, Math.min(a.qy, b.y1));
+      if ((nx - a.qx) * (nx - a.qx) + (ny - a.qy) * (ny - a.qy) < (R + 2) * (R + 2)) return false;
+    }
+    for (var j = 0; j < occupati.length; j++) {
+      var c = occupati[j];
+      if (b.x0 < c.x1 && b.x1 > c.x0 && b.y0 < c.y1 && b.y1 > c.y0) return false;
+    }
+    return true;
+  }
+
+  /* Simboli che si toccano: si allontanano a coppie lungo la loro congiungente, con una
+     piccola molla che li richiama verso il punto vero; restano dentro la mappa. Chi è
+     stato spostato riceve in layout() un filo verso il punto vero. Deterministico:
+     a parità di dati e zoom la disposizione è sempre la stessa. */
+  function dispostiSimboli(lista, D, R, m) {
+    var attivi = lista.filter(function (o) { return o.dentro; });
+    var n = attivi.length;
+    for (var giro = 0; giro < 120; giro++) {
+      var mosso = false;
+      for (var i = 0; i < n; i++) {
+        for (var j = i + 1; j < n; j++) {
+          var a = attivi[i], b = attivi[j];
+          var dx = b.qx - a.qx, dy = b.qy - a.qy, d = Math.sqrt(dx * dx + dy * dy);
+          if (d >= D) continue;
+          if (d < 0.01) { dx = Math.cos(i * 2.4 + j); dy = Math.sin(i * 2.4 + j); d = 1; }
+          var spinta = (D - d) / 2 + 0.2;
+          a.qx -= dx / d * spinta; a.qy -= dy / d * spinta;
+          b.qx += dx / d * spinta; b.qy += dy / d * spinta;
+          mosso = true;
+        }
+      }
+      var molla = giro < 80 ? 0.05 : 0;
+      attivi.forEach(function (o) {
+        o.qx += (o.sx - o.qx) * molla; o.qy += (o.sy - o.qy) * molla;
+        o.qx = Math.max(R + 2, Math.min(m.w - R - 2, o.qx));
+        o.qy = Math.max(R + 2, Math.min(m.h - R - 2, o.qy));
+      });
+      if (!mosso && giro >= 80) break;
+    }
+  }
+
+  /* ---------- zoom e spostamento ---------- */
+
+  function vistaIntera() {
+    var a = misure(), asp = a.w / a.h;
+    var w = Math.max(MAPPA_W, MAPPA_H * asp);
+    return { x: (MAPPA_W - w) / 2, y: (MAPPA_H - w / asp) / 2, w: w, h: w / asp };
+  }
+  // riporta un riquadro nelle proporzioni della mappa sullo schermo e dentro i suoi bordi
+  function limita(b) {
+    var a = misure(), asp = a.w / a.h, piena = vistaIntera();
+    var w = Math.max(piena.w / ZOOM_MAX, Math.min(piena.w, b.w)), h = w / asp;
+    var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+    var x = cx - w / 2, y = cy - h / 2;
+    x = w >= MAPPA_W ? (MAPPA_W - w) / 2 : Math.max(0, Math.min(MAPPA_W - w, x));
+    y = h >= MAPPA_H ? (MAPPA_H - h) / 2 : Math.max(0, Math.min(MAPPA_H - h, y));
+    return { x: x, y: y, w: w, h: h };
+  }
+  // riquadro che contiene b nelle proporzioni dello schermo (per le viste pronte)
+  function adatta(b) {
+    var a = misure(), asp = a.w / a.h, w = b.w, h = b.h;
+    if (w / h > asp) h = w / asp; else w = h * asp;
+    return limita({ x: b.x + b.w / 2 - w / 2, y: b.y + b.h / 2 - h / 2, w: w, h: h });
+  }
+
+  function applica(b) {
+    vb = limita(b);
+    svg.setAttribute("viewBox", vb.x.toFixed(2) + " " + vb.y.toFixed(2) + " " + vb.w.toFixed(2) + " " + vb.h.toFixed(2));
+    aggiornaPulsanti();
+    layoutPresto();
+  }
+
+  function anima(b) {
+    var da = { x: vb.x, y: vb.y, w: vb.w, h: vb.h }, a = limita(b);
+    if (animazione) cancelAnimationFrame(animazione);
+    var ridotto = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (ridotto) { applica(a); return; }
+    var t0 = null, durata = 320;
+    function passo(t) {
+      if (t0 === null) t0 = t;
+      var f = Math.min(1, (t - t0) / durata), e = 1 - Math.pow(1 - f, 3);
+      applica({ x: da.x + (a.x - da.x) * e, y: da.y + (a.y - da.y) * e, w: da.w + (a.w - da.w) * e, h: da.h + (a.h - da.h) * e });
+      animazione = f < 1 ? requestAnimationFrame(passo) : null;
+    }
+    animazione = requestAnimationFrame(passo);
+  }
+
+  function vista(nome, animata) {
+    if (!svg || !VISTE[nome]) return;
+    vistaAttiva = nome;
+    var b = nome === "tutto" ? vistaIntera() : adatta(VISTE[nome]);
+    if (animata) anima(b); else applica(b);
+    aggiornaPulsanti();
+  }
+
+  // fattore > 1 avvicina; (sx, sy) = punto dello schermo che resta fermo
+  function zoomIn(fattore, sx, sy, animata) {
+    var m = misure(), u = vb.w / m.w;
+    var mx = vb.x + sx * u, my = vb.y + sy * u;
+    var w = vb.w / fattore, h = vb.h / fattore, u2 = w / m.w;
+    vistaAttiva = null;
+    var b = { x: mx - sx * u2, y: my - sy * u2, w: w, h: h };
+    if (animata) anima(b); else applica(b);
+  }
+  function zoomCentro(fattore) { var m = misure(); zoomIn(fattore, m.w / 2, m.h / 2, true); }
+
+  function aggiornaPulsanti() {
+    if (!ctrl) return;
+    var z = zoomAttuale();
+    Array.prototype.forEach.call(ctrl.querySelectorAll("[data-vista]"), function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.vista === vistaAttiva));
+    });
+    var piu = ctrl.querySelector('[data-zoom="in"]'), meno = ctrl.querySelector('[data-zoom="out"]');
+    if (piu) piu.disabled = z >= ZOOM_MAX - 0.01;
+    if (meno) meno.disabled = z <= 1.01;
+  }
+
+  var trascinato = false;   // vero subito dopo un trascinamento: il clic non apre il dettaglio
+  function preparaGesti() {
+    var cornice = svg.parentNode;
+    var aiuto = cornice.querySelector(".mg-aiuto"), timerAiuto = null;
+    function mostraAiuto() {
+      if (!aiuto) return;
+      aiuto.hidden = false;
+      clearTimeout(timerAiuto);
+      timerAiuto = setTimeout(function () { aiuto.hidden = true; }, 1400);
+    }
+    function locale(t) { var r = svg.getBoundingClientRect(); return { x: t.clientX - r.left, y: t.clientY - r.top }; }
+
+    // due dita: pizzico e spostamento. Un dito resta alla pagina (scorre).
+    var pizzico = null, unDito = null, ultimoTocco = null;
+    svg.addEventListener("touchstart", function (e) {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        var a = locale(e.touches[0]), b = locale(e.touches[1]);
+        pizzico = { vb: { x: vb.x, y: vb.y, w: vb.w, h: vb.h }, d: Math.hypot(a.x - b.x, a.y - b.y) || 1,
+          mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
+        unDito = null;
+        if (animazione) { cancelAnimationFrame(animazione); animazione = null; }
+      } else if (e.touches.length === 1) {
+        var p = locale(e.touches[0]);
+        unDito = { x: p.x, y: p.y, t: Date.now(), mosso: false };
+      }
+    }, { passive: false });
+    svg.addEventListener("touchmove", function (e) {
+      if (e.touches.length === 2 && pizzico) {
+        e.preventDefault();
+        var a = locale(e.touches[0]), b = locale(e.touches[1]), m = misure();
+        var d = Math.hypot(a.x - b.x, a.y - b.y) || 1, mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+        var u0 = pizzico.vb.w / m.w, px0 = pizzico.vb.x + pizzico.mx * u0, py0 = pizzico.vb.y + pizzico.my * u0;
+        var w = pizzico.vb.w * pizzico.d / d, u1 = w / m.w;
+        vistaAttiva = null;
+        applica({ x: px0 - mx * u1, y: py0 - my * u1, w: w, h: w * m.h / m.w });
+      } else if (e.touches.length === 1 && unDito) {
+        var p = locale(e.touches[0]), dx = p.x - unDito.x, dy = p.y - unDito.y;
+        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) unDito.mosso = true;
+        // un dito di lato a mappa ingrandita: si vorrebbe spostare la mappa
+        if (zoomAttuale() > 1.05 && Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy) * 1.5) mostraAiuto();
+      }
+    }, { passive: false });
+    svg.addEventListener("touchend", function (e) {
+      if (e.touches.length < 2) pizzico = null;
+      if (e.touches.length || !unDito || unDito.mosso || Date.now() - unDito.t > 300) { if (!e.touches.length) unDito = null; return; }
+      // doppio tocco su un punto vuoto: avvicina lì
+      var qui = { x: unDito.x, y: unDito.y, t: Date.now() };
+      unDito = null;
+      var sulSimbolo = e.target.closest && e.target.closest(".mg-stazione");
+      if (!sulSimbolo && ultimoTocco && qui.t - ultimoTocco.t < 320 && Math.hypot(qui.x - ultimoTocco.x, qui.y - ultimoTocco.y) < 30) {
+        e.preventDefault();
+        ultimoTocco = null;
+        zoomIn(2, qui.x, qui.y, true);
+        return;
+      }
+      ultimoTocco = qui;
+    });
+
+    // mouse: trascinare sposta, Ctrl+rotella (o il pizzico del trackpad) ingrandisce, doppio clic avvicina
+    var trascina = null;
+    svg.addEventListener("pointerdown", function (e) {
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
+      trascina = { x: e.clientX, y: e.clientY, vb: { x: vb.x, y: vb.y, w: vb.w, h: vb.h }, attivo: false };
+    });
+    window.addEventListener("pointermove", function (e) {
+      if (!trascina) return;
+      var dx = e.clientX - trascina.x, dy = e.clientY - trascina.y;
+      if (!trascina.attivo && Math.abs(dx) + Math.abs(dy) < 5) return;
+      if (!trascina.attivo) { trascina.attivo = true; cornice.classList.add("mg-trascina"); }
+      var u = trascina.vb.w / misure().w;
+      vistaAttiva = null;
+      applica({ x: trascina.vb.x - dx * u, y: trascina.vb.y - dy * u, w: trascina.vb.w, h: trascina.vb.h });
+    });
+    window.addEventListener("pointerup", function () {
+      if (!trascina) return;
+      if (trascina.attivo) { trascinato = true; setTimeout(function () { trascinato = false; }, 0); }
+      cornice.classList.remove("mg-trascina");
+      trascina = null;
+    });
+    svg.addEventListener("wheel", function (e) {
+      if (!e.ctrlKey) return;                    // rotella semplice: scorre la pagina
+      e.preventDefault();
+      var p = locale(e);
+      zoomIn(Math.exp(-e.deltaY * 0.01), p.x, p.y, false);
+    }, { passive: false });
+    svg.addEventListener("dblclick", function (e) {
+      if (e.target.closest && e.target.closest(".mg-stazione")) return;
+      var p = locale(e);
+      zoomIn(2, p.x, p.y, true);
+    });
+
+    // la mappa cambia larghezza (rotazione, finestra, spostata in cima alla home): stessa inquadratura
+    if ("ResizeObserver" in window) {
+      var larghezza = 0;
+      new ResizeObserver(function () {
+        var w = Math.round(svg.getBoundingClientRect().width);
+        if (!w || w === larghezza) return;
+        larghezza = w;
+        if (vistaAttiva) vista(vistaAttiva, false); else applica(vb);
+      }).observe(svg);
+    }
+  }
+
   function init(id) {
     svg = document.getElementById(id);
     if (!svg || svg.__mappaInit) return;
@@ -471,14 +925,20 @@
     disegnaBase();
     aggiornaLegenda();
     svg.addEventListener("click", function (e) {
+      if (trascinato) return;
       if (!e.target.closest || !e.target.closest(".mg-stazione")) chiudiDettaglio();
     });
+    preparaGesti();
+    // inquadratura iniziale: data-vista sull'svg (la home la cambia quando sposta la mappa in cima)
+    vista(VISTE[svg.getAttribute("data-vista")] ? svg.getAttribute("data-vista") : "tutto", false);
     if (window.__mappaDati) render(window.__mappaDati);
     if (window.__mappaMambo) mambo(window.__mappaMambo);
     caricaPaloma();
   }
 
-  window.MappaGolfo = { init: init, render: render, mambo: mambo, caricaMambo: caricaMambo, caricaPaloma: caricaPaloma };
+  window.MappaGolfo = { init: init, render: render, mambo: mambo, caricaMambo: caricaMambo, caricaPaloma: caricaPaloma,
+    // vista("golfo" | "istria" | "tutto", animata): inquadratura pronta
+    vista: function (nome, animata) { if (svg) vista(nome, animata); else if (target) target.setAttribute("data-vista", nome); } };
 
   /* auto-init: home (#mappaGolfo) o pagina dedicata (#mappa) */
   var target = document.getElementById("mappaGolfo") || document.getElementById("mappa");
