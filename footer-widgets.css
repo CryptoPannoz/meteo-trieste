@@ -1362,6 +1362,30 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
 :root[data-theme="light"] .sb-tip small { color: var(--label); }
 /* pagine spot: il box sta dentro la scheda del surfometro */
 .bora-delta.sb-box { margin-top: 1rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+/* Niente bora (spinta sotto zero): in home la mappa del Golfo e dell'Istria prende il posto
+   della spinta, che resta in una riga (spinta-bora.js, 20 ott 2026) */
+#barcolaLive:not(.sb-senza-bora) .sb-mappa,
+#barcolaLive.sb-senza-bora > div > h2,
+#barcolaLive.sb-senza-bora .sb,
+.sb-torna-mappa[hidden],
+.sb-mappa-qui[hidden],
+.section.sb-mappa-via { display: none; }
+.hero.hero-senza-bora { align-items: start; }
+.sb-mappa { display: grid; gap: .55rem; }
+.sb-mappa .sb-mappa-titolo { margin: 0; }
+.sb-mappa-sotto { margin: -.15rem 0 0; color: var(--ink); opacity: .85; font-size: .8rem; font-weight: 650; line-height: 1.35; }
+.sb-mappa .mappa-canvas { margin: 0; }
+.sb-mappa .mappa-legenda { margin: 0; }
+.sb-mappa .sb-mappa-fonte { margin: -.1rem 0 0; font-size: .68rem; line-height: 1.4; }
+.sb-mappa-spinta { display: grid; gap: .12rem; padding: .5rem .65rem; border: 1px solid var(--bordo, #2a343d); border-radius: 10px; background: #171d23; color: var(--label); font-size: .76rem; font-weight: 650; line-height: 1.35; }
+.sb-mappa-num strong { color: var(--ink); font-weight: 850; font-variant-numeric: tabular-nums; }
+.sb-mappa-azioni { display: flex; gap: .4rem; }
+.sb-mappa-azioni .bora-note { flex: 1 1 0; margin: 0; justify-content: center; text-align: center; }
+.sb .sb-torna-mappa { margin-top: 0; }
+.sb-mappa-qui { margin: .6rem 0; padding: .7rem .8rem; border: 1px dashed var(--bordo, #2a343d); border-radius: 10px; color: var(--ink); font-size: .86rem; font-weight: 650; line-height: 1.4; }
+.sb-mappa-qui a { font-weight: 800; white-space: nowrap; }
+:root[data-theme="light"] .sb-mappa-spinta { background: #f3f6f7; border-color: var(--line); }
+:root[data-theme="light"] .sb-mappa-qui { border-color: var(--line); }
 
 /* ======================================================================
    Menu raggruppato (footer-widgets.js, 13 ott 2026)
@@ -1388,7 +1412,6 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
   font-size: .8rem; font-weight: 750; line-height: 1.15;
 }
 .topbar > #topnav.mn a.mn-sez > span:last-child { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
-.topbar > #topnav.mn a.mn-guida,
 .topbar > #topnav.mn a.mn-sez { text-align: left; }
 #topnav.mn .mn-ico {
   display: inline-flex; flex: none; align-items: center; justify-content: center;
@@ -1404,15 +1427,8 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
   font-size: .74rem; font-weight: 750; line-height: 1.1;
 }
 .topbar > #topnav.mn a.mn-chip.is-qui { border-color: var(--signal); background: rgba(240,244,60,.09); color: var(--signal); }
-.topbar > #topnav.mn a.mn-guida {
-  min-height: 50px; gap: .6rem; margin-bottom: .4rem; padding: .48rem .6rem; border-radius: 10px;
-  border-color: rgba(240,244,60,.45); background: linear-gradient(105deg, #272a12, #161a0c);
-}
-#topnav.mn .mn-guida strong { display: block; color: var(--ink); font-size: .84rem; line-height: 1.2; }
-#topnav.mn .mn-guida small { display: block; margin-top: .12rem; color: var(--label); font-size: .68rem; font-weight: 650; }
-.topbar > #topnav.mn a.mn-guida:hover strong { color: #090b0d; }
-.topbar > #topnav.mn a.mn-guida:hover small { color: #2b3000; }
-.topbar > #topnav.mn a.mn-guida:hover .mn-ico { background: rgba(0,0,0,.13); color: #090b0d; }
+/* "📖 Guida" (20 ott 2026): una pastiglia come le altre, col bordo giallo perché porta al blog */
+.topbar > #topnav.mn a.mn-chip-guida { gap: .3rem; border-color: rgba(240,244,60,.45); font-weight: 850; }
 #topnav.mn .mn-azioni { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; margin-top: .75rem; }
 .topbar > #topnav.mn .mn-azioni a { min-height: 42px; justify-content: center; padding: .4rem .45rem; font-size: .78rem; text-align: center; }
 .topbar > #topnav.mn .mn-azioni .topnav-birra { grid-column: auto; }
@@ -1424,7 +1440,7 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
 :root[data-theme="light"] #topnav.mn .mn-gruppo + .mn-gruppo { border-top-color: var(--line); }
 :root[data-theme="light"] #topnav.mn .mn-ico { background: rgba(23,111,128,.1); color: var(--sea-dark); }
 :root[data-theme="light"] .topbar > #topnav.mn a.mn-chip.is-qui { border-color: var(--sea); background: rgba(23,111,128,.08); color: var(--sea-dark); }
-:root[data-theme="light"] .topbar > #topnav.mn a.mn-guida { border-color: #d9dd7a; background: linear-gradient(105deg, #fdfee9, #f4f7c9); }
+:root[data-theme="light"] .topbar > #topnav.mn a.mn-chip-guida:not(.is-qui) { border-color: #c9cd5a; }
 :root[data-theme="light"] .mn-velo { background: rgba(18,31,39,.35); }
 @media (max-width: 560px) {
   .topbar > #topnav.mn { left: .55rem; right: .55rem; width: auto; }

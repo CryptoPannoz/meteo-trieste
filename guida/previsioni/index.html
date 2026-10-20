@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Previsioni vento Trieste: bollettino OSMER, Grafico della Bora e modello ALADIN | Vento Trieste</title>
+  <meta name="description" content="Come usare le previsioni su Vento Trieste: il bollettino di ARPA FVG - S.O.C. OSMER e GRN, il Grafico della Bora di profiwetter.ch (modello DWD) e le mappe ALADIN del vento sul golfo ogni 3 ore." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Alberto Broggi" />
+  <link rel="canonical" href="https://ventotrieste.info/guida/previsioni/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content="Le previsioni del vento a Trieste: OSMER, Grafico della Bora e ALADIN" />
+  <meta property="og:description" content="Come usare le previsioni su Vento Trieste: il bollettino di ARPA FVG - S.O.C. OSMER e GRN, il Grafico della Bora di profiwetter.ch (modello DWD) e le mappe ALADIN del vento sul golfo ogni 3 ore." />
+  <meta property="og:url" content="https://ventotrieste.info/guida/previsioni/" />
+  <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
+  <meta property="og:image:width" content="1080" />
+  <meta property="og:image:height" content="719" />
+  <meta property="article:published_time" content="2026-10-20" />
+  <meta property="article:author" content="Alberto Broggi" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#07090c" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Le previsioni del vento a Trieste: OSMER, Grafico della Bora e ALADIN","description":"Come usare le previsioni su Vento Trieste: il bollettino di ARPA FVG - S.O.C. OSMER e GRN, il Grafico della Bora di profiwetter.ch (modello DWD) e le mappe ALADIN del vento sul golfo ogni 3 ore.","inLanguage":"it-IT","datePublished":"2026-10-20","dateModified":"2026-10-20","mainEntityOfPage":"https://ventotrieste.info/guida/previsioni/","image":"https://ventotrieste.info/og-imagenew.jpg","articleSection":"Previsioni","isPartOf":{"@type":"Blog","name":"Guida di Vento Trieste","url":"https://ventotrieste.info/guida/"},"author":{"@type":"Person","name":"Alberto Broggi","url":"https://bebroggi.it/"},"publisher":{"@type":"Organization","name":"Vento Trieste","url":"https://ventotrieste.info/","logo":{"@type":"ImageObject","url":"https://ventotrieste.info/icon-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Guida","item":"https://ventotrieste.info/guida/"},{"@type":"ListItem","position":3,"name":"Le previsioni","item":"https://ventotrieste.info/guida/previsioni/"}]}]}</script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261020" />
+  <link rel="stylesheet" href="/guida/guida.css?v=20261020" />
+  <!-- Articolo della Guida di Vento Trieste (20 ott 2026): una pagina per strumento, stile comune in
+       /guida/guida.css. "Altri articoli" elenca tutti gli altri: se ne aggiungi uno, aggiornalo anche qui. -->
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle-label">Chiaro</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
+        <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+        Menu
+      </button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni del sito" data-dock="/#vento,/#webcam,/#radarLive,/#previsioni" hidden>
+      <a href="/#vento">Vento ora</a>
+      <a href="/#mappaVento">Mappa e centraline</a>
+      <a href="/#webcam">Webcam</a>
+      <a href="/#radarLive">Radar pioggia</a>
+      <a href="/#boe">Boe e onde</a>
+      <a href="/#previsioni">Previsioni</a>
+      <a href="/registro/">Registro del vento</a>
+    </nav>
+  </header>
+
+  <main class="g">
+    <nav class="g-briciole" aria-label="Percorso"><a href="/">Vento Trieste</a> / <a href="/guida/">Guida</a> / Le previsioni</nav>
+
+    <header class="g-testa">
+      <span class="g-kicker">Previsioni</span>
+      <h1>Le previsioni del vento a Trieste: OSMER, Grafico della Bora e ALADIN</h1>
+      <p>Il live dice com'è adesso, le previsioni come sarà. Nella sezione Previsioni ci sono quattro strumenti, dal più semplice al più tecnico.</p>
+      <p class="g-meta"><time datetime="2026-10-20">20 ottobre 2026</time> · 3 min di lettura · di <a href="https://bebroggi.it/" rel="author">Alberto Broggi</a></p>
+    </header>
+
+    <article class="g-sez g-corpo">
+      <p class="g-in-breve"><strong>In breve:</strong> il <strong>bollettino</strong> per il quadro della giornata, il <strong>Grafico della Bora</strong> per la settimana, <strong>ALADIN</strong> e <strong>Windguru</strong> per l'ora giusta. E le centraline per decidere se uscire.</p>
+
+      <table class="g-tabella">
+        <thead><tr><th>Strumento</th><th>Cosa ti dice</th></tr></thead>
+        <tbody>
+          <tr><td>Bollettino OSMER</td><td>Il testo scritto dai previsori della Regione, giorno per giorno. Il punto di partenza.</td></tr>
+          <tr><td>Grafico della Bora</td><td>La differenza di pressione Trieste − Maribor per i prossimi 6 giorni. Bora quando la linea scende sotto −4.</td></tr>
+          <tr><td>ALADIN</td><td>Mappe del vento sul golfo ogni 3 ore: frecce e colori.</td></tr>
+          <tr><td>Windguru</td><td>La tabella ora per ora per lo spot Trieste, con tre modelli a confronto.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Il bollettino OSMER</h2>
+      <p>È la previsione scritta dai meteorologi di <strong>ARPA FVG - S.O.C. OSMER e GRN</strong>, l'ente della Regione Friuli Venezia Giulia. Ci sono le schede <strong>Oggi</strong>, <strong>Domani</strong> e <strong>Dopodomani</strong>, ognuna con il testo e la mappa della regione. Quando il testo parla di temporali, piogge o rovesci, la scheda è segnata con ⛈️.</p>
+      <p>È lo strumento meno tecnico e spesso il più affidabile per il quadro generale: se il bollettino dice "bora forte sulla costa", il resto serve a capire quando e quanto.</p>
+
+      <h2>Il Grafico della Bora</h2>
+      <p>Il grafico di <strong>profiwetter.ch</strong>, calcolato sul modello del servizio meteo tedesco (DWD), mostra la differenza di pressione <strong>Trieste − Maribor</strong> per i prossimi 6 giorni. Quando oltre il Carso c'è più pressione che sul golfo la linea scende: <strong>sotto la riga tratteggiata a −4 c'è bora</strong>, e più scende, più è forte. Tratti vicino allo zero vogliono dire niente bora.</p>
+      <p>È la stessa grandezza della <a href="/guida/spinta-bora/">Spinta della Bora</a> in cima alla home, ma con il segno girato: la Spinta (Maribor − Trieste) sale con la bora e ha la soglia a +3,5. La Spinta copre le prossime 36 ore, il Grafico della Bora tutta la settimana.</p>
+
+      <h2>Le mappe ALADIN</h2>
+      <p>ALADIN è un modello ad alta risoluzione (2,3 km) molto preciso sul Nord Adriatico e sulla bora. Le mappe vengono dal servizio meteo sloveno <strong>ARSO</strong> e mostrano il vento sul golfo <strong>ogni 3 ore</strong>: frecce per la direzione, colori per l'intensità. Usa <strong>◀ ▶</strong> per scorrere le ore. La serie completa è sul sito di <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">Alessio Vremec</a>, che la condivide da anni.</p>
+
+      <h2>Windguru</h2>
+      <p>La tabella ora per ora di Windguru per lo spot Trieste, con i modelli WG, ALADIN e ICON-2I. Ha un articolo tutto suo: <a href="/guida/windguru/">Windguru e il modello WG</a>.</p>
+
+      <h2>Un metodo semplice</h2>
+      <ol>
+        <li><strong>Che giorno?</strong> Bollettino OSMER e Grafico della Bora.</li>
+        <li><strong>Che ora?</strong> ALADIN e i modelli ad alta risoluzione su Windguru.</li>
+        <li><strong>Esco?</strong> <a href="/guida/surfometro/">Surfometro</a>, <a href="/guida/mappa-centraline/">mappa</a> e <a href="/guida/webcam/">webcam</a>, cioè quello che succede davvero.</li>
+      </ol>
+      <p class="g-nota">Un modello non è una misura: confronta sempre la previsione con quello che dicono le centraline in quel momento. Fonti: ARPA FVG - S.O.C. OSMER e GRN (<a href="https://creativecommons.org/licenses/by/3.0/it/" target="_blank" rel="noopener">CC BY 3.0 IT</a>), profiwetter.ch (modello DWD), ARSO. Per un confronto più generale tra modelli leggi anche <a href="/modelli-vento-trieste/">Modelli del vento per Trieste</a>.</p>
+      <a class="g-vai" href="/#previsioni">Apri le previsioni →</a>
+    </article>
+
+    <section class="g-sez" aria-labelledby="t-altri">
+      <h2 id="t-altri">Altri articoli della guida</h2>
+      <div class="g-link">
+        <a href="/guida/surfometro/"><b>Il surfometro</b>Vento medio, raffica e una parola in triestino: com'è il vento adesso a Barcola e quando conviene uscire.</a>
+        <a href="/guida/spinta-bora/"><b>La Spinta della Bora</b>Maribor meno Trieste: quando la pressione oltre il Carso supera quella del golfo, la bora trabocca. Sopra 3,5 hPa si accende.</a>
+        <a href="/guida/mappa-centraline/"><b>Mappa e centraline</b>Il vento misurato adesso da Grado a Premantura: numeri, frecce e colori. Serve a capire dove soffia, soprattutto quando la bora non c'è.</a>
+        <a href="/guida/webcam/"><b>Le webcam</b>Barcola, Sistiana, Monfalcone e Grado in diretta: guardare il mare è il modo più semplice per confermare i numeri.</a>
+        <a href="/guida/radar-pioggia/"><b>Il radar pioggia</b>L'animazione ARSO delle ultime ore su Slovenia e Golfo: dove piove adesso e da che parte arrivano i rovesci.</a>
+        <a href="/guida/boe-onde/"><b>Boe e onde</b>MAMBO1, Paloma e Vida: il vento lontano dalla costa, la temperatura del mare e l'altezza dell'onda.</a>
+        <a href="/guida/windguru/"><b>Windguru e il modello WG</b>WG per decidere il giorno, ALADIN e ICON-2I per decidere l'ora. Come si legge la tabella e perché il WG ammorbidisce i picchi.</a>
+        <a href="/guida/registro-vento/"><b>Il registro del vento</b>Dalle 6 alle 19, ogni 15 minuti: com'è andato il vento giorno per giorno, quante giornate surfabili ci sono state e il CSV da scaricare.</a>
+        <a href="/guida/spot/"><b>Gli spot</b>Muggia, Žusterna, Marina Julia, Grado, Lignano, Lago di Cavazzo e l'Istria: ogni spot con il suo surfometro e la sua centralina.</a>
+        <a href="/guida/app/"><b>L'app sul telefono</b>Gratis e senza store: l'icona di Vento Trieste sulla schermata Home di iPhone e Android, a schermo intero come un'app.</a>
+        <a href="/guida/parole-del-vento/"><b>Parole del vento</b>Nodi, raffica, bora, scirocco, hPa, nowcasting: le parole del sito spiegate semplici, più la scala del surfometro in triestino.</a>
+      </div>
+      <p class="g-tutti"><a href="/guida/">📖 Tutti gli articoli della guida →</a></p>
+    </section>
+  </main>
+
+  <footer class="page-footer">Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+
+  <script src="/footer-widgets.js?v=20261020"></script>
+  <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
+  <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script src="/eventi.js?v=20261005" defer></script>
+  <script src="/vt-app.js?v=20261008" defer></script>
+</body>
+</html>

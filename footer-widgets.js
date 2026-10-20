@@ -362,7 +362,9 @@
    dietro un "+". Ora il pannello è diviso per domanda:
      Sezioni  — dove vado in questa pagina (riquadri a 2 colonne con icona, i link reali della pagina)
      Spot     — le altre pagine locali, quella aperta evidenziata
-     Guida    — la guida unica /guida/ e i suoi capitoli, più mappa e registro a pagina intera
+     Guida    — una riga sola (20 ott 2026, Alberto: "compatta l'accesso alla guida"): la pastiglia
+                "📖 Guida" verso il blog /guida/ (accesa anche dentro i suoi articoli), più mappa e
+                registro a pagina intera. I capitoli non stanno più qui: sono articoli dell'indice.
      in fondo — Installa l'app e Offrimi una birra, affiancati.
    Il menu si costruisce dai link che ogni pagina ha già in <nav id="topnav">, quindi home, spot e
    pagina slovena restano allineati. data-menu-semplice sul nav lascia il vecchio elenco (Barcolana).
@@ -376,12 +378,12 @@
     ((document.getElementById("footerWidgets") || { dataset: {} }).dataset.lang === "sl");
   var T = sl ? {
     sezioni: "Razdelki", spot: "Spoti", guida: "Vodnik in orodja",
-    guidaTutta: "Vodnik: kako brati Vento Trieste", guidaSub: "v italijanščini",
+    guidaChip: "Vodnik", guidaTitolo: "Vodnik Vento Trieste (v italijanščini)",
     app: "Namesti aplikacijo", birra: "Plačaj mi pivo",
     mappaCentraline: "Zemljevid in postaje", radar: "Radar padavin", boe: "Boje in valovi"
   } : {
     sezioni: "Sezioni", spot: "Spot", guida: "Guida e strumenti",
-    guidaTutta: "Guida: come si legge Vento Trieste", guidaSub: "surfometro, bora, previsioni",
+    guidaChip: "Guida", guidaTitolo: "Guida di Vento Trieste: un articolo per strumento",
     app: "Installa l'app", birra: "Offrimi una birra",
     mappaCentraline: "Mappa e centraline", radar: "Radar pioggia", boe: "Boe e onde"
   };
@@ -458,10 +460,8 @@
     ["/lago-di-cavazzo/", sl ? "Jezero Cavazzo" : "Lago di Cavazzo"]
   ];
   var GUIDA = sl ? [
-    ["/guida/#surfometro", "Surfometer"], ["/guida/#spinta-bora", "Potisk burje"], ["/guida/#previsioni", "Napovedi in WG"],
     ["/mappa/", "Zemljevid čez cel zaslon"], ["/registro/", "Dnevnik vetra"]
   ] : [
-    ["/guida/#surfometro", "Surfometro"], ["/guida/#spinta-bora", "Spinta della Bora"], ["/guida/#previsioni", "Previsioni e WG"],
     ["/mappa/", "Mappa a schermo intero"], ["/registro/", "Registro completo"]
   ];
   function chip(v, extra) {
@@ -482,10 +482,12 @@
 
   var gruppoGuida = document.createElement("div");
   gruppoGuida.className = "mn-gruppo";
-  gruppoGuida.innerHTML = '<p class="mn-titolo">' + T.guida + "</p>" +
-    '<a class="mn-guida' + (qui === "/guida/" ? " is-qui" : "") + '" href="/guida/"><span class="mn-ico">' + svg("guida") + "</span>" +
-    "<span><strong>" + T.guidaTutta + "</strong><small>" + T.guidaSub + "</small></span></a>" +
-    '<div class="mn-chips">' + GUIDA.map(function (v) { return chip(v); }).join("") + "</div>";
+  // dentro la guida (indice o un articolo) la pastiglia resta accesa; aria-current solo sull'indice
+  var inGuida = qui.indexOf("/guida/") === 0;
+  gruppoGuida.innerHTML = '<p class="mn-titolo">' + T.guida + '</p><div class="mn-chips">' +
+    '<a class="mn-chip mn-chip-guida' + (inGuida ? " is-qui" : "") + '" href="/guida/" title="' + T.guidaTitolo + '"' +
+    (qui === "/guida/" ? ' aria-current="page"' : "") + '><span aria-hidden="true">📖</span> ' + T.guidaChip + "</a>" +
+    GUIDA.map(function (v) { return chip(v); }).join("") + "</div>";
 
   var azioni = document.createElement("div");
   azioni.className = "mn-azioni";
@@ -540,7 +542,7 @@
     partnersCount: function (p, f) { return p + " partner · " + f + " fonti di dati e webcam"; },
     dataSources: "Dati e previsioni", localSources: "Webcam e fonti locali"
   };
-  var supporters = ["Cristina Codrini", "Paolo Perusco", "Pier Paolo Nistri", "Pietro Silvestri", "Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop", "Stefano Davini", "Gianpaolo Maso", "Matteo Momic", "Martina Marin", "Roberto Piretti", "Elio Massimo Polo", "Paolo Bastiani", "Carlo Capelli", "Luigi Apicella", "Luca Barbaresco", "Maurizio Barillaro"];
+  var supporters = ["Cristina Codrini", "Paolo Perusco", "Pier Paolo Nistri", "Pietro Silvestri", "Prof.ssa Maria Porro", "Giuseppe Alessio Vernì", "Marco Ercolani", "Valentina Lo Presti", "Giulio Maccarrone", "Biagio Alessio", "Luciano Proietti", "Enrico Zamaro", "Massimo Petrusa", "Plinio Botteri", "Nicoletta Kratter", "Fabrizio Zugna", "Francesco Aizza", "Adriano Pek", "Alessandro Crismani", "Dario Stepcich", "Adriano Condello", "Zetko Ales", "Giuseppe Cacciatore", "Giuseppe Miele", "Andrea Valente", "Simone Fratti", "Luca Dreos", "Luigi Fonzi", "sistiana89", "SurfTrieste.Shop", "Stefano Davini", "Gianpaolo Maso", "Matteo Momic", "Martina Marin", "Roberto Piretti", "Elio Massimo Polo", "Paolo Bastiani", "Carlo Capelli", "Luigi Apicella", "Luca Barbaresco", "Maurizio Barillaro", "Carlo Valle"];
   var supporterNames = supporters.map(function (name) { return '<span class="supporter-name">' + name + '</span>'; }).join("");
   var partners = [
     { name: "Jaka87 · Vetercek", detail: sl ? "mreža postaj v živo" : "rete di centraline live", url: "https://vetercek.com/" },
@@ -814,7 +816,7 @@
   var nav = document.getElementById("topnav");
   var menuButton = document.getElementById("menuToggle");
   // solo le voci di sezione: non chip degli spot, guida, "Installa l'app" del menu raggruppato
-  var navLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll('a:not(.topnav-birra):not(.topnav-guide-link):not(.mn-chip):not(.mn-guida):not([data-vt-app])')) : [];
+  var navLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll('a:not(.topnav-birra):not(.topnav-guide-link):not(.mn-chip):not([data-vt-app])')) : [];
   function trovaLink(parola) {
     return navLinks.find(function (link) {
       return (link.getAttribute("href") || "").toLowerCase().indexOf(parola.toLowerCase()) !== -1;

@@ -56,7 +56,13 @@
       "<p class=\"guida-meta\"><strong>Graf burje</strong> v napovedih (profiwetter.ch, model DWD) kaže isto razliko za 6 dni, a z obratnim predznakom (Trst − Maribor): tam je burja pod ničlo, prag je črtkana črta pri −4.</p>",
     fonte: "Vir: <a href=\"https://open-meteo.com\" target=\"_blank\" rel=\"noopener\">Open-Meteo</a>, tlak na morski gladini (MSLP), ocena modela vsakih 15 minut, ne meritev postaje",
     differenza: "Potisk = Maribor − Trst",
-    guida: "", chiudi: "Zapri"
+    guida: "", chiudi: "Zapri",
+    mappaTitolo: "Ni burje · veter zdaj", mappaBadge: "ZALIV · ISTRA",
+    mappaSotto: "Potisk burje je pod ničlo: burje ni. Tu je, kje piha zdaj, od zaliva do Istre.",
+    mappaSpinta: "Potisk burje", mappaGrafico: "📈 Graf potiska", mappaTorna: "🗺️ Ni burje: pokaži zemljevid",
+    mappaIstria: "📍 Spoti v Istri",
+    mappaFonte: "Izmerjeni podatki postaj, ne napoved · dotakni se številke za podrobnosti · obala © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors",
+    mappaQui: "🗺️ Zdaj ni burje: zemljevid je na vrhu strani, namesto potiska burje.", mappaVai: "Na zemljevid ↑"
   } : {
     fasce: ["Nessuna spinta", "Spinta debole", "Genesi della Bora", "Bora consistente", "Bora forte"],
     sotto: ["pressione più alta sul golfo", "sotto la soglia della bora", "", "", ""],
@@ -85,7 +91,13 @@
       "<p class=\"guida-meta\">Il <strong>Grafico della Bora</strong> nelle Previsioni (profiwetter.ch, modello DWD) mostra la stessa differenza per 6 giorni, ma col segno opposto (Trieste − Maribor): lì la bora è sotto lo zero e la soglia è la riga tratteggiata a −4.</p>",
     fonte: "Fonte: <a href=\"https://open-meteo.com\" target=\"_blank\" rel=\"noopener\">Open-Meteo</a>, pressione al livello del mare (MSLP), stima di modello aggiornata ogni 15 minuti, non una misura di stazione",
     differenza: "Spinta = Maribor − Trieste",
-    guida: "<p class=\"sb-guida-link\"><a href=\"/guida/#spinta-bora\">📖 Approfondisci nella guida →</a></p>", chiudi: "Chiudi"
+    guida: "<p class=\"sb-guida-link\"><a href=\"/guida/spinta-bora/\">📖 Approfondisci nella guida →</a></p>", chiudi: "Chiudi",
+    mappaTitolo: "Niente bora · il vento adesso", mappaBadge: "GOLFO · ISTRIA",
+    mappaSotto: "La spinta della bora è sotto zero: niente bora. Ecco dove soffia adesso, dal Golfo all'Istria.",
+    mappaSpinta: "Spinta della Bora", mappaGrafico: "📈 Grafico della spinta", mappaTorna: "🗺️ Niente bora: mostra la mappa",
+    mappaIstria: "📍 Spot Istria",
+    mappaFonte: "Dati osservati dalle centraline, non una previsione · tocca un numero per il dettaglio · costa © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors",
+    mappaQui: "🗺️ Adesso non c'è bora: la mappa è salita in cima alla pagina, al posto della Spinta della Bora.", mappaVai: "Vai alla mappa ↑"
   };
 
   function fascia(v) {
@@ -400,7 +412,110 @@
     rif.verdetto.className = "sb-verdetto sb-v" + f;
     rif.trend.textContent = tendenza(d);
     rif.info.textContent = T.info + " · " + T.agg + " " + d.adesso.slice(11, 16);
-    disegna(rif, d);
+    if (!modoMappa(rif, d)) disegna(rif, d);
+  }
+
+  /* ---------------- niente bora: la mappa al posto della spinta (20 ott 2026) ----------------
+     Alberto: "quando c'è scirocco e la spinta della bora è addirittura negativa non ha senso
+     mostrarla: al suo posto ci sia ben visibile la mappa delle centraline in golfo, così si
+     va a surfare in Istria". Solo in home (#barcolaLive accanto alla mappa #mappaGolfo):
+     con la spinta sotto zero spostiamo nel box la mappa del Golfo e dell'Istria (lo stesso
+     SVG di mappa-golfo.js, con la sua legenda) e la spinta resta in una riga. Nella tendina
+     "Mappa e centraline" la sezione della mappa si nasconde e resta un rimando in cima. Isteresi: si entra sotto 0 e si
+     torna alla spinta da +0,5, per non far saltare il box a ogni aggiornamento.
+     Un pulsante riporta il grafico della spinta (scelta ricordata per la visita). */
+  var MAPPA_ENTRA = 0, MAPPA_ESCI = 0.5, CHIAVE_SPINTA = "vt-sb-spinta-forzata";
+  function spintaForzata() { try { return sessionStorage.getItem(CHIAVE_SPINTA) === "1"; } catch (e) { return false; } }
+  function conta(nome) { if (window.vtConta) window.vtConta(nome); }   // eventi GoatCounter (eventi.js)
+  function forzaSpinta(si) {
+    try { if (si) sessionStorage.setItem(CHIAVE_SPINTA, "1"); else sessionStorage.removeItem(CHIAVE_SPINTA); } catch (e) {}
+  }
+
+  function preparaMappa(rif) {
+    if (rif.mappa) return rif.mappa;
+    var svgMappa = document.getElementById("mappaGolfo");
+    var canvas = svgMappa && svgMappa.closest(".mappa-canvas");
+    var sezione = canvas && canvas.parentNode;
+    var legenda = sezione && sezione.querySelector(".mappa-legenda");
+    if (!canvas) return null;
+    var m = document.createElement("div");
+    m.className = "sb-mappa";
+    m.innerHTML =
+      '<h2 class="sb-mappa-titolo">' + T.mappaTitolo + ' <span class="bora-only-badge">' + T.mappaBadge + "</span></h2>" +
+      '<p class="sb-mappa-sotto">' + T.mappaSotto + "</p>" +
+      '<div class="sb-mappa-posto"></div>' +
+      '<p class="stato sb-mappa-fonte">' + T.mappaFonte + "</p>" +
+      '<div class="sb-mappa-spinta"><span class="sb-mappa-num"></span><span class="sb-mappa-trend"></span></div>' +
+      '<div class="sb-mappa-azioni">' +
+        (document.getElementById("istria") && window.apriSpotIstria ? '<button type="button" class="bora-note sb-mappa-istria">' + T.mappaIstria + "</button>" : "") +
+        '<button type="button" class="bora-note sb-mappa-grafico">' + T.mappaGrafico + "</button>" +
+      "</div>";
+    rif.ui.parentNode.appendChild(m);
+    // nella tendina la sezione della mappa si nasconde e lascia un rimando in cima alla pagina
+    var qui = document.createElement("p");
+    qui.className = "sb-mappa-qui";
+    qui.hidden = true;
+    qui.innerHTML = T.mappaQui + ' <a href="#vento">' + T.mappaVai + "</a>";
+    sezione.parentNode.insertBefore(qui, sezione);
+    // nel box della spinta, quando la si è chiesta senza bora: il ritorno alla mappa
+    var torna = document.createElement("button");
+    torna.type = "button";
+    torna.className = "bora-note sb-torna-mappa";
+    torna.hidden = true;
+    torna.textContent = T.mappaTorna;
+    rif.ui.appendChild(torna);
+
+    var istria = m.querySelector(".sb-mappa-istria");
+    if (istria) istria.addEventListener("click", function (ev) { conta("spinta: spot istria"); window.apriSpotIstria(ev); });
+    m.querySelector(".sb-mappa-grafico").addEventListener("click", function () {
+      conta("spinta: grafico");
+      forzaSpinta(true);
+      if (ultimo) scriviBox(rif, ultimo);
+    });
+    torna.addEventListener("click", function () {
+      conta("spinta: torna alla mappa");
+      forzaSpinta(false);
+      if (ultimo) scriviBox(rif, ultimo);
+    });
+    rif.mappa = {
+      el: m, posto: m.querySelector(".sb-mappa-posto"), canvas: canvas, legenda: legenda, qui: qui, torna: torna,
+      sezione: sezione, dopo: (legenda || canvas).nextElementSibling,
+      num: m.querySelector(".sb-mappa-num"), trend: m.querySelector(".sb-mappa-trend"), dentro: false
+    };
+    return rif.mappa;
+  }
+
+  function spostaMappa(mp, dentro) {
+    if (mp.dentro === dentro) return;
+    mp.dentro = dentro;
+    if (dentro) {
+      mp.posto.appendChild(mp.canvas);
+      if (mp.legenda) mp.posto.appendChild(mp.legenda);
+    } else {
+      mp.sezione.insertBefore(mp.canvas, mp.dopo);
+      if (mp.legenda) mp.sezione.insertBefore(mp.legenda, mp.dopo);
+    }
+    mp.sezione.classList.toggle("sb-mappa-via", dentro);
+    mp.qui.hidden = !dentro;
+  }
+
+  // true se il box mostra la mappa (il grafico allora non si disegna)
+  function modoMappa(rif, d) {
+    if (rif.box.id !== "barcolaLive") return false;
+    var mp = preparaMappa(rif);
+    if (!mp) return false;
+    rif.senzaBora = rif.senzaBora ? d.ora < MAPPA_ESCI : d.ora < MAPPA_ENTRA;
+    var mappa = rif.senzaBora && !spintaForzata();
+    spostaMappa(mp, mappa);
+    rif.box.classList.toggle("sb-senza-bora", mappa);
+    var hero = rif.box.closest(".hero");
+    if (hero) hero.classList.toggle("hero-senza-bora", mappa);
+    mp.torna.hidden = !rif.senzaBora || mappa;
+    if (mappa) {
+      mp.num.innerHTML = T.mappaSpinta + " <strong>" + fmt(d.ora) + " hPa</strong> · " + T.fasce[fascia(d.ora)] + " · " + T.agg + " " + d.adesso.slice(11, 16);
+      mp.trend.textContent = tendenza(d);
+    }
+    return mappa;
   }
 
   function scriviFinestra(d) {

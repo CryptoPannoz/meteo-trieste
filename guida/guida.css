@@ -1,0 +1,132 @@
+/* Guida di Vento Trieste (20 ott 2026): stile comune dell'indice /guida/ e degli articoli
+   /guida/<articolo>/. Si appoggia a /footer-widgets.css (variabili --ink, --label, --line,
+   --signal, --sea…, header, menu e tema chiaro/scuro). Prima stava dentro guida/index.html:
+   ora la guida è un piccolo blog, un articolo per strumento (Alberto: "una sorta di blog,
+   mi serve anche per l'indicizzazione"). */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.brand { display: inline-flex; flex-direction: column; color: var(--ink); line-height: 1.05; text-decoration: none; }
+.brand strong { font-size: 1.02rem; font-weight: 700; letter-spacing: -.02em; }
+.brand span { margin-top: .15rem; color: var(--label); font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; }
+.theme-toggle-label { display: inline; }
+
+.g { max-width: 760px; margin: 0 auto; }
+.g-briciole { margin: 1rem 0 .6rem; color: var(--label); font-size: .76rem; }
+.g-briciole a { font-weight: 750; }
+.g-testa { padding: 1.15rem 1.15rem 1.05rem; border: 1px solid var(--line); border-left: 5px solid var(--signal); border-radius: 14px;
+  background: linear-gradient(105deg, #1b1e0e, #10151a 70%); }
+.g-kicker { display: inline-flex; padding: .26rem .55rem; border-radius: 999px; background: var(--signal); color: #090b0d;
+  font-size: .62rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.g-testa h1 { margin: .55rem 0 .4rem; font-size: clamp(1.6rem, 6vw, 2.3rem); line-height: 1.08; letter-spacing: -.03em; }
+.g-testa p { margin: 0; color: var(--label); font-size: .95rem; }
+.g-testa .g-meta { margin-top: .7rem; font-size: .76rem; font-weight: 700; letter-spacing: .01em; }
+.g-meta a { color: inherit; }
+
+.g-sez { margin: .8rem 0; padding: 1.05rem 1.1rem 1.1rem; border: 1px solid var(--line); border-radius: 14px; background: #10151a; }
+.g-sez h2 { display: flex; align-items: center; gap: .55rem; margin: 0 0 .55rem; font-size: 1.22rem; line-height: 1.2; letter-spacing: -.01em; }
+.g-n { display: inline-grid; flex: none; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 8px; background: var(--signal); color: #090b0d;
+  font-size: .82rem; font-weight: 900; }
+.g-sez h3 { margin: 1.05rem 0 .3rem; font-size: .98rem; }
+.g-sez p, .g-sez li { color: var(--ink); font-size: .95rem; }
+.g-sez p { margin: .35rem 0 .7rem; }
+.g-sez ul, .g-sez ol { margin: .3rem 0 .8rem; padding-left: 1.2rem; }
+.g-sez li { margin-bottom: .35rem; }
+.g-sez li::marker { color: var(--signal); }
+.g-in-breve { margin: .2rem 0 .8rem; padding: .7rem .8rem; border-radius: 10px; background: rgba(240,244,60,.08); border: 1px solid rgba(240,244,60,.28); }
+.g-in-breve strong:first-child { color: var(--signal); }
+.g-nota { color: var(--label) !important; font-size: .84rem !important; }
+.g-vai { display: inline-flex; align-items: center; gap: .35rem; min-height: 40px; margin-top: .3rem; padding: .45rem .85rem; border-radius: 10px;
+  background: var(--signal); color: #090b0d !important; font-size: .84rem; font-weight: 800; text-decoration: none; }
+.g-vai:hover { background: #fff; }
+
+/* articolo: i titoli dentro il testo respirano di più */
+.g-corpo h2 { display: block; margin: 1.5rem 0 .45rem; font-size: 1.16rem; }
+.g-corpo > h2:first-child, .g-corpo > .g-in-breve + h2 { margin-top: .6rem; }
+.g-corpo .g-vai { margin-top: .8rem; }
+.g-tutti { margin: 1rem 0 0; font-size: .86rem; font-weight: 800; }
+
+/* scala del surfometro */
+.g-scala { display: grid; gap: .3rem; margin: .5rem 0 .8rem; }
+.g-scala div { display: grid; grid-template-columns: 6.6rem 4.6rem 1fr; align-items: center; gap: .55rem; padding: .42rem .55rem; border-radius: 8px; background: #151b21; font-size: .86rem; }
+.g-scala b { display: inline-flex; align-items: center; gap: .4rem; }
+.g-scala i { flex: none; width: 12px; height: 12px; border-radius: 3px; }
+.g-scala span { color: var(--label); font-variant-numeric: tabular-nums; font-weight: 700; }
+.g-scala em { font-style: normal; color: var(--ink); opacity: .85; }
+
+/* fasce (spinta della bora, colori della mappa) */
+.g-fasce { display: grid; gap: .3rem; margin: .5rem 0 .8rem; }
+.g-fasce div { display: grid; grid-template-columns: 5.4rem 1fr; gap: .6rem; align-items: start; padding: .45rem .6rem; border-radius: 8px; background: #151b21; border-left: 4px solid var(--c); font-size: .88rem; }
+.g-fasce span { color: var(--c); font-weight: 850; font-variant-numeric: tabular-nums; }
+.g-fasce p { font-size: .88rem !important; }
+.g-figura { margin: .4rem 0 .8rem; padding: .6rem .5rem .4rem; border: 1px solid var(--line); border-radius: 10px; background: #0b0f13; }
+.g-figura svg { display: block; width: 100%; height: auto; }
+.g-figura figcaption { margin-top: .3rem; color: var(--label); font-size: .76rem; text-align: center; }
+.g-fig-ora { stroke: #d6dde1; stroke-opacity: .6; }
+.g-fig-ora-t { fill: #d6dde1; }
+.g-fig-punto { stroke: #10151a; }
+
+.g-tabella { width: 100%; margin: .5rem 0 .9rem; border-collapse: collapse; font-size: .86rem; }
+.g-tabella th, .g-tabella td { padding: .5rem .45rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.g-tabella th { color: var(--signal); font-size: .74rem; letter-spacing: .04em; text-transform: uppercase; }
+.g-tabella td:first-child { font-weight: 800; white-space: nowrap; }
+
+.g-parole { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .45rem; margin: .4rem 0 .9rem; }
+.g-parole div { padding: .55rem .65rem; border-radius: 9px; background: #151b21; font-size: .86rem; line-height: 1.45; }
+.g-parole b { display: block; color: var(--signal); }
+.g-link { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .45rem; }
+.g-link a { display: block; padding: .6rem .7rem; border: 1px solid #2f3942; border-radius: 10px; background: #151b21; color: var(--ink); text-decoration: none; font-size: .86rem; }
+.g-link a b { display: block; color: var(--signal); font-size: .9rem; }
+.g-link a:hover { border-color: var(--signal); }
+.page-footer { max-width: 760px; margin: 1.2rem auto 0; color: var(--label); font-size: .76rem; text-align: center; }
+
+/* indice del blog: una card per articolo */
+.g-carte { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .55rem; margin: .8rem 0; padding: 0; list-style: none; }
+.g-carte li { display: flex; }
+.g-carta { display: flex; flex: 1; flex-direction: column; gap: .4rem; padding: .9rem .95rem .85rem; border: 1px solid var(--line); border-radius: 14px;
+  background: #10151a; color: var(--ink); text-decoration: none; transition: border-color .15s ease, transform .15s ease; }
+.g-carta:hover { border-color: var(--signal); }
+.g-carta:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+.g-etichetta { align-self: flex-start; padding: .18rem .5rem; border: 1px solid rgba(240,244,60,.4); border-radius: 999px; color: var(--signal);
+  font-size: .6rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.g-carta h2 { margin: 0; font-size: 1.04rem; line-height: 1.22; letter-spacing: -.01em; }
+.g-carta p { margin: 0; color: var(--label); font-size: .85rem; line-height: 1.45; }
+.g-carta .g-leggi { margin-top: auto; padding-top: .3rem; color: var(--signal); font-size: .74rem; font-weight: 800; }
+.g-titolo-lista { margin: 1.4rem 0 .2rem; color: var(--label); font-size: .7rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+.g-breve ol { margin: .2rem 0 .5rem; }
+.g-breve h2 { font-size: 1.05rem !important; }
+@media (prefers-reduced-motion: no-preference) { .g-carta:hover { transform: translateY(-1px); } }
+
+/* tema chiaro */
+:root[data-theme="light"] .g-testa { background: linear-gradient(105deg, #fdfee9, #fff 70%); border-left-color: var(--sea); }
+:root[data-theme="light"] .g-sez,
+:root[data-theme="light"] .g-carta { background: #fff; }
+:root[data-theme="light"] .g-scala div,
+:root[data-theme="light"] .g-fasce div,
+:root[data-theme="light"] .g-parole div,
+:root[data-theme="light"] .g-link a { background: #f3f6f7; border-color: var(--line); }
+:root[data-theme="light"] .g-figura { background: #f7f9f9; }
+:root[data-theme="light"] .g-fig-ora { stroke: #16232c; }
+:root[data-theme="light"] .g-fig-ora-t { fill: #16232c; }
+:root[data-theme="light"] .g-fig-punto { stroke: #fff; }
+:root[data-theme="light"] .g-in-breve { background: #f7f9df; border-color: #d9dd7a; }
+:root[data-theme="light"] .g-in-breve strong:first-child,
+:root[data-theme="light"] .g-parole b,
+:root[data-theme="light"] .g-link a b,
+:root[data-theme="light"] .g-tabella th,
+:root[data-theme="light"] .g-carta .g-leggi { color: var(--sea-dark); }
+:root[data-theme="light"] .g-etichetta { border-color: var(--sea); color: var(--sea-dark); }
+:root[data-theme="light"] .g-carta:hover,
+:root[data-theme="light"] .g-link a:hover { border-color: var(--sea); }
+:root[data-theme="light"] .g-n { background: var(--signal); }
+:root[data-theme="light"] .g-sez li::marker { color: var(--sea-dark); }
+@media (max-width: 560px) {
+  body { padding: 0 .7rem 1.5rem; }
+  .topbar { margin-left: -.7rem; margin-right: -.7rem; padding: .55rem .7rem; }
+  .theme-toggle-label { display: none; }
+  .g-sez { padding: .9rem .85rem 1rem; border-radius: 12px; }
+  .g-sez h2 { font-size: 1.1rem; }
+  .g-scala div { grid-template-columns: 6.2rem 4.2rem 1fr; gap: .4rem; font-size: .8rem; }
+  .g-fasce div { grid-template-columns: 4.8rem 1fr; }
+  .g-carte { grid-template-columns: 1fr; }
+}
