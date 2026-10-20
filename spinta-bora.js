@@ -497,10 +497,7 @@
     }
     mp.sezione.classList.toggle("sb-mappa-via", dentro);
     mp.qui.hidden = !dentro;
-    // in cima serve vedere fino all'Istria; nella tendina basta il Golfo (mappa-golfo.js)
-    var svgMappa = mp.canvas.querySelector("svg");
-    if (svgMappa) svgMappa.setAttribute("data-vista", dentro ? "tutto" : "golfo");
-    if (window.MappaGolfo && MappaGolfo.vista) MappaGolfo.vista(dentro ? "tutto" : "golfo", false);
+    // la mappa si apre sempre sul Golfo (Alberto, 20 ott 2026); Istria e Tutto con i pulsanti
   }
 
   // true se il box mostra la mappa (il grafico allora non si disegna)

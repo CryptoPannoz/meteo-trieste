@@ -2,14 +2,17 @@
 """Genera il rilievo (ombreggiatura + tinta altimetrica) della terraferma per la mappa vento.
 
 Alberto (20 ott 2026): "serve qualcosa di più terrain reale" sulla mappa da mobile. La mappa
-resta un SVG disegnato a mano (mappa-golfo.js): qui si prepara solo un'immagine da mettere
-sotto la terra, ritagliata nell'SVG sulla costa OSM (path TERRA). Il mare non serve: dove
-la quota è <= 0 il colore è quello piatto della pianura, tanto l'SVG lo copre.
+resta un SVG disegnato a mano (mappa-golfo.js): qui si prepara l'immagine di fondo, terra
+col rilievo E mare, già divisi lungo la costa OSM (path TERRA di mappa-golfo.js). Prima
+l'SVG ritagliava il rilievo sulla costa con un clip-path: su telefono ridisegnarlo costava
+troppo (Alberto: "senza rallentare tutto"). Ora l'SVG mette solo l'immagine e, sopra, il
+tratto vettoriale della costa.
 
 Output (nella cartella di questo script):
   rilievo.webp        mappa intera, 2 px per unità → 1524×2000 px (viewBox 0 0 762 1000)
-  rilievo-golfo.webp  dettaglio del Golfo per lo zoom, 4 px per unità, riquadro in unità
-                      mappa x 90→450, y 30→340 → 1440×1240 px
+  rilievo-golfo.webp  vista "Golfo" di apertura, 4 px per unità, riquadro in unità mappa
+                      x 110→450, y 0→430 → 1360×1720 px (copre tutta la vista Golfo:
+                      x 118→440, y 0→423 con le proporzioni della mappa)
 
 Proiezione (deve combaciare con mappa-golfo.js e genera-costa.py), equirettangolare:
   x = (lon − 13.15) × 586.2      y = (45.90 − lat) × 833.33
@@ -176,6 +179,25 @@ def terra():
         polys.append(list(zip(nums[0::2], nums[1::2])))
     return polys
 
+# mare: lo stesso sfumato verticale dell'SVG (#d9f2f6 in alto → #b9dfe7 in fondo alla mappa)
+MARE_SU, MARE_GIU = (217, 242, 246), (185, 223, 231)
+
+def con_mare(img, ux0, uy0, ppu):
+    """Terra col rilievo dentro la costa TERRA, mare sfumato fuori. La maschera si disegna a
+    4× e si riduce: bordo morbido, come il tratto antialias dell'SVG che ci va sopra."""
+    w, h = img.size
+    S = 4
+    grande = Image.new("L", (w * S, h * S), 0)
+    dm = ImageDraw.Draw(grande)
+    for p in terra():
+        dm.polygon([((x - ux0) * ppu * S, (y - uy0) * ppu * S) for x, y in p], fill=255)
+    maschera = grande.resize((w, h), Image.LANCZOS)
+    yy = (np.arange(h) + 0.5) / ppu + uy0                  # y in unità mappa di ogni riga
+    f = np.clip(yy / 1000, 0, 1)[:, None, None]
+    mare = np.array(MARE_SU) * (1 - f) + np.array(MARE_GIU) * f
+    mare = Image.fromarray(np.round(np.broadcast_to(mare, (h, w, 3))).astype(np.uint8))
+    return Image.composite(img, mare, maschera)
+
 def anteprima(img, ux0, uy0, ppu, f):
     """Due pannelli: la costa TERRA disegnata sul raster, e la mappa composta
     (mare dell'SVG, rilievo ritagliato sulla costa)."""
@@ -203,10 +225,10 @@ if __name__ == "__main__":
     dir_ant = sys.argv[sys.argv.index("--anteprima") + 1] if "--anteprima" in sys.argv else None
     print("mappa intera")
     img, _ = rilievo(0, 0, 1524, 2000, 2, 11)
-    salva(img, "rilievo.webp")
     if dir_ant: anteprima(img, 0, 0, 2, os.path.join(dir_ant, "anteprima-rilievo.png"))
-    print("dettaglio del Golfo")
-    img, _ = rilievo(90, 30, 1440, 1240, 4, 12)
-    salva(img, "rilievo-golfo.webp")
-    if dir_ant: anteprima(img, 90, 30, 4, os.path.join(dir_ant, "anteprima-rilievo-golfo.png"))
+    salva(con_mare(img, 0, 0, 2), "rilievo.webp")
+    print("vista Golfo")
+    img, _ = rilievo(110, 0, 1360, 1720, 4, 12)
+    if dir_ant: anteprima(img, 110, 0, 4, os.path.join(dir_ant, "anteprima-rilievo-golfo.png"))
+    salva(con_mare(img, 110, 0, 4), "rilievo-golfo.webp", limite_kb=160)
     print(ATTRIBUZIONE)

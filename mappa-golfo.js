@@ -150,26 +150,25 @@
   var svg = null, gStazioni = null, gMambo = null, gPaloma = null, gFili = null, gEtichette = null, htmlDettaglio = null;
   var stazioneSelezionata = null;
 
-  /* ---------- zoom (20 ott 2026) ----------
-     Alberto: "migliorare la mappa da mobile: zoomare, ricentrare, la logica delle
-     centraline". Lo zoom cambia il viewBox dell'SVG (niente librerie): la carta
-     (mare, rilievo, costa) si ingrandisce, simboli ed etichette restano della stessa
-     grandezza sullo schermo e si ridispongono a ogni cambio (layout()).
-     Viste pronte: Golfo, Istria, Tutto. Gesti "cooperativi", come le mappe incorporate
-     nelle pagine: un dito scorre la pagina, due dita spostano e ingrandiscono la mappa;
-     doppio tocco = avvicina; col mouse si trascina e Ctrl+rotella ingrandisce. */
-  var MAPPA_W = 762, MAPPA_H = 1000, ZOOM_MAX = 6;
+  /* ---------- viste (20 ott 2026) ----------
+     Alberto: "togli zoom e zooma la schermata direttamente in apertura senza
+     sovrapposizione delle centraline. Focus su Golfo, poi Istria, poi Tutto, con il layout
+     delle centraline che si adatta senza rallentare tutto". Niente pizzico né trascinamento:
+     tre inquadrature fisse (viewBox) scelte con i pulsanti, cambio istantaneo. La mappa si
+     apre sul Golfo. Simboli ed etichette hanno la stessa grandezza sullo schermo in ogni
+     vista e si dispongono da soli (layout(), solo quando cambiano dati, vista o larghezza). */
+  var MAPPA_W = 762, MAPPA_H = 1000;
   var VISTE = {
     golfo:  { x: 118, y: 55,  w: 322, h: 285 },
     istria: { x: 180, y: 400, w: 540, h: 590 },
     tutto:  { x: 0,   y: 0,   w: MAPPA_W, h: MAPPA_H }
   };
   var vb = { x: 0, y: 0, w: MAPPA_W, h: MAPPA_H };
-  var vistaAttiva = null, animazione = null;
+  var vistaAttiva = "golfo";
   var simboli = {};          // id -> { st, v, g } dei simboli disegnati
   var citta = [];            // { c, g } delle etichette
-  var ctrl = null;           // pulsanti di zoom e viste
-  var rilievoGolfo = null;   // dettaglio del rilievo, caricato al primo zoom sul Golfo
+  var ctrl = null;           // pulsanti delle viste
+  var gRilievo = {};         // gruppi delle due immagini di fondo (vedi caricaFondo)
 
   function installaStili() {
     if (document.getElementById("mappaGolfoStili")) return;
@@ -188,27 +187,23 @@
       ".mappa-legenda span{min-height:30px;display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .5rem;border:1px solid #c7dadd;border-radius:999px;background:#f5fafb;color:#40545b;font-size:.67rem;font-weight:650;line-height:1}" +
       ".mappa-legenda i{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:0 0 0 2px #fff,0 0 0 3px currentColor}" +
       ".mappa-legenda strong{color:#1b3037;font-size:.7rem}.mappa-legenda em{color:#6a7a80;font-style:normal}" +
-      ".mg-speed circle{filter:url(#mgOmbra)}.mg-speed text{paint-order:stroke;stroke:#15313a;stroke-width:.8px}" +
+      ".mg-speed text{paint-order:stroke;stroke:#15313a;stroke-width:.8px}" +
       "#mappaVentoContenuto>.stato{margin-top:.55rem}" +
       "@media(max-width:540px){.mappa-nowcast-head{align-items:flex-start}.mappa-nowcast-hint{font-size:.68rem}.mappa-legenda span{min-height:28px;padding:.28rem .42rem;font-size:.62rem}.mappa-legenda em{display:none}.mg-halo{opacity:.06}}" +
       "@media(prefers-reduced-motion:no-preference){.mg-stazione{transition:opacity .15s ease}.mg-stazione:hover .mg-halo,.mg-stazione:focus .mg-halo{opacity:.9}.mappa-popover:not([hidden]){animation:mg-in .16s ease-out}@keyframes mg-in{from{opacity:0}to{opacity:1}}}";
     style.textContent +=
-      /* zoom: la grandezza della mappa la decide il CSS, non il viewBox che cambia */
-      ".mappa-canvas svg{aspect-ratio:762/1000;touch-action:pan-x pan-y;-webkit-user-select:none;user-select:none}" +
-      ".mappa-canvas.mg-trascina svg{cursor:grabbing}" +
-      ".mg-ctrl{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px;border-bottom:1px solid #b9d6dd;background:#eef7f9}" +
-      ".mg-ctrl>div{display:flex;gap:4px}" +
-      ".mg-ctrl button{min-width:0;min-height:34px;margin:0;padding:.3rem .62rem;border:1px solid rgba(15,92,108,.28);border-radius:999px;background:rgba(255,255,255,.93);color:#0f5c6c;box-shadow:0 2px 8px rgba(16,47,56,.16);font:inherit;font-size:.72rem;font-weight:800;line-height:1;cursor:pointer;transform:none}" +
-      ".mg-ctrl button:hover{background:#fff;color:#15313a;border-color:#0f5c6c}" +
-      ".mg-ctrl button[aria-pressed=true]{background:#15313a;border-color:#15313a;color:#fff}" +
-      ".mg-ctrl .mg-zoom button{width:34px;padding:0;font-size:1.1rem;font-weight:700}" +
-      ".mg-ctrl button:disabled{opacity:.4;cursor:default}" +
-      ".mg-ctrl button:focus-visible{outline:3px solid #0f6f7e;outline-offset:1px}" +
-      ".mg-aiuto{position:absolute;z-index:3;left:50%;top:55%;transform:translate(-50%,-50%);margin:0;padding:.55rem .8rem;border-radius:10px;background:rgba(16,32,38,.86);color:#fff;font-size:.8rem;font-weight:750;pointer-events:none;white-space:nowrap}" +
-      ".mg-aiuto[hidden]{display:none}" +
+      /* la grandezza della mappa la decide il CSS, non il viewBox che cambia con la vista */
+      ".mappa-canvas svg{aspect-ratio:762/1000;-webkit-user-select:none;user-select:none}" +
+      ".mg-ctrl{position:relative;z-index:3;padding:6px;border-bottom:1px solid #b9d6dd;background:#eef7f9}" +
+      ".mg-viste{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #9cc3cc;border-radius:10px;overflow:hidden;background:#fff}" +
+      ".mappa-canvas .mg-ctrl .mg-viste button{min-width:0;min-height:36px;margin:0;padding:.3rem .5rem;border:0;border-left:1px solid #c7dde2;border-radius:0;background:transparent;color:#0f5c6c;box-shadow:none;font:inherit;font-size:.8rem;font-weight:800;line-height:1;cursor:pointer;transform:none}" +
+      ".mappa-canvas .mg-ctrl .mg-viste button:first-child{border-left:0}" +
+      ".mappa-canvas .mg-ctrl .mg-viste button:hover{background:#f1f8fa;color:#15313a}" +
+      ".mappa-canvas .mg-ctrl .mg-viste button[aria-pressed=true]{background:#15313a;color:#fff}" +
+      ".mappa-canvas .mg-ctrl .mg-viste button:focus-visible{outline:3px solid #0f6f7e;outline-offset:-3px}" +
       ".mg-nome{display:none;font-weight:850;fill:#15313a;paint-order:stroke;stroke:#fff;stroke-width:3.2px;stroke-linejoin:round}" +
       ".mg-con-nome .mg-nome{display:inline}" +
-      /* telefono: il dettaglio diventa una barra in fondo alla mappa invece di coprirne il centro */
+      /* telefono: il dettaglio diventa una barra a tutta larghezza, in alto o in basso */
       ".mappa-canvas.mg-stretta .mappa-popover{left:8px!important;right:8px!important;width:auto;transform:none}";
     document.head.appendChild(style);
   }
@@ -227,27 +222,22 @@
     defs.innerHTML =
       '<linearGradient id="mgMare" x1="0" y1="0" x2="0" y2="1">' +
       '<stop offset="0" stop-color="#d9f2f6"/><stop offset="1" stop-color="#b9dfe7"/></linearGradient>' +
-      '<filter id="mgOmbra" x="-60%" y="-60%" width="220%" height="220%">' +
-      '<feDropShadow dx="0" dy="1.8" stdDeviation="2.2" flood-color="#102f38" flood-opacity="0.34"/>' +
-      '</filter>' +
       '<path id="mgTerra" d="' + TERRA + '"/>' +
-      '<clipPath id="mgTerraClip"><use href="#mgTerra"/></clipPath>' +
       '<style>.mg-stazione{cursor:pointer}.mg-halo{opacity:.16}.mg-stazione:focus{outline:none}.mg-stazione:focus .mg-halo,.mg-stazione.mg-selected .mg-halo{opacity:.9}' +
       '.mg-invito .mg-halo{animation:mg-pulse 1.4s ease-in-out 3}@keyframes mg-pulse{0%,100%{opacity:.16}50%{opacity:.95}}' +
       '@media(prefers-reduced-motion:reduce){.mg-invito .mg-halo{animation:none}}</style>';
     svg.appendChild(defs);
-    svg.appendChild(el("rect", { x: -MAPPA_W, y: -MAPPA_H, width: MAPPA_W * 3, height: MAPPA_H * 3, fill: "url(#mgMare)" }));
-    /* terra: colore pieno subito, poi il rilievo (mappa/genera-rilievo.py) ritagliato sulla
-       costa OSM; il dettaglio del Golfo arriva solo quando si ingrandisce (caricaRilievoGolfo) */
+    /* fondo vettoriale (mare e terra piatti) finché non arrivano le immagini; le immagini
+       (mappa/genera-rilievo.py) hanno già mare e rilievo divisi lungo la costa: niente
+       clip-path, che su telefono rallentava ogni ridisegno */
+    svg.appendChild(el("rect", { x: 0, y: 0, width: MAPPA_W, height: MAPPA_H, fill: "url(#mgMare)" }));
     svg.appendChild(el("use", { href: "#mgTerra", fill: "#f3efe2" }));
-    var rilievo = el("image", { href: "/mappa/rilievo.webp", x: 0, y: 0, width: MAPPA_W, height: MAPPA_H,
-      preserveAspectRatio: "none", "clip-path": "url(#mgTerraClip)" });
-    rilievo.addEventListener("error", function () { rilievo.remove(); });
-    svg.appendChild(rilievo);
-    rilievoGolfo = el("g", { "clip-path": "url(#mgTerraClip)" });
-    svg.appendChild(rilievoGolfo);
+    gRilievo.tutto = el("g", {});
+    gRilievo.golfo = el("g", {});
+    svg.appendChild(gRilievo.tutto);
+    svg.appendChild(gRilievo.golfo);
     svg.appendChild(el("use", { href: "#mgTerra", fill: "none", stroke: "#5f8b96",
-      "stroke-width": 1.6, "stroke-linejoin": "round", "vector-effect": "non-scaling-stroke" }));
+      "stroke-width": 1.4, "stroke-linejoin": "round", "vector-effect": "non-scaling-stroke" }));
 
     gEtichette = el("g", { "class": "mg-etichette", "aria-hidden": "true" });
     citta = CITTA.map(function (c) {
@@ -283,16 +273,26 @@
     svg.appendChild(gPaloma);
   }
 
-  /* Dettaglio del rilievo sul Golfo (4 px per unità): solo quando si ingrandisce, per
-     non pesare su chi guarda la mappa intera. */
-  var RILIEVO_GOLFO = { x: 90, y: 30, w: 360, h: 310 };
-  function caricaRilievoGolfo() {
-    if (!rilievoGolfo || rilievoGolfo.__caricato) return;
-    rilievoGolfo.__caricato = true;
-    var img = el("image", { href: "/mappa/rilievo-golfo.webp", x: RILIEVO_GOLFO.x, y: RILIEVO_GOLFO.y,
-      width: RILIEVO_GOLFO.w, height: RILIEVO_GOLFO.h, preserveAspectRatio: "none" });
+  /* Immagini di fondo: "golfo" (4 px per unità, copre tutta la vista Golfo, 112 KB) e
+     "tutto" (2 px per unità, la mappa intera, 199 KB). Si carica subito quella della vista
+     aperta; l'altra appena la pagina ha finito, così il cambio di vista è istantaneo. */
+  var FONDI = {
+    golfo: { href: "/mappa/rilievo-golfo.webp", x: 110, y: 0, w: 340, h: 430 },
+    tutto: { href: "/mappa/rilievo.webp", x: 0, y: 0, w: MAPPA_W, h: MAPPA_H }
+  };
+  function caricaFondo(nome) {
+    var g = gRilievo[nome], f = FONDI[nome];
+    if (!g || g.__caricato) return;
+    g.__caricato = true;
+    var img = el("image", { href: f.href, x: f.x, y: f.y, width: f.w, height: f.h, preserveAspectRatio: "none" });
     img.addEventListener("error", function () { img.remove(); });
-    rilievoGolfo.appendChild(img);
+    g.appendChild(img);
+  }
+  function caricaFondi() {
+    caricaFondo(vistaAttiva === "golfo" ? "golfo" : "tutto");
+    var altro = function () { caricaFondo("golfo"); caricaFondo("tutto"); };
+    if (document.readyState === "complete") setTimeout(altro, 1200);
+    else window.addEventListener("load", function () { setTimeout(altro, 1200); });
   }
 
   function aggiornaLegenda() {
@@ -381,28 +381,19 @@
         '<button type="button" data-vista="golfo" aria-pressed="false">Golfo</button>' +
         '<button type="button" data-vista="istria" aria-pressed="false">Istria</button>' +
         '<button type="button" data-vista="tutto" aria-pressed="false">Tutto</button>' +
-      '</div>' +
-      '<div class="mg-zoom"><button type="button" data-zoom="in" aria-label="Avvicina">+</button>' +
-      '<button type="button" data-zoom="out" aria-label="Allontana">−</button></div>';
+      '</div>';
     ctrl.addEventListener("click", function (e) {
       var b = e.target.closest && e.target.closest("button");
-      if (!b) return;
-      if (b.dataset.vista) vista(b.dataset.vista, true);
-      else zoomCentro(b.dataset.zoom === "in" ? 1.7 : 1 / 1.7);
+      if (b && b.dataset.vista) vista(b.dataset.vista);
     });
     contenitore.insertBefore(ctrl, svg);
-
-    var aiuto = document.createElement("p");
-    aiuto.className = "mg-aiuto";
-    aiuto.hidden = true;
-    aiuto.textContent = "Usa due dita per spostare la mappa";
-    contenitore.appendChild(aiuto);
   }
 
   /* Simbolo disegnato attorno all'origine, in "unità simbolo" (cerchio di raggio 12,5):
      posizione e scala le decide layout(), così resta della stessa grandezza sullo
      schermo a ogni zoom. Freccia orientata dove VA il vento (deg + 180);
      centralina offline (v null) -> punto spento, non si disegna nulla */
+  var PUNTA = 23;   // lunghezza della punta del simbolo, in unità simbolo (cerchio = 12,5)
   function disegnaStazione(dest, st, v) {
     if (!v || isNaN(v.kt)) return null;
     var x = 0, y = 0;
@@ -414,32 +405,17 @@
       (v.deg != null ? " da " + Math.round(v.deg) + "°" : "") +
       (v.ora ? " · agg. " + v.ora : "");
     g.setAttribute("aria-label", titolo + ". Apri dettaglio");
-    g.appendChild(el("circle", { cx: x, cy: y, r: 25, fill: "transparent", "pointer-events": "all" }));
-    g.appendChild(el("circle", { cx: x, cy: y, r: 17.5, fill: colore, "fill-opacity": .07, stroke: colore,
-      "stroke-width": 2.6, "class": "mg-halo" }));
+    g.appendChild(el("circle", { cx: x, cy: y, r: 22, fill: "transparent", "pointer-events": "all" }));
+    g.appendChild(el("circle", { cx: x, cy: y, r: 16, fill: colore, "fill-opacity": .07, stroke: colore,
+      "stroke-width": 2.4, "class": "mg-halo" }));
 
-    /* Freccia ad alto contrasto: parte dal bordo del valore e indica dove VA il vento.
-       Corta (punta a 28-40 unità dal centro, prima arrivava a 64): la forza la dicono già
-       numero e colore, e una freccia lunga finiva sopra le centraline vicine. */
+    /* Direzione: una punta attaccata al cerchio che indica dove VA il vento (20 ott 2026,
+       prima era una freccia lunga fino a 3 raggi che finiva sopra le centraline vicine).
+       La punta arriva a PUNTA unità dal centro: dispostiSimboli() ne tiene conto. */
     if (v.deg != null && v.kt >= 1) {
-      var k = Math.min(v.kt, 40);
-      var L = 28 + k * 0.3;
-      var sw = 3.8 + k * 0.05;
-      var hw = sw * 1.5 + 3.4;
-      var freccia = el("g", { transform: "translate(" + x + " " + y + ") rotate(" + ((v.deg + 180) % 360) + ")", filter: "url(#mgOmbra)" });
-      freccia.appendChild(el("line", { x1: 0, y1: -12, x2: 0, y2: -L + 9,
-        stroke: "#ffffff", "stroke-width": sw + 4.5, "stroke-linecap": "round", opacity: .96 }));
-      freccia.appendChild(el("line", { x1: 0, y1: -12, x2: 0, y2: -L + 9,
-        stroke: colore, "stroke-width": sw, "stroke-linecap": "round" }));
-      freccia.appendChild(el("path", { d: "M0," + (-L - 5) +
-        " L" + (-hw - 2) + "," + (-L + 10) +
-        " L0," + (-L + 6) +
-        " L" + (hw + 2) + "," + (-L + 10) + " Z", fill: "#ffffff", opacity: .96 }));
-      freccia.appendChild(el("path", { d: "M0," + (-L - 3) +
-        " L" + (-hw) + "," + (-L + 9) +
-        " L0," + (-L + 5) +
-        " L" + hw + "," + (-L + 9) + " Z", fill: colore }));
-      g.appendChild(freccia);
+      g.appendChild(el("path", { d: "M-7.4,-10 L0," + (-PUNTA) + " L7.4,-10 Z", fill: colore,
+        stroke: "#ffffff", "stroke-width": 2.2, "stroke-linejoin": "round",
+        transform: "rotate(" + ((v.deg + 180) % 360) + ")" }));
     }
 
     /* Valore e origine della freccia sono un unico simbolo: numero = nodi. */
@@ -455,7 +431,6 @@
     g.appendChild(el("title", {}, titolo));
     function apri(e) {
       e.stopPropagation();
-      if (trascinato) return;
       if (stazioneSelezionata === st.id) { chiudiDettaglio(); return; }
       mostraDettaglio(st, v, g);
     }
@@ -500,8 +475,12 @@
       invitoFatto = true;
       gStazioni.classList.add("mg-invito");
       setTimeout(function () { gStazioni.classList.remove("mg-invito"); }, 4500);
-      var top = disegnate.reduce(function (a, b) { return b.v.kt > a.v.kt ? b : a; });
-      mostraDettaglio(top.st, top.v, top.g);
+      var inVista = disegnate.filter(function (d) { return simboli[d.st.id] && simboli[d.st.id].dentro; });
+      var stretta = svg.parentNode.classList.contains("mg-stretta");
+      if (inVista.length && !stretta) {
+        var top = inVista.reduce(function (a, b) { return b.v.kt > a.v.kt ? b : a; });
+        mostraDettaglio(top.st, top.v, top.g);
+      }
     }
   }
   var invitoFatto = false;
@@ -614,10 +593,14 @@
       var p = punto(o.st);
       o.sx = (p.x - vb.x) / u; o.sy = (p.y - vb.y) / u;    // punto vero, in pixel
       o.qx = o.sx; o.qy = o.sy;                            // dove va il simbolo
+      if (o.v && o.v.deg != null && o.v.kt >= 1) {          // punta: dove va il vento, in raggi
+        var a = (o.v.deg + 180) * Math.PI / 180;
+        o.px = Math.sin(a) * PUNTA / 12.5; o.py = -Math.cos(a) * PUNTA / 12.5;
+      } else { o.px = o.py = null; }
       o.dentro = o.sx > -R && o.sx < m.w + R && o.sy > -R && o.sy < m.h + R;
       lista.push(o);
     });
-    dispostiSimboli(lista, 2 * R + (nomi ? 18 : 6), R, m);
+    dispostiSimboli(lista, 2 * R + (nomi ? 14 : 5), R, m);
 
     var k = R / 12.5 * u, fili = [];
     lista.forEach(function (o) {
@@ -640,7 +623,6 @@
       }
     });
     gFili.innerHTML = fili.join("");
-    if (z >= 1.8) caricaRilievoGolfo();
     if (htmlDettaglio && !htmlDettaglio.hidden && stazioneSelezionata && simboli[stazioneSelezionata]) {
       var sel = simboli[stazioneSelezionata];
       mostraDettaglio(sel.st, sel.v, sel.g);
@@ -724,6 +706,23 @@
           mosso = true;
         }
       }
+      // la punta di uno non entra nel cerchio dell'altro
+      for (var p = 0; p < n; p++) {
+        var o = attivi[p];
+        if (o.px == null) continue;
+        var tx = o.qx + o.px * R, ty = o.qy + o.py * R;
+        for (var q = 0; q < n; q++) {
+          if (q === p) continue;
+          var c = attivi[q];
+          var ex = c.qx - tx, ey = c.qy - ty, e = Math.sqrt(ex * ex + ey * ey), min = R + 3;
+          if (e >= min) continue;
+          if (e < 0.01) { ex = -o.py; ey = o.px; e = 1; }
+          var manca = min - e + 0.2;
+          c.qx += ex / e * manca * 0.6; c.qy += ey / e * manca * 0.6;
+          o.qx -= ex / e * manca * 0.4; o.qy -= ey / e * manca * 0.4;
+          mosso = true;
+        }
+      }
       var molla = giro < 80 ? 0.05 : 0;
       attivi.forEach(function (o) {
         o.qx += (o.sx - o.qx) * molla; o.qy += (o.sy - o.qy) * molla;
@@ -734,184 +733,46 @@
     }
   }
 
-  /* ---------- zoom e spostamento ---------- */
+  /* ---------- viste ---------- */
 
   function vistaIntera() {
     var a = misure(), asp = a.w / a.h;
     var w = Math.max(MAPPA_W, MAPPA_H * asp);
     return { x: (MAPPA_W - w) / 2, y: (MAPPA_H - w / asp) / 2, w: w, h: w / asp };
   }
-  // riporta un riquadro nelle proporzioni della mappa sullo schermo e dentro i suoi bordi
-  function limita(b) {
-    var a = misure(), asp = a.w / a.h, piena = vistaIntera();
-    var w = Math.max(piena.w / ZOOM_MAX, Math.min(piena.w, b.w)), h = w / asp;
-    var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
-    var x = cx - w / 2, y = cy - h / 2;
+  // riquadro che contiene b nelle proporzioni della mappa sullo schermo, dentro i bordi
+  function adatta(b) {
+    var a = misure(), asp = a.w / a.h, w = b.w, h = b.h;
+    if (w / h > asp) h = w / asp; else w = h * asp;
+    var x = b.x + b.w / 2 - w / 2, y = b.y + b.h / 2 - h / 2;
     x = w >= MAPPA_W ? (MAPPA_W - w) / 2 : Math.max(0, Math.min(MAPPA_W - w, x));
     y = h >= MAPPA_H ? (MAPPA_H - h) / 2 : Math.max(0, Math.min(MAPPA_H - h, y));
     return { x: x, y: y, w: w, h: h };
   }
-  // riquadro che contiene b nelle proporzioni dello schermo (per le viste pronte)
-  function adatta(b) {
-    var a = misure(), asp = a.w / a.h, w = b.w, h = b.h;
-    if (w / h > asp) h = w / asp; else w = h * asp;
-    return limita({ x: b.x + b.w / 2 - w / 2, y: b.y + b.h / 2 - h / 2, w: w, h: h });
-  }
 
-  function applica(b) {
-    vb = limita(b);
-    svg.setAttribute("viewBox", vb.x.toFixed(2) + " " + vb.y.toFixed(2) + " " + vb.w.toFixed(2) + " " + vb.h.toFixed(2));
-    aggiornaPulsanti();
-    layoutPresto();
-  }
-
-  function anima(b) {
-    var da = { x: vb.x, y: vb.y, w: vb.w, h: vb.h }, a = limita(b);
-    if (animazione) cancelAnimationFrame(animazione);
-    var ridotto = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (ridotto) { applica(a); return; }
-    var t0 = null, durata = 320;
-    function passo(t) {
-      if (t0 === null) t0 = t;
-      var f = Math.min(1, (t - t0) / durata), e = 1 - Math.pow(1 - f, 3);
-      applica({ x: da.x + (a.x - da.x) * e, y: da.y + (a.y - da.y) * e, w: da.w + (a.w - da.w) * e, h: da.h + (a.h - da.h) * e });
-      animazione = f < 1 ? requestAnimationFrame(passo) : null;
-    }
-    animazione = requestAnimationFrame(passo);
-  }
-
-  function vista(nome, animata) {
+  function vista(nome) {
     if (!svg || !VISTE[nome]) return;
     vistaAttiva = nome;
-    var b = nome === "tutto" ? vistaIntera() : adatta(VISTE[nome]);
-    if (animata) anima(b); else applica(b);
-    aggiornaPulsanti();
-  }
-
-  // fattore > 1 avvicina; (sx, sy) = punto dello schermo che resta fermo
-  function zoomIn(fattore, sx, sy, animata) {
-    var m = misure(), u = vb.w / m.w;
-    var mx = vb.x + sx * u, my = vb.y + sy * u;
-    var w = vb.w / fattore, h = vb.h / fattore, u2 = w / m.w;
-    vistaAttiva = null;
-    var b = { x: mx - sx * u2, y: my - sy * u2, w: w, h: h };
-    if (animata) anima(b); else applica(b);
-  }
-  function zoomCentro(fattore) { var m = misure(); zoomIn(fattore, m.w / 2, m.h / 2, true); }
-
-  function aggiornaPulsanti() {
-    if (!ctrl) return;
-    var z = zoomAttuale();
-    Array.prototype.forEach.call(ctrl.querySelectorAll("[data-vista]"), function (b) {
+    vb = nome === "tutto" ? vistaIntera() : adatta(VISTE[nome]);
+    svg.setAttribute("viewBox", vb.x.toFixed(2) + " " + vb.y.toFixed(2) + " " + vb.w.toFixed(2) + " " + vb.h.toFixed(2));
+    caricaFondo(nome === "golfo" ? "golfo" : "tutto");
+    if (ctrl) Array.prototype.forEach.call(ctrl.querySelectorAll("[data-vista]"), function (b) {
       b.setAttribute("aria-pressed", String(b.dataset.vista === vistaAttiva));
     });
-    var piu = ctrl.querySelector('[data-zoom="in"]'), meno = ctrl.querySelector('[data-zoom="out"]');
-    if (piu) piu.disabled = z >= ZOOM_MAX - 0.01;
-    if (meno) meno.disabled = z <= 1.01;
+    chiudiDettaglio();
+    layout();
   }
 
-  var trascinato = false;   // vero subito dopo un trascinamento: il clic non apre il dettaglio
-  function preparaGesti() {
-    var cornice = svg.parentNode;
-    var aiuto = cornice.querySelector(".mg-aiuto"), timerAiuto = null;
-    function mostraAiuto() {
-      if (!aiuto) return;
-      aiuto.hidden = false;
-      clearTimeout(timerAiuto);
-      timerAiuto = setTimeout(function () { aiuto.hidden = true; }, 1400);
-    }
-    function locale(t) { var r = svg.getBoundingClientRect(); return { x: t.clientX - r.left, y: t.clientY - r.top }; }
-
-    // due dita: pizzico e spostamento. Un dito resta alla pagina (scorre).
-    var pizzico = null, unDito = null, ultimoTocco = null;
-    svg.addEventListener("touchstart", function (e) {
-      if (e.touches.length === 2) {
-        e.preventDefault();
-        var a = locale(e.touches[0]), b = locale(e.touches[1]);
-        pizzico = { vb: { x: vb.x, y: vb.y, w: vb.w, h: vb.h }, d: Math.hypot(a.x - b.x, a.y - b.y) || 1,
-          mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
-        unDito = null;
-        if (animazione) { cancelAnimationFrame(animazione); animazione = null; }
-      } else if (e.touches.length === 1) {
-        var p = locale(e.touches[0]);
-        unDito = { x: p.x, y: p.y, t: Date.now(), mosso: false };
-      }
-    }, { passive: false });
-    svg.addEventListener("touchmove", function (e) {
-      if (e.touches.length === 2 && pizzico) {
-        e.preventDefault();
-        var a = locale(e.touches[0]), b = locale(e.touches[1]), m = misure();
-        var d = Math.hypot(a.x - b.x, a.y - b.y) || 1, mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-        var u0 = pizzico.vb.w / m.w, px0 = pizzico.vb.x + pizzico.mx * u0, py0 = pizzico.vb.y + pizzico.my * u0;
-        var w = pizzico.vb.w * pizzico.d / d, u1 = w / m.w;
-        vistaAttiva = null;
-        applica({ x: px0 - mx * u1, y: py0 - my * u1, w: w, h: w * m.h / m.w });
-      } else if (e.touches.length === 1 && unDito) {
-        var p = locale(e.touches[0]), dx = p.x - unDito.x, dy = p.y - unDito.y;
-        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) unDito.mosso = true;
-        // un dito di lato a mappa ingrandita: si vorrebbe spostare la mappa
-        if (zoomAttuale() > 1.05 && Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy) * 1.5) mostraAiuto();
-      }
-    }, { passive: false });
-    svg.addEventListener("touchend", function (e) {
-      if (e.touches.length < 2) pizzico = null;
-      if (e.touches.length || !unDito || unDito.mosso || Date.now() - unDito.t > 300) { if (!e.touches.length) unDito = null; return; }
-      // doppio tocco su un punto vuoto: avvicina lì
-      var qui = { x: unDito.x, y: unDito.y, t: Date.now() };
-      unDito = null;
-      var sulSimbolo = e.target.closest && e.target.closest(".mg-stazione");
-      if (!sulSimbolo && ultimoTocco && qui.t - ultimoTocco.t < 320 && Math.hypot(qui.x - ultimoTocco.x, qui.y - ultimoTocco.y) < 30) {
-        e.preventDefault();
-        ultimoTocco = null;
-        zoomIn(2, qui.x, qui.y, true);
-        return;
-      }
-      ultimoTocco = qui;
-    });
-
-    // mouse: trascinare sposta, Ctrl+rotella (o il pizzico del trackpad) ingrandisce, doppio clic avvicina
-    var trascina = null;
-    svg.addEventListener("pointerdown", function (e) {
-      if (e.pointerType !== "mouse" || e.button !== 0) return;
-      trascina = { x: e.clientX, y: e.clientY, vb: { x: vb.x, y: vb.y, w: vb.w, h: vb.h }, attivo: false };
-    });
-    window.addEventListener("pointermove", function (e) {
-      if (!trascina) return;
-      var dx = e.clientX - trascina.x, dy = e.clientY - trascina.y;
-      if (!trascina.attivo && Math.abs(dx) + Math.abs(dy) < 5) return;
-      if (!trascina.attivo) { trascina.attivo = true; cornice.classList.add("mg-trascina"); }
-      var u = trascina.vb.w / misure().w;
-      vistaAttiva = null;
-      applica({ x: trascina.vb.x - dx * u, y: trascina.vb.y - dy * u, w: trascina.vb.w, h: trascina.vb.h });
-    });
-    window.addEventListener("pointerup", function () {
-      if (!trascina) return;
-      if (trascina.attivo) { trascinato = true; setTimeout(function () { trascinato = false; }, 0); }
-      cornice.classList.remove("mg-trascina");
-      trascina = null;
-    });
-    svg.addEventListener("wheel", function (e) {
-      if (!e.ctrlKey) return;                    // rotella semplice: scorre la pagina
-      e.preventDefault();
-      var p = locale(e);
-      zoomIn(Math.exp(-e.deltaY * 0.01), p.x, p.y, false);
-    }, { passive: false });
-    svg.addEventListener("dblclick", function (e) {
-      if (e.target.closest && e.target.closest(".mg-stazione")) return;
-      var p = locale(e);
-      zoomIn(2, p.x, p.y, true);
-    });
-
-    // la mappa cambia larghezza (rotazione, finestra, spostata in cima alla home): stessa inquadratura
-    if ("ResizeObserver" in window) {
-      var larghezza = 0;
-      new ResizeObserver(function () {
-        var w = Math.round(svg.getBoundingClientRect().width);
-        if (!w || w === larghezza) return;
-        larghezza = w;
-        if (vistaAttiva) vista(vistaAttiva, false); else applica(vb);
-      }).observe(svg);
-    }
+  // la mappa cambia larghezza (rotazione, finestra, spostata in cima alla home): si ridispone
+  function osservaLarghezza() {
+    if (!("ResizeObserver" in window)) return;
+    var larghezza = 0;
+    new ResizeObserver(function () {
+      var w = Math.round(svg.getBoundingClientRect().width);
+      if (!w || w === larghezza) return;
+      larghezza = w;
+      layoutPresto();
+    }).observe(svg);
   }
 
   function init(id) {
@@ -925,20 +786,20 @@
     disegnaBase();
     aggiornaLegenda();
     svg.addEventListener("click", function (e) {
-      if (trascinato) return;
       if (!e.target.closest || !e.target.closest(".mg-stazione")) chiudiDettaglio();
     });
-    preparaGesti();
-    // inquadratura iniziale: data-vista sull'svg (la home la cambia quando sposta la mappa in cima)
-    vista(VISTE[svg.getAttribute("data-vista")] ? svg.getAttribute("data-vista") : "tutto", false);
+    osservaLarghezza();
+    // inquadratura iniziale: il Golfo, salvo data-vista diverso sull'svg
+    vista(VISTE[svg.getAttribute("data-vista")] ? svg.getAttribute("data-vista") : "golfo");
+    caricaFondi();
     if (window.__mappaDati) render(window.__mappaDati);
     if (window.__mappaMambo) mambo(window.__mappaMambo);
     caricaPaloma();
   }
 
   window.MappaGolfo = { init: init, render: render, mambo: mambo, caricaMambo: caricaMambo, caricaPaloma: caricaPaloma,
-    // vista("golfo" | "istria" | "tutto", animata): inquadratura pronta
-    vista: function (nome, animata) { if (svg) vista(nome, animata); else if (target) target.setAttribute("data-vista", nome); } };
+    // vista("golfo" | "istria" | "tutto"): inquadratura pronta
+    vista: function (nome) { if (svg) vista(nome); else if (target) target.setAttribute("data-vista", nome); } };
 
   /* auto-init: home (#mappaGolfo) o pagina dedicata (#mappa) */
   var target = document.getElementById("mappaGolfo") || document.getElementById("mappa");
