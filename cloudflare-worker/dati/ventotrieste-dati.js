@@ -531,8 +531,8 @@ async function riepilogo(env) {
    Richiesto da Alberto (21 ott 2026): "salviamo i dati per i prossimi mesi e anni in un punto
    sicuro". Il KV non scade ma non ha copie: un errore che riscrive un giorno oltre le 2 settimane
    perde Barcola per sempre (Windguru non lo ridà). Ogni giorno chiuso va quindi anche su Postgres:
-   Neon, progetto "vento-trieste" (flat-grass-11957021, Francoforte, ripristino a un istante
-   qualsiasi degli ultimi 7 giorni), database neondb. Tabella registri = il registro intero (jsonb),
+   Neon, account bebroggi@gmail.com, progetto "vento-trieste" (dark-haze-82155996, Francoforte,
+   piano free: ripristino a un istante delle ultime 6 ore), database neondb. Tabella registri = il registro intero (jsonb),
    tabella giorni = la riga del riepilogo; viste leggibili v_giorni, v_quarti, v_spinta_ore.
    Quando: a minuti dispari col payload invariato (i pari sono del riepilogo). Un giorno entra
    quando il riepilogo lo ha chiuso con la spinta (sp presente), cioè la notte dopo; al massimo
