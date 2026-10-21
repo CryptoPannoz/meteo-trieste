@@ -22,6 +22,7 @@
  *    15 minuti per centralina più la media sul campo di regata (vedi "REGISTRO" sotto).
  *  - GET /riepilogo: media di ogni giornata dal 1° settembre 2026, per il riepilogo dei
  *    giorni ventosi sopra la tabella del registro (vedi "RIEPILOGO" sotto).
+ *  - GET /backup: quanti giorni sono già copiati nel database Neon (vedi "BACKUP" sotto).
  *
  * Il frontend (/dati-live.js) usa questo Worker per primo e torna al proxy Apps Script
  * se il Worker non risponde o ha un payload vecchio: il sito non dipende da Cloudflare.
@@ -526,6 +527,68 @@ async function riepilogo(env) {
   return { dal: RIEP_DAL, fino: ieri, giorni, mancanti, aggiornato: new Date().toISOString() };
 }
 
+/* ============================ BACKUP SU NEON (SQL) ============================
+   Richiesto da Alberto (21 ott 2026): "salviamo i dati per i prossimi mesi e anni in un punto
+   sicuro". Il KV non scade ma non ha copie: un errore che riscrive un giorno oltre le 2 settimane
+   perde Barcola per sempre (Windguru non lo ridà). Ogni giorno chiuso va quindi anche su Postgres:
+   Neon, progetto "vento-trieste" (flat-grass-11957021, Francoforte, ripristino a un istante
+   qualsiasi degli ultimi 7 giorni), database neondb. Tabella registri = il registro intero (jsonb),
+   tabella giorni = la riga del riepilogo; viste leggibili v_giorni, v_quarti, v_spinta_ore.
+   Quando: a minuti dispari col payload invariato (i pari sono del riepilogo). Un giorno entra
+   quando il riepilogo lo ha chiuso con la spinta (sp presente), cioè la notte dopo; al massimo
+   BACKUP_PER_GIRO giorni per giro, così lo storico dal 1° settembre si copia da solo in pochi giri.
+   Quali giorni ci sono già lo dice la chiave KV "backup" (una scrittura a notte): Neon si sveglia
+   solo quando c'è qualcosa da copiare e il suo compute si spegne da solo poco dopo.
+   Connessione: secret NEON_URL del Worker (npx wrangler secret put NEON_URL), mai nel codice; senza
+   il secret il backup resta spento. Protocollo: la richiesta HTTP del driver @neondatabase/serverless
+   (POST https://api.<regione>/sql con l'header Neon-Connection-String), senza dipendenze. */
+const BACKUP_CHIAVE = 'backup', BACKUP_PER_GIRO = 8, BACKUP_PAUSA_ERRORE = 30 * 60000;
+let backupErrore = 0;             // dopo un errore si riprova tra mezz'ora (vale per l'isolate)
+
+async function neonSql(env, query, params) {
+  const host = new URL(env.NEON_URL.replace(/^postgres(ql)?:/, 'https:')).hostname;
+  const r = await fetch('https://' + host.replace(/^[^.]+\./, 'api.') + '/sql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Neon-Connection-String': env.NEON_URL, 'Neon-Raw-Text-Output': 'true', 'Neon-Array-Mode': 'true' },
+    body: JSON.stringify({ query, params: params || [] }),
+    signal: AbortSignal.timeout(25000),
+  });
+  const j = await r.json().catch(() => null);
+  if (!r.ok || !j) throw new Error('Neon HTTP ' + r.status + (j && j.message ? ': ' + j.message : ''));
+  return j;
+}
+
+async function backupNeon(env) {
+  if (!env.NEON_URL || Date.now() - backupErrore < BACKUP_PAUSA_ERRORE) return 'spento';
+  const [riep, fatti] = await Promise.all([env.DATI.get(RIEP_CHIAVE, { type: 'json' }), env.DATI.get(BACKUP_CHIAVE, { type: 'json' })]);
+  if (!riep) return 'niente';
+  const gia = new Set((fatti && fatti.giorni) || []);
+  const pronti = Object.keys(riep.giorni).sort()
+    .filter(g => !gia.has(g) && riepFatto(riep.giorni[g]) && riep.giorni[g].sp !== undefined).slice(0, BACKUP_PER_GIRO);
+  if (!pronti.length) return 'niente';
+  const regs = (await Promise.all(pronti.map(g => env.DATI.get('registro:' + g, { type: 'json' })))).filter(Boolean);
+  // i registri salvati prima del 21 ott 2026 non hanno la spinta intera: la aggiungo prima di copiarli
+  const senza = regs.filter(reg => !spintaCompleta(reg));
+  if (senza.length) {
+    const sp = await spintaGiorni(senza[0].giorno, senza[senza.length - 1].giorno).catch(() => ({}));
+    for (const reg of senza) if (sp[reg.giorno]) { reg.spinta = sp[reg.giorno]; await salvaRegistro(env, reg); }
+  }
+  const giorni = {};
+  pronti.forEach(g => { giorni[g] = riep.giorni[g]; });
+  try {
+    await neonSql(env,
+      "WITH r AS (INSERT INTO registri (giorno, dati) SELECT (x->>'giorno')::date, x FROM jsonb_array_elements($1::jsonb) x " +
+        'ON CONFLICT (giorno) DO UPDATE SET dati = EXCLUDED.dati, salvato = now() RETURNING 1), ' +
+      'g AS (INSERT INTO giorni (giorno, dati) SELECT key::date, value FROM jsonb_each($2::jsonb) ' +
+        'ON CONFLICT (giorno) DO UPDATE SET dati = EXCLUDED.dati, salvato = now() RETURNING 1) ' +
+      'SELECT (SELECT count(*) FROM r), (SELECT count(*) FROM g)',
+      [JSON.stringify(regs), JSON.stringify(giorni)]);
+  } catch (e) { backupErrore = Date.now(); throw e; }
+  pronti.forEach(g => gia.add(g));
+  await env.DATI.put(BACKUP_CHIAVE, JSON.stringify({ giorni: [...gia].sort(), aggiornato: new Date().toISOString() }));
+  return pronti.length + ' giorni';
+}
+
 /* Classifica ufficiale: un elenco con poge = posizione generale (0 = non classificato), yacht,
    modello, timoniere, armatore, club, mascone. La pagina ufficiale dell'edizione (barcolana.it/
    it/regata/classifica-barcolanaNN, NN = anno - 1968) di solito esce dopo: se non c'è ancora
@@ -559,9 +622,11 @@ export default {
     ctx.waitUntil((async () => {
       const esito = await aggiorna(env).catch(err => { console.warn('aggiorna: ' + err); return 'errore'; });
       // un passo del riepilogo solo a minuti pari e quando il payload non è cambiato (cioè
-      // senza il registro di oggi da ricostruire): così si resta sotto le 50 sottorichieste
-      if (esito === 'invariato' && new Date(event.scheduledTime).getUTCMinutes() % 2 === 0) {
-        await completaRiepilogo(env).catch(err => console.warn('riepilogo: ' + err));
+      // senza il registro di oggi da ricostruire): così si resta sotto le 50 sottorichieste;
+      // a minuti dispari, alle stesse condizioni, il backup su Neon
+      if (esito === 'invariato') {
+        if (new Date(event.scheduledTime).getUTCMinutes() % 2 === 0) await completaRiepilogo(env).catch(err => console.warn('riepilogo: ' + err));
+        else await backupNeon(env).catch(err => console.warn('backup: ' + err));
       }
     })());
   },
@@ -578,6 +643,14 @@ export default {
       } catch (err) {
         return json({ giorno, errore: 'registro non disponibile: ' + err });
       }
+    }
+
+    // /backup — stato della copia su Neon, letto dal KV (non sveglia il database)
+    if (indirizzo.pathname === '/backup') {
+      const f = await env.DATI.get(BACKUP_CHIAVE, { type: 'json', cacheTtl: 60 });
+      const g = (f && f.giorni) || [];
+      return json({ attivo: !!env.NEON_URL, giorni: g.length, dal: g[0] || null, fino: g[g.length - 1] || null,
+        aggiornato: (f && f.aggiornato) || null }, { 'Cache-Control': 'public, max-age=60' });
     }
 
     if (indirizzo.pathname === '/riepilogo') {
