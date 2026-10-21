@@ -114,6 +114,7 @@ async function aggiorna(env) {
     - Monte Grisa: vetercek dà solo l'ultimo dato, quindi la registriamo noi dal payload
       (registraGrisa, chiave KV "grisa:<giorno>"): esiste solo dal 30 set 2026.
     - Boa Mambo: OGS, un dato all'ora, pubblicato con 1-2 ore di ritardo.
+    - Spinta della Bora (Maribor − Trieste): Open-Meteo, un valore all'ora su 24 ore (spintaGiorni).
    Media sul campo: stessa formula della pagina (stimaVento al centro del percorso): media
    pesata 1/d² delle centraline a mare (Barcola, Trieste molo, Muggia, Paloma).
 
@@ -249,6 +250,39 @@ async function meteoGiorno(giorno) {
   return { tipo, pioggia: r1(pioggia), sole };
 }
 
+/* Spinta della Bora del giorno (21 ott 2026, Alberto: "registra anche il delta di pressione del
+   diagramma della Bora, da ora in poi"): Maribor − Trieste, pressione al livello del mare, la stessa
+   grandezza del box della home (spinta-bora.js, Open-Meteo: stima di modello, non misura di stazione).
+   Un valore all'ora su tutte le 24 ore (ore[h] = alle h:00), perché la bora che parte di notte conta
+   per la mattina dopo; tengo anche le due pressioni, utili per leggere scirocco e perturbazioni.
+   Oggi: API di previsione, la stessa del box, solo le ore già passate e parziale = true. Giorno
+   chiuso: archivio Open-Meteo (historical-forecast), che non ha buchi dal 1° settembre (l'API di
+   previsione sì) e resta lo stesso nel tempo; può scostarsi di qualche decimo da quello che il box
+   mostrava in diretta. Lo storico quindi si ricostruisce anche all'indietro, una richiesta per
+   qualsiasi intervallo di giorni. */
+const SPINTA_LAT = '46.5547,45.6495', SPINTA_LON = '15.6459,13.7768';      // Maribor, Trieste: come spinta-bora.js
+const SPINTA_FONTE = 'Open-Meteo, pressione al livello del mare Maribor − Trieste (stima di modello)';
+async function spintaGiorni(da, a) {
+  const adesso = roma(Date.now());
+  const base = a >= adesso.giorno ? 'https://api.open-meteo.com/v1/forecast' : 'https://historical-forecast-api.open-meteo.com/v1/forecast';
+  const j = await getJson(base + '?latitude=' + SPINTA_LAT + '&longitude=' + SPINTA_LON +
+    '&hourly=pressure_msl&timezone=Europe%2FRome&start_date=' + da + '&end_date=' + a, 20000);
+  if (!Array.isArray(j) || j.length < 2) throw new Error('risposta inattesa');
+  const mb = j[0].hourly, ts = j[1].hourly, out = {};
+  mb.time.forEach((t, i) => {
+    const g = t.slice(0, 10), h = Number(t.slice(11, 13));
+    const x = out[g] = out[g] || { fonte: SPINTA_FONTE, ore: Array(24).fill(null), maribor: Array(24).fill(null), trieste: Array(24).fill(null) };
+    if (g > adesso.giorno || (g === adesso.giorno && h * 60 > adesso.min)) { x.parziale = true; return; }   // sarebbe previsione
+    const p = mb.pressure_msl[i], q = ts.pressure_msl[i];
+    if (typeof p !== 'number' || typeof q !== 'number') return;
+    x.ore[h] = r1(p - q); x.maribor[h] = r1(p); x.trieste[h] = r1(q);
+  });
+  Object.keys(out).forEach(g => { if (!out[g].ore.some(v => v != null)) delete out[g]; });
+  return out;
+}
+// registri salvati prima del 21 ott 2026, o chiusi in serata con le ultime ore ancora da venire
+const spintaCompleta = reg => !!(reg.spinta && !reg.spinta.parziale);
+
 async function campioniMambo(giorno) {
   const da = new Date(romaInUtc(giorno, REG_PRIMA - REG_PASSO)).toISOString(), a = new Date(romaInUtc(giorno, REG_ULTIMA)).toISOString();
   const url = 'https://nodc.ogs.it/erddap/tabledap/MAMBO1_TS.json?' + encodeURIComponent('time,WSPD,GSPD,WDIR') +
@@ -330,7 +364,11 @@ async function costruisciRegistro(env, giorno) {
     prova(s.id, campioniGrisa(env, giorno))));
   const serie = {};
   REG_STAZIONI.forEach((s, i) => { serie[s.id] = vuoto ? slot.map(() => null) : inQuarti(campioni[i]); });
-  const meteo = vuoto ? null : await meteoGiorno(giorno).catch(e => { errori.meteo = String(e).slice(0, 120); return null; });
+  // la spinta che manca non è un errore del registro (non lo lascia incompleto): si aggiunge dopo
+  const [meteo, spinta] = vuoto ? [null, null] : await Promise.all([
+    meteoGiorno(giorno).catch(e => { errori.meteo = String(e).slice(0, 120); return null; }),
+    spintaGiorni(giorno, giorno).then(sp => sp[giorno] || null).catch(e => { console.warn('spinta: ' + e); return null; }),
+  ]);
   // giorno chiuso: dopo le 21:30 (Mambo arriva in ritardo) o un giorno passato, e senza fonti in errore
   const chiuso = giorno < adesso.giorno || (giorno === adesso.giorno && adesso.hhmm >= '21:30');
   return {
@@ -340,6 +378,7 @@ async function costruisciRegistro(env, giorno) {
     errori: Object.keys(errori).length ? errori : undefined,
     senza: senzaBarcola ? ['barcola'] : undefined,
     meteo: meteo || undefined,
+    spinta: spinta || undefined,
     completo: chiuso && !Object.keys(errori).length,
     aggiornato: new Date().toISOString(),
   };
@@ -356,7 +395,15 @@ async function registro(env, ctx, giorno) {
     const eta = (Date.now() - Date.parse(salvato.aggiornato)) / 60000;
     // oggi nella finestra del cron lo tiene fresco il cron; fuori da lì (o giorno con fonti in errore) si ricalcola ogni 30 min
     const max = salvato.completo ? Infinity : (giorno === adesso.giorno && adesso.hhmm >= REG_CRON_DA && adesso.hhmm <= REG_CRON_A) ? 7 : 30;
-    if (eta <= max) return salvato;
+    if (eta <= max) {
+      // giorno passato senza la spinta intera: la aggiungo senza ricostruire il vento
+      // (ricostruito oltre le 2 settimane perderebbe Barcola)
+      if (giorno < adesso.giorno && !spintaCompleta(salvato)) {
+        const sp = await spintaGiorni(giorno, giorno).catch(() => ({}));
+        if (sp[giorno]) { salvato.spinta = sp[giorno]; ctx.waitUntil(salvaRegistro(env, salvato)); }
+      }
+      return salvato;
+    }
   }
   try {
     const reg = await costruisciRegistro(env, giorno);
@@ -383,6 +430,8 @@ async function registro(env, ctx, giorno) {
      q = quarti d'ora con la media sopra RIEP_SOGLIA (16 = 4 ore),
      d = direzione prevalente (gradi, media vettoriale pesata sul vento),
      mt = meteo del giorno a Trieste (sole, variabile, nuvoloso, pioggia), pr = pioggia in mm,
+     sp = spinta della bora massima della giornata (hPa, 0-24), sm = spinta media nelle ore del
+     registro 6-19 (dal 21 ott 2026; sp = null se Open-Meteo non ha il giorno),
      sb = 1 senza Barcola (oltre le 2 settimane di Windguru), p = 1 con una centralina a mare
      mancata. Un giorno con una centralina a mare in errore resta { e: tentativi, t: ms }
      e si riprova dopo 20 minuti; al 4° tentativo si tiene la media delle altre (p = 1).
@@ -414,7 +463,14 @@ function sintesiGiorno(reg) {
   out.q = campo.filter(v => v[0] > RIEP_SOGLIA).length;
   if (reg.senza && reg.senza.indexOf('barcola') !== -1) out.sb = 1;
   if (reg.meteo && reg.meteo.tipo) { out.mt = reg.meteo.tipo; out.pr = reg.meteo.pioggia; }
+  if (spintaCompleta(reg)) Object.assign(out, sintesiSpinta(reg.spinta));
   return out;
+}
+function sintesiSpinta(s) {
+  const tutte = s ? s.ore.filter(v => v != null) : [];
+  if (!tutte.length) return { sp: null };
+  const finestra = s.ore.slice(REG_PRIMA / 60, REG_ULTIMA / 60 + 1).filter(v => v != null);
+  return { sp: Math.max(...tutte), sm: finestra.length ? r1(finestra.reduce((a, v) => a + v, 0) / finestra.length) : null };
 }
 // contano solo le centraline che entrano nella media sul campo (Mambo o Monte Grisa no)
 const erroriMare = reg => Object.keys(reg.errori || {}).filter(id => REG_STAZIONI.some(s => s.id === id && s.campo));
@@ -423,6 +479,7 @@ async function completaRiepilogo(env) {
   const ieri = sposta(roma(Date.now()).giorno, -1), ora = Date.now();
   const riep = (await env.DATI.get(RIEP_CHIAVE, { type: 'json' })) || { giorni: {} };
   let letti = 0, costruito = false, fatti = 0;
+  const senzaSpinta = [];                    // registri letti qui che non hanno ancora la spinta intera
   for (let g = RIEP_DAL; g <= ieri && letti < RIEP_LETTI; g = sposta(g, 1)) {
     const prima = riep.giorni[g];
     if (riepFatto(prima) || (prima && prima.e && ora - prima.t <= RIEP_RIPROVA_MS)) continue;
@@ -434,10 +491,23 @@ async function completaRiepilogo(env) {
       reg = await costruisciRegistro(env, g);
       await salvaRegistro(env, reg);
     }
+    if (!spintaCompleta(reg)) senzaSpinta.push(reg);
     const err = erroriMare(reg), tentativi = (prima && prima.e) || 0;
     riep.giorni[g] = (err.length && tentativi < RIEP_TENTATIVI) ? { e: tentativi + 1, t: ora } :
       Object.assign(sintesiGiorno(reg), err.length ? { p: 1 } : {});
     fatti++;
+  }
+  // spinta della bora: UNA richiesta all'archivio Open-Meteo per tutti i giorni che non ce l'hanno
+  // (i registri appena letti e i giorni del riepilogo fatti prima del 21 ott 2026)
+  const giorniSp = Object.keys(riep.giorni).filter(g => riepFatto(riep.giorni[g]) && riep.giorni[g].sp === undefined)
+    .concat(senzaSpinta.map(reg => reg.giorno)).sort();
+  if (giorniSp.length) {
+    try {
+      const sp = await spintaGiorni(giorniSp[0], giorniSp[giorniSp.length - 1]);
+      for (const reg of senzaSpinta) if (sp[reg.giorno]) { reg.spinta = sp[reg.giorno]; await salvaRegistro(env, reg); }
+      giorniSp.forEach(g => { if (riepFatto(riep.giorni[g])) Object.assign(riep.giorni[g], sintesiSpinta(sp[g])); });
+      fatti++;
+    } catch (e) { console.warn('spinta: ' + e); }
   }
   if (fatti) await env.DATI.put(RIEP_CHIAVE, JSON.stringify(riep));
   return fatti + ' giorni';
