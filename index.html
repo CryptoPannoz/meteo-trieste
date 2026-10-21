@@ -1505,8 +1505,8 @@
 
     /* Registro del vento in home (registro-vento.js, solo grafico). Colori del grafico per il
        tema scuro, validati sul fondo #151b21; nel tema chiaro tornano quelli del modulo. */
-    #registroHome { --rv-media: #3a72cc; --rv-raffica: #1fa7a0; --rv-surf: #e4475d; --bcn-btn-ink: #07090c; }
-    :root[data-theme="light"] #registroHome { --rv-media: #1f5f99; --rv-raffica: #2b9cb0; --rv-surf: #d9364a; --bcn-btn-ink: #ffffff; }
+    #registroHome { --rv-media: #3a72cc; --rv-raffica: #1fa7a0; --rv-surf: #e4475d; --rv-sb-sotto: #80603c; --rv-sb-sopra: #ff9b45; --bcn-btn-ink: #07090c; }
+    :root[data-theme="light"] #registroHome { --rv-media: #1f5f99; --rv-raffica: #2b9cb0; --rv-surf: #d9364a; --rv-sb-sotto: #d39a4f; --rv-sb-sopra: #9c4a08; --bcn-btn-ink: #ffffff; }
     #registroHome .rv-riep { margin: 0; padding: 0; border: 0; background: transparent; }
     #registroHome .registro-home-link { margin-top: .9rem; }
     #registroHome .registro-home-link a { font-weight: 800; }
@@ -3795,7 +3795,7 @@
           async src="//gc.zgo.at/count.js"></script>
   <script src="/eventi.js?v=20261005" defer></script>
   <!-- grafico del registro del vento: si scarica solo quando la tendina si apre -->
-  <script src="/registro-vento.js?v=20261005" defer></script>
+  <script src="/registro-vento.js?v=20261021" defer></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       var det = document.getElementById("registro");

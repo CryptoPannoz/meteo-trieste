@@ -42,6 +42,11 @@
   // Sono variabili CSS: una pagina scura le ridefinisce (home: --rv-media #3a72cc, --rv-raffica
   // #1fa7a0, --rv-surf #e4475d, validati sul fondo scuro #151b21).
   var C_MEDIA = "var(--rv-media,#1f5f99)", C_RAFFICA = "var(--rv-raffica,#2b9cb0)", C_SURF = "var(--rv-surf,#d9364a)";
+  // spinta della bora (striscia sotto il grafico, 21 ott 2026): un solo arancio in due toni, sotto e
+  // sopra la soglia; scala ordinata validata (validate_palette --ordinal) su #f3f7f8 e, con
+  // --rv-sb-sotto #80603c / --rv-sb-sopra #ff9b45, sul fondo scuro della home #151b21
+  var C_SB_SOTTO = "var(--rv-sb-sotto,#d39a4f)", C_SB_SOPRA = "var(--rv-sb-sopra,#9c4a08)";
+  var SOGLIA_SPINTA = 3.5;   // hPa: da qui la bora si innesca (la prima soglia di spinta-bora.js)
   var ORA_FINE = "19";       // fine del registro (Worker REG_ULTIMA), per "il giorno si chiude alle…"
   var FASCE = [[8, "#7d8b97"], [15, "#12a58a"], [25, "#e8830c"], [35, "#d9364a"], [Infinity, "#a2358f"]];
   var CARD = {
@@ -50,6 +55,9 @@
   };
   var FONTE_PC = '<a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · ' +
     '<a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a>';
+  var FONTE_SPINTA = [
+    '<a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>, differenza di pressione al livello del mare tra Maribor e Trieste, stima di modello (non una misura di stazione), un valore all\'ora',
+    '<a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>, sea-level pressure difference between Maribor and Trieste, a model estimate (not a station reading), one value per hour'];
   var istanze = [], grafici = [];
 
   function lingua() { return document.documentElement.getAttribute("data-lang") === "en" ? "en" : "it"; }
@@ -58,6 +66,7 @@
   function oraRoma() { return new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()); }
   function sposta(g, d) { var t = new Date(g + "T12:00:00Z"); t.setUTCDate(t.getUTCDate() + d); return t.toISOString().slice(0, 10); }
   function num(v, dec) { var s = v.toFixed(dec); return lingua() === "en" ? s : s.replace(".", ","); }
+  function hPa(v) { return (v < 0 ? "−" : "") + num(Math.abs(v), 1); }   // spinta della bora, col segno meno vero (come spinta-bora.js)
   function colore(kt) { for (var i = 0; i < FASCE.length; i++) if (kt < FASCE[i][0]) return FASCE[i][1]; return FASCE[0][1]; }
   function cardinale(d) { return CARD[lingua()][Math.round(((d % 360) + 360) % 360 / 22.5) % 16]; }
   // freccia verso dove VA il vento (il path punta in basso: ruotato dei gradi di provenienza)
@@ -170,6 +179,24 @@
       ".rv-k-media,.rv-k-raffica{display:inline-block;width:9px;height:12px;border-radius:2px 2px 0 0;background:" + C_MEDIA + "}" +
       ".rv-k-raffica{background:" + C_RAFFICA + "}" +
       ".rv-k-soglia{display:inline-block;width:18px;border-top:2px dashed " + C_SURF + "}" +
+      /* spinta della bora: striscia a sé sotto il grafico, stessi giorni in colonna, scala sua in hPa */
+      ".rv-sb-testa{display:flex;flex-wrap:wrap;align-items:baseline;gap:.1rem .45rem;margin:.8rem 0 .35rem;font-size:.8rem;color:var(--ink,#16232c)}" +
+      ".rv-sb-testa b{font-weight:800}" +
+      ".rv-sb-testa em{font-style:normal;font-size:.72rem;font-weight:600;color:var(--label,var(--muted,#5f7280))}" +
+      ".rv-sb-plot{position:relative;height:64px;margin:0 .1rem 0 1.9rem}" +
+      ".rv-gl.rv-sb-soglia{border-top:2px dashed " + C_SB_SOPRA + ";z-index:2;pointer-events:none}" +
+      ".rv-gl.rv-sb-soglia span{font-weight:800;color:var(--ink,#16232c)}" +
+      ".rv-sb-col{position:absolute;inset:0;display:flex}" +
+      ".rv-sbx{position:relative;flex:1 1 0;min-width:0;border-radius:3px 3px 0 0}" +
+      ".rv-sbx[data-rv-giorno]{cursor:pointer}" +
+      ".rv-sbx[data-rv-giorno]:hover,.rv-sbx.sel{background:color-mix(in srgb," + C_MEDIA + " 8%,transparent)}" +
+      ".rv-sbx i{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:72%;max-width:24px;min-height:2px;border-radius:4px 4px 0 0;background:" + C_SB_SOTTO + "}" +
+      ".rv-sbx i.su{background:" + C_SB_SOPRA + "}" +
+      ".rv-sbx.oggi i{opacity:.4}" +
+      ".rv-sbx small{position:absolute;left:50%;transform:translateX(-50%);font-size:.66rem;font-weight:800;line-height:1;color:var(--ink,#16232c);white-space:nowrap;z-index:3}" +
+      ".rv-k-sb{display:inline-block;width:9px;height:12px;border-radius:2px 2px 0 0;background:" + C_SB_SOPRA + "}" +
+      ".rv-k-sb.sotto{background:" + C_SB_SOTTO + ";margin-right:-.2rem}" +
+      "@media (max-width:700px){.rv-sb-plot{height:54px}}" +
       ".rv-lettura{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .55rem;min-height:2.6rem;margin:.5rem 0 0;padding:.45rem .6rem;border:1px solid " + BORDO + ";border-radius:3px;background:var(--surface,#fff);font-size:.88rem;color:var(--ink,#16232c)}" +
       ".rv-lettura span{font-weight:700}" +
       ".rv-lettura em{font-style:normal;font-size:.8rem;font-weight:600;color:var(--slate-2,var(--muted,#5f7280))}" +
@@ -268,13 +295,15 @@
       "<b>Trieste molo, Muggia, boa Paloma</b>: Fonte: " + FONTE_PC + " · dati elaborati. " +
       "<b>Meteo del giorno</b> (icone sopra il grafico): pioggia e radiazione solare misurate a Trieste molo, stessa fonte. " +
       "<b>Monte Grisa</b>: Vetercek, registrata da Vento Trieste dal 30 settembre 2026 (in quota, fuori dalla media). " +
-      "<b>Boa Mambo</b>: OGS, un dato all'ora pubblicato con 1-2 ore di ritardo.",
+      "<b>Boa Mambo</b>: OGS, un dato all'ora pubblicato con 1-2 ore di ritardo. " +
+      "<b>Spinta della Bora</b> (sotto il grafico e nel CSV): " + FONTE_SPINTA[0] + ".",
       "<b>" + nomeCampo[1] + "</b>: average of the sea-level stations (Barcola, Trieste pier, Muggia, Paloma) weighted by distance from the centre of the Barcolana course. " +
       "<b>Barcola</b>: Windguru, 5-minute averages; a 0/0 reading means the anemometer is stuck and is not counted. " +
       "<b>Trieste pier, Muggia, Paloma buoy</b>: Source: " + FONTE_PC + " · processed data. " +
       "<b>Day's weather</b> (icons above the chart): rain and solar radiation measured at Trieste pier, same source. " +
       "<b>Monte Grisa</b>: Vetercek, recorded by Vento Trieste since 30 September 2026 (high up, not in the average). " +
-      "<b>Mambo buoy</b>: OGS, one reading per hour published 1-2 hours late.");
+      "<b>Mambo buoy</b>: OGS, one reading per hour published 1-2 hours late. " +
+      "<b>Bora push</b> (below the chart and in the CSV): " + FONTE_SPINTA[1] + ".");
   }
 
   function nomeSerie(r, sr) {
@@ -304,6 +333,13 @@
     out = { m: Math.round(v.reduce(function (a, x) { return a + x[0]; }, 0) / v.length * 10) / 10, n: v.length, r: null, rs: null, q: q,
       d: (sx || sy) ? Math.round((Math.atan2(sx, sy) * 180 / Math.PI + 360) % 360) : null };
     if (reg.meteo && reg.meteo.tipo) { out.mt = reg.meteo.tipo; out.pr = reg.meteo.pioggia; }
+    // spinta della bora: sp = la più alta delle ore registrate, sm = media delle ore 6-19 (come sintesiSpinta del Worker)
+    if (reg.spinta && reg.spinta.ore) {
+      var pieni = function (a) { return a.filter(function (s) { return s != null; }); };
+      var tutte = pieni(reg.spinta.ore), fin = pieni(reg.spinta.ore.slice(6, 20));
+      if (tutte.length) out.sp = Math.max.apply(null, tutte);
+      if (fin.length) out.sm = Math.round(fin.reduce(function (a, s) { return a + s; }, 0) / fin.length * 10) / 10;
+    }
     reg.serie.forEach(function (sr) {
       if (MARE.indexOf(sr.id) === -1) return;
       sr.dati.forEach(function (x) { if (x && x[1] != null && !(out.r >= x[1])) { out.r = x[1]; out.rs = sr.id; } });
@@ -375,9 +411,9 @@
   // un giorno nel grafico: dal riepilogo se è chiuso, per oggi dal registro caricato ("finora")
   function datoGiorno(r, g) {
     var x = r.riep && r.riep.giorni[g];
-    if (x && x.m != null && x.n >= MIN_QUARTI) return { m: x.m, r: x.r, rs: x.rs, q: x.q, d: x.d, mt: x.mt, pr: x.pr, surf: surfabile(x.q) };
+    if (x && x.m != null && x.n >= MIN_QUARTI) return { m: x.m, r: x.r, rs: x.rs, q: x.q, d: x.d, mt: x.mt, pr: x.pr, sp: x.sp, sm: x.sm, surf: surfabile(x.q) };
     var o = r.oggi;
-    if (o && o.g === g && g === oggiRoma()) return { m: o.m, r: o.r, rs: o.rs, q: o.q, d: o.d, mt: o.mt, pr: o.pr, oggi: true, surf: surfabile(o.q) };
+    if (o && o.g === g && g === oggiRoma()) return { m: o.m, r: o.r, rs: o.rs, q: o.q, d: o.d, mt: o.mt, pr: o.pr, sp: o.sp, sm: o.sm, oggi: true, surf: surfabile(o.q) };
     return null;
   }
   function nomeGiorno(g) { return maiuscola(dataFmt(g, { weekday: "long", day: "numeric", month: "long" })); }
@@ -398,8 +434,13 @@
       (x.r != null ? "<em>" + tr("raffica max", "max gust") + "</em><strong>" + num(x.r, 0) + " kt</strong>" + (x.rs ? "<em>" + tr("a ", "at ") + nomeMare(x.rs) + "</em>" : "") : "") +
       (x.d != null ? "<em>" + tr("da ", "from ") + cardinale(x.d) + "</em>" : "") +
       (surf && x.q != null ? "<em>· " + (x.q ? ore(x.q) + tr(" sopra i ", " above ") + SOGLIA + " kt" : tr("mai sopra i ", "never above ") + SOGLIA + " kt") + "</em>" : "") +
+      (conSpinta(r) && x.sp != null ? "<em>· " + tr("spinta della bora max", "bora push max") + "</em><strong>" + hPa(x.sp) + " hPa</strong>" +
+        (x.sm != null ? "<em>" + tr("media 6-19 ", "6-19 mean ") + hPa(x.sm) + "</em>" : "") : "") +
       (surf && x.surf ? '<b class="rv-badge">' + SURFISTA + (x.oggi ? tr("Già surfabile", "Already surfable") : tr("Giornata surfabile", "Surfable day")) + "</b>" : "");
   }
+  // spinta della bora sotto il grafico e nella lettura: non sulla pagina Barcolana (senzaSurf),
+  // la cui grafica è approvata dai partner
+  function conSpinta(r) { return !!r && !r.opz.senzaSurf; }
   // il giorno dell'evento (opzione evento: la Barcolana) ha il suo segno sopra la colonna
   function eEvento(r, g) { return !!(r.opz.evento && r.opz.evento.giorno === g); }
   function nomeEvento(r, g) {
@@ -444,6 +485,7 @@
       var x = dati[i], cima = x ? pct(Math.max(x.m, x.r || 0)) : "0%";
       var desc = nomeGiorno(g) + ": " + (x ? tr("media ", "mean ") + num(x.m, 1) + tr(" nodi", " knots") +
           (x.r != null ? tr(", raffica massima ", ", max gust ") + num(x.r, 0) : "") + (conSurf && x.q ? ", " + ore(x.q) + tr(" sopra i ", " above ") + SOGLIA : "") +
+          (conSpinta(r) && x.sp != null ? tr(", spinta della bora massima ", ", max bora push ") + hPa(x.sp) + " hPa" : "") +
           (x.oggi ? tr(", finora", ", so far") : "") + (conSurf && x.surf ? tr(", giornata surfabile", ", surfable day") : "") +
           (eEvento(r, g) ? ", " + tr(r.opz.evento.nome[0], r.opz.evento.nome[1]) : "") :
         (g > oggi ? tr("ancora da venire", "still to come") : tr("nessun dato", "no data")));
@@ -471,6 +513,27 @@
     var dirx = dati.map(function (x) {
       return '<span' + (x && x.oggi ? ' class="oggi"' : "") + ">" + (x && x.d != null ? freccia(x.d) + "<i>" + cardinale(x.d) + "</i>" : "") + "</span>";
     }).join("");
+    // ancora sotto, la spinta della bora più alta di ogni giorno (Alberto, 21 ott 2026): grafico a sé
+    // con la sua scala in hPa (niente secondo asse sulle colonne del vento), soglia tratteggiata a 3,5;
+    // in settimana il valore sopra ogni barra, nel mese lo si legge toccando il giorno
+    var striscia = "";
+    if (conSpinta(r) && dati.some(function (x) { return x && x.sp != null; })) {
+      var spMax = 0;
+      dati.forEach(function (x) { if (x && x.sp != null) spMax = Math.max(spMax, x.sp); });
+      spMax = Math.max(8, Math.ceil(spMax + (cls === "sett" ? 2.5 : 0.5)));
+      var pctS = function (v) { return (Math.max(0, Math.min(v, spMax)) / spMax * 100).toFixed(2) + "%"; };
+      striscia = '<div class="rv-sb-testa"><b>' + tr("Spinta della Bora", "Bora push") + "</b><em>" +
+          tr("la più alta del giorno, hPa · Maribor − Trieste · da " + num(SOGLIA_SPINTA, 1) + " la bora si innesca",
+            "the day's highest, hPa · Maribor − Trieste · from " + num(SOGLIA_SPINTA, 1) + " the bora sets in") + "</em></div>" +
+        '<div class="rv-sb-plot"><div class="rv-gl base" style="bottom:0"></div>' +
+        '<div class="rv-gl rv-sb-soglia" style="bottom:' + pctS(SOGLIA_SPINTA) + '"><span>' + num(SOGLIA_SPINTA, 1) + "</span></div>" +
+        '<div class="rv-sb-col" aria-hidden="true">' + gg.map(function (g, i) {
+          var x = dati[i], v = x && x.sp != null ? x.sp : null;
+          return '<span class="rv-sbx' + (x && x.oggi ? " oggi" : "") + (g === r.giorno ? " sel" : "") + '"' + (g <= oggi ? ' data-rv-giorno="' + g + '"' : "") + ">" +
+            (v != null && v > 0 ? '<i class="' + (v >= SOGLIA_SPINTA ? "su" : "") + '" style="height:' + pctS(v) + '"></i>' : "") +
+            (v != null && cls === "sett" ? '<small style="bottom:calc(' + pctS(v) + ' + 3px)">' + hPa(v) + "</small>" : "") + "</span>";
+        }).join("") + "</div></div>";
+    }
 
     // tutti i mesi registrati, per saltare da uno all'altro (e vederne il conto)
     var mesi = {}, ordine = [], senzaB = null;
@@ -510,10 +573,12 @@
       '<div class="rv-meteo ' + cls + '" aria-hidden="true">' + meteo + "</div>" +
       '<div class="rv-plot">' + griglia + '<div class="rv-colonne" role="group" aria-label="' + tr("Media e raffica di ogni giorno", "Mean and gust of each day") + '">' + colonne + "</div></div>" +
       '<div class="rv-assex" aria-hidden="true">' + assex + "</div>" +
-      '<div class="rv-dirx ' + cls + '" aria-hidden="true"><b>' + tr("da", "from") + "</b>" + dirx + "</div>" +
+      '<div class="rv-dirx ' + cls + '" aria-hidden="true"><b>' + tr("da", "from") + "</b>" + dirx + "</div>" + striscia +
       '<div class="rv-legenda"><span><i class="rv-k-media"></i>' + tr("media del giorno", "daily mean") + "</span>" +
         '<span><i class="rv-k-raffica"></i>' + tr("raffica massima", "max gust") + "</span>" +
         (conSurf ? '<span><i class="rv-k-soglia"></i>' + SOGLIA + " kt</span>" : "") +
+        (striscia ? '<span><i class="rv-k-sb sotto"></i><i class="rv-k-sb"></i>' + tr("spinta della bora sotto · sopra " + num(SOGLIA_SPINTA, 1) + " hPa",
+          "bora push below · above " + num(SOGLIA_SPINTA, 1) + " hPa") + "</span>" : "") +
         "<span>" + freccia(67.5) + tr("ENE = direzione media, da dove viene", "ENE = mean direction, where it comes from") + "</span>" +
         "<span>" + ["sole", "variabile", "nuvoloso", "pioggia"].map(iconaMeteo).join("") + tr("sole · sole e nuvole · nuvoloso · pioggia", "sunny · sun and clouds · cloudy · rain") + "</span>" +
         (conSurf ? '<span>' + SURFISTA + tr("giornata surfabile (" + ORE_SURF + " h sopra i " + SOGLIA + " kt)", "surfable day (" + ORE_SURF + " h above " + SOGLIA + " kt)") + "</span>" : "") +
@@ -527,7 +592,8 @@
         "Until " + dataFmt(senzaB, { day: "numeric", month: "long" }) + " the average is without Barcola: Windguru only keeps two weeks of its history.") + "</p>" : "") +
       (r.opz.soloGrafico ? '<p class="rv-nota">' + tr(
         "Fonti: Barcola, Windguru. Trieste molo, Muggia, boa Paloma e meteo del giorno (pioggia e radiazione solare di Trieste molo): Fonte: " + FONTE_PC + " · dati elaborati.",
-        "Sources: Barcola, Windguru. Trieste pier, Muggia, Paloma buoy and the day's weather (rain and solar radiation at Trieste pier): Source: " + FONTE_PC + " · processed data.") + "</p>" : "");
+        "Sources: Barcola, Windguru. Trieste pier, Muggia, Paloma buoy and the day's weather (rain and solar radiation at Trieste pier): Source: " + FONTE_PC + " · processed data.") +
+        (striscia ? " " + tr("Spinta della Bora: " + FONTE_SPINTA[0] + ".", "Bora push: " + FONTE_SPINTA[1] + ".") : "") + "</p>" : "");
     box.hidden = false;
   }
 
@@ -556,19 +622,21 @@
       }
     });
     // passando sopra (o col tab) la riga di lettura mostra quel giorno; uscendo torna al giorno aperto
+    // (anche dalle barre della spinta, sotto: stesso giorno, stessa lettura)
+    var GIORNO = ".rv-col,.rv-sbx[data-rv-giorno]";
     var mostra = function (ev) {
-      var b = ev.target.closest ? ev.target.closest(".rv-col") : null;
+      var b = ev.target.closest ? ev.target.closest(GIORNO) : null;
       if (b && !b.disabled) r.$("regLettura").innerHTML = lettura(r, b.getAttribute("data-rv-giorno"));
     };
     var torna = function (ev) {
       var dove = ev.relatedTarget;
-      if (dove && dove.closest && dove.closest(".rv-col")) return;
+      if (dove && dove.closest && dove.closest(GIORNO)) return;
       if (r.$("regLettura") && r.per) r.$("regLettura").innerHTML = letturaBase(r);
     };
     box.addEventListener("pointerover", mostra);
     box.addEventListener("focusin", mostra);
-    box.addEventListener("pointerout", function (ev) { if (ev.target.closest && ev.target.closest(".rv-col")) torna(ev); });
-    box.addEventListener("focusout", function (ev) { if (ev.target.closest && ev.target.closest(".rv-col")) torna(ev); });
+    box.addEventListener("pointerout", function (ev) { if (ev.target.closest && ev.target.closest(GIORNO)) torna(ev); });
+    box.addEventListener("focusout", function (ev) { if (ev.target.closest && ev.target.closest(GIORNO)) torna(ev); });
   }
 
   // sotto i bottoni: sintesi del giorno mostrato (per oggi, fino all'ultimo quarto d'ora)
@@ -599,7 +667,7 @@
     var d = r.dati, $ = r.$, st = $("regStato");
     if (r.opz.riepilogo) {
       // la media di oggi finora fa la colonna chiara del grafico
-      if (d && d.serie && d.giorno === oggiRoma()) { var mo = sintesiReg(d); r.oggi = mo ? { g: d.giorno, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d, mt: mo.mt, pr: mo.pr } : null; }
+      if (d && d.serie && d.giorno === oggiRoma()) { var mo = sintesiReg(d); r.oggi = mo ? { g: d.giorno, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d, mt: mo.mt, pr: mo.pr, sp: mo.sp, sm: mo.sm } : null; }
       disegnaRiep(r);                              // il giorno aperto si vede premuto nel grafico
     }
     if (!d || !d.serie) { $("regTab").innerHTML = ""; $("regTabM").innerHTML = ""; $("regUltimo").innerHTML = ""; $("regMedia").innerHTML = ""; $("regTutto").hidden = true; return; }
@@ -718,9 +786,13 @@
       var nome = nomeSerie(r, sr);
       intest.push(nome + (en ? " mean kt" : " medio kt"), nome + (en ? " gust kt" : " raffica kt"), nome + (en ? " dir °" : " direzione °"));
     });
+    // spinta della bora (Maribor − Trieste, hPa): un valore all'ora, sulle righe delle ore piene
+    var sp = d.spinta && d.spinta.ore;
+    if (sp) intest.push(en ? "Bora push Maribor-Trieste hPa" : "Spinta bora Maribor-Trieste hPa");
     var righe = [intest].concat(d.slot.map(function (h, i) {
       var riga = [h];
       d.serie.forEach(function (sr) { var v = sr.dati[i]; riga.push(v ? n(v[0]) : "", v ? n(v[1]) : "", v && v[2] != null ? String(v[2]) : ""); });
+      if (sp) riga.push(h.slice(3) === "00" ? n(sp[Number(h.slice(0, 2))]) : "");
       return riga;
     }));
     var cella = function (c) { return (c.indexOf(sep) !== -1 || /["\n]/.test(c)) ? '"' + c.replace(/"/g, '""') + '"' : c; };
@@ -764,7 +836,7 @@
       return fetch(URL_REG + "?giorno=" + g + "&ts=" + Date.now()).then(function (x) { return x.json(); }).then(function (d) {
         if (!d || !d.serie || d.giorno !== g) return;
         var mo = sintesiReg(d);
-        r.oggi = mo ? { g: g, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d, mt: mo.mt, pr: mo.pr } : null;
+        r.oggi = mo ? { g: g, m: mo.m, r: mo.r, rs: mo.rs, q: mo.q, d: mo.d, mt: mo.mt, pr: mo.pr, sp: mo.sp, sm: mo.sm } : null;
         if (r.riep) disegnaRiep(r);
       }).catch(function () {});
     };
