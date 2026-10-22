@@ -1247,6 +1247,32 @@
       color: #090b0d;
       stroke-width: 2.8;
     }
+    /* Badge della pressione (22 ott 2026, /pressione-trieste.js): accanto a quello del vento,
+       contornato invece che pieno per non fargli concorrenza; porta all'articolo della guida. */
+    .pressione-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .38rem;
+      min-height: 30px;
+      margin: .8rem 0 0;
+      padding: .26rem .68rem;
+      border: 1.5px solid color-mix(in srgb, var(--ink) 45%, transparent);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink);
+      font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: .76rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: .045em;
+      text-transform: uppercase;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .surf-wind-badge { margin-right: .45rem; }   /* spazio tra i due badge: a capo restano allineati a sinistra */
+    .pressione-badge:hover, .pressione-badge:focus-visible { border-color: var(--signal); color: var(--ink); }
+    .pressione-badge .pb-num { font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--slate-2); }
+    .pressione-badge .pb-freccia { width: 1.05rem; height: 1.05rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
     .stato {
       font-size: .86rem;
       line-height: 1.55;
@@ -1501,6 +1527,7 @@
       .wind-arrow { width: 1.9rem; height: 1.9rem; stroke-width: 2.6; }
       .wind-name-badge { min-height: 30px; padding: .25rem .62rem; font-size: .76rem; }
       .surf-wind-badge { margin-top: .72rem; font-size: .76rem; }
+      .pressione-badge { margin-top: .72rem; }
     }
 
     /* Registro del vento in home (registro-vento.js, solo grafico). Colori del grafico per il
@@ -1558,6 +1585,7 @@
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261020b" defer></script>
   <script src="./spinta-bora.js?v=20261020c"></script>
+  <script src="/pressione-trieste.js?v=20261022"></script>
 </head>
 <body>
 
@@ -1710,6 +1738,7 @@
           <p class="stato" id="surfFonte"></p>
           <p class="stato surf-catena">Fonti, in ordine: centralina <strong>Barcola</strong> → <strong>Monte Grisa</strong> (backup) → boa <strong>MAMBO1</strong> OGS (backup 2, oraria)</p>
           <p class="stato surf-catena">A Barcola vento medio e raffica sono calcolati sugli <strong>ultimi 10 minuti</strong>. La centralina è sul Terrapieno, al riparo: il suo vento medio è circa la metà di quello di Trieste molo, Muggia e boa MAMBO1, mentre la sua raffica corrisponde al loro vento medio. Per questo la parola del surfometro si basa sulla <strong>raffica</strong>. <a href="/guida/surfometro/">Guida →</a></p>
+          <p class="stato surf-catena">Badge della <strong>pressione</strong>: come è cambiata a Trieste molo nelle ultime 3 ore (da +1 hPa in aumento, fino a −1 hPa in calo). Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · dati elaborati. <a href="/guida/pressione/">Cosa dice sul vento →</a></p>
         </details>
       </div>
 
@@ -2427,7 +2456,7 @@
         ptr.classList.add("no-gust");
       };
       if (kt == null || isNaN(kt)) {
-        verd.innerHTML = offlineTxt || "—";
+        verd.innerHTML = (offlineTxt || "—") + (window.VTPressione ? VTPressione.badge() : "");
         verd.style.color = "var(--label)";
         ptr.style.opacity = "0";
         val.textContent = "–";
@@ -2461,7 +2490,8 @@
         ? '<span class="surf-wind-badge">' + windArrowHtml(dir, "") +
           '<span>' + gradiInDirezione(dir) + ' · ' + ventoNome + '</span></span>'
         : "";
-      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + notaParola + ventoBadge;
+      // accanto al vento, la tendenza della pressione a Trieste molo (/pressione-trieste.js)
+      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + notaParola + ventoBadge + (window.VTPressione ? VTPressione.badge() : "");
       verd.style.color = ver.bg;
       // La raffica resta sempre leggibile. Se è vicina al medio, i marker si fondono
       // in un'unica linea bicolore per evitare sovrapposizioni illeggibili.
@@ -3488,6 +3518,7 @@
        (la pressione di superficie sarebbe ~30 hPa più bassa solo per via dell'altitudine). */
     function apriDeltaBora(){ document.getElementById("modalDeltaBora").style.display = "block"; }
     function caricaDeltaBora() {
+      if (window.VTPressione) window.VTPressione.aggiorna();        // badge della pressione nel surfometro
       if (window.SpintaBora) return window.SpintaBora.aggiorna();   // grafico e tendenza: /spinta-bora.js
       const stato = document.getElementById("deltaBoraStato");
       const infoBtn = ' · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>';

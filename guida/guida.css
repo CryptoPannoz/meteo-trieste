@@ -65,6 +65,7 @@ body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothin
 .g-fig-ora { stroke: #d6dde1; stroke-opacity: .6; }
 .g-fig-ora-t { fill: #d6dde1; }
 .g-fig-punto { stroke: #10151a; }
+.g-fig-barra { fill: var(--signal); }   /* grafico a barre di un solo colore (articolo pressione, 22 ott 2026) */
 
 .g-tabella { width: 100%; margin: .5rem 0 .9rem; border-collapse: collapse; font-size: .86rem; }
 .g-tabella th, .g-tabella td { padding: .5rem .45rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
@@ -109,6 +110,7 @@ body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothin
 :root[data-theme="light"] .g-fig-ora { stroke: #16232c; }
 :root[data-theme="light"] .g-fig-ora-t { fill: #16232c; }
 :root[data-theme="light"] .g-fig-punto { stroke: #fff; }
+:root[data-theme="light"] .g-fig-barra { fill: var(--sea-dark); }
 :root[data-theme="light"] .g-in-breve { background: #f7f9df; border-color: #d9dd7a; }
 :root[data-theme="light"] .g-in-breve strong:first-child,
 :root[data-theme="light"] .g-parole b,
