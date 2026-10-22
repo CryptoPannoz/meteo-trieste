@@ -181,7 +181,7 @@ function jsonOut(obj) {
 // il rollback si autoripara in 5 minuti.
 var DATI_CACHE_KEY = 'dati_v2';
 var DATI_TS_KEY    = 'dati_v2_ts';    // epoch ms dell'ultima ricostruzione riuscita
-// 6 min, non 5, DI PROPOSITO. Il trigger riscaldaCache rinfresca ogni 5 minuti: con la
+// 6 min, non 5, DI PROPOSITO. Il riscaldamento (vedi riscalda) rinfresca ogni 5 minuti: con la
 // soglia anche lei a 5 i due si rincorrono: la copia tocca i 299s un attimo prima che il
 // trigger scatti, e un visitatore capitato lì dentro la giudica scaduta e si rifà tutta
 // la ricostruzione — proprio ciò che il trigger serve a evitare (visto dal vivo, ago 2026:
@@ -268,9 +268,13 @@ function doGet(e) {
   if (e && e.parameter && e.parameter.storicoBarcola) {
     return jsonOut(storicoBarcola(String(e.parameter.storicoBarcola)));
   }
-  // ?diag=1 — stato del trigger di riscaldamento (tempo trigger consumato oggi).
+  // ?diag=1 — stato del riscaldamento (ricostruzioni di oggi e minuti consumati).
   if (e && e.parameter && e.parameter.diag) {
     return jsonOut(statoRiscaldamento());
+  }
+  // ?riscalda=1 — il cron del Worker Cloudflare, ogni 5 minuti: ricostruisce il payload (vedi riscalda).
+  if (e && e.parameter && e.parameter.riscalda) {
+    return riscalda();
   }
 
   var cache = CacheService.getScriptCache();
@@ -309,31 +313,33 @@ function doGet(e) {
   }
 }
 
-/* ---------- riscaldamento della cache (trigger a tempo) ----------------------
+/* ---------- riscaldamento della cache ----------------------------------------
    Perché esiste: con la sola cache on-demand, ogni volta che la copia scadeva il
-   costo della ricostruzione ricadeva su un visitatore a caso. Questo trigger la
+   costo della ricostruzione ricadeva su un visitatore a caso. Il riscaldamento la
    rinfresca da solo ogni 5 minuti, così la cache è sempre fresca E il container
    Apps Script resta caldo (a freddo l'avvio da solo vale ~10-20s). Nessun
    visitatore paga più la ricostruzione.
 
-   Installazione (UNA volta sola, dall'editor Apps Script → icona orologio
-   "Attivazioni" → Aggiungi attivazione):
-     funzione = riscaldaCache · origine = Basata sul tempo
-     tipo = Timer a minuti · intervallo = Ogni 5 minuti
-   NOTA: si installa a mano di proposito. Farlo da codice (ScriptApp.newTrigger)
-   richiederebbe lo scope script.scriptapp nel manifest, e finché l'utente che
-   pubblica non riautorizza la web app risponde "autorizzazione richiesta" —
-   cioè il sito resterebbe senza dati. Quattro click valgono meno di quel rischio.
+   CHI LO FA (dal 22 ott 2026): il cron del Worker Cloudflare ventotrieste-dati, che ai
+   minuti multipli di 5 chiama ?riscalda=1. Prima era un trigger a tempo di Apps Script
+   (riscaldaCache, ogni 5 minuti), ma i trigger ogni tanto falliscono PRIMA di arrivare
+   al nostro codice: "server error occurred while reading from storage. Error code
+   INTERNAL" in 0 secondi, oppure 60 secondi appesi e poi "server error occurred. Please
+   wait a bit and try again" (21-22 ott 2026, 3 volte in 14 ore, con riscaldaCache già
+   tutta in try/catch dal 29 set). Nessun try/catch li intercetta e ognuno finisce nella
+   mail "Summary of failures" ad Alberto. Le esecuzioni della web app invece non mandano
+   mail: se una chiamata va storta il Worker riprova (richieste a staffetta, poi il giro
+   dopo) e intanto il sito serve la copia di 5 minuti prima.
+   L'attivazione su riscaldaCache va quindi TOLTA (editor → Attivazioni). La funzione
+   resta come piano B, vedi sotto.
 
-   Quota: un account consumer ha 90 min/giorno di runtime dei trigger. A 5 minuti
-   sono 288 esecuzioni: a ~16s l'una si arriverebbe a ~79 min, troppo vicino al
-   limite (e finita la quota i trigger si fermano per il resto della giornata,
-   proprio il guasto che vogliamo evitare). Perciò teniamo il conto del tempo
-   consumato: superato BUDGET_TRIGGER_MS il trigger salta un'esecuzione su due
-   (cache vecchia al massimo 10 min invece di restare scoperti fino a mezzanotte).
-   Il conto si azzera a mezzanotte del Pacifico, come le quote Google. */
+   Accordo con Jaka (vetercek): mai più di una lettura ogni 5 minuti. Il ritmo lo dà
+   l'orologio del cron; RISCALDA_MIN_S impedisce comunque di ricostruire se l'ultima
+   ricostruzione è finita da meno di 4 minuti (l'ha appena fatta un visitatore, o il
+   trigger se è ancora installato, o una chiamata a mano). */
 var WARM_PROP = 'warm_stat';               // { g, ms, n, salti, skip }
-var BUDGET_TRIGGER_MS = 60 * 60 * 1000;    // 60 min/giorno: margine sui 90 di quota
+var BUDGET_TRIGGER_MS = 60 * 60 * 1000;    // 60 min/giorno: margine sui 90 di quota dei trigger
+var RISCALDA_MIN_S = 240;
 
 function leggiWarmStat() {
   var oggi = Utilities.formatDate(new Date(), 'America/Los_Angeles', 'yyyy-MM-dd');
@@ -346,35 +352,69 @@ function salvaWarmStat(st) {
   try { PropertiesService.getScriptProperties().setProperty(WARM_PROP, JSON.stringify(st)); } catch (e) {}
 }
 
-/* Il trigger non deve MAI lanciare. 28 set 2026, 02:30: "We're sorry, a server error
-   occurred" — errore transitorio di Google (esecuzione appesa 60s, poi la mail di
-   "failure"). L'unico punto plausibile da cui poteva uscire era LockService, che stava
-   FUORI dal try: la ricostruzione vera e propria era già protetta. Ora ogni chiamata
-   ai servizi Google è dentro try/catch: al peggio salta un giro e la cache resta di
-   5 minuti più vecchia, il giro successivo la rinfresca. L'errore resta nel log
-   delle esecuzioni (console.warn), senza mail. */
-function riscaldaCache() {
-  var st = null, lock = null, preso = false, t0 = Date.now();
+/* ?riscalda=1. Non lancia mai, risponde sempre JSON:
+   - copia più giovane di RISCALDA_MIN_S → la copia, senza leggere nessuna fonte;
+   - un'altra esecuzione sta già ricostruendo → { fatal }. Le richieste a staffetta del
+     Worker partono a 0, 3 e 7 s e la ricostruzione dura ~16 s: con l'errore il Worker
+     aspetta quella in corso invece di prendersi la copia vecchia, e scrive in KV il
+     payload nuovo subito invece che al minuto dopo;
+   - altrimenti ricostruisce e restituisce il payload nuovo.
+   Se la ricostruzione parte e poi lancia, restituisce la copia vecchia: per il Worker è
+   una risposta valida, la staffetta si ferma e vetercek non viene riletto. */
+function riscalda() {
+  var lock = null, preso = false, copia = null, t0 = 0;
   try {
-    st = leggiWarmStat();
+    var cache = CacheService.getScriptCache();
+    copia = leggiCacheDati(cache);
+    if (copia && copia.eta < RISCALDA_MIN_S) return rawJson(copia.json);
+    lock = LockService.getScriptLock();
+    preso = lock.tryLock(0);
+    if (!preso) return jsonOut({ fatal: 'ricostruzione in corso', updated: new Date().toISOString() });
+    copia = leggiCacheDati(cache) || copia;   // chi teneva il lock può averla appena rinfrescata
+    if (copia && copia.eta < RISCALDA_MIN_S) return rawJson(copia.json);
+    t0 = Date.now();
+    return rawJson(aggiornaCacheDati(cache));
+  } catch (err) {
+    console.warn('riscalda: ' + err);
+    if (t0 && copia) return rawJson(copia.json);
+    return jsonOut({ fatal: String(err), updated: new Date().toISOString() });
+  } finally {
+    if (preso) { try { lock.releaseLock(); } catch (ignore) {} }
+    if (t0) {
+      try {
+        var st = leggiWarmStat();
+        st.ms += Date.now() - t0;
+        st.n++;
+        salvaWarmStat(st);
+      } catch (ignore2) {}
+    }
+  }
+}
+
+/* Piano B, da NON installare finché c'è il Worker: il vecchio trigger. Se il Worker
+   dovesse sparire, si reinstalla UNA volta dall'editor Apps Script → icona orologio
+   "Attivazioni" → Aggiungi attivazione:
+     funzione = riscaldaCache · origine = Basata sul tempo
+     tipo = Timer a minuti · intervallo = Ogni 5 minuti
+   (tornano anche le mail di "failure" di sopra). A mano di proposito: da codice
+   (ScriptApp.newTrigger) servirebbe lo scope script.scriptapp nel manifest, e finché
+   l'utente che pubblica non riautorizza la web app risponde "autorizzazione richiesta".
+
+   Quota: un account consumer ha 90 min/giorno di runtime dei trigger (la web app non
+   ci rientra). A 5 minuti sono 288 esecuzioni: a ~16s l'una ~79 min, troppo vicino al
+   limite, e finita la quota i trigger si fermano fino a mezzanotte. Superato
+   BUDGET_TRIGGER_MS il trigger salta un'esecuzione su due (cache vecchia al massimo 10
+   min). Il conto si azzera a mezzanotte del Pacifico, come le quote Google. */
+function riscaldaCache() {
+  try {
+    var st = leggiWarmStat();
     if (st.ms >= BUDGET_TRIGGER_MS) {          // budget quasi esaurito: una sì e una no
       st.skip = !st.skip;
       if (st.skip) { st.salti++; salvaWarmStat(st); return; }
     }
-    lock = LockService.getScriptLock();
-    preso = lock.tryLock(0);
-    if (!preso) return;                        // una richiesta live sta già ricostruendo
-    t0 = Date.now();
-    aggiornaCacheDati(CacheService.getScriptCache());
+    riscalda();
   } catch (e) {
     console.warn('riscaldaCache: ' + e);
-  } finally {
-    if (preso) { try { lock.releaseLock(); } catch (ignore) {} }
-    if (st && preso) {
-      st.ms += Date.now() - t0;
-      st.n++;
-      salvaWarmStat(st);
-    }
   }
 }
 
@@ -396,8 +436,8 @@ function statoRiscaldamento() {
     cacheEtaSec: cache ? Math.round(cache.eta) : null,
     cacheScrive: cacheScrive,
     propEtaSec: prop ? Math.round(prop.eta) : null,
-    // niente ScriptApp qui (servirebbe uno scope in più): se il trigger gira,
-    // esecuzioni sale da solo. esecuzioni = 0 a giornata avviata = non installato.
+    // nomi storici: contano le ricostruzioni del riscaldamento (oggi ?riscalda=1 dal
+    // Worker Cloudflare). esecuzioni = 0 a giornata avviata = nessuno riscalda la cache.
     triggerAttivo: st.n > 0
   };
 }

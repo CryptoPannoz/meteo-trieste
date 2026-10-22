@@ -4,9 +4,9 @@ Web app che espone come JSON per `index.html`:
 - centraline (**Trieste molo**, **Monte Grisa**, **Muggia**, Istria…) da [vetercek.com](https://vetercek.com)
   (le pagine vetercek non mandano header CORS, quindi il browser non può leggerle direttamente).
   Da lug 2026 i **valori correnti** arrivano dal feed API ufficiale `xml/podatki.php`
-  (accordo con Jaka: **mai più spesso di 5 min** → è il trigger `riscaldaCache`, ogni 5 min
-  esatti, a dettare il ritmo delle letture; `DATI_FRESCO_S = 360` è volutamente più larga,
-  vedi il commento nel codice); le pagine
+  (accordo con Jaka: **mai più spesso di 5 min** → è il cron del Worker Cloudflare, con
+  `?riscalda=1` ai minuti multipli di 5, a dettare il ritmo delle letture; `DATI_FRESCO_S = 360`
+  è volutamente più larga, vedi il commento nel codice); le pagine
   HTML `/danes/` servono solo per lo storico (tabella + trend). Il feed dà anche le
   coordinate delle stazioni, esposte nel payload come `gps`.
 - **Trieste molo** ogni 15 minuti dall'API pubblica della [Protezione Civile FVG](https://monitor.protezionecivile.fvg.it/)
@@ -42,15 +42,37 @@ sullo **stesso URL**: la costante `PROXY` in `index.html` non va toccata. Un `cl
 *senza* `-i` crea invece un deployment nuovo con URL nuovo (da evitare).
 `clasp list-deployments` elenca gli ID.
 
-## Riscaldamento della cache (trigger — da installare a mano)
+## Riscaldamento della cache (`?riscalda=1`, dal Worker Cloudflare)
 
-Senza trigger, ogni volta che la copia in cache invecchia il costo della ricostruzione
+Senza riscaldamento, ogni volta che la copia in cache invecchia il costo della ricostruzione
 ricade su un visitatore a caso: fino a ~26s a container freddo. Chi torna sul sito non
 se ne accorge (il frontend ridisegna subito dalla cache in `localStorage`), chi arriva da
 un **browser nuovo** vede "Dati non disponibili".
 
-Installazione, una volta sola — editor Apps Script → icona ⏰ **Attivazioni** →
-**Aggiungi attivazione**:
+Dal **22 ott 2026** la ricostruzione la chiede il cron del Worker Cloudflare
+`ventotrieste-dati` (vedi [`cloudflare-worker/dati`](../cloudflare-worker/dati/ventotrieste-dati.js)):
+ai minuti multipli di 5 chiama il proxy con `?riscalda=1`, che ricostruisce il payload e lo
+restituisce, e il Worker lo scrive subito in KV. Il proxy non ricostruisce se l'ultima
+ricostruzione è finita da meno di 4 minuti (`RISCALDA_MIN_S`), così vetercek non viene mai
+letto più spesso di 5 minuti.
+
+**Perché non più il trigger Apps Script.** Fino al 22 ott lo faceva un trigger a tempo
+(`riscaldaCache`, ogni 5 minuti). I trigger però falliscono ogni tanto *dentro Google*,
+prima ancora di eseguire il codice: "We're sorry, a server error occurred while reading from
+storage. Error code INTERNAL" (in 0 secondi) o "We're sorry, a server error occurred. Please
+wait a bit and try again" (dopo 60 secondi appesi) — 3 volte tra il 21 e il 22 ott, con
+`riscaldaCache` già tutta in try/catch dal 29 set. Nessun try/catch li può intercettare, e
+ognuno arriva come mail "Summary of failures". Le esecuzioni della **web app** invece non
+mandano mail: se una chiamata va storta il Worker riprova al giro dopo e il sito intanto
+serve la copia di 5 minuti prima.
+
+➡️ **L'attivazione su `riscaldaCache` va tolta**: editor Apps Script → icona ⏰
+**Attivazioni** → sulla riga di `riscaldaCache` i tre puntini → **Elimina attivazione**.
+Finché resta, non fa danni (trova la cache appena rinfrescata dal Worker e non rilegge le
+fonti) ma può continuare a mandare mail.
+
+**Piano B** (solo se il Worker sparisse): reinstallare l'attivazione, una volta sola —
+**Aggiungi attivazione** con:
 
 | campo | valore |
 |---|---|
@@ -62,23 +84,21 @@ Installazione, una volta sola — editor Apps Script → icona ⏰ **Attivazioni
 Si installa a mano di proposito: farlo da codice (`ScriptApp.newTrigger`) richiederebbe
 lo scope `script.scriptapp` nel manifest, e finché l'utente che pubblica non riautorizza
 la web app risponde "autorizzazione richiesta" — cioè il sito resta senza dati.
+Il trigger ha un budget di 60 min/giorno (la quota consumer dei trigger è 90; la web app
+non ci rientra): superato quello salta un'esecuzione su due invece di esaurirla e lasciare
+il sito scoperto fino a mezzanotte.
 
-Il trigger ha un budget di 60 min/giorno (la quota consumer è 90): superato quello salta
-un'esecuzione su due invece di esaurirla e lasciare il sito scoperto fino a mezzanotte.
-
-Controllo: **`?diag=1`** sull'endpoint restituisce esecuzioni del giorno, minuti di
-trigger consumati ed età della cache in secondi.
+Controllo: **`?diag=1`** sull'endpoint restituisce le ricostruzioni del giorno, i minuti
+consumati ed età della cache in secondi (i nomi `minutiTrigger`/`triggerAttivo` sono
+storici: contano le ricostruzioni chieste dal Worker).
 
 ```json
 { "giorno":"2026-08-06", "esecuzioni":112, "saltate":0,
   "minutiTrigger":9.4, "budgetMinuti":60, "cacheEtaSec":47, "triggerAttivo":true }
 ```
 
-`triggerAttivo: false` a giornata avviata = il trigger non è installato.
-
-Il trigger non lancia mai eccezioni (v45): gli errori transitori di Google ("We're sorry, a
-server error occurred", 28 set 2026) finiscono nel log delle esecuzioni con `console.warn`,
-senza mail di "failure". Al peggio salta un giro e la cache resta di 5 minuti più vecchia.
+`triggerAttivo: false` a giornata avviata = nessuno sta riscaldando la cache (il cron del
+Worker non chiama il proxy).
 
 ## Latenza e frontend
 

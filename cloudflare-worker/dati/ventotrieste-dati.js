@@ -1,18 +1,20 @@
 /**
  * ventotrieste-dati — Cloudflare Worker (set 2026)
  *
- * Perché esiste: il proxy Apps Script prepara il payload ogni 5 minuti (trigger
- * riscaldaCache) ma lo SERVE male: anche a cache pronta risponde in 2-18 secondi e a
- * volte con una pagina HTML 404 dopo 11-39 secondi (misurato il 29 set 2026). Per chi
- * apre la pagina o preme "Aggiorna" voleva dire guardare dati vecchi per decine di
- * secondi.
+ * Perché esiste: il proxy Apps Script prepara il payload ogni 5 minuti ma lo SERVE
+ * male: anche a cache pronta risponde in 2-18 secondi e a volte con una pagina HTML 404
+ * dopo 11-39 secondi (misurato il 29 set 2026). Per chi apre la pagina o preme
+ * "Aggiorna" voleva dire guardare dati vecchi per decine di secondi.
  *
  * Come funziona:
  *  - cron ogni minuto: legge il payload dal proxy Apps Script (richieste a staffetta,
  *    come /dati-live.js) e, se è più recente di quello salvato, lo scrive in KV.
  *    Scrive solo quando cambia (~288 volte al giorno, il piano gratuito ne concede 1000).
- *    Il proxy serve la sua copia in cache: nessuna lettura in più su vetercek, il ritmo
- *    lo decide sempre il trigger Apps Script (accordo con Jaka: mai sotto i 5 minuti).
+ *    Ai minuti multipli di 5 lo chiede con ?riscalda=1: è questo cron, dal 22 ott 2026, a
+ *    far ricostruire il payload al proxy (prima lo faceva il trigger Apps Script
+ *    riscaldaCache, che ogni tanto falliva dentro Google e mandava mail di "failure").
+ *    Negli altri minuti il proxy serve la sua copia in cache: nessuna lettura in più su
+ *    vetercek (accordo con Jaka: mai sotto i 5 minuti).
  *  - GET /: risponde con il payload da KV in pochi millisecondi (misurato 0,13-0,22s).
  *    NB: Barcola NON si può rileggere da qui: Windguru risponde 403 "forbidden" alle
  *    richieste che partono da Cloudflare (provato 29 set 2026 con vari Referer/UA).
@@ -82,9 +84,10 @@ function leggiProxy(query, ok) {
 }
 
 /* cron: copia il payload in KV se è più recente di quello salvato; quando cambia,
-   aggiorna anche la registrazione di Monte Grisa e, tra le 6 e le 19:30, il registro di oggi */
-async function aggiorna(env) {
-  const d = await leggiProxy();
+   aggiorna anche la registrazione di Monte Grisa e, tra le 6 e le 19:30, il registro di oggi.
+   riscalda: chiede al proxy di ricostruire il payload (vedi riscalda in apps-script/Code.js) */
+async function aggiorna(env, riscalda) {
+  const d = await leggiProxy(riscalda ? 'riscalda=1' : '');
   const salvato = await env.DATI.getWithMetadata(CHIAVE, { type: 'text' });
   const prima = salvato && salvato.metadata ? Date.parse(salvato.metadata.updated) : 0;
   if (Date.parse(d.updated) <= prima) return 'invariato';
@@ -620,7 +623,8 @@ function json(obj, extra) {
 export default {
   async scheduled(event, env, ctx) {
     ctx.waitUntil((async () => {
-      const esito = await aggiorna(env).catch(err => { console.warn('aggiorna: ' + err); return 'errore'; });
+      const riscalda = new Date(event.scheduledTime).getUTCMinutes() % 5 === 0;
+      const esito = await aggiorna(env, riscalda).catch(err => { console.warn('aggiorna: ' + err); return 'errore'; });
       // un passo del riepilogo solo a minuti pari e quando il payload non è cambiato (cioè
       // senza il registro di oggi da ricostruire): così si resta sotto le 50 sottorichieste;
       // a minuti dispari, alle stesse condizioni, il backup su Neon
