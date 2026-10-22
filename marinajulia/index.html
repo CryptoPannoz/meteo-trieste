@@ -923,7 +923,7 @@
   <!-- Mappa del vento: qui la vista è centrata su Marina Julia, quindi i punti
        del lato Trieste (boa Mambo, Barcola, Muggia) e Žusterna non si disegnano. -->
   <script>window.__mappaEscludi = ["mambo", "barcola", "trieste", "muggia", "zusterna"];</script>
-  <script src="/mappa-golfo.js?v=20261020b" defer></script>
+  <script src="/mappa-golfo.js?v=20261022" defer></script>
   <script src="/spinta-bora.js?v=20261020"></script>
 </head>
 <body>
@@ -1611,15 +1611,21 @@
 
     /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
     const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
-    const NOMI_VENTI = ["Tramontana","Bora","Levante","Scirocco","Ostro","Libeccio","Ponente","Maestrale"];
     function gradiInDirezione(deg) {
       if (typeof deg !== "number" || isNaN(deg)) return "–";
       return PUNTI_CARDINALI[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
     }
-    function nomeVento(deg) {
-      if (typeof deg !== "number" || isNaN(deg)) return "";
-      const normalizzati = ((deg % 360) + 360) % 360;
-      return NOMI_VENTI[Math.round(normalizzati / 45) % 8];
+    /* Vento nel formato dei velisti: "5-18 kt 063° NE" = media-raffica, gradi a 3 cifre, punto
+       cardinale (22 ott 2026, Alberto: niente nomi dei venti in tutta la web app — a Trieste la
+       bora arriva spesso da ESE e lo strumento la chiamava "scirocco"). */
+    function gradi3(deg) {
+      return String(Math.round(((deg % 360) + 360) % 360) % 360).padStart(3, "0") + "°";
+    }
+    function ventoTesto(media, raffica, deg) {
+      const m = parseFloat(media), r = parseFloat(raffica), parti = [];
+      if (!isNaN(m)) parti.push(Math.round(m) + (!isNaN(r) && Math.round(r) > Math.round(m) ? "-" + Math.round(r) : "") + " kt");
+      if (typeof deg === "number" && !isNaN(deg)) parti.push(gradi3(deg) + " " + gradiInDirezione(deg));
+      return parti.join(" ");
     }
     function windArrowHtml(deg, colore) {
       if (deg == null || isNaN(deg)) return "";
@@ -1702,10 +1708,9 @@
         }
       }
       const ver = verdetto(kt);
-      const ventoNome = nomeVento(dir);
-      const ventoBadge = ventoNome
+      const ventoBadge = (typeof dir === "number" && !isNaN(dir))
         ? '<span class="surf-wind-badge">' + windArrowHtml(dir, "") +
-          '<span>' + gradiInDirezione(dir) + ' · ' + ventoNome + '</span></span>'
+          '<span style="text-transform:none;letter-spacing:.02em">' + ventoTesto(kt, gust, dir) + '</span></span>'
         : "";
       verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + ventoBadge;
       verd.style.color = ver.bg;
@@ -1782,15 +1787,12 @@
       const ghost = twsStr.replace(/[0-9]/g, "8");   // segmenti "spenti" allineati alla cifra
       const cTws = coloreIntensita(tws);
       const arrow = windArrowHtml(dirDeg, cTws);
-      const vento = nomeVento(dirDeg);
-      const gustStr = (gust != null && gust !== "") ? gust : "–";
       return '<div class="pannello">' +
-        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' + escHtml(dirTxt || "–") + '</span>' +
-          (dirDeg != null ? ' <span class="deg">' + Math.round(dirDeg) + '°</span>' : '') + '</span>' +
-          (vento ? '<span class="wind-name-badge">' + vento + '</span>' : '') + '</div>' +
+        '<div class="tws-dir"><span class="wind-direction-main">' + arrow + '<span>' +
+          (dirDeg != null ? gradi3(dirDeg) + " " : "") + escHtml(dirTxt || "–") + '</span></span></div>' +
         '<div class="tws-hero"><span class="lcd"><span class="lcd-ghost">' + ghost + '</span>' +
           '<span class="lcd-lit">' + escHtml(twsStr) + '</span></span><span class="u">kt</span></div>' +
-        '<div class="tws-raffica">raffica <b>' + escHtml(gustStr) + '</b> kt</div>' +
+        '<div class="tws-raffica"><b>' + escHtml(ventoTesto(tws, gust) || "–") + '</b></div>' +
       '</div>';
     }
 

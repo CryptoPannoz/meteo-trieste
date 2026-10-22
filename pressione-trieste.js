@@ -1,8 +1,10 @@
-/* pressione-trieste.js — badge "Pressione in aumento / stabile / in calo" (22 ott 2026).
+/* pressione-trieste.js — badge del barometro "↑ +2,0 hPa" (22 ott 2026).
    Alberto: "un amico dice che il vento è più consistente quando la pressione è in calo: trova la
    pressione di Trieste e metti un badge in alto". Il badge sta nel surfometro della home, accanto
    a quello del vento, e porta all'articolo /guida/pressione/ (che racconta cosa dicono i dati: a
    Trieste, con la bora, il vento forte arriva con la pressione in AUMENTO).
+   Niente parole "pressione in aumento/in calo" (Alberto, stesso giorno): in barca "pressione"
+   vuol dire vento che rinforza, quindi era fuorviante. Solo freccia su/giù e i hPa.
 
    Dati: Protezione Civile FVG, stazione 212 Trieste molo (la stessa del vento di Trieste molo),
    sensore 17 = pressione in hPa, un valore ogni 15 minuti, orari UTC. L'API ha CORS aperto: la
@@ -24,8 +26,8 @@
   var SOGLIA = 1.0;          // hPa in 3 ore
   var ETA_MAX = 45;          // minuti
   var GUIDA = "/guida/pressione/";
-  var NOMI = { su: "Pressione in aumento", stabile: "Pressione stabile", giu: "Pressione in calo" };
-  var GRADI = { su: -45, stabile: 0, giu: 45 };   // freccia →, ruotata verso l'alto o verso il basso
+  var DETTO = { su: "è salita di", stabile: "è cambiata di", giu: "è scesa di" };   // solo nel titolo del badge
+  var GRADI = { su: -90, stabile: 0, giu: 90 };   // freccia →, girata in su o in giù
   var stato = null, inCorso = null;
 
   function utc(ms) { return new Date(ms).toISOString().slice(0, 19).replace("T", " "); }
@@ -56,13 +58,13 @@
   function badge() {
     if (!stato) return "";
     var s = stato;
-    var dettaglio = segno(s.delta) + num(s.delta, 1) + " hPa in 3 h";
-    var titolo = NOMI[s.classe] + " a Trieste molo: " + num(s.p, 1) + " hPa, " + dettaglio + " (agg. " + ora(s.t) +
-      "). Fonte: Protezione Civile della Regione Friuli Venezia Giulia, dati elaborati. Tocca per leggere cosa significa per il vento.";
+    var valore = segno(s.delta) + num(s.delta, 1) + " hPa";
+    var titolo = "Barometro a Trieste molo: " + num(s.p, 1) + " hPa; nelle ultime 3 ore " + DETTO[s.classe] + " " + num(s.delta, 1) +
+      " hPa (agg. " + ora(s.t) + "). Fonte: Protezione Civile della Regione Friuli Venezia Giulia, dati elaborati. Tocca per leggere cosa significa per il vento.";
     return '<a class="pressione-badge pb-' + s.classe + '" href="' + GUIDA + '" title="' + titolo + '" aria-label="' + titolo + '">' +
       '<svg class="pb-freccia" viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(' + GRADI[s.classe] + 'deg)">' +
       '<path d="M4 12h15m-5-5 5 5-5 5"/></svg>' +
-      "<span>" + NOMI[s.classe] + '</span><span class="pb-num">' + dettaglio + "</span></a>";
+      "<span>" + valore + '</span><span class="pb-num">in 3 h</span></a>';
   }
 
   // riscrive i badge già in pagina; se il surfometro è stato disegnato prima che arrivasse il

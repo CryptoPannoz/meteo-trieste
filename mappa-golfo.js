@@ -312,10 +312,16 @@
     }).join("");
   }
 
+  // vento nel formato dei velisti, come in tutto il sito: "5-18 kt 063° NE" (22 ott 2026)
   function direzioneCardinale(deg) {
-    if (deg == null || isNaN(deg)) return "direzione non disponibile";
+    if (deg == null || isNaN(deg)) return "";
     var nomi = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"];
-    return nomi[Math.round((((deg % 360) + 360) % 360) / 22.5) % 16] + " · " + Math.round(deg) + "°";
+    var d = Math.round(((deg % 360) + 360) % 360) % 360;
+    return String(d).padStart(3, "0") + "° " + nomi[Math.round(d / 22.5) % 16];
+  }
+  function ventoTesto(v) {
+    var kt = Math.round(v.kt), gu = Math.round(v.raffica);
+    return [kt + (!isNaN(v.raffica) && gu > kt ? "-" + gu : "") + " kt", direzioneCardinale(v.deg)].filter(Boolean).join(" ");
   }
 
   function chiudiDettaglio() {
@@ -332,8 +338,6 @@
     stazioneSelezionata = st.id;
 
     var colore = classeColore(v.kt);
-    var kt = Math.round(v.kt), gu = Math.round(v.raffica);
-    var valoreRaffica = !isNaN(v.raffica) && gu > kt ? " · raffica " + gu + " kt" : "";
     htmlDettaglio.style.setProperty("--mappa-accent", colore);
     // dove sta il simbolo sullo schermo (in percentuale della mappa): il riquadro va dall'altra parte
     var s = simboli[st.id], r = svg.getBoundingClientRect();
@@ -350,8 +354,8 @@
       htmlDettaglio.style.right = fx > 0.5 ? "auto" : "12px";
     }
     htmlDettaglio.querySelector("strong").textContent = st.nome;
-    htmlDettaglio.querySelector(".mappa-popover-valore").textContent = kt + " kt · " + fasciaVento(v.kt).nome + valoreRaffica;
-    htmlDettaglio.querySelector(".mappa-popover-meta").textContent = "Da " + direzioneCardinale(v.deg) + (v.ora ? " · agg. " + v.ora : "");
+    htmlDettaglio.querySelector(".mappa-popover-valore").textContent = ventoTesto(v);
+    htmlDettaglio.querySelector(".mappa-popover-meta").textContent = fasciaVento(v.kt).nome + (v.ora ? " · agg. " + v.ora : "");
     htmlDettaglio.hidden = false;
   }
 
@@ -399,11 +403,8 @@
     var x = 0, y = 0;
     var g = el("g", { "class": "mg-stazione", role: "button", tabindex: "0", "data-stazione": st.id });
     var colore = classeColore(v.kt);
-    var kt = Math.round(v.kt), gu = Math.round(v.raffica);
-    var intensita = kt + (!isNaN(v.raffica) && gu > kt ? "–" + gu : "") + " kt";
-    var titolo = st.nome + ": " + intensita +
-      (v.deg != null ? " da " + Math.round(v.deg) + "°" : "") +
-      (v.ora ? " · agg. " + v.ora : "");
+    var kt = Math.round(v.kt);
+    var titolo = st.nome + ": " + ventoTesto(v) + (v.ora ? " · agg. " + v.ora : "");
     g.setAttribute("aria-label", titolo + ". Apri dettaglio");
     g.appendChild(el("circle", { cx: x, cy: y, r: 22, fill: "transparent", "pointer-events": "all" }));
     g.appendChild(el("circle", { cx: x, cy: y, r: 16, fill: colore, "fill-opacity": .07, stroke: colore,
