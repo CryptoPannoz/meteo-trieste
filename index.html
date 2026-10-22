@@ -1270,6 +1270,25 @@
       white-space: nowrap;
     }
     .surf-wind-badge { margin-right: .45rem; }   /* spazio tra i due badge: a capo restano allineati a sinistra */
+    .surf-parola { display: block; }
+    /* Telefono: Surfometro e Spinta della Bora nella prima schermata, senza scorrere (22 ott 2026,
+       Alberto: "compatta tutto"). Misurato su 390×844: la Spinta finiva a 988 px, la barra in basso
+       inizia a 772. Solo la home: le pagine spot restano com'erano. */
+    @media (max-width: 700px) {
+      html.vt-compatto .site-page-title + .meteo-phase--nowcast { display: none; }   /* "Ora" c'è già nella barra in basso */
+      html.vt-compatto #surfometroCard #surfTitolo { margin-bottom: .45rem; }
+      html.vt-compatto #surfometroCard .surf2-verdetto { margin-bottom: .65rem; }
+      html.vt-compatto #surfometroCard .surf-wind-badge,
+      html.vt-compatto #surfometroCard .pressione-badge { margin-top: .45rem; }
+      html.vt-compatto #surfometroCard .pressione-badge .pb-num { display: none; }   /* i due badge su una riga; il numero è nell'articolo */
+      html.vt-compatto #surfometroCard .meter { margin-top: 0; padding-top: .55rem; padding-bottom: .7rem; }
+      html.vt-compatto #surfometroCard #meterPointer { margin-bottom: .5rem; }
+      html.vt-compatto #surfometroCard .surf-note { margin-top: .35rem; }
+      html.vt-compatto #barcolaLive h2 { margin-bottom: .35rem; }
+      html.vt-compatto #barcolaLive .sb { margin-top: 0; }
+      html.vt-compatto #barcolaLive .sb-legenda { display: none; }
+      html.vt-compatto #barcolaLive .sb-info { min-height: 0; padding-top: .3rem; padding-bottom: .3rem; }
+    }
     .pressione-badge:hover, .pressione-badge:focus-visible { border-color: var(--signal); color: var(--ink); }
     .pressione-badge .pb-num { font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--slate-2); }
     .pressione-badge .pb-freccia { width: 1.05rem; height: 1.05rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -1584,7 +1603,7 @@
   <link rel="stylesheet" href="./footer-widgets.css?v=20261020" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261020b" defer></script>
-  <script src="./spinta-bora.js?v=20261020c"></script>
+  <script src="./spinta-bora.js?v=20261022"></script>
   <script src="/pressione-trieste.js?v=20261022"></script>
 </head>
 <body>
@@ -2482,16 +2501,15 @@
       }
       const usaParola = ktParola != null && !isNaN(ktParola);
       const ver = verdetto(usaParola ? ktParola : kt);
-      // la parola sale grazie alla raffica: lo si dice, in piccolo
-      const notaParola = usaParola && verdetto(kt).i < ver.i
-        ? '<small class="surf-base">dalla raffica: la centralina di Barcola è al riparo e il suo vento medio sottostima quello in acqua</small>' : "";
       const ventoNome = nomeVento(dir);
       const ventoBadge = ventoNome
         ? '<span class="surf-wind-badge">' + windArrowHtml(dir, "") +
           '<span>' + gradiInDirezione(dir) + ' · ' + ventoNome + '</span></span>'
         : "";
-      // accanto al vento, la tendenza della pressione a Trieste molo (/pressione-trieste.js)
-      verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + notaParola + ventoBadge + (window.VTPressione ? VTPressione.badge() : "");
+      // solo la parola (22 ott 2026, Alberto: via il motto e la nota "dalla raffica", che resta
+      // spiegata nella tendina "Fonte dati"); sotto il vento e la tendenza della pressione a
+      // Trieste molo (/pressione-trieste.js)
+      verd.innerHTML = '<span class="surf-parola">' + ver.txt + "</span>" + ventoBadge + (window.VTPressione ? VTPressione.badge() : "");
       verd.style.color = ver.bg;
       // La raffica resta sempre leggibile. Se è vicina al medio, i marker si fondono
       // in un'unica linea bicolore per evitare sovrapposizioni illeggibili.

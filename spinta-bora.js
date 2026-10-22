@@ -34,7 +34,7 @@
     corte: ["šibka", "nastanek", "občutna", "močna"],
     sale: "narašča", cala: "upada", stabile: "stabilno",
     soglia: "prag burje", picco: "vrh", sottoSoglia: "pod pragom", resta: "ostaja nad pragom naslednjih 24 ur",
-    niente: "burja ni napovedana v naslednjih 24 urah", quasi: "narašča, a ostaja pod pragom",
+    niente: "burja ni napovedana v naslednjih 24\u00a0urah", quasi: "narašča, a ostaja pod pragom",
     verso: "okoli", domani: "jutri",
     prima: "zadnjih 12 h", ora: "zdaj", dopo: "naslednjih 36 h · napoved",
     previsione: "napoved",
@@ -68,8 +68,8 @@
     sotto: ["pressione più alta sul golfo", "sotto la soglia della bora", "", "", ""],
     corte: ["debole", "genesi", "consistente", "forte"],
     sale: "in aumento", cala: "in calo", stabile: "stabile",
-    soglia: "soglia bora", picco: "picco", sottoSoglia: "sotto soglia", resta: "resta sopra soglia nelle prossime 24 h",
-    niente: "nessuna bora prevista nelle prossime 24 h", quasi: "in aumento, ma sotto la soglia",
+    soglia: "soglia bora", picco: "picco", sottoSoglia: "sotto soglia", resta: "resta sopra soglia nelle prossime 24\u00a0h",
+    niente: "nessuna bora prevista nelle prossime 24\u00a0h", quasi: "in aumento, ma sotto la soglia",
     verso: "verso le", domani: "domani",
     prima: "ultime 12 h", ora: "ora", dopo: "prossime 36 h · previsione",
     previsione: "previsione",
@@ -281,7 +281,9 @@
   var NS = "http://www.w3.org/2000/svg";
   function disegna(rif, d) {
     var W = Math.max(240, Math.round(rif.grafico.clientWidth || 320));
-    var H = 132, top = 8, basso = 18, sx = 22, dx = 6;
+    // in home sul telefono più basso (22 ott 2026): Surfometro e Spinta stanno nella prima schermata
+    var corto = rif.box.id === "barcolaLive" && window.matchMedia && window.matchMedia("(max-width: 700px)").matches;
+    var H = corto ? 100 : 132, top = 8, basso = 18, sx = 22, dx = 6;
     var n = d.serie.length;
     var valori = d.serie.filter(function (v) { return v != null; }).concat([d.ora]);
     var yMax = Math.max(10, Math.ceil(Math.max.apply(null, valori) + 1));
