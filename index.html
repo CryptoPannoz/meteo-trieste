@@ -1602,7 +1602,7 @@
   <link rel="stylesheet" href="./footer-widgets.css?v=20261020" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261022" defer></script>
-  <script src="./spinta-bora.js?v=20261022"></script>
+  <script src="./spinta-bora.js?v=20261022b"></script>
   <script src="/pressione-trieste.js?v=20261022b"></script>
 </head>
 <body>
@@ -2670,6 +2670,10 @@
       if (!(m.ts instanceof Date) || isNaN(m.ts) || (Date.now() - m.ts.getTime()) / 60000 > MAMBO_STALE_MIN) return null;
       return m;
     }
+    // il vento del surfometro va anche alla Spinta della Bora: se lì c'è bora, il box non dice "niente bora" (22 ott 2026)
+    function ventoPerSpinta(nome, kt, gust, dir) {
+      if (window.SpintaBora && window.SpintaBora.vento) window.SpintaBora.vento(nome, kt, gust, dir);
+    }
     function aggiornaSurfometroAuto(data) {
       const titolo = document.getElementById("surfTitolo");
       const fonte  = document.getElementById("surfFonte");
@@ -2682,6 +2686,7 @@
         if (sum)    sum.textContent = "🕒 Fonte: Barcola" + (bTws.ts ? " · agg. " + oraBreve(bTws.ts) : "");
         if (fonte)  fonte.innerHTML = testoUltimoAgg(bTws.ts);
         aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir, null, BARCOLA_PAROLA_SU_RAFFICA ? bTws.gust : null);
+        ventoPerSpinta("Barcola", bTws.avg, bTws.gust, bTws.dir);
         return;
       }
       // Barcola offline → passa a Monte Grisa
@@ -2693,6 +2698,7 @@
         if (fonte)  fonte.innerHTML = "⚠️ Barcola offline o non aggiornata — surfometro calcolato sui dati di <strong>Monte Grisa</strong>."
           + testoUltimoAgg(gTws.ts);
         aggiornaSurfometro(gTws.avg, gTws.gust, gTws.dir);
+        ventoPerSpinta("Monte Grisa", gTws.avg, gTws.gust, gTws.dir);
         return;
       }
       // anche Monte Grisa ferma → boa MAMBO1 (terzo e ultimo backup)
@@ -2704,6 +2710,7 @@
         if (fonte)  fonte.innerHTML = "⚠️ Centraline di Barcola e Monte Grisa ferme — surfometro calcolato sulla boa <strong>MAMBO1</strong> (OGS), davanti al castello di Miramare (<a href=\"https://maps.google.com/?q=45.698333,13.700000\" target=\"_blank\" rel=\"noopener\">📍 posizione</a>). La boa è oraria: meno reattiva delle centraline."
           + testoUltimoAgg(mTws.ts);
         aggiornaSurfometro(mTws.avg, mTws.gust, mTws.dir);
+        ventoPerSpinta("Boa MAMBO1", mTws.avg, mTws.gust, mTws.dir);
       } else {                                  // nessuna fonte aggiornata → offline
         const ultimo = ultimoDatoNoto(data);
         if (card)   card.classList.add("surf-offline");
@@ -2712,6 +2719,7 @@
         if (fonte)  fonte.innerHTML = "⚠️ Centraline di <strong>Barcola</strong> e <strong>Monte Grisa</strong> e boa <strong>MAMBO1</strong> offline: nessun dato aggiornato, il surfometro riprende da solo appena una fonte torna in linea."
           + (ultimo ? '<span class="surf-agg">🕒 Ultimo dato ricevuto: ' + ultimo + '</span>' : "");
         aggiornaSurfometro(null, null, null, 'Offline<small>centraline non in linea</small>');
+        ventoPerSpinta(null);
       }
     }
 

@@ -13,7 +13,9 @@
 
    Dati: Open-Meteo, UNA richiesta per i due punti: "current" (passo 15 min, stima di modello
    per adesso) + serie oraria 12 h indietro / 36 h avanti. Non sono misure di stazione: la
-   finestra lo dice. Con la serie si legge anche la tendenza ("in aumento, soglia verso le 21").
+   finestra lo dice. Con la serie si legge anche cosa succede dopo ("la spinta supera la soglia
+   domani verso le 06"). Dal 22 ott 2026 la scritta grande guarda anche il vento misurato a Trieste
+   molo (vedi "la situazione" più sotto).
 
    Uso: le pagine chiamano SpintaBora.aggiorna() (la loro caricaDeltaBora delega qui).
    Riempie #barcolaLive (home) e .bora-delta (pagine spot): il titolo resta quello della pagina
@@ -32,9 +34,12 @@
     fasce: ["Ni potiska", "Šibek potisk", "Nastanek burje", "Občutna burja", "Močna burja"],
     sotto: ["tlak je višji nad zalivom", "pod pragom burje", "", "", ""],
     corte: ["šibka", "nastanek", "občutna", "močna"],
-    sale: "narašča", cala: "upada", stabile: "stabilno",
-    soglia: "prag burje", picco: "vrh", sottoSoglia: "pod pragom", resta: "ostaja nad pragom naslednjih 24 ur",
-    niente: "burja ni napovedana v naslednjih 24\u00a0urah", quasi: "narašča, a ostaja pod pragom",
+    sit: { corso: "Burja piha", arrivo: "Burja prihaja", possibile: "Burja možna", niente: "Ni burje",
+      probabile: "Burja verjetna", improbabile: "Burja malo verjetna" },
+    molo: "Trst, pomol",
+    altaFino: "Potisk visok do", altaResta: "Potisk visok naslednjih 24\u00a0ur", supera: "Potisk preseže prag",
+    moderataCorso: "Potisk pod pragom: burja navadno ostane zmerna",
+    moderata: "Potisk blizu praga: burja možna, navadno šibka", bassa: "Potisk nizek naslednjih 24\u00a0ur",
     verso: "okoli", domani: "jutri",
     prima: "zadnjih 12 h", ora: "zdaj", dopo: "naslednjih 36 h · napoved",
     previsione: "napoved",
@@ -46,15 +51,17 @@
     modal:
       "<p>To je razlika zračnega tlaka na morski gladini med <strong>Mariborom</strong> (onkraj planote) in <strong>Trstom</strong>. Ko je na drugi strani Krasa tlak višji, se hladen in težek zrak prelije proti morju: to je burja. <strong>Višja kot je številka, močneje potiska burja.</strong></p>",
     legenda: [
-      ["pod 3,5", "Šibek potisk", "ne zadošča za burjo: če piha, je navadno drug veter (zmorec, jugo, maestral)."],
+      ["pod 3,5", "Šibek potisk", "pod 1,5 burje skoraj nikoli ni; med 2,5 in 3,5 je lahko zmerna burja (približno ena ura od petih)."],
       ["3,5–5", "Nastanek burje", "prag je presežen: burja se vklaplja, prvi sunki s SV."],
       ["5–8", "Občutna burja", "burja je vzpostavljena, sunki so odločni."],
       ["nad 8", "Močna burja", "močni sunki, previdnost na morju in v mestu."]
     ],
     grafico: "<p><strong>Graf:</strong> polna črta je zadnjih 12 ur, črtkana napoved za naslednjih 36 ur, navpična črta je zdaj. Dotakni se grafa za uro in vrednost.</p>",
-    note: "<p class=\"guida-meta\">Pragovi so okvirni: šteje tudi, koliko hladnega zraka je v višinah. Tlak napove, postaje potrdijo: beri ga skupaj s surfometrom.</p>" +
+    note: "<p><strong>Napis zgoraj</strong> združuje dve stvari: veter, <strong>izmerjen zdaj</strong> na postaji surfometra in na pomolu v Trstu (če piha s severovzhoda, med 20° in 100°, in ima vsaj 8 vozlov, je burja), in potisk, ki pove, kaj se lahko zgodi v naslednjih 24 urah.</p>" +
+      "<p class=\"guida-meta\">Kaj kažejo podatki (1. september – 22. oktober 2026, pomol v Trstu): pri potisku pod 1,5 hPa burje nad 12 vozlov skoraj nikoli ni; med 2,5 in 3,5 je približno eno uro od petih; nad 3,5 skoraj vsako drugo uro. Zato nizek potisk ne izključuje burje: šteje izmerjeni veter.</p>" +
+      "<p class=\"guida-meta\">Pragovi so okvirni: šteje tudi, koliko hladnega zraka je v višinah. Tlak napove, postaje potrdijo: beri ga skupaj s surfometrom.</p>" +
       "<p class=\"guida-meta\"><strong>Graf burje</strong> v napovedih (profiwetter.ch, model DWD) kaže isto razliko za 6 dni, a z obratnim predznakom (Trst − Maribor): tam je burja pod ničlo, prag je črtkana črta pri −4.</p>",
-    fonte: "Vir: <a href=\"https://open-meteo.com\" target=\"_blank\" rel=\"noopener\">Open-Meteo</a>, tlak na morski gladini (MSLP), ocena modela vsakih 15 minut, ne meritev postaje",
+    fonte: "Vir potiska: <a href=\"https://open-meteo.com\" target=\"_blank\" rel=\"noopener\">Open-Meteo</a>, tlak na morski gladini (MSLP), ocena modela vsakih 15 minut, ne meritev postaje · Izmerjeni veter, pomol v Trstu: Fonte: <a href=\"https://monitor.protezionecivile.fvg.it/\" target=\"_blank\" rel=\"noopener\">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.it\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a> · obdelani podatki",
     differenza: "Potisk = Maribor − Trst",
     guida: "", chiudi: "Zapri",
     mappaTitolo: "Ni burje · veter zdaj", mappaBadge: "ZALIV · ISTRA",
@@ -67,9 +74,12 @@
     fasce: ["Nessuna spinta", "Spinta debole", "Genesi della Bora", "Bora consistente", "Bora forte"],
     sotto: ["pressione più alta sul golfo", "sotto la soglia della bora", "", "", ""],
     corte: ["debole", "genesi", "consistente", "forte"],
-    sale: "in aumento", cala: "in calo", stabile: "stabile",
-    soglia: "soglia bora", picco: "picco", sottoSoglia: "sotto soglia", resta: "resta sopra soglia nelle prossime 24\u00a0h",
-    niente: "nessuna bora prevista nelle prossime 24\u00a0h", quasi: "in aumento, ma sotto la soglia",
+    sit: { corso: "Bora in corso", arrivo: "Bora in arrivo", possibile: "Bora possibile", niente: "Niente bora",
+      probabile: "Bora probabile", improbabile: "Bora improbabile" },
+    molo: "Trieste molo",
+    altaFino: "Spinta alta fino", altaResta: "Spinta alta per le prossime 24\u00a0h", supera: "La spinta supera la soglia",
+    moderataCorso: "Spinta sotto la soglia: di solito la bora resta moderata",
+    moderata: "Spinta vicina alla soglia: bora possibile, di solito debole", bassa: "Spinta bassa per le prossime 24\u00a0h",
     verso: "verso le", domani: "domani",
     prima: "ultime 12 h", ora: "ora", dopo: "prossime 36 h · previsione",
     previsione: "previsione",
@@ -81,15 +91,17 @@
     modal:
       "<p>È la differenza di pressione al livello del mare tra <strong>Maribor</strong> (oltre l'altipiano, in Slovenia) e <strong>Trieste</strong>. Quando dall'altra parte del Carso c'è più pressione, l'aria fredda e pesante trabocca verso il mare: è la bora. <strong>Più il numero è alto, più la bora spinge.</strong></p>",
     legenda: [
-      ["sotto 3,5", "Spinta debole", "non basta per la bora: se c'è vento, di solito è un altro (brezza, scirocco, maestrale)."],
+      ["sotto 3,5", "Spinta debole", "sotto 1,5 la bora non c'è quasi mai; tra 2,5 e 3,5 può esserci bora moderata (circa un'ora su cinque)."],
       ["3,5–5", "Genesi della Bora", "soglia superata: la bora si sta innescando, arrivano i primi rinforzi da NE."],
       ["5–8", "Bora consistente", "bora ben stabilita e raffiche decise: condizioni impegnative in acqua."],
       ["oltre 8", "Bora forte", "raffiche violente: attenzione in mare e in città."]
     ],
     grafico: "<p><strong>Il grafico:</strong> la linea piena sono le ultime 12 ore, quella tratteggiata la previsione delle prossime 36; la riga verticale è adesso. Tocca il grafico per leggere ora e valore.</p>",
-    note: "<p class=\"guida-meta\">Le soglie sono indicative: conta anche quanta aria fredda c'è in quota. La pressione anticipa, le centraline confermano: leggi questo box insieme al surfometro.</p>" +
+    note: "<p><strong>La scritta in alto</strong> unisce due cose: il vento <strong>misurato adesso</strong> dalla centralina del surfometro e a Trieste molo (se arriva da nord-est, tra 20° e 100°, ed è almeno 8 nodi, è bora) e la spinta, che dice cosa può succedere nelle prossime 24 ore.</p>" +
+      "<p class=\"guida-meta\">Cosa dicono i dati (1 settembre – 22 ottobre 2026, Trieste molo): con la spinta sotto 1,5 hPa la bora sopra i 12 nodi non c'è quasi mai; tra 2,5 e 3,5 c'è circa un'ora su cinque; sopra 3,5 quasi un'ora su due. Per questo una spinta bassa non basta a escludere la bora: conta il vento misurato.</p>" +
+      "<p class=\"guida-meta\">Le soglie sono indicative: conta anche quanta aria fredda c'è in quota. La pressione anticipa, le centraline confermano: leggi questo box insieme al surfometro.</p>" +
       "<p class=\"guida-meta\">Il <strong>Grafico della Bora</strong> nelle Previsioni (profiwetter.ch, modello DWD) mostra la stessa differenza per 6 giorni, ma col segno opposto (Trieste − Maribor): lì la bora è sotto lo zero e la soglia è la riga tratteggiata a −4.</p>",
-    fonte: "Fonte: <a href=\"https://open-meteo.com\" target=\"_blank\" rel=\"noopener\">Open-Meteo</a>, pressione al livello del mare (MSLP), stima di modello aggiornata ogni 15 minuti, non una misura di stazione",
+    fonte: "Spinta: <a href=\"https://open-meteo.com\" target=\"_blank\" rel=\"noopener\">Open-Meteo</a>, pressione al livello del mare (MSLP), stima di modello aggiornata ogni 15 minuti, non una misura di stazione · Vento misurato a Trieste molo: Fonte: <a href=\"https://monitor.protezionecivile.fvg.it/\" target=\"_blank\" rel=\"noopener\">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.it\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a> · dati elaborati",
     differenza: "Spinta = Maribor − Trieste",
     guida: "<p class=\"sb-guida-link\"><a href=\"/guida/spinta-bora/\">📖 Approfondisci nella guida →</a></p>", chiudi: "Chiudi",
     mappaTitolo: "Niente bora · il vento adesso", mappaBadge: "GOLFO · ISTRIA",
@@ -227,14 +239,6 @@
     });
   }
 
-  function valoreIn(d, x) {                              // interpolazione lineare sulla serie oraria
-    var i = Math.floor(x), f = x - i;
-    var a = d.serie[i], b = d.serie[i + 1];
-    if (a == null) return b;
-    if (b == null || f === 0) return a;
-    return a + (b - a) * f;
-  }
-
   function giornoDi(s) { return s.slice(0, 10); }
   function quando(d, i) {
     var t = d.tempi[i], ora = t.slice(11, 13);
@@ -245,36 +249,90 @@
     return giorno + T.verso + " " + ora + (sl ? "h" : "");
   }
 
-  function tendenza(d) {
+  /* ---------------- la situazione: vento misurato + spinta (22 ott 2026) ----------------
+     Alberto: "ci sono 20 nodi e il box dice 'nessuna bora prevista': deve essere un dato chiaro e
+     ben spiegato, i nostri utenti di meteo sanno poco". La frase guardava solo la spinta del modello,
+     ma dal 1 set al 22 ott 2026 quasi metà delle ore con bora sopra 12 kt a Trieste molo aveva la
+     spinta sotto 3,5 (tra 2,5 e 3,5 c'è bora sopra 12 kt circa un'ora su cinque, sotto 1,5 quasi mai).
+     Ora la scritta grande parte dal vento MISURATO a Trieste molo (Protezione Civile FVG, stazione
+     212, un'unica richiesta per tutti i sensori: 6 velocità, 7 raffica, 5 direzione): è bora se arriva
+     da 20° a 100° con almeno 8 kt e il dato ha al massimo 45 minuti. La spinta dice cosa può
+     succedere nelle prossime 24 ore. */
+  var BORA_DA = 20, BORA_A = 100, BORA_KT = 8, VICINO = 2.5, OSS_ETA = 45, MS_KT = 1.94384;
+  var CARD = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"];
+  var oss = null;
+  function scaricaOss() {
+    var adesso = Date.now();
+    var utc = function (ms) { return new Date(ms).toISOString().slice(0, 19).replace("T", " "); };
+    return fetch("https://monitor.protezionecivile.fvg.it/api/stations/212/measures?from=" + encodeURIComponent(utc(adesso - 3600000)) +
+      "&to=" + encodeURIComponent(utc(adesso + 900000))).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(function (j) {
+      var per = {};
+      (j.measures || []).forEach(function (m) {
+        if ((m.sensor_id === 5 || m.sensor_id === 6 || m.sensor_id === 7) && typeof m.value === "number") (per[m.dt] = per[m.dt] || {})[m.sensor_id] = m.value;
+      });
+      var ore = Object.keys(per).filter(function (dt) { return per[dt][6] != null; }).sort();
+      if (!ore.length) return null;
+      var x = per[ore[ore.length - 1]], t = Date.parse(ore[ore.length - 1].replace(" ", "T") + "Z");
+      if (Date.now() - t > OSS_ETA * 60000) return null;                 // dato vecchio: come se non ci fosse
+      return { nome: T.molo, kt: x[6] * MS_KT, raffica: x[7] != null ? x[7] * MS_KT : null, deg: x[5] != null ? x[5] : null, t: t };
+    }).catch(function () { return null; });
+  }
+  // "13-20 kt 084° E", come in tutto il sito (niente nomi dei venti)
+  function ventoTesto(o) {
+    var kt = Math.round(o.kt), gu = o.raffica != null ? Math.round(o.raffica) : null;
+    var s = kt + (gu != null && gu > kt ? "-" + gu : "") + " kt";
+    if (o.deg != null) {
+      var g = Math.round(((o.deg % 360) + 360) % 360) % 360;
+      s += " " + String(g).padStart(3, "0") + "° " + CARD[Math.round(g / 22.5) % 16];
+    }
+    return s;
+  }
+  function boraMisurata(o) { return !!(o && o.deg != null && o.deg >= BORA_DA && o.deg < BORA_A && o.kt >= BORA_KT); }
+  /* Anche la centralina del surfometro della pagina (home: Barcola, o il suo ripiego), passata con
+     SpintaBora.vento(): la sera del 22 ott a Barcola c'era bora (10-19 kt 051°) mentre Trieste molo
+     era già girata a 124°. Basta una delle due con la bora per dire "Bora in corso". */
+  var ossPagina = null;
+  function vento(nome, kt, raffica, deg) {
+    var n = function (x) { return x == null || x === "" || isNaN(+x) ? null : +x; };
+    ossPagina = nome && n(kt) != null ? { nome: nome, kt: n(kt), raffica: n(raffica), deg: n(deg), t: Date.now() } : null;
+    if (ultimo) boxes.forEach(function (rif) { scriviBox(rif, ultimo); });
+  }
+  function osservazioni() {
+    var lista = [];
+    if (ossPagina && Date.now() - ossPagina.t <= OSS_ETA * 60000) lista.push(ossPagina);
+    if (oss) lista.push(oss);
+    return lista;
+  }
+
+  // { verdetto, classe (colore sb-v0..4), righe: [vento misurato, cosa dice la spinta] }
+  function situazione(d) {
+    var lista = osservazioni();
+    var o = lista.filter(boraMisurata)[0] || lista[0] || null;   // si mostra quella con la bora, se c'è
     var v = d.ora, S = SOGLIE[0];
-    var prima = valoreIn(d, Math.max(0, d.xOra - 3));
-    var delta = prima == null ? 0 : v - prima;
-    var parola = delta > 0.6 ? T.sale : delta < -0.6 ? T.cala : T.stabile;
-    var freccia = delta > 0.6 ? "↗" : delta < -0.6 ? "↘" : "→";
     var da = Math.ceil(d.xOra), a = Math.min(d.serie.length - 1, Math.floor(d.xOra + 24));
-    var picco = null, inizio = null, fine = null;
+    var picco = v, inizio = null, fine = null;
     for (var i = da; i <= a; i++) {
       var s = d.serie[i];
       if (s == null) continue;
-      if (!picco || s > picco.v) picco = { v: s, i: i };
+      if (s > picco) picco = s;
       if (inizio === null && v < S && s >= S) inizio = i;
       if (fine === null && v >= S && s < S) fine = i;
     }
-    var testo;
-    if (v >= S) {
-      if (picco && picco.v > v + 0.8) testo = parola + " · " + T.picco + " " + fmt(picco.v) + " hPa " + quando(d, picco.i);
-      else if (fine !== null) testo = parola + " · " + T.sottoSoglia + " " + quando(d, fine);
-      else testo = parola + " · " + T.resta;
-    } else if (inizio !== null) {
-      testo = T.soglia + " " + quando(d, inizio) + (picco && picco.v >= SOGLIE[1] ? " · " + T.picco + " " + fmt(picco.v) + " hPa" : "");
-      freccia = "↗";
-    } else if (picco && picco.v > v + 1) {
-      testo = T.quasi + " (" + T.picco + " " + fmt(picco.v) + " hPa)";
-      freccia = "↗";
-    } else {
-      testo = T.niente;
-    }
-    return freccia + " " + testo;
+    var bora = boraMisurata(o), verdetto, classe, spinta;
+    if (v >= S) spinta = fine !== null ? T.altaFino + " " + quando(d, fine) : T.altaResta;
+    else if (inizio !== null) spinta = T.supera + " " + quando(d, inizio);
+    else if (bora) spinta = T.moderataCorso;
+    else if (picco >= VICINO) spinta = T.moderata;
+    else spinta = T.bassa;
+    if (bora) { verdetto = T.sit.corso; classe = Math.max(2, fascia(v)); }
+    else if (v >= S) { verdetto = o ? T.sit.arrivo : T.sit.probabile; classe = fascia(v); }   // spinta alta, bora non ancora misurata
+    else if (inizio !== null) { verdetto = T.sit.arrivo; classe = 2; }
+    else if (picco >= VICINO) { verdetto = T.sit.possibile; classe = 2; }
+    else { verdetto = o ? T.sit.niente : T.sit.improbabile; classe = 1; }
+    return { verdetto: verdetto, classe: classe, righe: (o ? [o.nome + ": " + ventoTesto(o)] : []).concat([spinta]) };
   }
 
   /* ---------------- grafico ---------------- */
@@ -410,9 +468,10 @@
     rif.segno.textContent = v < 0 ? "−" : "";
     rif.ghost.textContent = abs.replace(/[0-9]/g, "8");
     rif.num.textContent = abs;
-    rif.verdetto.textContent = T.fasce[f];
-    rif.verdetto.className = "sb-verdetto sb-v" + f;
-    rif.trend.textContent = tendenza(d);
+    var sit = situazione(d);
+    rif.verdetto.textContent = sit.verdetto;
+    rif.verdetto.className = "sb-verdetto sb-v" + sit.classe;
+    rif.trend.innerHTML = sit.righe.map(esc).join("<br>");
     rif.info.textContent = T.info + " · " + T.agg + " " + d.adesso.slice(11, 16);
     if (!modoMappa(rif, d)) disegna(rif, d);
   }
@@ -507,7 +566,8 @@
     if (rif.box.id !== "barcolaLive") return false;
     var mp = preparaMappa(rif);
     if (!mp) return false;
-    rif.senzaBora = rif.senzaBora ? d.ora < MAPPA_ESCI : d.ora < MAPPA_ENTRA;
+    // con la bora misurata a Trieste molo la spinta resta in vista anche se il modello la dà sotto zero
+    rif.senzaBora = (rif.senzaBora ? d.ora < MAPPA_ESCI : d.ora < MAPPA_ENTRA) && !osservazioni().some(boraMisurata);
     var mappa = rif.senzaBora && !spintaForzata();
     spostaMappa(mp, mappa);
     rif.box.classList.toggle("sb-senza-bora", mappa);
@@ -515,8 +575,9 @@
     if (hero) hero.classList.toggle("hero-senza-bora", mappa);
     mp.torna.hidden = !rif.senzaBora || mappa;
     if (mappa) {
-      mp.num.innerHTML = T.mappaSpinta + " <strong>" + fmt(d.ora) + " hPa</strong> · " + T.fasce[fascia(d.ora)] + " · " + T.agg + " " + d.adesso.slice(11, 16);
-      mp.trend.textContent = tendenza(d);
+      var sit = situazione(d);
+      mp.num.innerHTML = T.mappaSpinta + " <strong>" + fmt(d.ora) + " hPa</strong> · " + esc(sit.verdetto) + " · " + T.agg + " " + d.adesso.slice(11, 16);
+      mp.trend.textContent = sit.righe.join(" · ");
     }
     return mappa;
   }
@@ -537,8 +598,11 @@
     Array.prototype.forEach.call(trovati, preparaBox);
     if (!boxes.length) return Promise.resolve();
     if (inCorso) return inCorso;
-    inCorso = scarica().then(function (d) {
+    // la spinta (Open-Meteo) e il vento misurato a Trieste molo insieme; senza il vento la scritta usa solo la spinta
+    inCorso = Promise.all([scarica(), scaricaOss()]).then(function (r) {
+      var d = r[0];
       ultimo = d;
+      oss = r[1];
       boxes.forEach(function (rif) { scriviBox(rif, d); });
       scriviFinestra(d);
     }).catch(function () {
@@ -551,5 +615,5 @@
     return inCorso;
   }
 
-  window.SpintaBora = { aggiorna: aggiorna, apri: apriFinestra };
+  window.SpintaBora = { aggiorna: aggiorna, apri: apriFinestra, vento: vento };
 })();

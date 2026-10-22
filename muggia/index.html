@@ -885,7 +885,7 @@
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
   <link rel="stylesheet" href="/footer-widgets.css?v=20261020" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
-  <script src="/spinta-bora.js?v=20261020"></script>
+  <script src="/spinta-bora.js?v=20261022b"></script>
 </head>
 <body>
 
@@ -1640,9 +1640,12 @@
       if (m != null) {
         if (fonte) fonte.textContent = "";
         aggiornaSurfometro(m.avg, m.gust, m.dir);
+        // anche alla Spinta della Bora: se a Muggia c'è bora, il box non dice "niente bora" (22 ott 2026)
+        if (window.SpintaBora && window.SpintaBora.vento) window.SpintaBora.vento("Muggia", m.avg, m.gust, m.dir);
       } else {
         if (fonte) fonte.textContent = "⚠️ Dati Muggia momentaneamente non disponibili.";
         aggiornaSurfometro(null);
+        if (window.SpintaBora && window.SpintaBora.vento) window.SpintaBora.vento(null);
       }
     }
 
