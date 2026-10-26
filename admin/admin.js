@@ -325,11 +325,21 @@
           (t.foto ? " (" + intero(t.foto) + " con foto)" : "") + ".</p>"
         : '<p class="nota">Nessuna chat autorizzata: premi "Collega il bot", poi apri il link dal telefono e premi Avvia.</p>';
       if (ultimoLink) html += '<p>Apri dal telefono (valido 30 minuti):<br><a class="link-bot" href="' + esc(ultimoLink.link) + '" target="_blank" rel="noopener">' + esc(ultimoLink.link) + "</a></p>";
+      if (chat) html += '<p class="nota">Ogni sera alle 19:30 il bot manda la verifica di oggi e la previsione per domani (regola di base, ancora senza Claude).</p>';
       html += '<div class="azioni"><button type="button" class="primario" id="btnCollega">' + (chat ? "Ricollega il bot" : "Collega il bot") + "</button>" +
-        (chat ? '<button type="button" class="secondario pericolo" id="btnScollega">Dimentica la chat</button>' : "") + "</div>";
+        (chat ? '<button type="button" class="secondario" id="btnProvaSera">Manda ora un messaggio di prova</button>' +
+          '<button type="button" class="secondario pericolo" id="btnScollega">Dimentica la chat</button>' : "") + "</div>";
     }
     $("telegram").innerHTML = html;
-    const c = $("btnCollega"), sc = $("btnScollega");
+    const c = $("btnCollega"), sc = $("btnScollega"), ps = $("btnProvaSera");
+    if (ps) ps.addEventListener("click", async () => {
+      ps.disabled = true;
+      try {
+        const r = await chiama("/admin/serale/prova", {});
+        alert("Mandato su Telegram: previsione per il " + r.domani + (r.foto && r.foto.length ? " (problemi con le immagini: " + r.foto.join("; ") + ")" : ""));
+      } catch (err) { alert("Non riuscito: " + err.message); }
+      ps.disabled = false;
+    });
     if (c) c.addEventListener("click", async () => {
       c.disabled = true;
       try { ultimoLink = await chiama("/admin/telegram/collega", {}); await caricaStato(); }
