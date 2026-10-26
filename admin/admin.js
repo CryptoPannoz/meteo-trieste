@@ -222,18 +222,19 @@
       c.addEventListener("mouseleave", nascondiTip);
     });
 
+    const err = v.errori || {};
     classifica("lPagine", v.pagine, x => x.percorso, x => x.titolo);
-    classifica("lProvenienze", v.provenienze, x => x.nome);
-    classifica("lCampagne", v.campagne, x => x.nome);
-    classifica("lPaesi", v.paesi, x => x.nome);
-    classifica("lSchermi", v.schermi, x => x.nome);
+    classifica("lProvenienze", v.provenienze, x => x.nome, null, null, err.toprefs);
+    classifica("lCampagne", v.campagne, x => x.nome, null, null, err.campaigns);
+    classifica("lPaesi", v.paesi, x => x.nome, null, null, err.locations);
+    classifica("lSchermi", v.schermi, x => x.nome, null, null, err.sizes);
     const sb = (v.sistemi || []).slice(0, 5).concat((v.browser || []).slice(0, 5));
-    classifica("lSistemi", sb.length ? sb : null, x => x.nome, null, (v.sistemi || []).slice(0, 5).length);
+    classifica("lSistemi", sb.length ? sb : null, x => x.nome, null, (v.sistemi || []).slice(0, 5).length, err.systems || err.browsers);
   }
   /* elenco ordinato: nome, numero, barretta proporzionale (un solo colore: è una grandezza) */
-  function classifica(id, elenco, nome, sotto, divisore) {
+  function classifica(id, elenco, nome, sotto, divisore, errore) {
     const box = $(id);
-    if (!elenco) { box.innerHTML = '<p class="nota">Non disponibile.</p>'; return; }
+    if (!elenco) { box.innerHTML = '<p class="nota">Non disponibile' + (errore ? ": " + esc(errore) : "") + ".</p>"; return; }
     if (!elenco.length) { box.innerHTML = '<p class="nota">Ancora niente in questo periodo.</p>'; return; }
     const max = Math.max(1, ...elenco.map(x => x.visite));
     box.innerHTML = '<ol class="classifica">' + elenco.slice(0, 10).map((x, i) =>
