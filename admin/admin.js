@@ -215,11 +215,11 @@
     });
   }
 
-  /* ---------------- Google Analytics, Search Console, GoatCounter ---------------- */
+  /* ---------------- Search Console, GoatCounter ----------------
+     Google Analytics no (26 ott 2026, Alberto): vorrebbe dire banner dei cookie e privacy da
+     rifare; le visite le conta GoatCounter, che non usa cookie. */
   function disegnaImpostazioni(imp) {
     const voci = [
-      { nome: "ga4", titolo: "Google Analytics 4 · ID misurazione", segnaposto: "G-XXXXXXXXXX",
-        nota: 'Sul sito oggi non c\'è Google Analytics (le visite le conta GoatCounter, senza cookie). Attivarlo vuol dire aggiungere anche il banner dei cookie. <a href="https://analytics.google.com/" target="_blank" rel="noopener">Apri Analytics</a>' },
       { nome: "gsc", titolo: "Search Console · proprietà", segnaposto: "sc-domain:ventotrieste.info",
         nota: '<a href="https://search.google.com/search-console?resource_id=' + encodeURIComponent(imp.gsc || "sc-domain:ventotrieste.info") + '" target="_blank" rel="noopener">Apri Search Console</a>' },
       { nome: "goatcounterSito", titolo: "GoatCounter · nome del sito", segnaposto: "ventotrieste",
