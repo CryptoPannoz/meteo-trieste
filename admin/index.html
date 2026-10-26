@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <!-- Area riservata (26 ott 2026): la pagina è pubblica ma vuota; dati e chiavi arrivano solo dal
+       Worker ventotrieste-previsioni dopo l'accesso con Google di un account autorizzato. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; frame-src https://accounts.google.com/gsi/; connect-src 'self' https://ventotrieste-previsioni.bebroggi.workers.dev http://localhost:8787 https://accounts.google.com/gsi/; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="theme-color" content="#07090c">
+  <title>Admin · Vento Trieste</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+  <header class="barra">
+    <a class="logo" href="/" aria-label="Vento Trieste: torna al sito">
+      <svg viewBox="80 90 370 330" aria-hidden="true"><path d="M101.0 184.0H288.2C338.6 184.0 338.6 112.0 288.2 112.0C259.4 112.0 255.8 140.8 273.8 151.6M101.0 292.0H389.0C439.4 292.0 439.4 220.0 389.0 220.0C360.2 220.0 356.6 248.8 374.6 259.6M101.0 400.0H252.2"/></svg>
+    </a>
+    <div class="titolo">
+      <span class="sopra" id="chi">Area riservata</span>
+      <h1>Admin</h1>
+    </div>
+    <button type="button" class="tasto" id="btnAggiorna" hidden>Aggiorna</button>
+    <button type="button" class="tasto" id="btnEsci" hidden>Esci</button>
+  </header>
+
+  <main>
+    <section class="accesso" id="accesso" hidden aria-labelledby="accessoTitolo">
+      <h2 id="accessoTitolo">Entra con Google</h2>
+      <p>Solo per l'account autorizzato. Gli altri account vengono rifiutati.</p>
+      <div id="bottoneGoogle"></div>
+      <p class="nota" id="accessoNota" hidden></p>
+      <button type="button" class="primario" id="btnSviluppo" hidden>Entra (solo in locale, sviluppo)</button>
+      <p class="errore" id="accessoErrore" role="alert" hidden></p>
+    </section>
+
+    <section class="pannello" id="pannello" hidden>
+      <p class="aggiornato" id="aggiornato" aria-live="polite"></p>
+      <div class="griglia">
+        <article class="scheda" aria-labelledby="tServizi">
+          <h2 id="tServizi">Stato dei servizi</h2>
+          <ul class="righe" id="servizi"></ul>
+        </article>
+        <article class="scheda" aria-labelledby="tCentraline">
+          <h2 id="tCentraline">Centraline</h2>
+          <ul class="righe" id="centraline"></ul>
+        </article>
+        <article class="scheda" aria-labelledby="tRegistro">
+          <h2 id="tRegistro">Registro, ultimi 7 giorni</h2>
+          <div class="tabella-box"><table id="registro"></table></div>
+        </article>
+        <article class="scheda" aria-labelledby="tVisite">
+          <h2 id="tVisite">Visite</h2>
+          <div id="visite"></div>
+        </article>
+        <article class="scheda" aria-labelledby="tTelegram">
+          <h2 id="tTelegram">Bot Telegram</h2>
+          <div id="telegram"></div>
+        </article>
+        <article class="scheda larga" aria-labelledby="tChiavi">
+          <h2 id="tChiavi">Chiavi API</h2>
+          <p class="nota">Le chiavi vengono cifrate e restano nel Worker: da qui si possono sostituire o togliere, ma non rileggere.</p>
+          <div id="chiavi"></div>
+        </article>
+        <article class="scheda larga" aria-labelledby="tGoogle">
+          <h2 id="tGoogle">Google Analytics e Search Console</h2>
+          <div id="impostazioni"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="./admin.js"></script>
+</body>
+</html>

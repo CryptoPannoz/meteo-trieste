@@ -1,0 +1,80 @@
+/* Admin di Vento Trieste: stessi colori del tema scuro del sito. */
+:root {
+  color-scheme: dark;
+  --fondo: #07090c; --scheda: #10151a; --scheda-2: #151b21; --linea: #2a343d; --linea-2: #45566a;
+  --testo: #f4f7f8; --testo-2: #b1bcc4; --etichetta: #98a4ad; --segnale: #f0f43c;
+  --ok: #5fd38d; --attenzione: #ffb547; --errore: #ff665e;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --corpo: Manrope, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--fondo); color: var(--testo); font-family: var(--corpo); font-size: 15px; line-height: 1.45; }
+a { color: var(--segnale); }
+a:hover { color: #f7f87a; }
+button, input { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+.nascosto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--segnale); outline-offset: 2px; }
+
+.barra { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+.logo { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; color: var(--segnale); flex: none; }
+.logo svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 32.4; stroke-linecap: round; stroke-linejoin: round; }
+.titolo { flex: 1 1 auto; min-width: 0; }
+.sopra { display: block; font-size: 12px; font-weight: 600; color: var(--etichetta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.titolo h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1; }
+.tasto, .secondario { min-height: 44px; padding: 0 14px; border: 1px solid var(--linea); border-radius: 12px; background: var(--scheda); font-weight: 700; font-size: 14px; cursor: pointer; }
+.tasto:hover, .secondario:hover { border-color: var(--segnale); }
+.secondario.pericolo { color: var(--errore); border-color: #5a2f2d; }
+.primario { min-height: 44px; padding: 0 18px; border: 0; border-radius: 12px; background: var(--segnale); color: var(--fondo); font-weight: 800; font-size: 15px; cursor: pointer; }
+button:disabled { opacity: .5; cursor: default; }
+
+main { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; }
+.accesso { max-width: 440px; margin: 40px auto; padding: 24px; border: 1px solid var(--linea); border-radius: 18px; background: var(--scheda); display: flex; flex-direction: column; gap: 14px; }
+.accesso h2 { margin: 0; font-family: var(--display); font-size: 28px; }
+.accesso p { margin: 0; color: var(--testo-2); }
+.nota { margin: 0; font-size: 13px; color: var(--etichetta); }
+.errore { margin: 0; color: var(--errore); font-weight: 700; }
+.aggiornato { margin: 0 0 10px; font-size: 13px; color: var(--etichetta); }
+
+.griglia { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 14px; }
+.scheda { min-width: 0; padding: 16px; border: 1px solid var(--linea); border-radius: 16px; background: var(--scheda); display: flex; flex-direction: column; gap: 10px; }
+.scheda.larga { grid-column: 1 / -1; }
+.scheda h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--etichetta); }
+
+.righe { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.righe li { display: flex; align-items: baseline; gap: 10px; padding: 7px 0; border-top: 1px solid var(--scheda-2); }
+.righe li:first-child { border-top: 0; }
+.righe .nome { flex: 1 1 auto; min-width: 0; font-weight: 700; }
+.righe .det { flex: none; max-width: 55%; text-align: right; font-size: 13px; color: var(--testo-2); }
+.pallino { width: 10px; height: 10px; border-radius: 50%; flex: none; transform: translateY(1px); }
+.e-ok { background: var(--ok); } .e-attenzione { background: var(--attenzione); } .e-errore { background: var(--errore); } .e-spento { background: var(--linea-2); }
+
+.tabella-box { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { padding: 6px 8px; text-align: right; border-top: 1px solid var(--scheda-2); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-size: 12px; font-weight: 700; color: var(--etichetta); border-top: 0; }
+.surf { color: var(--segnale); font-weight: 800; }
+
+.numeri { display: flex; gap: 22px; flex-wrap: wrap; }
+.numero b { display: block; font-family: var(--display); font-size: 40px; line-height: 1; }
+.numero span { font-size: 13px; color: var(--etichetta); }
+.barrette { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
+.barrette i { flex: 1 1 0; background: var(--linea-2); border-radius: 3px 3px 0 0; min-height: 2px; }
+.barrette i:last-child { background: var(--segnale); }
+
+.voce { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 12px 0; border-top: 1px solid var(--scheda-2); }
+.voce:first-of-type { border-top: 0; }
+.voce h3 { margin: 0; font-size: 15px; }
+.voce .stato { margin: 0; font-size: 13px; color: var(--testo-2); }
+.voce .stato.ok { color: var(--ok); } .voce .stato.ko { color: var(--errore); }
+.riga-campo { display: flex; gap: 8px; flex-wrap: wrap; }
+.campo { flex: 1 1 240px; min-width: 0; height: 44px; padding: 0 12px; border: 1px solid var(--linea); border-radius: 12px; background: var(--fondo); color: var(--testo); font-size: 15px; }
+.campo:focus { outline: 2px solid var(--segnale); outline-offset: 1px; border-color: transparent; }
+.link-bot { display: inline-block; padding: 10px 14px; border-radius: 12px; background: var(--scheda-2); font-weight: 800; word-break: break-all; }
+@media (min-width: 900px) {
+  .voce { grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr); align-items: start; }
+  .voce > .riga-campo, .voce > .azioni { grid-column: 2; }
+}
+.azioni { display: flex; gap: 8px; flex-wrap: wrap; }
