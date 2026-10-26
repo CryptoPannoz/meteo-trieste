@@ -128,3 +128,7 @@ th { font-size: 12px; font-weight: 700; color: var(--etichetta); border-top: 0; 
   .voce > .riga-campo, .voce > .azioni { grid-column: 2; }
 }
 .azioni { display: flex; gap: 8px; flex-wrap: wrap; }
+.sotto-titolo { margin: 10px 0 0; font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--etichetta); }
+.registro-azioni { max-height: 320px; overflow-y: auto; }
+.registro-azioni .nome { font-weight: 600; font-size: 14px; }
+.registro-azioni small { display: block; }

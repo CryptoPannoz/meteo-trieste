@@ -260,9 +260,38 @@
       s.registro.map(g => "<tr><td>" + esc(g.giorno.slice(8) + "/" + g.giorno.slice(5, 7)) + "</td><td>" + n1(g.media) + " kt</td><td>" + n1(g.oreSopra12) +
         "</td><td>" + n1(g.raffica) + " kt</td><td>" + n1(g.spinta) + "</td><td>" + (g.surfabile ? '<span class="surf">surfabile</span>' : "") + "</td></tr>").join("") + "</tbody>";
     disegnaTessere(s, ultimeVisite);
+    disegnaSicurezza(s);
     disegnaTelegram(s);
     disegnaChiavi(s.chiavi);
     disegnaImpostazioni(s.impostazioni);
+  }
+
+  /* ---------------- sicurezza: pausa, uso di Claude, sessioni, registro ---------------- */
+  function disegnaSicurezza(s) {
+    const t = s.telegram || {}, uso = t.uso || {};
+    const azioni = (s.azioni || []).map(a => "<li><span class=\"nome\">" + esc(a.cosa) + (a.dettaglio ? ' <small class="nota">' + esc(a.dettaglio) + "</small>" : "") +
+      '</span><span class="det">' + esc(data(a.quando)) + " · " + esc(a.chi) + "</span></li>").join("");
+    $("sicurezza").innerHTML =
+      '<ul class="righe">' +
+        '<li><span class="pallino ' + (t.pausa ? "e-attenzione" : "e-ok") + '" aria-hidden="true"></span><span class="nome">Bot ' + (t.pausa ? "in pausa" : "acceso") +
+          '</span><span class="det">' + (t.pausa ? "non risponde e salta il messaggio della sera" : "risponde e manda il messaggio delle 19:30") + "</span></li>" +
+        '<li><span class="pallino e-ok" aria-hidden="true"></span><span class="nome">Ragionamenti di Claude</span><span class="det">oggi ' + intero(uso.oggi || 0) + " su " + intero(uso.limiteGiorno) +
+          " · mese " + intero(uso.mese || 0) + " su " + intero(uso.limiteMese) + "</span></li>" +
+      "</ul>" +
+      '<p class="nota">Il bot risponde solo alla chat abbinata e solo su vento, mare e previsioni; esce dai gruppi in cui lo aggiungono; ' +
+      "al massimo 8 messaggi al minuto, 150 al giorno, 30 immagini al giorno. Le regole del manuale si cambiano solo dalla tua chat, con conferma, e quelle tolte restano nel cestino.</p>" +
+      '<div class="azioni"><button type="button" class="' + (t.pausa ? "primario" : "secondario") + '" id="btnPausa">' + (t.pausa ? "Riaccendi il bot" : "Metti in pausa il bot") + "</button>" +
+      '<button type="button" class="secondario pericolo" id="btnEsciOvunque">Esci da tutti i dispositivi</button></div>' +
+      '<h3 class="sotto-titolo">Registro delle azioni</h3>' +
+      (azioni ? '<ul class="righe registro-azioni">' + azioni + "</ul>" : '<p class="nota">Ancora niente.</p>');
+    $("btnPausa").addEventListener("click", async () => {
+      try { await chiama("/admin/pausa", { pausa: !t.pausa }); await caricaStato(); } catch (err) { alert("Non riuscito: " + err.message); }
+    });
+    $("btnEsciOvunque").addEventListener("click", async () => {
+      if (!window.confirm("Chiudo tutte le sessioni di /admin aperte, anche questa. Dovrai rientrare con Google. Procedo?")) return;
+      try { await chiama("/admin/esci-ovunque", {}); } catch (err) { /* la sessione è già chiusa */ }
+      sessione = null; scrivi(CHIAVE_SESSIONE, null); mostraAccesso("Sei uscito da tutti i dispositivi.");
+    });
   }
 
   /* ---------------- chiavi ---------------- */
