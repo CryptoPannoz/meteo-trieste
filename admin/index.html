@@ -25,6 +25,10 @@
       <span class="sopra" id="chi">Area riservata</span>
       <h1>Admin</h1>
     </div>
+    <nav class="viste" id="viste" aria-label="Sezioni" hidden>
+      <button type="button" class="vista-tasto" data-vista="dashboard" aria-pressed="true">Dashboard</button>
+      <button type="button" class="vista-tasto" data-vista="impostazioni" aria-pressed="false">Impostazioni</button>
+    </nav>
     <button type="button" class="tasto" id="btnAggiorna" hidden>Aggiorna</button>
     <button type="button" class="tasto" id="btnEsci" hidden>Esci</button>
   </header>
@@ -39,26 +43,55 @@
       <p class="errore" id="accessoErrore" role="alert" hidden></p>
     </section>
 
-    <section class="pannello" id="pannello" hidden>
+    <!-- ===================== DASHBOARD ===================== -->
+    <section class="pannello" id="vistaDashboard" hidden aria-label="Dashboard">
       <p class="aggiornato" id="aggiornato" aria-live="polite"></p>
+
+      <div class="tessere" id="tessere"></div>
+
+      <div class="sezione-titolo">
+        <h2>Visite al sito</h2>
+        <div class="periodi" role="group" aria-label="Periodo">
+          <button type="button" class="periodo" data-giorni="7" aria-pressed="false">7 giorni</button>
+          <button type="button" class="periodo" data-giorni="30" aria-pressed="true">30 giorni</button>
+          <button type="button" class="periodo" data-giorni="90" aria-pressed="false">90 giorni</button>
+        </div>
+      </div>
+      <article class="scheda" aria-labelledby="tGrafico">
+        <h3 id="tGrafico">Visitatori al giorno</h3>
+        <div id="grafico"></div>
+        <p class="nota">GoatCounter conta una persona una volta per pagina in ogni visita, senza cookie. Chi torna un altro giorno conta di nuovo. La barra di oggi è parziale.</p>
+      </article>
       <div class="griglia">
+        <article class="scheda" aria-labelledby="tPagine"><h3 id="tPagine">Pagine più viste</h3><div id="lPagine"></div></article>
+        <article class="scheda" aria-labelledby="tProv"><h3 id="tProv">Da dove arrivano</h3><div id="lProvenienze"></div></article>
+        <article class="scheda" aria-labelledby="tCamp"><h3 id="tCamp">Campagne (link con utm, QR)</h3><div id="lCampagne"></div></article>
+        <article class="scheda" aria-labelledby="tPaesi"><h3 id="tPaesi">Paesi</h3><div id="lPaesi"></div></article>
+        <article class="scheda" aria-labelledby="tSchermi"><h3 id="tSchermi">Schermi</h3><div id="lSchermi"></div></article>
+        <article class="scheda" aria-labelledby="tSistemi"><h3 id="tSistemi">Sistemi e browser</h3><div id="lSistemi"></div></article>
+      </div>
+
+      <div class="sezione-titolo"><h2>Vento e servizi</h2></div>
+      <div class="griglia">
+        <article class="scheda" aria-labelledby="tRegistro">
+          <h3 id="tRegistro">Registro, ultimi 7 giorni</h3>
+          <div class="tabella-box"><table id="registro"></table></div>
+        </article>
         <article class="scheda" aria-labelledby="tServizi">
-          <h2 id="tServizi">Stato dei servizi</h2>
+          <h3 id="tServizi">Stato dei servizi</h3>
           <ul class="righe" id="servizi"></ul>
         </article>
         <article class="scheda" aria-labelledby="tCentraline">
-          <h2 id="tCentraline">Centraline</h2>
+          <h3 id="tCentraline">Centraline</h3>
           <ul class="righe" id="centraline"></ul>
         </article>
-        <article class="scheda" aria-labelledby="tRegistro">
-          <h2 id="tRegistro">Registro, ultimi 7 giorni</h2>
-          <div class="tabella-box"><table id="registro"></table></div>
-        </article>
-        <article class="scheda" aria-labelledby="tVisite">
-          <h2 id="tVisite">Visite</h2>
-          <div id="visite"></div>
-        </article>
-        <article class="scheda" aria-labelledby="tTelegram">
+      </div>
+    </section>
+
+    <!-- ===================== IMPOSTAZIONI ===================== -->
+    <section class="pannello" id="vistaImpostazioni" hidden aria-label="Impostazioni">
+      <div class="griglia">
+        <article class="scheda larga" aria-labelledby="tTelegram">
           <h2 id="tTelegram">Bot Telegram</h2>
           <div id="telegram"></div>
         </article>
@@ -75,6 +108,7 @@
     </section>
   </main>
 
+  <div class="tooltip" id="tooltip" role="status" hidden></div>
   <script src="./admin.js"></script>
 </body>
 </html>
