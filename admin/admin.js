@@ -192,7 +192,7 @@
   }
   function disegnaVisite(v) {
     const box = $("grafico");
-    const liste = ["lPagine", "lProvenienze", "lCampagne", "lPaesi", "lSchermi", "lSistemi"];
+    const liste = ["lPagine", "lEventi", "lProvenienze", "lCampagne", "lPaesi", "lSchermi", "lSistemi"];
     if (!v || !v.configurato) {
       box.innerHTML = '<p class="nota">Aggiungi il token API di GoatCounter in Impostazioni per vedere le visite.</p>';
       liste.forEach(id => { $(id).innerHTML = ""; });
@@ -224,6 +224,7 @@
 
     const err = v.errori || {};
     classifica("lPagine", v.pagine, x => x.percorso, x => x.titolo);
+    classifica("lEventi", v.eventi, x => x.nome);
     classifica("lProvenienze", v.provenienze, x => x.nome, null, null, err.toprefs);
     classifica("lCampagne", v.campagne, x => x.nome, null, null, err.campaigns);
     classifica("lPaesi", v.paesi, x => x.nome, null, null, err.locations);
@@ -235,6 +236,7 @@
   function classifica(id, elenco, nome, sotto, divisore, errore) {
     const box = $(id);
     if (!elenco) { box.innerHTML = '<p class="nota">Non disponibile' + (errore ? ": " + esc(errore) : "") + ".</p>"; return; }
+    elenco = elenco.filter(x => x.visite > 0);
     if (!elenco.length) { box.innerHTML = '<p class="nota">Ancora niente in questo periodo.</p>'; return; }
     const max = Math.max(1, ...elenco.map(x => x.visite));
     box.innerHTML = '<ol class="classifica">' + elenco.slice(0, 10).map((x, i) =>
