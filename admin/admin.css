@@ -146,3 +146,6 @@ th { font-size: 12px; font-weight: 700; color: var(--etichetta); border-top: 0; 
 .passi ol { margin: 0; padding-left: 20px; }
 .passi li { margin: 4px 0; color: var(--testo-2); }
 .passi li strong { color: var(--testo); }
+.passi p { margin: 0 0 10px; color: var(--testo-2); }
+.passi .primario { margin-bottom: 8px; }
+.passi .secondario { margin-top: 0; }

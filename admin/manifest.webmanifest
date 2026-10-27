@@ -4,7 +4,7 @@
   "short_name": "VT Admin",
   "description": "Area riservata di Vento Trieste: dati, servizi e bot delle previsioni.",
   "lang": "it",
-  "start_url": "/admin/",
+  "start_url": "/admin/?app=vt-admin",
   "scope": "/admin/",
   "display": "standalone",
   "background_color": "#07090c",

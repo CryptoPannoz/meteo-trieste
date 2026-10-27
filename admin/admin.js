@@ -27,6 +27,17 @@
 
   // aperta dall'icona della schermata Home (app a schermo intero)
   const inApp = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  // l'icona VT Admin parte da /admin/?app=vt-admin (manifest): così si distingue dall'app Vento
+  // Trieste, che su Android apre anche i link ad /admin (27 ott, Alberto: "non vedo l'icona")
+  if (/[?&]app=vt-admin\b/.test(location.search)) {
+    try { sessionStorage.setItem("vt-admin-app", "1"); } catch (e) { /* storage bloccato */ }
+    history.replaceState(null, "", location.pathname + location.hash);
+  }
+  const android = /Android/i.test(navigator.userAgent);
+  const appAdmin = (() => { try { return inApp && sessionStorage.getItem("vt-admin-app") === "1"; } catch (e) { return false; } })();
+  // su Android, dentro un'altra app (Vento Trieste) o nel browser interno di Telegram & co. ("; wv)")
+  // non si può installare niente: si offre di aprire la pagina in Chrome
+  const dentroAltraApp = android && ((inApp && !appAdmin) || /; wv\)/.test(navigator.userAgent));
 
   function leggi(chiave) { try { return localStorage.getItem(chiave); } catch (e) { return null; } }
   function scrivi(chiave, v) { try { v == null ? localStorage.removeItem(chiave) : localStorage.setItem(chiave, v); } catch (e) { /* storage bloccato */ } }
@@ -434,8 +445,15 @@
   /* ---------------- app sulla schermata Home ---------------- */
   // Android: Chrome offre l'installazione (beforeinstallprompt); iPhone: passi da Condividi
   let richiestaInstalla = null;
-  const android = /Android/i.test(navigator.userAgent);
-  $("btnApp").hidden = inApp;
+  $("btnApp").hidden = inApp && !dentroAltraApp;
+  $("altraApp").hidden = !dentroAltraApp;
+  $("btnApriChrome").addEventListener("click", () => {
+    location.href = "intent://ventotrieste.info/admin/#Intent;scheme=https;package=com.android.chrome;end";
+  });
+  $("btnCopiaIndirizzo").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText("https://ventotrieste.info/admin/"); $("btnCopiaIndirizzo").textContent = "Indirizzo copiato"; }
+    catch (e) { $("btnCopiaIndirizzo").textContent = "ventotrieste.info/admin"; }
+  });
   $("btnApp").addEventListener("click", () => {
     const primo = android ? $("passiAndroid") : $("passiIphone"), altro = android ? $("passiIphone") : $("passiAndroid");
     primo.classList.add("tuo"); altro.classList.remove("tuo");
