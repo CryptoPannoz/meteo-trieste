@@ -11,10 +11,17 @@
   <meta name="theme-color" content="#07090c">
   <title>Admin · Vento Trieste</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <!-- app a sé sulla schermata Home (27 ott 2026): manifest con ambito /admin/, icona a colori invertiti -->
+  <link rel="manifest" href="/admin/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/admin/icona-180.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="VT Admin">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./admin.css?v=20261026f">
+  <link rel="stylesheet" href="./admin.css?v=20261027a">
 </head>
 <body>
   <header class="barra">
@@ -29,6 +36,7 @@
       <button type="button" class="vista-tasto" data-vista="dashboard" aria-pressed="true">Dashboard</button>
       <button type="button" class="vista-tasto" data-vista="impostazioni" aria-pressed="false">Impostazioni</button>
     </nav>
+    <button type="button" class="tasto" id="btnApp" hidden aria-haspopup="dialog"><span aria-hidden="true">📲</span> App</button>
     <button type="button" class="tasto" id="btnAggiorna" hidden>Aggiorna</button>
     <button type="button" class="tasto" id="btnEsci" hidden>Esci</button>
   </header>
@@ -114,6 +122,29 @@
   </main>
 
   <div class="tooltip" id="tooltip" role="status" hidden></div>
-  <script src="./admin.js?v=20261026f"></script>
+
+  <dialog class="finestra" id="dlgApp" aria-labelledby="dlgAppTitolo">
+    <h2 id="dlgAppTitolo">Admin sulla schermata Home</h2>
+    <p>Avrai l'icona gialla <strong>VT Admin</strong>, separata dall'app Vento Trieste, che si apre a schermo intero.</p>
+    <button type="button" class="primario" id="btnInstallaOra" hidden>Installa adesso</button>
+    <div class="passi" id="passiIphone">
+      <h3>iPhone</h3>
+      <ol>
+        <li>Apri questa pagina in <strong>Safari</strong> (va anche Chrome).</li>
+        <li>Tocca <strong>Condividi</strong> (su iOS 26 è nel menu <strong>•••</strong>).</li>
+        <li>Scegli <strong>Aggiungi alla schermata Home</strong>, lascia attivo «Apri come app web» e tocca <strong>Aggiungi</strong>.</li>
+      </ol>
+    </div>
+    <div class="passi" id="passiAndroid">
+      <h3>Android</h3>
+      <ol>
+        <li>Apri questa pagina in <strong>Chrome</strong>.</li>
+        <li>Menu <strong>⋮</strong> → <strong>Installa app</strong> (su alcuni telefoni «Aggiungi a schermata Home»).</li>
+      </ol>
+    </div>
+    <p class="nota">Nell'app si entra con Google come qui. L'accesso dura 12 ore, anche se chiudi l'app.</p>
+    <button type="button" class="secondario" id="btnChiudiApp">Chiudi</button>
+  </dialog>
+  <script src="./admin.js?v=20261027a"></script>
 </body>
 </html>

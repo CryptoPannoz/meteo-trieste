@@ -132,3 +132,17 @@ th { font-size: 12px; font-weight: 700; color: var(--etichetta); border-top: 0; 
 .registro-azioni { max-height: 320px; overflow-y: auto; }
 .registro-azioni .nome { font-weight: 600; font-size: 14px; }
 .registro-azioni small { display: block; }
+
+/* finestra "Admin sulla schermata Home" (27 ott 2026) */
+.finestra { width: min(440px, calc(100% - 32px)); max-height: calc(100% - 32px); overflow-y: auto; padding: 22px; border: 1px solid var(--linea); border-radius: 18px; background: var(--scheda); color: var(--testo); }
+.finestra::backdrop { background: rgba(0, 0, 0, .65); }
+.finestra h2 { margin: 0 0 8px; font-family: var(--display); font-size: 26px; line-height: 1.1; }
+.finestra p { margin: 0 0 12px; color: var(--testo-2); }
+.finestra .primario { width: 100%; margin-bottom: 12px; }
+.finestra .secondario { width: 100%; margin-top: 4px; }
+.passi { margin: 0 0 12px; padding: 12px 14px; border: 1px solid var(--linea); border-radius: 12px; background: var(--scheda-2); }
+.passi.tuo { border-color: var(--segnale); }
+.passi h3 { margin: 0 0 6px; font-family: var(--display); font-size: 18px; }
+.passi ol { margin: 0; padding-left: 20px; }
+.passi li { margin: 4px 0; color: var(--testo-2); }
+.passi li strong { color: var(--testo); }

@@ -1,7 +1,9 @@
 /* admin.js — area riservata di Vento Trieste (26 ott 2026).
    La pagina non contiene dati né chiavi: dopo "Accedi con Google" il Worker
    ventotrieste-previsioni verifica che l'account sia quello autorizzato e risponde con una
-   sessione di 12 ore (tenuta in sessionStorage: chiusa la scheda, si rientra).
+   sessione di 12 ore. Dal 27 ott la sessione sta in localStorage, così resta anche chiudendo
+   l'app della schermata Home (manifest con ambito /admin/, icona "VT Admin"); dentro l'app
+   Google entra "a passaggio" (redirect), perché la sua finestrella non torna indietro.
    Due viste: Dashboard (visite, vento, servizi) e Impostazioni (bot, chiavi, Search Console).
    Le chiavi API si scrivono ma non si rileggono: il Worker le cifra e mostra solo
    "impostata, finisce con …1234". */
@@ -23,8 +25,11 @@
   const intero = v => v == null ? "–" : Number(v).toLocaleString("it-IT");
   const giornoBreve = g => new Date(g + "T12:00:00").toLocaleDateString("it-IT", { weekday: "short", day: "numeric", month: "short" });
 
-  function leggi(chiave) { try { return sessionStorage.getItem(chiave); } catch (e) { return null; } }
-  function scrivi(chiave, v) { try { v == null ? sessionStorage.removeItem(chiave) : sessionStorage.setItem(chiave, v); } catch (e) { /* storage bloccato */ } }
+  // aperta dall'icona della schermata Home (app a schermo intero)
+  const inApp = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+
+  function leggi(chiave) { try { return localStorage.getItem(chiave); } catch (e) { return null; } }
+  function scrivi(chiave, v) { try { v == null ? localStorage.removeItem(chiave) : localStorage.setItem(chiave, v); } catch (e) { /* storage bloccato */ } }
 
   let sessione = leggi(CHIAVE_SESSIONE);
   let periodo = [7, 30, 90].includes(+leggi(CHIAVE_PERIODO)) ? +leggi(CHIAVE_PERIODO) : 30;
@@ -57,7 +62,11 @@
       return;
     }
     const avvia = () => {
-      window.google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: dopoGoogle, auto_select: false, ux_mode: "popup" });
+      // nell'app della schermata Home la finestrella di Google non torna alla pagina: Google
+      // rimanda invece il token al Worker, che torna qui con un codice usa-e-getta (#codice=…)
+      window.google.accounts.id.initialize(inApp
+        ? { client_id: GOOGLE_CLIENT_ID, auto_select: false, ux_mode: "redirect", login_uri: API + "/admin/accesso-google" }
+        : { client_id: GOOGLE_CLIENT_ID, callback: dopoGoogle, auto_select: false, ux_mode: "popup" });
       window.google.accounts.id.renderButton($("bottoneGoogle"), { theme: "filled_black", size: "large", shape: "pill", text: "signin_with", locale: "it" });
     };
     if (window.google && window.google.accounts) { avvia(); return; }
@@ -76,6 +85,23 @@
     } catch (err) {
       mostraAccesso("Accesso negato: " + err.message);
     }
+  }
+  // ritorno dall'accesso "a passaggio": #codice=… si scambia una volta sola con la sessione
+  async function dopoPassaggio() {
+    const m = /^#(codice|errore)=([^&]+)/.exec(location.hash);
+    if (!m) return false;
+    history.replaceState(null, "", location.pathname);
+    if (m[1] === "errore") { mostraAccesso("Accesso negato: " + decodeURIComponent(m[2]).replace(/-/g, " ")); return true; }
+    try {
+      let j;
+      try { j = await chiama("/admin/accesso-codice", { codice: m[2] }); }
+      catch (e) { await new Promise(r => setTimeout(r, 1500)); j = await chiama("/admin/accesso-codice", { codice: m[2] }); }
+      sessione = j.token; scrivi(CHIAVE_SESSIONE, j.token);
+      apri();
+    } catch (err) {
+      mostraAccesso("Accesso non riuscito: " + err.message);
+    }
+    return true;
   }
   $("btnSviluppo").addEventListener("click", async () => {
     try {
@@ -405,6 +431,28 @@
     catch (err) { alert("Non riuscito: " + err.message); b.disabled = false; }
   });
 
+  /* ---------------- app sulla schermata Home ---------------- */
+  // Android: Chrome offre l'installazione (beforeinstallprompt); iPhone: passi da Condividi
+  let richiestaInstalla = null;
+  const android = /Android/i.test(navigator.userAgent);
+  $("btnApp").hidden = inApp;
+  $("btnApp").addEventListener("click", () => {
+    const primo = android ? $("passiAndroid") : $("passiIphone"), altro = android ? $("passiIphone") : $("passiAndroid");
+    primo.classList.add("tuo"); altro.classList.remove("tuo");
+    primo.parentNode.insertBefore(primo, altro);   // il telefono in uso per primo
+    $("dlgApp").showModal();
+  });
+  $("btnChiudiApp").addEventListener("click", () => $("dlgApp").close());
+  $("dlgApp").addEventListener("click", e => { if (e.target === $("dlgApp")) $("dlgApp").close(); });
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); richiestaInstalla = e; $("btnInstallaOra").hidden = false; });
+  $("btnInstallaOra").addEventListener("click", async () => {
+    if (!richiestaInstalla) return;
+    richiestaInstalla.prompt();
+    await richiestaInstalla.userChoice.catch(() => null);
+    richiestaInstalla = null; $("btnInstallaOra").hidden = true; $("dlgApp").close();
+  });
+  window.addEventListener("appinstalled", () => { $("btnApp").hidden = true; });
+
   /* ---------------- via ---------------- */
-  if (sessione) apri(); else mostraAccesso();
+  dopoPassaggio().then(fatto => { if (!fatto) { if (sessione) apri(); else mostraAccesso(); } });
 })();

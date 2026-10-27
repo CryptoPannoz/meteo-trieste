@@ -1,0 +1,17 @@
+{
+  "id": "/admin/",
+  "name": "Admin · Vento Trieste",
+  "short_name": "VT Admin",
+  "description": "Area riservata di Vento Trieste: dati, servizi e bot delle previsioni.",
+  "lang": "it",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "display": "standalone",
+  "background_color": "#07090c",
+  "theme_color": "#07090c",
+  "icons": [
+    { "src": "/admin/icona-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/admin/icona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/admin/icona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
