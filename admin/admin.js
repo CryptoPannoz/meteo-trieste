@@ -391,13 +391,21 @@
           (t.foto ? " (" + intero(t.foto) + " con foto)" : "") + ".</p>"
         : '<p class="nota">Nessuna chat autorizzata: premi "Collega il bot", poi apri il link dal telefono e premi Avvia.</p>';
       if (ultimoLink) html += '<p>Apri dal telefono (valido 30 minuti):<br><a class="link-bot" href="' + esc(ultimoLink.link) + '" target="_blank" rel="noopener">' + esc(ultimoLink.link) + "</a></p>";
-      if (chat) html += '<p class="nota">Ogni sera alle 19:30 il bot manda la verifica di oggi e la previsione per domani (regola di base, ancora senza Claude).</p>';
+      if (chat) html += '<p class="nota">Ogni sera alle 19:30 il bot manda la verifica di oggi e la previsione per domani (la lettura di Claude e la regola di base); alle 10 chiede il giudizio su com\'era.</p>';
       html += '<div class="azioni"><button type="button" class="primario" id="btnCollega">' + (chat ? "Ricollega il bot" : "Collega il bot") + "</button>" +
         (chat ? '<button type="button" class="secondario" id="btnProvaSera">Manda ora un messaggio di prova</button>' +
+          '<button type="button" class="secondario" id="btnProvaMattina">Manda ora la domanda del mattino</button>' +
           '<button type="button" class="secondario pericolo" id="btnScollega">Dimentica la chat</button>' : "") + "</div>";
+      if (chat) html += htmlInvitati(t);
     }
     $("telegram").innerHTML = html;
-    const c = $("btnCollega"), sc = $("btnScollega"), ps = $("btnProvaSera");
+    if (chat) collegaInvitati();
+    const c = $("btnCollega"), sc = $("btnScollega"), ps = $("btnProvaSera"), pm = $("btnProvaMattina");
+    if (pm) pm.addEventListener("click", async () => {
+      pm.disabled = true;
+      try { await chiama("/admin/mattina/prova", {}); alert("Mandata su Telegram: la domanda per il giudizio di oggi."); } catch (err) { alert("Non riuscito: " + err.message); }
+      pm.disabled = false;
+    });
     if (ps) ps.addEventListener("click", async () => {
       ps.disabled = true;
       try {
@@ -415,6 +423,60 @@
       if (!window.confirm("Il bot smetterà di rispondere a questa chat finché non la ricolleghi. Procedo?")) return;
       try { await chiama("/admin/telegram/scollega", {}); await caricaStato(); } catch (err) { alert("Non riuscito: " + err.message); }
     });
+  }
+
+  /* ---------------- invitati che danno il giudizio (27 ott 2026) ----------------
+     Ricevono la previsione delle 19:30 nel formato di Alberto e alle 10 la domanda con i
+     bottoni (direzione, intensità, ⛏️/⭐️); non parlano con Claude. Link personale, 7 giorni. */
+  let ultimoInvito = null;
+  const giornoMese = iso => new Date(iso).toLocaleDateString("it-IT", { day: "numeric", month: "short" });
+  function htmlInvitati(t) {
+    const giudici = t.giudici || [], inviti = t.inviti || [];
+    let html = '<h3 class="sotto-titolo">Invitati che danno il giudizio</h3>' +
+      '<p class="nota">Ricevono la previsione delle 19:30 (Previsione, Giudizio, Testuale) e alle 10 la domanda con i bottoni: direzione, intensità, ⛏️ o ⭐️. Non parlano con Claude e non vedono il manuale.</p>';
+    html += giudici.length
+      ? '<ul class="righe">' + giudici.map(g => '<li><span class="pallino ' + (g.oggi ? "e-ok" : "e-spento") + '" aria-hidden="true"></span><span class="nome">' + esc(g.nome) +
+          '</span><span class="det">dal ' + esc(giornoMese(g.quando)) + (g.oggi ? " · giudizio di oggi dato" : "") +
+          ' <button type="button" class="secondario pericolo piccolo" data-togli-giudice="' + esc(g.id) + '" data-nome="' + esc(g.nome) + '">Togli</button></span></li>').join("") + "</ul>"
+      : '<p class="nota">Ancora nessuno.</p>';
+    if (inviti.length) html += '<ul class="righe">' + inviti.map(i => '<li><span class="pallino e-attenzione" aria-hidden="true"></span><span class="nome">' + esc(i.nome) + ' <small class="nota">invito in attesa</small></span>' +
+      '<span class="det">scade il ' + esc(giornoMese(i.scade)) + ' <button type="button" class="secondario piccolo" data-copia-invito="' + esc(i.link) + '">Copia link</button>' +
+      ' <button type="button" class="secondario pericolo piccolo" data-annulla-invito="' + esc(i.codice) + '" data-nome="' + esc(i.nome) + '">Annulla</button></span></li>').join("") + "</ul>";
+    if (ultimoInvito) html += '<p>Link per <strong>' + esc(ultimoInvito.nome) + '</strong> (una volta sola, 7 giorni):<br><a class="link-bot" href="' + esc(ultimoInvito.link) + '" target="_blank" rel="noopener">' + esc(ultimoInvito.link) + "</a></p>" +
+      '<div class="azioni"><button type="button" class="primario" id="btnCondividiInvito">' + (navigator.share ? "Manda il link" : "Copia il link") + "</button></div>";
+    html += '<div class="riga-campo"><label class="nascosto" for="nomeInvito">Nome di chi inviti</label>' +
+      '<input class="campo" id="nomeInvito" type="text" maxlength="40" autocomplete="off" placeholder="Nome di chi inviti, es. Marco">' +
+      '<button type="button" class="primario" id="btnInvita">Crea invito</button></div>';
+    return html;
+  }
+  function testoInvito(i) {
+    return "Ciao " + i.nome + "! Ti invito a dare il giudizio sul vento a Barcola per Vento Trieste: la sera ricevi la previsione per domani, la mattina mi dici com'era con tre tocchi.\n\nApri questo link e premi Avvia:\n" + i.link;
+  }
+  async function copia(testo) {
+    try { await navigator.clipboard.writeText(testo); alert("Copiato."); } catch (e) { window.prompt("Copia da qui:", testo); }
+  }
+  function collegaInvitati() {
+    const b = $("btnInvita"), campo = $("nomeInvito"), cond = $("btnCondividiInvito");
+    b.addEventListener("click", async () => {
+      b.disabled = true;
+      try { const r = await chiama("/admin/inviti/crea", { nome: campo.value }); ultimoInvito = r.invito; await caricaStato(); }
+      catch (err) { alert("Non riuscito: " + err.message); b.disabled = false; }
+    });
+    campo.addEventListener("keydown", e => { if (e.key === "Enter") b.click(); });
+    if (cond) cond.addEventListener("click", async () => {
+      const testo = testoInvito(ultimoInvito);
+      if (navigator.share) { try { await navigator.share({ text: testo }); } catch (e) { /* condivisione annullata */ } }
+      else copia(testo);
+    });
+    $("telegram").querySelectorAll("[data-copia-invito]").forEach(x => x.addEventListener("click", () => copia(x.dataset.copiaInvito)));
+    $("telegram").querySelectorAll("[data-annulla-invito]").forEach(x => x.addEventListener("click", async () => {
+      if (!window.confirm("Annullo l'invito a " + x.dataset.nome + "? Il link non varrà più.")) return;
+      try { await chiama("/admin/inviti/annulla", { codice: x.dataset.annullaInvito }); ultimoInvito = null; await caricaStato(); } catch (err) { alert("Non riuscito: " + err.message); }
+    }));
+    $("telegram").querySelectorAll("[data-togli-giudice]").forEach(x => x.addEventListener("click", async () => {
+      if (!window.confirm(x.dataset.nome + " non riceverà più previsioni e domande. I giudizi già dati restano. Procedo?")) return;
+      try { await chiama("/admin/giudici/togli", { id: Number(x.dataset.togliGiudice) }); await caricaStato(); } catch (err) { alert("Non riuscito: " + err.message); }
+    }));
   }
 
   /* ---------------- Search Console, GoatCounter ----------------

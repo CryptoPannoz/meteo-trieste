@@ -149,3 +149,6 @@ th { font-size: 12px; font-weight: 700; color: var(--etichetta); border-top: 0; 
 .passi p { margin: 0 0 10px; color: var(--testo-2); }
 .passi .primario { margin-bottom: 8px; }
 .passi .secondario { margin-top: 0; }
+/* invitati: bottoni piccoli dentro le righe (27 ott 2026) */
+.secondario.piccolo { min-height: 32px; padding: 0 10px; border-radius: 9px; font-size: 13px; margin-left: 6px; }
+.righe .det .piccolo { margin-top: 4px; }
