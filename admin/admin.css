@@ -152,3 +152,14 @@ th { font-size: 12px; font-weight: 700; color: var(--etichetta); border-top: 0; 
 /* invitati: bottoni piccoli dentro le righe (27 ott 2026) */
 .secondario.piccolo { min-height: 32px; padding: 0 10px; border-radius: 9px; font-size: 13px; margin-left: 6px; }
 .righe .det .piccolo { margin-top: 4px; }
+/* scheda Bot (28 ott 2026): previsioni mandate, persone, testi degli invitati */
+.griglia.spazio { margin-top: 14px; }
+td.testo-lungo { white-space: normal; min-width: 180px; text-align: left; }
+td small { display: block; margin-top: 2px; font-size: 12px; color: var(--etichetta); white-space: normal; }
+.ko { color: var(--attenzione); }
+small.ko { color: var(--attenzione); }
+.persona { padding: 0; border: 0; background: none; font-weight: 700; color: var(--testo); text-align: left; text-decoration: underline dotted var(--linea-2); text-underline-offset: 3px; cursor: pointer; }
+.persona[aria-pressed="true"] { color: var(--segnale); }
+.testi { max-height: 520px; overflow-y: auto; }
+.testi .nome { font-weight: 500; overflow-wrap: anywhere; }
+.testi small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--etichetta); }

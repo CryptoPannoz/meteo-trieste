@@ -44,7 +44,8 @@
 
   let sessione = leggi(CHIAVE_SESSIONE);
   let periodo = [7, 30, 90].includes(+leggi(CHIAVE_PERIODO)) ? +leggi(CHIAVE_PERIODO) : 30;
-  let ultimoStato = null, ultimeVisite = null;
+  let periodoBot = 7;
+  let ultimoStato = null, ultimeVisite = null, ultimoBot = null;
 
   async function chiama(percorso, corpo) {
     const r = await fetch(API + percorso, {
@@ -130,15 +131,17 @@
   });
   $("btnAggiorna").addEventListener("click", () => carica(true));
 
-  /* ---------------- viste: Dashboard / Impostazioni (#impostazioni nell'indirizzo) ---------------- */
-  function vistaDaIndirizzo() { return location.hash === "#impostazioni" ? "impostazioni" : "dashboard"; }
+  /* ---------------- viste: Dashboard / Bot / Impostazioni (#bot, #impostazioni nell'indirizzo) ---------------- */
+  const VISTE = { dashboard: "vistaDashboard", bot: "vistaBot", impostazioni: "vistaImpostazioni" };
+  function vistaDaIndirizzo() { const v = location.hash.slice(1); return VISTE[v] && v !== "dashboard" ? v : "dashboard"; }
   function mostraVista(nome) {
-    $("vistaDashboard").hidden = nome !== "dashboard";
-    $("vistaImpostazioni").hidden = nome !== "impostazioni";
+    Object.keys(VISTE).forEach(v => { $(VISTE[v]).hidden = v !== nome; });
     document.querySelectorAll(".vista-tasto").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.vista === nome)));
+    // il riepilogo del bot si legge solo quando serve: sono parecchie letture del KV
+    if (nome === "bot" && !ultimoBot) caricaBot();
   }
   document.querySelectorAll(".vista-tasto").forEach(b => b.addEventListener("click", () => {
-    history.replaceState(null, "", b.dataset.vista === "impostazioni" ? "#impostazioni" : location.pathname);
+    history.replaceState(null, "", b.dataset.vista === "dashboard" ? location.pathname : "#" + b.dataset.vista);
     mostraVista(b.dataset.vista);
   }));
   window.addEventListener("hashchange", () => { if (sessione) mostraVista(vistaDaIndirizzo()); });
@@ -152,7 +155,7 @@
   async function carica() {
     $("aggiornato").textContent = "Controllo i servizi…";
     $("btnAggiorna").disabled = true;
-    await Promise.all([caricaStato(), caricaVisite()]);
+    await Promise.all([caricaStato(), caricaVisite(), ultimoBot || !$("vistaBot").hidden ? caricaBot() : null]);
     $("btnAggiorna").disabled = false;
   }
   async function caricaStato() {
@@ -177,12 +180,12 @@
     disegnaVisite(ultimeVisite);
     if (ultimoStato) disegnaTessere(ultimoStato, ultimeVisite);
   }
-  document.querySelectorAll(".periodo").forEach(b => {
+  document.querySelectorAll("#periodiVisite .periodo").forEach(b => {
     b.setAttribute("aria-pressed", String(+b.dataset.giorni === periodo));
     b.addEventListener("click", () => {
       periodo = +b.dataset.giorni;
       scrivi(CHIAVE_PERIODO, String(periodo));
-      document.querySelectorAll(".periodo").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      document.querySelectorAll("#periodiVisite .periodo").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
       caricaVisite();
     });
   });
@@ -227,6 +230,28 @@
     const passi = [1, 2, 2.5, 5, 10].map(x => x * p);
     return passi.find(x => x >= max) || 10 * p;
   }
+  /* grafico a colonne giorno per giorno (visite, invitati attivi sul bot): punti [{ giorno, valore }],
+     oggi = la barra parziale, nome = intestazione della tabella e parola del tooltip */
+  function colonne(box, punti, oggi, descrizione, nome) {
+    const max = scalaTonda(Math.max(1, ...punti.map(p => p.valore)));
+    const parola = nome.toLowerCase();
+    box.innerHTML =
+      '<div class="grafico" role="img" aria-label="' + esc(descrizione) + '">' +
+        '<div class="g-asse" aria-hidden="true"><span>' + intero(max) + "</span><span>" + intero(max / 2) + "</span><span>0</span></div>" +
+        '<div class="g-area"><i class="g-linea" style="bottom:100%"></i><i class="g-linea" style="bottom:50%"></i>' +
+          '<div class="g-colonne">' + punti.map(p =>
+            '<span class="g-col" data-giorno="' + esc(p.giorno) + '" data-valore="' + p.valore + '"><i class="g-barra' + (p.giorno === oggi ? " oggi" : "") +
+            '" style="height:' + (p.valore / max * 100).toFixed(1) + '%"></i></span>').join("") + "</div>" +
+        "</div>" +
+      "</div>" +
+      '<div class="g-date" aria-hidden="true"><span>' + esc(giornoBreve(punti[0] ? punti[0].giorno : oggi)) + "</span><span>" + esc(giornoBreve(oggi)) + " (oggi)</span></div>" +
+      '<details class="g-tabella"><summary>Mostra i numeri</summary><div class="tabella-box"><table><thead><tr><th>Giorno</th><th>' + esc(nome) + "</th></tr></thead><tbody>" +
+        punti.slice().reverse().map(p => "<tr><td>" + esc(giornoBreve(p.giorno)) + "</td><td>" + intero(p.valore) + "</td></tr>").join("") + "</tbody></table></div></details>";
+    box.querySelectorAll(".g-col").forEach(c => {
+      c.addEventListener("mouseenter", e => mostraTip(e, giornoBreve(c.dataset.giorno) + (c.dataset.giorno === oggi ? " (finora)" : ""), intero(+c.dataset.valore) + " " + parola));
+      c.addEventListener("mouseleave", nascondiTip);
+    });
+  }
   function disegnaVisite(v) {
     const box = $("grafico");
     const liste = ["lPagine", "lEventi", "lProvenienze", "lCampagne", "lPaesi", "lSchermi", "lSistemi"];
@@ -239,25 +264,8 @@
       box.innerHTML = '<p class="errore">' + esc(v.errore) + "</p>";
       return;
     }
-    const giorni = v.perGiorno || [];
-    const max = scalaTonda(Math.max(1, ...giorni.map(g => g.visite)));
-    const oggi = v.al;
-    box.innerHTML =
-      '<div class="grafico" role="img" aria-label="' + esc("Visitatori al giorno dal " + v.dal + " al " + v.al + ", in tutto " + v.totale) + '">' +
-        '<div class="g-asse" aria-hidden="true"><span>' + intero(max) + "</span><span>" + intero(max / 2) + "</span><span>0</span></div>" +
-        '<div class="g-area"><i class="g-linea" style="bottom:100%"></i><i class="g-linea" style="bottom:50%"></i>' +
-          '<div class="g-colonne">' + giorni.map(g =>
-            '<span class="g-col" data-giorno="' + esc(g.giorno) + '" data-visite="' + g.visite + '"><i class="g-barra' + (g.giorno === oggi ? " oggi" : "") +
-            '" style="height:' + (g.visite / max * 100).toFixed(1) + '%"></i></span>').join("") + "</div>" +
-        "</div>" +
-      "</div>" +
-      '<div class="g-date" aria-hidden="true"><span>' + esc(giornoBreve(giorni[0] ? giorni[0].giorno : v.dal)) + "</span><span>" + esc(giornoBreve(oggi)) + " (oggi)</span></div>" +
-      '<details class="g-tabella"><summary>Mostra i numeri</summary><div class="tabella-box"><table><thead><tr><th>Giorno</th><th>Visitatori</th></tr></thead><tbody>' +
-        giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + "</td><td>" + intero(g.visite) + "</td></tr>").join("") + "</tbody></table></div></details>";
-    box.querySelectorAll(".g-col").forEach(c => {
-      c.addEventListener("mouseenter", e => mostraTip(e, giornoBreve(c.dataset.giorno) + (c.dataset.giorno === oggi ? " (finora)" : ""), intero(+c.dataset.visite) + " visitatori"));
-      c.addEventListener("mouseleave", nascondiTip);
-    });
+    colonne(box, (v.perGiorno || []).map(g => ({ giorno: g.giorno, valore: g.visite })), v.al,
+      "Visitatori al giorno dal " + v.dal + " al " + v.al + ", in tutto " + v.totale, "Visitatori");
 
     const err = v.errori || {};
     classifica("lPagine", v.pagine, x => x.percorso, x => x.titolo);
@@ -375,6 +383,105 @@
       b.disabled = false;
     }
   });
+
+  /* ---------------- Bot (28 ott 2026): previsioni mandate, persone, testi ----------------
+     Alberto: "un recap di quello che viene fatto, un log delle previsioni mandate, i feedback, il
+     comportamento degli utenti". Dati da /admin/bot (cruscotto.js nel Worker); Alberto non è tra
+     le persone: le sue chiamate a Claude stanno nella tessera 🤖. */
+  const VOTI = ["", "1/5⛏️⛏️", "2/5⛏️", "3/5⭐️", "4/5⭐️⭐️", "5/5⭐️⭐️⭐️"];
+  const ICONA_TESTO = { domanda: "❓", commento: "✍️", nota: "📎", testo: "💬" };
+  const USCITA = { surf: "🏄 surfabile", alba: "🌅 all'alba", niente: "– niente" };
+  const quando = iso => iso ? new Date(iso).toLocaleString("it-IT", { weekday: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "–";
+  const quota = (a, b) => b ? intero(a) + "/" + intero(b) : "–";
+  const perche = e => /blocked/i.test(e || "") ? "ha bloccato il bot" : /deactivated/i.test(e || "") ? "account chiuso" : "non arrivata";
+  let filtroPersona = null;
+
+  async function caricaBot() {
+    $("botAggiornato").textContent = "Leggo il bot…";
+    try {
+      ultimoBot = await chiama("/admin/bot?giorni=" + periodoBot);
+      disegnaBot(ultimoBot);
+      $("botAggiornato").textContent = "Ultimi " + ultimoBot.giorni + " giorni · letto alle " + new Date(ultimoBot.quando).toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    } catch (err) {
+      $("botAggiornato").textContent = "Non riesco a leggere il bot: " + err.message;
+    }
+  }
+  document.querySelectorAll("#periodiBot .periodo").forEach(b => b.addEventListener("click", () => {
+    periodoBot = +b.dataset.giorni;
+    document.querySelectorAll("#periodiBot .periodo").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    caricaBot();
+  }));
+
+  function disegnaBot(b) {
+    const t = b.totali, c = t.claude || {};
+    const tessere = [
+      { e: "👥 Invitati", v: intero(t.invitati), s: t.attivi + " attivi nel periodo" + (t.nuovi ? " · " + t.nuovi + " nuovi" : "") },
+      { e: "🔮 Previsioni", v: intero(t.previsioni), s: "📨 ricevute " + quota(t.consegne.mandati, t.consegne.totale) },
+      { e: "🗳️ Voti per domani", v: intero(t.pronostici), s: t.consegne.mandati ? Math.round(t.pronostici / t.consegne.mandati * 100) + "% di chi l'ha ricevuta" : "sotto la previsione" },
+      { e: "🙋 Giudizi", v: intero(t.giudizi), s: "com'era davvero (10:30)" },
+      { e: "❓ Domande", v: intero(t.domande), s: "✍️ " + intero(t.commenti) + " commenti · 📎 " + intero(t.note) + " note" },
+      { e: "🤖 Claude oggi", v: intero(c.oggi) + "/" + intero(c.limiteGiorno), s: "mese " + intero(c.mese) + "/" + intero(c.limiteMese) }
+    ];
+    $("botTessere").innerHTML = tessere.map(x => '<div class="tessera"><span class="t-etichetta">' + esc(x.e) + '</span><b class="t-valore">' + esc(x.v) +
+      '</b><span class="t-sotto">' + esc(x.s) + "</span></div>").join("");
+
+    // una riga per previsione: cosa diceva, chi l'ha ricevuta, chi ha risposto, com'è andata
+    const ko = l => l.length ? '<small class="ko">⚠️ ' + l.map(x => esc(x.nome) + " (" + perche(x.errore) + ")").join(", ") + "</small>" : "";
+    $("botPrevisioni").innerHTML = b.previsioni.length
+      ? "<thead><tr><th>Giorno</th><th>🔮 Previsione</th><th>📨 Ricevuta</th><th>🗳️ Voti</th><th>☀️ 10:30</th><th>🙋 Giudizi</th><th>✍️</th><th>📊 Com'è andata</th></tr></thead><tbody>" +
+        b.previsioni.map(p => "<tr><td>" + esc(giornoBreve(p.giorno)) + "</td>" +
+          '<td class="testo-lungo">' + (p.voto != null ? "<b>" + esc(VOTI[p.voto]) + "</b> " + esc(p.riga || "") + (p.testuale ? "<small>" + esc(p.testuale) + "</small>" : "")
+            : '<span class="nota">solo regola di base: ' + esc(p.base || "–") + "</span>") + "</td>" +
+          '<td class="testo-lungo">' + (p.consegna ? quota(p.consegna.mandati, p.consegna.totale) + ko(p.consegna.ko) : "–") + "</td>" +
+          "<td>" + (p.pronostici.n ? p.pronostici.n + " · ⌀ " + n1(p.pronostici.media) + (p.pronostici.accordo != null ? " · 🤝 " + p.pronostici.accordo : "") : "–") + "</td>" +
+          "<td>" + (p.mattina ? quota(p.mattina.mandati, p.mattina.totale) : "–") + "</td>" +
+          "<td>" + (p.giudizi.n ? p.giudizi.n + (p.giudizi.media != null ? " · ⌀ " + n1(p.giudizi.media) : "") : "–") + "</td>" +
+          "<td>" + (p.commenti || "–") + "</td>" +
+          "<td>" + (p.esito ? esc(USCITA[p.esito.uscita] || p.esito.uscita) + (p.esito.media != null ? " · " + n1(p.esito.media) + " kt" : "") : p.giorno > b.al ? "domani" : "–") + "</td></tr>").join("") + "</tbody>"
+      : '<tbody><tr><td class="nota">Nessuna previsione nel periodo.</td></tr></tbody>';
+
+    // le persone invitate, dalla più attiva (Alberto no: le sue chat con Claude sono nella tessera)
+    const persone = b.persone.filter(p => !p.admin);
+    $("botPersone").innerHTML = persone.length
+      ? "<thead><tr><th>Persona</th><th>📨 Ricevute</th><th>🗳️ Voti</th><th>🙋 Giudizi</th><th>❓ Domande</th><th>✍️ Scritti</th><th>⌨️ Comandi</th><th>📅 Giorni</th><th>🕒 Ultima volta</th></tr></thead><tbody>" +
+        persone.map(p => {
+          const k = p.tipi || {};
+          return '<tr><td class="testo-lungo"><button type="button" class="persona" data-chat="' + esc(p.id) + '"' + (filtroPersona === p.id ? ' aria-pressed="true"' : "") + ">" + esc(p.nome) + "</button>" +
+            "<small>" + [p.gruppo ? esc(p.gruppo) : null, p.dal ? "dal " + esc(giornoMese(p.dal)) : null, p.invitato ? null : "uscito"].filter(Boolean).join(" · ") + "</small></td>" +
+            "<td>" + intero(p.ricevute) + (p.perse ? ' <span class="ko" title="' + esc(p.errore || "") + '">⚠️ ' + p.perse + "</span>" : "") + "</td>" +
+            "<td>" + (p.pronostici || "–") + "</td><td>" + (p.giudizi || "–") + "</td><td>" + (k.domanda || "–") + "</td>" +
+            "<td>" + ((k.commento || 0) + (k.testo || 0) + (k.nota || 0) || "–") + "</td><td>" + (k.comando || "–") + "</td>" +
+            "<td>" + (p.giorni || "–") + "</td><td>" + esc(p.ultimo ? quando(p.ultimo) : "mai") + "</td></tr>";
+        }).join("") + "</tbody>"
+      : '<tbody><tr><td class="nota">Ancora nessun invitato.</td></tr></tbody>';
+    $("botPersone").querySelectorAll(".persona").forEach(x => x.addEventListener("click", () => {
+      filtroPersona = filtroPersona === +x.dataset.chat ? null : +x.dataset.chat;
+      disegnaBot(b);
+      if (filtroPersona) $("botTesti").scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
+
+    disegnaTesti(b);
+    colonne($("botGrafico"), b.attivita.map(a => ({ giorno: a.giorno, valore: a.persone })), b.al,
+      "Invitati che hanno usato il bot, giorno per giorno, dal " + b.dal + " al " + b.al, "Invitati attivi");
+    $("botAzioni").innerHTML = b.azioni.length
+      ? b.azioni.map(a => '<li><span class="nome">' + esc(a.cosa) + (a.dettaglio ? ' <small class="nota">' + esc(a.dettaglio) + "</small>" : "") +
+          '</span><span class="det">' + esc(data(a.quando)) + "</span></li>").join("")
+      : '<li><span class="nome nota">Niente nel periodo.</span></li>';
+  }
+
+  /* domande, commenti e note degli invitati, con la risposta del bot (ultimi 7 giorni) */
+  function disegnaTesti(b) {
+    const chi = filtroPersona ? b.persone.find(p => p.id === filtroPersona) : null;
+    const testi = chi ? b.testi.filter(x => x.chat === chi.id) : b.testi;
+    $("botTesti").innerHTML = (chi ? '<p class="nota">Solo <strong>' + esc(chi.nome) + '</strong> · <button type="button" class="persona" id="btnTuttiTesti">mostra tutti</button></p>' : "") +
+      (testi.length
+        ? '<ul class="righe testi">' + testi.map(x => '<li><span class="nome">' + (ICONA_TESTO[x.tipo] || "💬") + " " + esc(x.testo) +
+            (x.risposta ? "<small>↳ " + esc(x.risposta) + "</small>" : "") + '</span><span class="det">' + esc(x.nome) + "<br>" + esc(quando(x.quando)) + "</span></li>").join("") + "</ul>"
+        : '<p class="nota">Nessun messaggio scritto negli ultimi 7 giorni.</p>') +
+      '<p class="nota">❓ domanda · ✍️ commento sulla previsione · 📎 nota a un voto · 💬 scritto prima del 28 ott sera</p>';
+    const tutti = $("btnTuttiTesti");
+    if (tutti) tutti.addEventListener("click", () => { filtroPersona = null; disegnaBot(b); });
+  }
 
   /* ---------------- Telegram ---------------- */
   let ultimoLink = null;

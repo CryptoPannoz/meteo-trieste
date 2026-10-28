@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./admin.css?v=20261028d">
+  <link rel="stylesheet" href="./admin.css?v=20261028e">
 </head>
 <body>
   <header class="barra">
@@ -34,6 +34,7 @@
     </div>
     <nav class="viste" id="viste" aria-label="Sezioni" hidden>
       <button type="button" class="vista-tasto" data-vista="dashboard" aria-pressed="true">Dashboard</button>
+      <button type="button" class="vista-tasto" data-vista="bot" aria-pressed="false">Bot</button>
       <button type="button" class="vista-tasto" data-vista="impostazioni" aria-pressed="false">Impostazioni</button>
     </nav>
     <button type="button" class="tasto" id="btnApp" hidden aria-haspopup="dialog"><span aria-hidden="true">📲</span> App</button>
@@ -59,7 +60,7 @@
 
       <div class="sezione-titolo">
         <h2>Visite al sito</h2>
-        <div class="periodi" role="group" aria-label="Periodo">
+        <div class="periodi" id="periodiVisite" role="group" aria-label="Periodo delle visite">
           <button type="button" class="periodo" data-giorni="7" aria-pressed="false">7 giorni</button>
           <button type="button" class="periodo" data-giorni="30" aria-pressed="true">30 giorni</button>
           <button type="button" class="periodo" data-giorni="90" aria-pressed="false">90 giorni</button>
@@ -93,6 +94,44 @@
         <article class="scheda" aria-labelledby="tCentraline">
           <h3 id="tCentraline">Centraline</h3>
           <ul class="righe" id="centraline"></ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== BOT (28 ott 2026) =====================
+         Previsioni mandate, chi le ha ricevute, voti, giudizi, domande e commenti degli invitati.
+         I dati arrivano da /admin/bot del Worker (cruscotto.js), solo letture. -->
+    <section class="pannello" id="vistaBot" hidden aria-label="Bot">
+      <div class="sezione-titolo">
+        <h2>Bot Telegram</h2>
+        <div class="periodi" id="periodiBot" role="group" aria-label="Periodo del bot">
+          <button type="button" class="periodo" data-giorni="7" aria-pressed="true">7 giorni</button>
+          <button type="button" class="periodo" data-giorni="30" aria-pressed="false">30 giorni</button>
+        </div>
+      </div>
+      <p class="aggiornato" id="botAggiornato" aria-live="polite"></p>
+      <div class="tessere" id="botTessere"></div>
+
+      <div class="griglia spazio">
+        <article class="scheda larga" aria-labelledby="tBotPrev">
+          <h3 id="tBotPrev">🔮 Previsioni mandate</h3>
+          <div class="tabella-box"><table id="botPrevisioni"></table></div>
+          <p class="nota">📨 Telegram non dice a un bot chi legge: «ricevuta» vuol dire arrivata sul telefono. Chi ha toccato il voto 🗳️ o il giudizio 🙋 l'ha vista di sicuro.</p>
+        </article>
+        <article class="scheda larga" aria-labelledby="tBotPersone">
+          <h3 id="tBotPersone">👥 Persone</h3>
+          <div class="tabella-box"><table id="botPersone"></table></div>
+          <p class="nota">Tocca un nome per vedere solo i suoi messaggi qui sotto.</p>
+        </article>
+        <article class="scheda" aria-labelledby="tBotTesti">
+          <h3 id="tBotTesti">💬 Cosa scrivono</h3>
+          <div id="botTesti"></div>
+        </article>
+        <article class="scheda" aria-labelledby="tBotGrafico">
+          <h3 id="tBotGrafico">📅 Invitati attivi al giorno</h3>
+          <div id="botGrafico"></div>
+          <h3 class="sotto-titolo">🤖 Cosa ha fatto il bot</h3>
+          <ul class="righe registro-azioni" id="botAzioni"></ul>
         </article>
       </div>
     </section>
@@ -152,6 +191,6 @@
     <p class="nota">Nell'app si entra con Google come qui. L'accesso dura 12 ore, anche se chiudi l'app.</p>
     <button type="button" class="secondario" id="btnChiudiApp">Chiudi</button>
   </dialog>
-  <script src="./admin.js?v=20261028d"></script>
+  <script src="./admin.js?v=20261028e"></script>
 </body>
 </html>

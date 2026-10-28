@@ -44,8 +44,8 @@
 /* Lite · Pro (28 ott 2026). Alberto: "Trieste è fantastica per chi mastica di meteo, per i principianti
    è troppo complicata". Accanto a Scuro/Chiaro un interruttore Lite · Pro. La Lite tiene il surfometro
    senza giudizio (vento medio, raffica, da dove arriva), la Spinta della Bora senza grafico (c'è bora o
-   no), le webcam (in home senza Barcola e S.V.B.G.) e le previsioni Aladin e Windguru; via mappa e
-   centraline, radar, boe, registro, Spot Istria. Le regole stanno in footer-widgets.css sotto
+   no), le webcam (in home senza Barcola e S.V.B.G.) e le previsioni (testo OSMER senza mappa, con icona
+   e temperature di Open-Meteo, poi Aladin e Windguru); via mappa e centraline, radar, boe, registro, Spot Istria. Le regole stanno in footer-widgets.css sotto
    html.vt-lite; la classe la mette lo script in testa alla pagina, che mette anche html.vt-modi: solo
    quelle pagine hanno l'interruttore (per ora la home). Badge "Nuovo" che saltella fino al 15 nov 2026
    o finché la Lite non la si è provata. */
@@ -217,7 +217,7 @@
     forecastSummary.textContent = sl ? "OSMER, burja, Aladin in Windguru" : "OSMER, Bora, Aladin e Windguru";
     // nella Lite le previsioni sono solo Aladin e Windguru (28 ott 2026)
     if (doc.classList.contains("vt-modi")) forecastSummary.innerHTML = '<span class="solo-pro">' + forecastSummary.textContent +
-      '</span><span class="solo-lite">' + (sl ? "Aladin in Windguru" : "Aladin e Windguru") + "</span>";
+      '</span><span class="solo-lite">' + (sl ? "Vreme, Aladin in Windguru" : "Meteo, Aladin e Windguru") + "</span>";
   }
   main.insertBefore(phase(
     "forecast",

@@ -1600,7 +1600,7 @@ html .console-card .surf2-verdetto small.surf-base {
 /* ======================================================================
    Versione Lite (28 ott 2026): html.vt-lite, interruttore Lite · Pro nella barra in alto
    (footer-widgets.js). Per chi comincia: vento, raffica, da dove arriva, c'è bora o no, webcam,
-   Aladin e Windguru. Tutto il resto resta nella Pro.
+   il tempo dei prossimi giorni (testo OSMER senza mappa), Aladin e Windguru. Il resto resta nella Pro.
    ====================================================================== */
 .modo-switch {
   position: relative; display: inline-flex; align-items: stretch; gap: 2px; min-height: 42px;
@@ -1646,8 +1646,8 @@ html.vt-lite #radarLive,
 html.vt-lite #boe,
 html.vt-lite #registro,
 html.vt-lite #istria,
-html.vt-lite #osmer,
 html.vt-lite #bora,
+html.vt-lite .osmer-mappa,
 html.vt-lite #barcola,
 html.vt-lite #barcolaCamLuogo,
 html.vt-lite .meteo-phase { display: none !important; }

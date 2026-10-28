@@ -551,6 +551,34 @@
     }
     .osmer-tab:hover { background: #eef1f4; }
     .osmer-tab.attivo, .osmer-tab.attivo:hover { background: var(--slate); color: #fff; border-color: var(--slate); }
+    /* meteo di base da Open-Meteo (28 ott 2026): icona, massima/minima, pioggia; nelle linguette icona e massima */
+    .osmer-tab { display: flex; flex-direction: column; align-items: center; gap: .3rem; }
+    .ot-meteo { display: inline-flex; align-items: center; gap: .3rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .meteo-base { display: flex; align-items: center; gap: .8rem; margin: .55rem 0 .65rem; }
+    .meteo-ico { width: 54px; height: 54px; flex: none; }
+    .meteo-ico-mini { width: 22px; height: 22px; flex: none; }
+    .meteo-ico, .meteo-ico-mini { fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .meteo-ico-mini { stroke-width: 1.9; }
+    .mi-sole { stroke: #f5c84c; }
+    .mi-nuvola { stroke: #c9d3da; fill: #10151a; }
+    .mi-acqua { stroke: #62d9ff; }
+    .osmer-tab .mi-nuvola { fill: #171d23; }
+    .osmer-tab.attivo .mi-nuvola, .osmer-tab:hover .mi-nuvola { fill: var(--signal); stroke: #090b0d; }
+    .osmer-tab.attivo .mi-sole, .osmer-tab.attivo .mi-acqua,
+    .osmer-tab:hover .mi-sole, .osmer-tab:hover .mi-acqua { stroke: #090b0d; }
+    .meteo-parola { display: block; font-size: 1.2rem; font-weight: 800; line-height: 1.15; color: var(--ink); }
+    .meteo-num { display: block; margin-top: .2rem; font-size: .88rem; color: var(--label); font-variant-numeric: tabular-nums; }
+    .meteo-num b { color: var(--ink); font-weight: 800; }
+    :root[data-theme="light"] .mi-sole { stroke: #d99a00; }
+    :root[data-theme="light"] .mi-nuvola { stroke: #6b7b86; fill: #fff; }
+    :root[data-theme="light"] .mi-acqua { stroke: #1f7fb0; }
+    :root[data-theme="light"] .osmer-tab .mi-nuvola { fill: #f5f7f8; }
+    :root[data-theme="light"] .osmer-tab.attivo .mi-nuvola,
+    :root[data-theme="light"] .osmer-tab:hover .mi-nuvola { fill: var(--signal); stroke: #17200a; }
+    :root[data-theme="light"] .osmer-tab.attivo .mi-sole,
+    :root[data-theme="light"] .osmer-tab.attivo .mi-acqua,
+    :root[data-theme="light"] .osmer-tab:hover .mi-sole,
+    :root[data-theme="light"] .osmer-tab:hover .mi-acqua { stroke: #17200a; }
 
     /* ---- Modal ---- */
     .modal {
@@ -1602,7 +1630,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261028" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261028b" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261022" defer></script>
   <script src="./spinta-bora.js?v=20261028"></script>
@@ -2035,9 +2063,9 @@
 
   <!-- BOLLETTINO OSMER -->
   <div class="section" id="osmer">
-    <h2>Previsione descrittiva – OSMER FVG</h2>
+    <h2><span class="solo-pro">Previsione descrittiva – OSMER FVG</span><span class="solo-lite">Il tempo nei prossimi giorni</span></h2>
     <div id="osmerBollettino"><p class="stato">Caricamento…</p></div>
-    <p class="stato">Fonte: <a href="https://www.meteo.fvg.it/" target="_blank" rel="noopener">ARPA FVG - S.O.C. OSMER e GRN</a> · <a href="https://creativecommons.org/licenses/by/3.0/it/" target="_blank" rel="noopener">CC BY 3.0 IT</a></p>
+    <p class="stato">Fonte: <a href="https://www.meteo.fvg.it/" target="_blank" rel="noopener">ARPA FVG - S.O.C. OSMER e GRN</a> · <a href="https://creativecommons.org/licenses/by/3.0/it/" target="_blank" rel="noopener">CC BY 3.0 IT</a> · icona e temperature: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (modello, Trieste)</p>
   </div>
 
   <!-- RADAR ARSO -->
@@ -2770,36 +2798,138 @@
       return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
     }
     const OSMER_ETICH = { oggi: "Oggi", domani: "Domani", dopodomani: "Dopodomani" };
-    let OSMER_GIORNI = [];
+    let OSMER_GIORNI = [], osmerGrezzi = null, osmerArrivato = false, osmerSel = 0;
+
+    /* Meteo di base sopra il bollettino (28 ott 2026). Alberto: "non dimentichiamoci delle
+       informazioni base sul meteo": per ogni giorno un'icona del tempo (sereno, poco nuvoloso,
+       nuvoloso, pioggia…), massima, minima e probabilità di pioggia. Fonte Open-Meteo (modello,
+       punto Trieste città), abbinata al giorno OSMER per data; senza bollettino i giorni li dà
+       Open-Meteo. Si riscarica al più una volta l'ora. In Pro e in Lite.
+       L'icona NON è il weather_code giornaliero di Open-Meteo: quello è l'ora peggiore del giorno e
+       con le velature alte dice "coperto" quasi sempre (28 ott: 3 giorni "Nuvoloso" con OSMER che
+       scriveva "sereno o poco nuvoloso per velature"). Il cielo viene dalla copertura media dalle 9
+       alle 17, con le nubi medie all'80% e le alte al 40%; pioggia, neve e temporali solo se il
+       giorno porta almeno 1 mm. */
+    const METEO_BASE_URL = "https://api.open-meteo.com/v1/forecast?latitude=45.6495&longitude=13.7768" +
+      "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum" +
+      "&hourly=cloud_cover_low,cloud_cover_mid,cloud_cover_high&timezone=Europe%2FRome&forecast_days=4";
+    let meteoBase = null, meteoBaseT = 0, meteoBaseInCorso = false;
+    function caricaMeteoBase() {
+      if (meteoBaseInCorso || Date.now() - meteoBaseT < 60 * 60000) return;
+      meteoBaseInCorso = true;
+      fetch(METEO_BASE_URL).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(j => {
+          const d = j.daily || {}, h = j.hourly || {};
+          meteoBase = (d.time || []).map((t, i) => {
+            let somma = 0, n = 0;
+            for (let k = i * 24 + 9; k <= i * 24 + 17; k++) {
+              const lo = (h.cloud_cover_low || [])[k], me = (h.cloud_cover_mid || [])[k], al = (h.cloud_cover_high || [])[k];
+              if (lo == null || me == null || al == null) continue;
+              somma += Math.max(lo, 0.8 * me, 0.4 * al);
+              n++;
+            }
+            return {
+              data: t, codice: d.weather_code[i], max: d.temperature_2m_max[i], min: d.temperature_2m_min[i],
+              nubi: n ? somma / n : null, mm: d.precipitation_sum ? d.precipitation_sum[i] : null,
+              pioggia: d.precipitation_probability_max ? d.precipitation_probability_max[i] : null
+            };
+          });
+          meteoBaseT = Date.now();
+          if (osmerArrivato) renderOsmer(osmerGrezzi);
+        })
+        .catch(() => {})
+        .then(() => { meteoBaseInCorso = false; });
+    }
+    // giorno di Open-Meteo → [icona, parola]
+    function tempoDa(m) {
+      const c = m.codice, bagnato = m.mm == null || m.mm >= 1;   // un'ora di pioviggine non fa una giornata di pioggia
+      if (bagnato) {
+        if (c >= 95) return ["temporale", "Temporali"];
+        if ((c >= 71 && c <= 77) || c === 85 || c === 86) return ["neve", "Neve"];
+        if (c >= 80 && c <= 82) return ["pioggia", "Rovesci"];
+        if (c >= 61 && c <= 67) return ["pioggia", "Pioggia"];
+        if (c >= 51 && c <= 57) return ["pioggia", "Pioviggine"];
+      }
+      const nubi = m.nubi != null ? m.nubi : [5, 30, 60, 90][Math.min(c, 3)];
+      if (nubi < 20) return ["sereno", "Sereno"];
+      if (nubi < 45) return ["poco", "Poco nuvoloso"];
+      if (nubi < 75) return ["poco", "Variabile"];
+      return ["nuvoloso", "Nuvoloso"];
+    }
+    // stesso tratto arrotondato delle icone del sito; sole giallo, nuvola grigia, acqua azzurra
+    const NUVOLA = '<path class="mi-nuvola" d="M7 18.5h10.5a3.8 3.8 0 0 0 .4-7.6 5.6 5.6 0 0 0-10.8-1.2A4.4 4.4 0 0 0 7 18.5z"/>';
+    const NUVOLA_ALTA = '<path class="mi-nuvola" d="M7 15h10.5a3.8 3.8 0 0 0 .4-7.6 5.6 5.6 0 0 0-10.8-1.2A4.4 4.4 0 0 0 7 15z"/>';
+    const ICONE_METEO = {
+      sereno: '<circle class="mi-sole" cx="12" cy="12" r="4.2"/><path class="mi-sole" d="M12 2.8v2.2M12 19v2.2M2.8 12h2.2M19 12h2.2M5.5 5.5l1.6 1.6M16.9 16.9l1.6 1.6M5.5 18.5l1.6-1.6M16.9 7.1l1.6-1.6"/>',
+      poco: '<circle class="mi-sole" cx="9" cy="9" r="3.2"/><path class="mi-sole" d="M9 3v1.6M3 9h1.6M4.8 4.8l1.1 1.1M13.2 4.8l-1.1 1.1M4.8 13.2l1.1-1.1"/>' +
+        '<path class="mi-nuvola" d="M10.5 20h8a3.2 3.2 0 0 0 .3-6.4 4.7 4.7 0 0 0-9.1-1A3.7 3.7 0 0 0 10.5 20z"/>',
+      nuvoloso: NUVOLA,
+      pioggia: NUVOLA_ALTA + '<path class="mi-acqua" d="M8.5 18.5l-1 2.8M12.5 18.5l-1 2.8M16.5 18.5l-1 2.8"/>',
+      neve: NUVOLA_ALTA + '<path class="mi-acqua" d="M8 19h.01M12 21h.01M16 19h.01M10 22.5h.01M14 22.5h.01"/>',
+      temporale: NUVOLA_ALTA + '<path class="mi-sole" d="M12.8 16l-2.6 3.6h3.2l-1.8 3.4"/>'
+    };
+    function iconaMeteo(m, cls) {
+      return '<svg class="' + cls + '" viewBox="0 0 24 24" aria-hidden="true">' + ICONE_METEO[tempoDa(m)[0]] + "</svg>";
+    }
+    // "mercoledì 28 ottobre" → "10-28", per trovare lo stesso giorno in Open-Meteo
+    const MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
+    function meseGiorno(s) {
+      const m = /(\d{1,2})\s+([a-z]+)/i.exec(s || "");
+      const i = m ? MESI.indexOf(m[2].toLowerCase()) : -1;
+      return i < 0 ? "" : String(i + 1).padStart(2, "0") + "-" + m[1].padStart(2, "0");
+    }
+    function gradi(t) { return t == null || isNaN(t) ? "–" : Math.round(t) + "°"; }
+
     function renderOsmer(giorni) {
+      osmerGrezzi = giorni;
+      osmerArrivato = true;
+      caricaMeteoBase();
       const box = document.getElementById("osmerBollettino");
-      if (!Array.isArray(giorni) || !giorni.length) {
+      const meteo = meteoBase || [];
+      let lista = Array.isArray(giorni) && giorni.length
+        ? giorni.map(g => Object.assign({}, g, { meteo: meteo.find(m => m.data.slice(5) === meseGiorno(g.data)) || null }))
+        : meteo.slice(0, 3).map((m, i) => ({ giorno: ["oggi", "domani", "dopodomani"][i], data: "", testo: "", meteo: m }));
+      if (!lista.length) {
         box.innerHTML = '<p class="stato">Bollettino non disponibile — <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">apri OSMER</a></p>';
         return;
       }
-      OSMER_GIORNI = giorni;
-      const tabs = giorni.map((g, i) =>
+      OSMER_GIORNI = lista;
+      const tabs = lista.map((g, i) =>
         '<button class="osmer-tab" id="osmerTab' + i + '" onclick="selOsmer(' + i + ')">' +
-          (OSMER_ETICH[g.giorno] || g.giorno) + '</button>'
+          '<span class="ot-giorno">' + escHtml(OSMER_ETICH[g.giorno] || g.giorno) + '</span>' +
+          (g.meteo ? '<span class="ot-meteo">' + iconaMeteo(g.meteo, "meteo-ico-mini") + gradi(g.meteo.max) + '</span>' : "") +
+        '</button>'
       ).join("");
       box.innerHTML = '<div class="osmer-tabs">' + tabs + '</div><div id="osmerGiorno"></div>';
-      selOsmer(0);
+      selOsmer(Math.min(osmerSel, lista.length - 1));   // l'aggiornamento ogni 5 minuti non riporta su Oggi
     }
     function selOsmer(i) {
       const g = OSMER_GIORNI[i];
       if (!g) return;
+      osmerSel = i;
       document.querySelectorAll(".osmer-tab").forEach((t, idx) => t.classList.toggle("attivo", idx === i));
       const allerta = /temporal|piogg|rovesc/i.test(g.testo);
       const lbl = (OSMER_ETICH[g.giorno] || g.giorno) + (g.data ? " · " + g.data : "");
       const cb = new Date().toISOString().slice(0, 13);   // cache-bust orario: la mappa cambia di giorno
+      const m = g.meteo;
+      const base = m
+        ? '<div class="meteo-base">' + iconaMeteo(m, "meteo-ico") +
+            '<div><strong class="meteo-parola">' + tempoDa(m)[1] + '</strong>' +
+            '<span class="meteo-num">max <b>' + gradi(m.max) + '</b> · min <b>' + gradi(m.min) + '</b>' +
+            (m.pioggia != null ? ' · pioggia <b>' + Math.round(m.pioggia) + '%</b>' : "") + '</span></div></div>'
+        : "";
       document.getElementById("osmerGiorno").innerHTML =
         '<div class="bollett' + (allerta ? ' allerta' : '') + '">' +
-        '<div class="bollett-giorno">' + (allerta ? '⛈️ ' : '') + escHtml(lbl) + '</div>' +
-        '<div class="bollett-testo">' + escHtml(g.testo) + '</div>' +
-        '<img class="osmer-mappa" width="346" height="346" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
-          '" src="https://www.meteo.fvg.it/previ/' + encodeURIComponent(g.giorno) + '.png?v=' + cb +
-          '" onerror="this.style.display=\'none\'"></div>';
+        '<div class="bollett-giorno">' + escHtml(lbl) + '</div>' + base +
+        (g.testo
+          ? '<div class="bollett-testo">' + escHtml(g.testo) + '</div>' +
+            '<img class="osmer-mappa" width="346" height="346" loading="lazy" alt="Mappa previsione FVG ' + escHtml(g.giorno) +
+              '" src="https://www.meteo.fvg.it/previ/' + encodeURIComponent(g.giorno) + '.png?v=' + cb +
+              '" onerror="this.style.display=\'none\'">'
+          : '<p class="stato">Testo OSMER non disponibile — <a href="https://www.osmer.fvg.it/" target="_blank" rel="noopener">apri OSMER</a></p>') +
+        '</div>';
     }
+    caricaMeteoBase();
 
     /* ---------- Boe OGS via ERDDAP (CORS aperto: Access-Control-Allow-Origin: *) ---------- */
     const ERDDAP = "https://nodc.ogs.it/erddap/tabledap/";
@@ -3823,7 +3953,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261028c"></script>
+  <script src="./footer-widgets.js?v=20261028d"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
