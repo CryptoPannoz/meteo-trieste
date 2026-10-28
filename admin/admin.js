@@ -433,7 +433,7 @@
   function htmlInvitati(t) {
     const giudici = t.giudici || [], inviti = t.inviti || [];
     let html = '<h3 class="sotto-titolo">Invitati che danno il giudizio</h3>' +
-      '<p class="nota">Ricevono la previsione delle 19:30 (Previsione, Giudizio, Testuale) e alle 10:30 la domanda con i bottoni: direzione, intensità, ⛏️ o ⭐️. Non parlano con Claude e non vedono il manuale.</p>';
+      '<p class="nota">Ricevono la previsione delle 19:30 (Previsione, Giudizio, Testuale) e toccano il loro pronostico per domani; alle 10:30 la domanda con i bottoni: direzione, intensità, ⛏️ o ⭐️. Non parlano con Claude e non vedono il manuale.</p>';
     html += giudici.length
       ? '<ul class="righe">' + giudici.map(g => '<li><span class="pallino ' + (g.oggi ? "e-ok" : "e-spento") + '" aria-hidden="true"></span><span class="nome">' + esc(g.nome) +
           '</span><span class="det">dal ' + esc(giornoMese(g.quando)) + (g.oggi ? " · giudizio di oggi dato" : "") +
@@ -449,8 +449,9 @@
       '<button type="button" class="primario" id="btnInvita">Crea invito</button></div>';
     return html;
   }
+  // il testo lo scrive il Worker (inviti.js, testoInvito), uguale a quello di /invita sul bot
   function testoInvito(i) {
-    return "Ciao " + i.nome + "! Ti invito a dare il giudizio sul vento a Barcola per Vento Trieste: la sera ricevi la previsione per domani, la mattina mi dici com'era con tre tocchi.\n\nApri questo link e premi Avvia:\n" + i.link;
+    return i.testo || ("Ciao " + i.nome + "! Ti invito nel bot di Vento Trieste a dare il tuo parere sul vento a Barcola.\n\nApri il link con Telegram e premi Avvia:\n" + i.link);
   }
   async function copia(testo) {
     try { await navigator.clipboard.writeText(testo); alert("Copiato."); } catch (e) { window.prompt("Copia da qui:", testo); }
