@@ -427,7 +427,8 @@
 
   /* ---------------- invitati che danno il giudizio (27 ott 2026) ----------------
      Ricevono la previsione delle 19:30 nel formato di Alberto e alle 10:30 la domanda con i
-     bottoni (direzione, intensità, ⛏️/⭐️); non parlano con Claude. Link personale, 7 giorni. */
+     bottoni (direzione, intensità, ⛏️/⭐️); non parlano con Claude. Link personale (7 giorni) o
+     di gruppo, per un gruppo WhatsApp (28 ott: fino a 25 persone, 30 giorni). */
   let ultimoInvito = null;
   const giornoMese = iso => new Date(iso).toLocaleDateString("it-IT", { day: "numeric", month: "short" });
   function htmlInvitati(t) {
@@ -436,17 +437,20 @@
       '<p class="nota">Ricevono la previsione delle 19:30 (Previsione, Giudizio, Testuale) e toccano il loro pronostico per domani; alle 10:30 la domanda con i bottoni: direzione, intensità, ⛏️ o ⭐️. Possono scrivere qualche commento (3 per previsione, solo testo, senza link), che ti arriva subito. Non parlano con Claude e non vedono il manuale: sul bot, /benvenuto ti mostra cosa vedono.</p>';
     html += giudici.length
       ? '<ul class="righe">' + giudici.map(g => '<li><span class="pallino ' + (g.oggi ? "e-ok" : "e-spento") + '" aria-hidden="true"></span><span class="nome">' + esc(g.nome) +
-          '</span><span class="det">dal ' + esc(giornoMese(g.quando)) + (g.oggi ? " · giudizio di oggi dato" : "") +
+          (g.gruppo ? ' <small class="nota">' + esc(g.gruppo) + "</small>" : "") + '</span><span class="det">dal ' + esc(giornoMese(g.quando)) + (g.oggi ? " · giudizio di oggi dato" : "") +
           ' <button type="button" class="secondario pericolo piccolo" data-togli-giudice="' + esc(g.id) + '" data-nome="' + esc(g.nome) + '">Togli</button></span></li>').join("") + "</ul>"
       : '<p class="nota">Ancora nessuno.</p>';
-    if (inviti.length) html += '<ul class="righe">' + inviti.map(i => '<li><span class="pallino e-attenzione" aria-hidden="true"></span><span class="nome">' + esc(i.nome) + ' <small class="nota">invito in attesa</small></span>' +
-      '<span class="det">scade il ' + esc(giornoMese(i.scade)) + ' <button type="button" class="secondario piccolo" data-copia-invito="' + esc(i.link) + '">Copia link</button>' +
-      ' <button type="button" class="secondario pericolo piccolo" data-annulla-invito="' + esc(i.codice) + '" data-nome="' + esc(i.nome) + '">Annulla</button></span></li>').join("") + "</ul>";
-    if (ultimoInvito) html += '<p>Link per <strong>' + esc(ultimoInvito.nome) + '</strong> (una volta sola, 7 giorni):<br><a class="link-bot" href="' + esc(ultimoInvito.link) + '" target="_blank" rel="noopener">' + esc(ultimoInvito.link) + "</a></p>" +
-      '<div class="azioni"><button type="button" class="primario" id="btnCondividiInvito">' + (navigator.share ? "Manda il link" : "Copia il link") + "</button></div>";
-    html += '<div class="riga-campo"><label class="nascosto" for="nomeInvito">Nome di chi inviti</label>' +
+    if (inviti.length) html += '<ul class="righe">' + inviti.map(i => '<li><span class="pallino e-attenzione" aria-hidden="true"></span><span class="nome">' + esc(i.nome) +
+      ' <small class="nota">' + (i.gruppo ? "link di gruppo · entrati " + esc(i.usi) + " su " + esc(i.max) : "invito in attesa") + '</small></span>' +
+      '<span class="det">scade il ' + esc(giornoMese(i.scade)) + ' <button type="button" class="secondario piccolo" data-copia-invito="' + esc(i.gruppo ? (i.testo || i.link) : i.link) + '">' + (i.gruppo ? "Copia messaggio" : "Copia link") + "</button>" +
+      ' <button type="button" class="secondario pericolo piccolo" data-annulla-invito="' + esc(i.codice) + '" data-nome="' + esc(i.nome) + '" data-gruppo="' + (i.gruppo ? "1" : "") + '">' + (i.gruppo ? "Chiudi" : "Annulla") + "</button></span></li>").join("") + "</ul>";
+    if (ultimoInvito) html += '<p>' + (ultimoInvito.gruppo ? "Link del gruppo <strong>" + esc(ultimoInvito.nome) + "</strong> (fino a " + esc(ultimoInvito.max) + " persone, 30 giorni): manda il messaggio nel gruppo WhatsApp." : "Link per <strong>" + esc(ultimoInvito.nome) + "</strong> (una volta sola, 7 giorni):") +
+      '<br><a class="link-bot" href="' + esc(ultimoInvito.link) + '" target="_blank" rel="noopener">' + esc(ultimoInvito.link) + "</a></p>" +
+      '<div class="azioni"><button type="button" class="primario" id="btnCondividiInvito">' + (navigator.share ? "Manda il messaggio" : "Copia il messaggio") + "</button></div>";
+    html += '<div class="riga-campo"><label class="nascosto" for="nomeInvito">Nome di chi inviti o del gruppo</label>' +
       '<input class="campo" id="nomeInvito" type="text" maxlength="40" autocomplete="off" placeholder="Nome di chi inviti, es. Marco">' +
-      '<button type="button" class="primario" id="btnInvita">Crea invito</button></div>';
+      '<button type="button" class="primario" id="btnInvita">Crea invito</button></div>' +
+      '<p class="nota"><label><input type="checkbox" id="invitoGruppo"> È per un gruppo WhatsApp: un link solo per più persone (fino a 25, 30 giorni), entra chi lo tocca</label></p>';
     return html;
   }
   // il testo lo scrive il Worker (inviti.js, testoInvito), uguale a quello di /invita sul bot
@@ -460,10 +464,14 @@
     const b = $("btnInvita"), campo = $("nomeInvito"), cond = $("btnCondividiInvito");
     b.addEventListener("click", async () => {
       b.disabled = true;
-      try { const r = await chiama("/admin/inviti/crea", { nome: campo.value }); ultimoInvito = r.invito; await caricaStato(); }
+      try { const r = await chiama("/admin/inviti/crea", { nome: campo.value, gruppo: $("invitoGruppo").checked }); ultimoInvito = r.invito; await caricaStato(); }
       catch (err) { alert("Non riuscito: " + err.message); b.disabled = false; }
     });
     campo.addEventListener("keydown", e => { if (e.key === "Enter") b.click(); });
+    $("invitoGruppo").addEventListener("change", e => {
+      campo.placeholder = e.target.checked ? "Nome del gruppo, es. Squadron" : "Nome di chi inviti, es. Marco";
+      b.textContent = e.target.checked ? "Crea link di gruppo" : "Crea invito";
+    });
     if (cond) cond.addEventListener("click", async () => {
       const testo = testoInvito(ultimoInvito);
       if (navigator.share) { try { await navigator.share({ text: testo }); } catch (e) { /* condivisione annullata */ } }
@@ -471,7 +479,7 @@
     });
     $("telegram").querySelectorAll("[data-copia-invito]").forEach(x => x.addEventListener("click", () => copia(x.dataset.copiaInvito)));
     $("telegram").querySelectorAll("[data-annulla-invito]").forEach(x => x.addEventListener("click", async () => {
-      if (!window.confirm("Annullo l'invito a " + x.dataset.nome + "? Il link non varrà più.")) return;
+      if (!window.confirm((x.dataset.gruppo ? "Chiudo il link del gruppo " + x.dataset.nome + "? Chi è già dentro resta; nessun altro potrà entrare." : "Annullo l'invito a " + x.dataset.nome + "? Il link non varrà più."))) return;
       try { await chiama("/admin/inviti/annulla", { codice: x.dataset.annullaInvito }); ultimoInvito = null; await caricaStato(); } catch (err) { alert("Non riuscito: " + err.message); }
     }));
     $("telegram").querySelectorAll("[data-togli-giudice]").forEach(x => x.addEventListener("click", async () => {
