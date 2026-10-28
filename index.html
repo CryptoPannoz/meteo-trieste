@@ -39,6 +39,9 @@
   <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <!-- Lite · Pro (28 ott 2026): la classe va messa prima del primo disegno, se no si vede la Pro per
+       un attimo. ?lite e ?pro nel link scelgono la versione (footer-widgets.js la ricorda). -->
+  <script>(function(){var d=document.documentElement,m=null,q=location.search;d.classList.add("vt-modi");try{m=localStorage.getItem("vento-trieste-modo");}catch(e){}if(/[?&]lite\b/.test(q))m="lite";else if(/[?&]pro\b/.test(q))m="pro";if(m==="lite")d.classList.add("vt-lite");})();</script>
   <style>
     :root {
       --ink: #17212d;
@@ -1599,10 +1602,10 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261020" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261028" />
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261022" defer></script>
-  <script src="./spinta-bora.js?v=20261022b"></script>
+  <script src="./spinta-bora.js?v=20261028"></script>
   <script src="/pressione-trieste.js?v=20261022b"></script>
 </head>
 <body>
@@ -1729,6 +1732,11 @@
               <span class="meter-gust-app" id="meterGust" style="display:none;">
                 <span class="meter-readout-label">Raffica</span>
                 <span class="meter-readout-data"><span class="meter-gust-value" id="meterGustVal">–</span><span class="meter-unit">kt</span></span>
+              </span>
+              <!-- solo nella Lite: da dove arriva il vento, al posto della parola e del badge -->
+              <span class="meter-dir-app" id="meterDirBox" hidden>
+                <span class="meter-readout-label">Arriva da</span>
+                <span class="meter-readout-data" id="meterDirDato"></span>
               </span>
             </div>
             <div class="meter-over" id="meterOver" aria-hidden="true"></div>
@@ -1914,12 +1922,12 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>📷 Webcam</strong>
-      <span>Barcola, Sistiana, Monfalcone e Grado</span>
+      <span><span class="solo-pro">Barcola, Sistiana, Monfalcone e Grado</span><span class="solo-lite">Sistiana, Monfalcone e Grado</span></span>
     </span>
   </summary>
 
   <!-- WEBCAM · BARCOLA / TRIESTE -->
-  <div class="webcam-luogo">📍 Barcola · Trieste</div>
+  <div class="webcam-luogo" id="barcolaCamLuogo">📍 Barcola · Trieste</div>
   <div class="section" id="barcola">
     <div id="camBarcolaBlock" data-cam-box>
       <div class="webcam-intestazione">
@@ -2471,7 +2479,15 @@
       const gustLine = document.getElementById("meterGustLine"); // marker separato della raffica
       const bar = range ? range.parentElement : null;
       const over  = document.getElementById("meterOver");        // indicatore oltre la soglia dei 35 kt
+      const dirBox = document.getElementById("meterDirBox");     // "Arriva da" della versione Lite
+      const dirDato = document.getElementById("meterDirDato");
       if (!verd || !ptr || !val) return;
+      if (dirBox && dirDato) {
+        const dirOk = kt != null && !isNaN(kt) && dir != null && !isNaN(dir);
+        dirBox.hidden = !dirOk;
+        dirDato.innerHTML = dirOk ? windArrowHtml(dir, "") + '<span class="meter-dir-card">' + gradiInDirezione(dir) +
+          '</span><span class="meter-unit">' + gradi3(dir) + "</span>" : "";
+      }
       const spegniRaffica = () => {
         if (gapp)  gapp.style.display = "none";
         if (range) range.style.opacity = "0";
@@ -3807,7 +3823,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261028b"></script>
+  <script src="./footer-widgets.js?v=20261028c"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">

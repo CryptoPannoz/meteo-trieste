@@ -41,6 +41,63 @@
   }
 })();
 
+/* Lite · Pro (28 ott 2026). Alberto: "Trieste è fantastica per chi mastica di meteo, per i principianti
+   è troppo complicata". Accanto a Scuro/Chiaro un interruttore Lite · Pro. La Lite tiene il surfometro
+   senza giudizio (vento medio, raffica, da dove arriva), la Spinta della Bora senza grafico (c'è bora o
+   no), le webcam (in home senza Barcola e S.V.B.G.) e le previsioni Aladin e Windguru; via mappa e
+   centraline, radar, boe, registro, Spot Istria. Le regole stanno in footer-widgets.css sotto
+   html.vt-lite; la classe la mette lo script in testa alla pagina, che mette anche html.vt-modi: solo
+   quelle pagine hanno l'interruttore (per ora la home). Badge "Nuovo" che saltella fino al 15 nov 2026
+   o finché la Lite non la si è provata. */
+(function () {
+  var doc = document.documentElement;
+  var tema = document.getElementById("themeToggle");
+  if (!tema || !doc.classList.contains("vt-modi") || document.body.classList.contains("bcn")) return;
+  var CHIAVE = "vento-trieste-modo", PROVATA = "vt-lite-provata";
+  var FINE_NUOVO = Date.parse("2026-11-15T00:00:00+01:00");
+  var sl = doc.lang === "sl";
+  function leggi(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function salva(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function lite() { return doc.classList.contains("vt-lite"); }
+  // ?lite / ?pro nel link: lo script in testa ha già scelto, qui si ricorda
+  if (/[?&](lite|pro)\b/.test(location.search)) salva(CHIAVE, lite() ? "lite" : "pro");
+
+  var sw = document.createElement("div");
+  sw.className = "modo-switch";
+  sw.setAttribute("role", "group");
+  sw.setAttribute("aria-label", sl ? "Različica strani" : "Versione del sito");
+  sw.innerHTML =
+    '<button type="button" data-modo="lite" title="' + (sl ? "Preprosto: samo veter in napovedi" : "Semplice: solo vento e previsioni") + '">Lite</button>' +
+    '<button type="button" data-modo="pro" title="' + (sl ? "Vsa orodja" : "Tutti gli strumenti") + '">Pro</button>';
+  if (lite()) salva(PROVATA, "1");
+  if (Date.now() < FINE_NUOVO && !leggi(PROVATA)) {
+    sw.insertAdjacentHTML("beforeend", '<span class="modo-nuovo" aria-hidden="true">' + (sl ? "Novo" : "Nuovo") + "</span>");
+  }
+  tema.parentNode.insertBefore(sw, tema);
+
+  function sync() {
+    Array.prototype.forEach.call(sw.querySelectorAll("button"), function (b) {
+      b.setAttribute("aria-pressed", String((b.getAttribute("data-modo") === "lite") === lite()));
+    });
+  }
+  sync();
+  sw.addEventListener("click", function (ev) {
+    var b = ev.target.closest("button[data-modo]");
+    if (!b) return;
+    var modo = b.getAttribute("data-modo");
+    var nuovo = sw.querySelector(".modo-nuovo");
+    if (nuovo && modo === "lite") { nuovo.remove(); salva(PROVATA, "1"); }
+    if ((modo === "lite") === lite()) return;
+    doc.classList.toggle("vt-lite", modo === "lite");
+    salva(CHIAVE, modo);
+    sync();
+    if (window.SpintaBora && window.SpintaBora.ridisegna) window.SpintaBora.ridisegna();
+    if (window.vtConta) window.vtConta("modo: " + modo);
+    // si riparte dall'inizio: sotto, metà delle sezioni può essere appena sparita o comparsa
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
+
 (function () {
   var menuToggle = document.getElementById("menuToggle");
   var topnav = document.getElementById("topnav");
@@ -156,7 +213,12 @@
   }
 
   var forecastSummary = forecast.querySelector(":scope > .gruppo-sum .gruppo-sum-main > span");
-  if (forecastSummary) forecastSummary.textContent = sl ? "OSMER, burja, Aladin in Windguru" : "OSMER, Bora, Aladin e Windguru";
+  if (forecastSummary) {
+    forecastSummary.textContent = sl ? "OSMER, burja, Aladin in Windguru" : "OSMER, Bora, Aladin e Windguru";
+    // nella Lite le previsioni sono solo Aladin e Windguru (28 ott 2026)
+    if (doc.classList.contains("vt-modi")) forecastSummary.innerHTML = '<span class="solo-pro">' + forecastSummary.textContent +
+      '</span><span class="solo-lite">' + (sl ? "Aladin in Windguru" : "Aladin e Windguru") + "</span>";
+  }
   main.insertBefore(phase(
     "forecast",
     sl ? "NASLEDNJE URE IN DNEVI" : "PROSSIME ORE E GIORNI",
@@ -1126,4 +1188,113 @@
       apri(img);
     });
   });
+})();
+
+/* Icone SVG al posto delle emoji (28 ott 2026). Alberto: "metti degli SVG più morbidi, come nel menu
+   sotto: mi piacciono di più. Niente emoticon, su tutte le pagine". Stesso disegno delle icone del
+   dock e del menu (tratto arrotondato, currentColor): le emoji cambiano da telefono a telefono e
+   stonano accanto al resto. Si cambia solo l'emoji in testa al testo di titoli, pulsanti, tendine e
+   link; i testi che gli script riscrivono dopo (es. "🕒 Fonte: Barcola", "ℹ️ Spiegazione e fonte")
+   li riprende un MutationObserver. I titoli delle sezioni hanno l'icona in un riquadro, come nel
+   menu. Non sulla pagina Barcolana (grafica approvata dai partner). */
+(function () {
+  if (document.body.classList.contains("bcn") || !window.MutationObserver) return;
+  var P = {
+    vento: '<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h7"/>',
+    mappa: '<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>',
+    webcam: '<path d="M4 8h3l2-2h6l2 2h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+    radar: '<path d="M7 16a4 4 0 0 1-.5-8 5.5 5.5 0 0 1 10.6 1.2A3.5 3.5 0 0 1 17 16H7z"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/>',
+    onde: '<path d="M3 9c2 0 2.5-2 4.5-2s2.5 2 4.5 2 2.5-2 4.5-2 2.5 2 4.5 2"/><path d="M3 15c2 0 2.5-2 4.5-2s2.5 2 4.5 2 2.5-2 4.5-2 2.5 2 4.5 2"/>',
+    previsioni: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    registro: '<path d="M5 20V10M10 20V4M15 20v-7M20 20V8"/>',
+    spot: '<path d="M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>',
+    guida: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>',
+    centraline: '<path d="M12 12v9"/><circle cx="12" cy="11" r="1.5"/><path d="M8.5 7.5a5 5 0 0 1 7 0M6 5a8.5 8.5 0 0 1 12 0"/>',
+    cuore: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6v.01"/>',
+    aggiorna: '<path d="M20 12a8 8 0 0 1-14.3 4.9"/><path d="M4 12A8 8 0 0 1 18.3 7.1"/><path d="M18.5 3.5v4h-4"/><path d="M5.5 20.5v-4h4"/>',
+    casa: '<path d="M4 11l8-7 8 7"/><path d="M6 9.8V20h12V9.8"/><path d="M10 20v-5h4v5"/>',
+    vela: '<path d="M11 3L5 16h6z"/><path d="M13 7v9h5z"/><path d="M3 19.5c3 1.4 6 1.4 9 0s6-1.4 9 0"/>',
+    posta: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/>',
+    orologio: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    grafico: '<path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/>',
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    telefono: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+    avviso: '<path d="M10.3 4.6a2 2 0 0 1 3.4 0l7.6 13.2a2 2 0 0 1-1.7 3H4.4a2 2 0 0 1-1.7-3z"/><path d="M12 10v4"/><path d="M12 17.2v.01"/>',
+    termometro: '<path d="M10 13.5V5a2 2 0 0 1 4 0v8.5a4 4 0 1 1-4 0z"/><path d="M12 10v6"/>',
+    goccia: '<path d="M12 3.5s6 6.3 6 10.5a6 6 0 0 1-12 0c0-4.2 6-10.5 6-10.5z"/>',
+    barometro: '<circle cx="12" cy="13" r="8"/><path d="M12 13l3.5-3.5"/><path d="M7.5 15.5h.01M12 8.5h.01M16.5 15.5h.01"/>',
+    copia: '<rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/>',
+    persone: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 5a3 3 0 0 1 0 6"/><path d="M21 20a6 6 0 0 0-4-5.6"/>',
+    birra: '<path d="M6 8h9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M15 11h2a2 2 0 0 1 0 4h-2"/><path d="M6 8a2.5 2.5 0 0 1 4.5-1.5A2.5 2.5 0 0 1 15 8"/>',
+    schermo: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+    sole: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6L6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/>',
+    luna: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+    play: '<path d="M8 5.5v13a1 1 0 0 0 1.5.9l10-6.5a1 1 0 0 0 0-1.8l-10-6.5A1 1 0 0 0 8 5.5z"/>',
+    indietro: '<path d="M16 5.5v13a1 1 0 0 1-1.5.9l-10-6.5a1 1 0 0 1 0-1.8l10-6.5a1 1 0 0 1 1.5.9z"/>',
+    lampo: '<path d="M13 3L5.5 13.5h6L10.5 21 18.5 10.5h-6z"/>'
+  };
+  var EMOJI = {
+    "🌬": "vento", "💨": "vento", "📷": "webcam", "📸": "webcam", "🌧": "radar", "⛈": "radar",
+    "🌊": "onde", "📅": "previsioni", "📆": "previsioni", "📋": "copia", "🏖": "spot", "📍": "spot",
+    "📖": "guida", "📡": "centraline", "♥": "cuore", "❤": "cuore", "🤝": "cuore", "ℹ": "info",
+    "🔄": "aggiorna", "↻": "aggiorna", "🏠": "casa", "⛵": "vela", "📩": "posta", "✉": "posta",
+    "🕒": "orologio", "⏳": "orologio", "📈": "grafico", "🗺": "mappa", "🔗": "link", "📲": "telefono",
+    "⚠": "avviso", "🌡": "termometro", "💧": "goccia", "🔽": "barometro", "👥": "persone", "🍺": "birra",
+    "⛶": "schermo", "☀": "sole", "☾": "luna", "▶": "play", "◀": "indietro", "⚡": "lampo"
+  };
+  // titolo della tendina → la stessa icona della voce del menu
+  var PER_SEZIONE = {
+    mappaVento: "mappa", centraline: "centraline", webcam: "webcam", radarLive: "radar", boe: "onde",
+    onde: "onde", previsioni: "previsioni", registro: "registro", istria: "spot"
+  };
+  var RE = new RegExp("^\\s*(" + Object.keys(EMOJI).join("|") + ")[\\uFE0E\\uFE0F]?\\s*", "u");
+  var TITOLO = ".gruppo-sum-main > strong";
+  var SEL = TITOLO + ", summary, button, a, h2, h3, h4, label, .centraline-titolo, .webcam-luogo, .story-kicker, .sun-times, .cam-zoom-badge";
+
+  // il primo testo dell'elemento, se nulla di visibile (icona, immagine) lo precede
+  function testoIniziale(el) {
+    var w = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+    var n;
+    while ((n = w.nextNode())) {
+      if (n.nodeType === 3) { if (/\S/.test(n.nodeValue)) return n; continue; }
+      if (/^(svg|img|br|input|select|textarea|video|iframe)$/i.test(n.nodeName)) return null;
+    }
+    return null;
+  }
+  function sistema(el) {
+    if (el.closest("svg, [contenteditable]")) return;
+    var t = testoIniziale(el);
+    // il testo lo sistema l'elemento più interno (il titolo dentro il <summary>, non il <summary>)
+    if (!t || t.parentNode.closest(SEL) !== el) return;
+    var m = t.nodeValue.match(RE);
+    if (!m) return;
+    var nome = EMOJI[m[1]];
+    if (nome === "copia" && /registr|dnevnik/i.test(t.nodeValue)) nome = "registro";
+    var titolo = el.matches(TITOLO);
+    if (titolo) {
+      var det = el.closest("details");
+      if (det && PER_SEZIONE[det.id]) nome = PER_SEZIONE[det.id];
+    }
+    t.nodeValue = t.nodeValue.slice(m[0].length);
+    // <i> e non <span>: le regole delle pagine su ".gruppo-sum-main span" (sottotitolo) non la toccano
+    var ico = document.createElement("i");
+    ico.className = titolo ? "vt-ico-box" : "vt-ico" + (el.textContent.trim() ? "" : " vt-ico-solo");
+    ico.setAttribute("data-ico", nome);
+    ico.setAttribute("aria-hidden", "true");
+    ico.innerHTML = '<svg viewBox="0 0 24 24" focusable="false">' + P[nome] + "</svg>";
+    t.parentNode.insertBefore(ico, t);
+  }
+  var inAttesa = false;
+  function passa() {
+    inAttesa = false;
+    Array.prototype.forEach.call(document.querySelectorAll(SEL), sistema);
+  }
+  passa();
+  document.addEventListener("DOMContentLoaded", passa);
+  new MutationObserver(function () {
+    if (inAttesa) return;
+    inAttesa = true;
+    setTimeout(passa, 50);
+  }).observe(document.body, { childList: true, subtree: true, characterData: true });
 })();

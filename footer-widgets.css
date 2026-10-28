@@ -1564,3 +1564,143 @@ html .console-card .surf2-verdetto small.surf-base {
   font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: .72rem; font-weight: 600; font-style: italic; letter-spacing: 0; line-height: 1.35; text-transform: none;
 }
+
+/* Spinta della Bora: una riga per blocco (28 ott 2026, prima erano separate da <br>) */
+.sb-trend > span { display: block; }
+
+/* ======================================================================
+   Icone SVG al posto delle emoji (28 ott 2026, footer-widgets.js): stesso tratto del dock
+   ====================================================================== */
+.vt-ico {
+  font-style: normal;
+  display: inline-flex; flex: none; width: 1.12em; height: 1.12em; margin-right: .38em;
+  vertical-align: -.2em; line-height: 1;
+}
+.vt-ico.vt-ico-solo { margin-right: 0; }
+.vt-ico svg,
+.vt-ico-box svg {
+  width: 100%; height: 100%; fill: none; stroke: currentColor;
+  stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+}
+.vt-ico[data-ico="avviso"] { color: #f0b429; }
+/* titoli delle sezioni: l'icona in un riquadro morbido, come le voci del menu */
+.gruppo-sum-main > strong { display: flex; align-items: center; }
+.vt-ico-box {
+  font-style: normal;
+  display: inline-flex; flex: none; align-items: center; justify-content: center;
+  width: 1.85rem; height: 1.85rem; margin-right: .6rem; border-radius: 9px;
+  background: rgba(240,244,60,.1); color: var(--signal);
+}
+.vt-ico-box svg { width: 1.15rem; height: 1.15rem; }
+:root[data-theme="light"] .vt-ico-box { background: rgba(23,111,128,.1); color: var(--sea-dark); }
+:root[data-theme="light"] .vt-ico[data-ico="avviso"] { color: #b7791f; }
+.theme-toggle-icon .vt-ico { width: 1.1rem; height: 1.1rem; vertical-align: middle; }
+.cam-play .vt-ico { vertical-align: -.18em; }
+
+/* ======================================================================
+   Versione Lite (28 ott 2026): html.vt-lite, interruttore Lite · Pro nella barra in alto
+   (footer-widgets.js). Per chi comincia: vento, raffica, da dove arriva, c'è bora o no, webcam,
+   Aladin e Windguru. Tutto il resto resta nella Pro.
+   ====================================================================== */
+.modo-switch {
+  position: relative; display: inline-flex; align-items: stretch; gap: 2px; min-height: 42px;
+  padding: 3px; border: 1px solid #47513c; border-radius: 10px; background: #151b20;
+}
+html .modo-switch button {
+  min-width: 0; min-height: 0; margin: 0; padding: 0 .62rem; border: 0; border-radius: 7px;
+  background: transparent; color: #aeb9bf; box-shadow: none; transform: none;
+  font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: .76rem; font-weight: 800; letter-spacing: .02em; line-height: 1; cursor: pointer;
+}
+html .modo-switch button:hover { background: #202930; color: #fff; }
+html .modo-switch button[aria-pressed="true"],
+html .modo-switch button[aria-pressed="true"]:hover { background: var(--signal); color: #090b0d; }
+:root[data-theme="light"] .modo-switch { border-color: #c3ccd2; background: #fff; }
+:root[data-theme="light"] .modo-switch button { color: #52636d; }
+:root[data-theme="light"] .modo-switch button:hover { background: #eef2f4; color: var(--ink); }
+:root[data-theme="light"] .modo-switch button[aria-pressed="true"],
+:root[data-theme="light"] .modo-switch button[aria-pressed="true"]:hover { background: var(--signal); color: #17200a; }
+/* "Nuovo" che saltella sopra l'interruttore, fino al 15 nov 2026 o alla prima prova */
+.modo-nuovo {
+  position: absolute; top: -10px; left: -8px; z-index: 1; padding: 3px 6px 2px; border-radius: 999px;
+  background: #e24b4a; color: #fff; box-shadow: 0 3px 10px rgba(226,75,74,.45);
+  font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: .56rem; font-weight: 900; letter-spacing: .06em; line-height: 1; text-transform: uppercase;
+  pointer-events: none; animation: modo-salta 1.6s cubic-bezier(.36,.07,.19,.97) infinite;
+}
+@keyframes modo-salta {
+  0%, 55%, 100% { transform: translateY(0); }
+  15% { transform: translateY(-6px); }
+  30% { transform: translateY(0); }
+  42% { transform: translateY(-2.5px); }
+}
+@media (prefers-reduced-motion: reduce) { .modo-nuovo { animation: none; } }
+
+.solo-lite { display: none; }
+html.vt-lite .solo-lite { display: inline; }
+html.vt-lite .solo-pro { display: none; }
+
+/* sezioni che nella Lite non ci sono */
+html.vt-lite #mappaVento,
+html.vt-lite #radarLive,
+html.vt-lite #boe,
+html.vt-lite #registro,
+html.vt-lite #istria,
+html.vt-lite #osmer,
+html.vt-lite #bora,
+html.vt-lite #barcola,
+html.vt-lite #barcolaCamLuogo,
+html.vt-lite .meteo-phase { display: none !important; }
+html.vt-lite #topnav a[href$="#mappaVento"],
+html.vt-lite #topnav a[href$="#centraline"],
+html.vt-lite #topnav a[href$="#radarLive"],
+html.vt-lite #topnav a[href$="#boe"],
+html.vt-lite #topnav a[href$="#registro"],
+html.vt-lite #topnav a[href$="#istria"],
+html.vt-lite #topnav a.mn-chip[href="/mappa/"],
+html.vt-lite #topnav a.mn-chip[href="/registro/"],
+html.vt-lite .ux-mobile-dock a[href="#radarLive"] { display: none !important; }
+html.vt-lite .ux-mobile-dock { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* surfometro senza giudizio: niente parola, scala e badge; vento medio, raffica e da dove arriva */
+html.vt-lite #surfometroCard:not(.surf-offline) .surf2-verdetto,
+html.vt-lite #surfometroCard .meter-bar,
+html.vt-lite #surfometroCard .meter-ticks,
+html.vt-lite #surfometroCard .meter-labels,
+html.vt-lite #surfometroCard .meter-over,
+html.vt-lite #surfometroCard .meter-pointer .meter-dir { display: none !important; }
+html.vt-lite #surfometroCard .meter { padding-bottom: .8rem; }
+html.vt-lite #surfometroCard .meter-pointer {
+  margin-bottom: 0; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+}
+.meter-pointer .meter-dir-app { display: none; }
+html.vt-lite .meter-pointer .meter-dir-app:not([hidden]) {
+  min-width: 0; min-height: 62px; padding: .52rem .65rem; display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center; gap: .32rem; border-radius: 11px;
+  border: 1px solid #4a5560; background: #151b20; color: var(--ink);
+}
+.meter-dir-app .wind-arrow { width: 1.35rem; height: 1.35rem; color: var(--ink) !important; stroke-width: 2.8; }
+.meter-dir-app .meter-dir-card {
+  font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif; font-size: 1.3rem; font-weight: 850; line-height: 1;
+}
+html.vt-lite[data-theme="light"] .meter-pointer .meter-dir-app:not([hidden]) { border-color: #c3ccd2; background: #f6f8f9; }
+@media (max-width: 700px) {
+  html.vt-lite #surfometroCard .meter-pointer { gap: .4rem; }
+  html.vt-lite #surfometroCard .meter-mean-readout,
+  html.vt-lite #surfometroCard .meter-gust-app,
+  html.vt-lite .meter-pointer .meter-dir-app:not([hidden]) { padding: .48rem .5rem; }
+  .meter-dir-app .meter-dir-card { font-size: 1.15rem; }
+}
+
+/* Spinta della Bora senza grafico: c'è bora o no, col numero */
+html.vt-lite #barcolaLive .sb-grafico,
+html.vt-lite #barcolaLive .sb-legenda,
+html.vt-lite #barcolaLive .sb-trend .sb-oss { display: none !important; }
+html.vt-lite #barcolaLive .sb-verdetto { font-size: 1.45rem; }
+/* telefono stretto: con Lite · Pro la barra non ci sta e il marchio va a capo; "Menu" resta solo
+   l'icona (sul telefono c'è anche "Altro" nel dock) */
+@media (max-width: 430px) {
+  html.vt-modi .menu-toggle { width: 44px; padding-inline: 0; gap: 0; font-size: 0; }
+  html.vt-modi .menu-toggle-icon { font-size: 1.05rem; }
+  html .modo-switch button { padding: 0 .5rem; }
+}

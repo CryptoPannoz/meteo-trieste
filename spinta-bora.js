@@ -332,7 +332,7 @@
     else if (inizio !== null) { verdetto = T.sit.arrivo; classe = 2; }
     else if (picco >= VICINO) { verdetto = T.sit.possibile; classe = 2; }
     else { verdetto = o ? T.sit.niente : T.sit.improbabile; classe = 1; }
-    return { verdetto: verdetto, classe: classe, righe: (o ? [o.nome + ": " + ventoTesto(o)] : []).concat([spinta]) };
+    return { verdetto: verdetto, classe: classe, conOss: !!o, righe: (o ? [o.nome + ": " + ventoTesto(o)] : []).concat([spinta]) };
   }
 
   /* ---------------- grafico ---------------- */
@@ -471,7 +471,10 @@
     var sit = situazione(d);
     rif.verdetto.textContent = sit.verdetto;
     rif.verdetto.className = "sb-verdetto sb-v" + sit.classe;
-    rif.trend.innerHTML = sit.righe.map(esc).join("<br>");
+    // una riga per blocco (prima <br>): la Lite nasconde .sb-oss, il vento misurato che il surfometro mostra già
+    rif.trend.innerHTML = sit.righe.map(function (r, i) {
+      return '<span class="' + (i === 0 && sit.conOss ? "sb-oss" : "sb-sp") + '">' + esc(r) + "</span>";
+    }).join("");
     rif.info.textContent = T.info + " · " + T.agg + " " + d.adesso.slice(11, 16);
     if (!modoMappa(rif, d)) disegna(rif, d);
   }
@@ -568,12 +571,14 @@
     if (!mp) return false;
     // con la bora misurata a Trieste molo la spinta resta in vista anche se il modello la dà sotto zero
     rif.senzaBora = (rif.senzaBora ? d.ora < MAPPA_ESCI : d.ora < MAPPA_ENTRA) && !osservazioni().some(boraMisurata);
-    var mappa = rif.senzaBora && !spintaForzata();
+    // versione Lite (28 ott 2026): la mappa del vento non c'è, la spinta resta sempre in vista
+    var lite = document.documentElement.classList.contains("vt-lite");
+    var mappa = rif.senzaBora && !spintaForzata() && !lite;
     spostaMappa(mp, mappa);
     rif.box.classList.toggle("sb-senza-bora", mappa);
     var hero = rif.box.closest(".hero");
     if (hero) hero.classList.toggle("hero-senza-bora", mappa);
-    mp.torna.hidden = !rif.senzaBora || mappa;
+    mp.torna.hidden = !rif.senzaBora || mappa || lite;
     if (mappa) {
       var sit = situazione(d);
       mp.num.innerHTML = T.mappaSpinta + " <strong>" + fmt(d.ora) + " hPa</strong> · " + esc(sit.verdetto) + " · " + T.agg + " " + d.adesso.slice(11, 16);
@@ -615,5 +620,10 @@
     return inCorso;
   }
 
-  window.SpintaBora = { aggiorna: aggiorna, apri: apriFinestra, vento: vento };
+  // al cambio Lite ↔ Pro (footer-widgets.js): ridisegna con l'ultimo dato, senza scaricare
+  function ridisegna() {
+    if (ultimo) boxes.forEach(function (rif) { scriviBox(rif, ultimo); });
+  }
+
+  window.SpintaBora = { aggiorna: aggiorna, apri: apriFinestra, vento: vento, ridisegna: ridisegna };
 })();
