@@ -163,3 +163,7 @@ small.ko { color: var(--attenzione); }
 .testi { max-height: 520px; overflow-y: auto; }
 .testi .nome { font-weight: 500; overflow-wrap: anywhere; }
 .testi small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--etichetta); }
+
+/* persone e sessioni (28 ott 2026) */
+#persone { display: flex; flex-direction: column; gap: 14px; }
+.sotto-titolo { margin: 0; font-size: 13px; font-weight: 700; color: var(--etichetta); }

@@ -67,8 +67,8 @@
   sw.setAttribute("role", "group");
   sw.setAttribute("aria-label", sl ? "Različica strani" : "Versione del sito");
   sw.innerHTML =
-    '<button type="button" data-modo="lite" title="' + (sl ? "Preprosto: samo veter in napovedi" : "Semplice: solo vento e previsioni") + '">Lite</button>' +
-    '<button type="button" data-modo="pro" title="' + (sl ? "Vsa orodja" : "Tutti gli strumenti") + '">Pro</button>';
+    '<button type="button" data-versione="lite" title="' + (sl ? "Preprosto: samo veter in napovedi" : "Semplice: solo vento e previsioni") + '">Lite</button>' +
+    '<button type="button" data-versione="pro" title="' + (sl ? "Vsa orodja" : "Tutti gli strumenti") + '">Pro</button>';
   if (lite()) salva(PROVATA, "1");
   if (Date.now() < FINE_NUOVO && !leggi(PROVATA)) {
     sw.insertAdjacentHTML("beforeend", '<span class="modo-nuovo" aria-hidden="true">' + (sl ? "Novo" : "Nuovo") + "</span>");
@@ -77,14 +77,15 @@
 
   function sync() {
     Array.prototype.forEach.call(sw.querySelectorAll("button"), function (b) {
-      b.setAttribute("aria-pressed", String((b.getAttribute("data-modo") === "lite") === lite()));
+      b.setAttribute("aria-pressed", String((b.getAttribute("data-versione") === "lite") === lite()));
     });
   }
   sync();
   sw.addEventListener("click", function (ev) {
-    var b = ev.target.closest("button[data-modo]");
+    // data-versione e non data-modo: eventi.js conta [data-modo] come i bottoni della pagina Barcolana
+    var b = ev.target.closest("button[data-versione]");
     if (!b) return;
-    var modo = b.getAttribute("data-modo");
+    var modo = b.getAttribute("data-versione");
     var nuovo = sw.querySelector(".modo-nuovo");
     if (nuovo && modo === "lite") { nuovo.remove(); salva(PROVATA, "1"); }
     if ((modo === "lite") === lite()) return;
@@ -92,7 +93,8 @@
     salva(CHIAVE, modo);
     sync();
     if (window.SpintaBora && window.SpintaBora.ridisegna) window.SpintaBora.ridisegna();
-    if (window.vtConta) window.vtConta("modo: " + modo);
+    if (window.vtConta) window.vtConta("versione: passa a " + modo);
+    if (window.vtSessione) window.vtSessione();   // eventi.js: "giorno:lite" / "giorno:pro" di oggi
     // si riparte dall'inizio: sotto, metà delle sezioni può essere appena sparita o comparsa
     window.scrollTo({ top: 0, behavior: "smooth" });
   });

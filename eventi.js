@@ -18,6 +18,8 @@
      barcolana centralina: <nome> · barcolana classifiche: <anno> · condividi: whatsapp|copia link|copia url (firma, vt-app.js)
      registro: scarica csv | cambia giorno | mostra tutto | centralina <id>   (/registro/ e Barcolana; titolo = pagina)
      registro: giorno dal grafico | grafico mese|sett   grafico dei giorni ventosi (/registro/)
+     versione: passa a lite|pro    interruttore Lite · Pro della home (footer-widgets.js)
+     giorno:sessione-N · giorno:nuova-persona · giorno:lite|pro   persone e sessioni (sotto)
 
    GoatCounter invia con sendBeacon: il conteggio arriva anche se il clic cambia pagina.
    Su localhost GoatCounter non conta nulla (è normale). Per contare altro da una pagina:
@@ -61,6 +63,7 @@
     if (!t || !t.closest) return;
     var el;
 
+    sessione();
     // ---- pagina Barcolana ----
     if ((el = t.closest("[data-modo]"))) return conta("barcolana vento: " + el.getAttribute("data-modo"));
     if ((el = t.closest("#prevOre button"))) return conta("barcolana previsione: " + testo(el));
@@ -121,5 +124,63 @@
       }
     }
   }, true);
+
+  /* Persone e sessioni (28 ott 2026). Alberto: "ho bisogno di sapere quante persone guardano il sito
+     al giorno e quante sessioni fa ognuna". GoatCounter conta visitatori senza cookie: per lui una
+     visita è stesso indirizzo IP e stesso browser per qualche ora, quindi non vede chi torna dopo
+     pranzo e conta due volte chi passa dal wifi al 4G. Qui il browser tiene in localStorage solo il
+     giorno, quante sessioni ha fatto oggi e l'ora dell'ultima attività (nessun codice che lo
+     identifichi) e a ogni sessione nuova manda UN evento con il numero d'ordine:
+       giorno:sessione-1 … giorno:sessione-10   la 10 vale "dalla decima in poi" e parte una volta
+       giorno:nuova-persona                     prima volta su ventotrieste.info da questo browser
+       giorno:lite · giorno:pro                 versione usata oggi in home, una volta ciascuna
+     Visitatori di giorno:sessione-1 = persone del giorno; somma di tutte le giorno:sessione-N =
+     sessioni del giorno; giorno:sessione-N meno giorno:sessione-(N+1) = chi ne ha fatte N.
+     Sessione nuova = più di 30 minuti senza attività, o un giorno nuovo (ora di Roma). Nomi senza
+     spazi né virgole: l'API di GoatCounter cerca gli eventi per nome e li separa proprio lì.
+     /admin li legge da GoatCounter (vento-previsioni, src/visite.js). Con lo storage bloccato
+     (navigazione privata) non si conta niente: meglio un buco che persone contate due volte. */
+  var CHIAVE_VISITE = "vt-visite", PAUSA = 30 * 60000, MAX_SESSIONI = 10;
+  var ultimaSessione = 0;
+  function oggiRoma() { return new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Rome" }); }
+  function sessione() {
+    var ora = Date.now();
+    if (ora - ultimaSessione < 60000) return;   // al più un controllo al minuto (clic, visibilità, timer)
+    ultimaSessione = ora;
+    var s, nuovaPersona = false, eventi = [];
+    try {
+      s = JSON.parse(localStorage.getItem(CHIAVE_VISITE) || "null");
+      // chi ha già altre voci del sito (tema, cache dei dati…) c'era prima di questo contatore; non
+      // contano le due che footer-widgets.js scrive subito arrivando da un link ?lite
+      if (!s) nuovaPersona = !Object.keys(localStorage).some(function (k) { return !/^(vento-trieste-modo|vt-lite-provata)$/.test(k); });
+    } catch (e) { return; }
+    var giorno = oggiRoma();
+    if (!s || typeof s !== "object") s = { g: giorno, n: 0, u: 0, v: "" };
+    if (s.g !== giorno) { s.g = giorno; s.n = 0; s.v = ""; }
+    if (!s.n || ora - s.u > PAUSA) {
+      s.n++;
+      if (s.n <= MAX_SESSIONI) eventi.push("giorno:sessione-" + s.n);
+    }
+    if (nuovaPersona) eventi.push("giorno:nuova-persona");
+    // versione della home (html.vt-modi): Lite o Pro, una volta al giorno ciascuna
+    var doc = document.documentElement;
+    if (doc.classList.contains("vt-modi")) {
+      var versione = doc.classList.contains("vt-lite") ? "lite" : "pro";
+      if ((s.v || "").split(",").indexOf(versione) < 0) {
+        s.v = (s.v ? s.v + "," : "") + versione;
+        eventi.push("giorno:" + versione);
+      }
+    }
+    s.u = ora;
+    try { localStorage.setItem(CHIAVE_VISITE, JSON.stringify(s)); } catch (e) { return; }   // non salvato: si conterebbe due volte
+    eventi.forEach(function (nome) { conta(nome); });
+  }
+  // dopo il cambio Lite ↔ Pro (footer-widgets.js) la nuova versione va contata subito
+  window.vtSessione = function () { ultimaSessione = 0; sessione(); };
+  sessione();
+  // tornando sulla pagina si controlla subito; andando via si segna l'ora dell'ultima attività
+  document.addEventListener("visibilitychange", function () { ultimaSessione = 0; sessione(); });
+  // pagina aperta e guardata senza toccarla (il vento si aggiorna da solo): resta la stessa sessione
+  setInterval(function () { if (!document.hidden) sessione(); }, 5 * 60000);
 
 })();

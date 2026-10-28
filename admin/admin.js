@@ -200,6 +200,14 @@
       t.push({ etichetta: "Visitatori oggi", valore: intero(v.oggi), sotto: "giornata in corso" });
       t.push({ etichetta: "Visitatori, " + v.giorni + " giorni", valore: intero(v.totale),
         sotto: delta == null ? "" : (delta >= 0 ? "▲ +" : "▼ −") + Math.abs(delta) + "% sui " + v.giorni + " giorni prima" });
+      // persone vere del giorno e versione della home (eventi giorno:… di eventi.js, dal 28 ott 2026)
+      const o = v.persone && !v.persone.errore ? v.persone.oggi : null;
+      if (o) {
+        t.push({ etichetta: "Persone oggi", valore: intero(o.persone),
+          sotto: intero(o.sessioni) + " sessioni · " + n1(o.persone ? o.sessioni / o.persone : 0) + " a testa" });
+        t.push({ etichetta: "Lite oggi", valore: intero(o.lite),
+          sotto: "Pro " + intero(o.pro) + (o.lite + o.pro ? " · " + Math.round(o.lite / (o.lite + o.pro) * 100) + "% in Lite" : "") });
+      }
     }
     if (s.surfabili30) t.push({ etichetta: "Giornate surfabili", valore: s.surfabili30.surfabili, sotto: "negli ultimi " + s.surfabili30.giorni + " giorni del registro" });
     t.push({ etichetta: "Servizi che funzionano", valore: ok + " su " + s.servizi.length, sotto: ok === s.servizi.length ? "tutto a posto" : "guarda sotto" });
@@ -266,6 +274,7 @@
     }
     colonne(box, (v.perGiorno || []).map(g => ({ giorno: g.giorno, valore: g.visite })), v.al,
       "Visitatori al giorno dal " + v.dal + " al " + v.al + ", in tutto " + v.totale, "Visitatori");
+    disegnaPersone(v.persone, v.al);
 
     const err = v.errori || {};
     classifica("lPagine", v.pagine, x => x.percorso, x => x.titolo);
@@ -277,6 +286,32 @@
     const sb = (v.sistemi || []).slice(0, 5).concat((v.browser || []).slice(0, 5));
     classifica("lSistemi", sb.length ? sb : null, x => x.nome, null, (v.sistemi || []).slice(0, 5).length, err.systems || err.browsers);
   }
+  /* Persone e sessioni (28 ott 2026, Alberto: "quante persone guardano il sito al giorno e quante
+     sessioni fa ognuna"): medie del periodo, persone al giorno, quante sessioni fa ognuno, tabella */
+  function disegnaPersone(p, oggi) {
+    const box = $("persone");
+    if (!p || p.errore) { box.innerHTML = '<p class="nota">Non disponibile' + (p && p.errore ? ": " + esc(p.errore) : "") + ".</p>"; return; }
+    if (!p.giorniConDati) { box.innerHTML = '<p class="nota">Ancora niente: i primi numeri arrivano con le prime visite dopo la pubblicazione.</p>'; return; }
+    const giorni = p.perGiorno.filter(g => g.giorno >= p.dal);
+    box.innerHTML =
+      '<div class="numeri">' +
+        '<div class="numero"><b>' + intero(Math.round(p.personeAlGiorno)) + "</b><span>persone al giorno</span></div>" +
+        '<div class="numero"><b>' + n1(p.sessioniPerPersona) + "</b><span>sessioni a testa</span></div>" +
+        '<div class="numero"><b>' + intero(p.nuove) + "</b><span>persone nuove</span></div>" +
+        '<div class="numero"><b>' + (p.lite + p.pro ? Math.round(p.lite / (p.lite + p.pro) * 100) + "%" : "–") + "</b><span>in Lite (" + intero(p.lite) + " su " + intero(p.lite + p.pro) + ")</span></div>" +
+      "</div>" +
+      '<div id="graficoPersone"></div>' +
+      '<h4 class="sotto-titolo">Quante sessioni fa ognuno (persone, somma dei giorni)</h4><div id="lQuante"></div>' +
+      '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
+        "<th>Giorno</th><th>Persone</th><th>Sessioni</th><th>A testa</th><th>Nuove</th><th>Lite</th><th>Pro</th></tr></thead><tbody>" +
+        giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + "</td><td>" + intero(g.persone) + "</td><td>" + intero(g.sessioni) +
+          "</td><td>" + (g.persone ? n1(g.sessioni / g.persone) : "–") + "</td><td>" + intero(g.nuove) + "</td><td>" + intero(g.lite) + "</td><td>" + intero(g.pro) + "</td></tr>").join("") +
+      "</tbody></table></div></details>";
+    colonne($("graficoPersone"), giorni.map(g => ({ giorno: g.giorno, valore: g.persone })), oggi,
+      "Persone al giorno dal " + p.dal + ", in media " + Math.round(p.personeAlGiorno), "Persone");
+    classifica("lQuante", p.quante.map((x, i) => ({ nome: i + 1 === p.quante.length ? (i + 1) + " o più sessioni" : (i + 1) + (i ? " sessioni" : " sessione"), visite: x })), x => x.nome);
+  }
+
   /* elenco ordinato: nome, numero, barretta proporzionale (un solo colore: è una grandezza) */
   function classifica(id, elenco, nome, sotto, divisore, errore) {
     const box = $(id);
@@ -419,7 +454,7 @@
       { e: "🔮 Previsioni", v: intero(t.previsioni), s: "📨 ricevute " + quota(t.consegne.mandati, t.consegne.totale) },
       { e: "🗳️ Voti per domani", v: intero(t.pronostici), s: t.consegne.mandati ? Math.round(t.pronostici / t.consegne.mandati * 100) + "% di chi l'ha ricevuta" : "sotto la previsione" },
       { e: "🙋 Giudizi", v: intero(t.giudizi), s: "com'era davvero (10:30)" },
-      { e: "❓ Domande", v: intero(t.domande), s: "✍️ " + intero(t.commenti) + " commenti · 📎 " + intero(t.note) + " note" },
+      { e: "❓ Domande", v: intero(t.domande), s: "✍️ " + intero(t.commenti) + (t.commenti === 1 ? " commento" : " commenti") + " · 📎 " + intero(t.note) + (t.note === 1 ? " nota" : " note") },
       { e: "🤖 Claude oggi", v: intero(c.oggi) + "/" + intero(c.limiteGiorno), s: "mese " + intero(c.mese) + "/" + intero(c.limiteMese) }
     ];
     $("botTessere").innerHTML = tessere.map(x => '<div class="tessera"><span class="t-etichetta">' + esc(x.e) + '</span><b class="t-valore">' + esc(x.v) +
