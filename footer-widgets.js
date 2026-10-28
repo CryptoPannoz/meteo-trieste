@@ -548,7 +548,7 @@
      apps-script-sostenitori/ (legge in sola lettura le email PayPal e restituisce solo i nomi) e
      si aggiunge in coda a questo elenco scritto a mano, senza doppioni. La copia in localStorage
      li mostra subito alla visita dopo (Apps Script risponde in 2-40 s). URL vuoto = spento. */
-  var SOSTENITORI_URL = "";
+  var SOSTENITORI_URL = "https://script.google.com/macros/s/AKfycbx09_Q0STvkwW4vl2q8molo_Q--kwG2H2hwq0CfsQA69PgSIONZY0y7AH2CLaDkdP-3/exec";
   var CHIAVE_SOST = "vt-sostenitori-auto";
   function chiaveNome(n) { return String(n).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim(); }
   function escNome(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
