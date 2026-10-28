@@ -391,7 +391,7 @@
           (t.foto ? " (" + intero(t.foto) + " con foto)" : "") + ".</p>"
         : '<p class="nota">Nessuna chat autorizzata: premi "Collega il bot", poi apri il link dal telefono e premi Avvia.</p>';
       if (ultimoLink) html += '<p>Apri dal telefono (valido 30 minuti):<br><a class="link-bot" href="' + esc(ultimoLink.link) + '" target="_blank" rel="noopener">' + esc(ultimoLink.link) + "</a></p>";
-      if (chat) html += '<p class="nota">Ogni sera alle 19:30 il bot manda la verifica di oggi e la previsione per domani (la lettura di Claude e la regola di base); alle 10 chiede il giudizio su com\'era.</p>';
+      if (chat) html += '<p class="nota">Ogni sera alle 19:30 il bot manda la verifica di oggi e la previsione per domani (la lettura di Claude e la regola di base); alle 10:30 chiede il giudizio su com\'era.</p>';
       html += '<div class="azioni"><button type="button" class="primario" id="btnCollega">' + (chat ? "Ricollega il bot" : "Collega il bot") + "</button>" +
         (chat ? '<button type="button" class="secondario" id="btnProvaSera">Manda ora un messaggio di prova</button>' +
           '<button type="button" class="secondario" id="btnProvaMattina">Manda ora la domanda del mattino</button>' +
@@ -426,14 +426,14 @@
   }
 
   /* ---------------- invitati che danno il giudizio (27 ott 2026) ----------------
-     Ricevono la previsione delle 19:30 nel formato di Alberto e alle 10 la domanda con i
+     Ricevono la previsione delle 19:30 nel formato di Alberto e alle 10:30 la domanda con i
      bottoni (direzione, intensità, ⛏️/⭐️); non parlano con Claude. Link personale, 7 giorni. */
   let ultimoInvito = null;
   const giornoMese = iso => new Date(iso).toLocaleDateString("it-IT", { day: "numeric", month: "short" });
   function htmlInvitati(t) {
     const giudici = t.giudici || [], inviti = t.inviti || [];
     let html = '<h3 class="sotto-titolo">Invitati che danno il giudizio</h3>' +
-      '<p class="nota">Ricevono la previsione delle 19:30 (Previsione, Giudizio, Testuale) e alle 10 la domanda con i bottoni: direzione, intensità, ⛏️ o ⭐️. Non parlano con Claude e non vedono il manuale.</p>';
+      '<p class="nota">Ricevono la previsione delle 19:30 (Previsione, Giudizio, Testuale) e alle 10:30 la domanda con i bottoni: direzione, intensità, ⛏️ o ⭐️. Non parlano con Claude e non vedono il manuale.</p>';
     html += giudici.length
       ? '<ul class="righe">' + giudici.map(g => '<li><span class="pallino ' + (g.oggi ? "e-ok" : "e-spento") + '" aria-hidden="true"></span><span class="nome">' + esc(g.nome) +
           '</span><span class="det">dal ' + esc(giornoMese(g.quando)) + (g.oggi ? " · giudizio di oggi dato" : "") +
