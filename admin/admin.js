@@ -433,7 +433,7 @@
   function htmlInvitati(t) {
     const giudici = t.giudici || [], inviti = t.inviti || [];
     let html = '<h3 class="sotto-titolo">Invitati che danno il giudizio</h3>' +
-      '<p class="nota">Ricevono la previsione delle 19:30 (Previsione, Giudizio, Testuale) e toccano il loro pronostico per domani; alle 10:30 la domanda con i bottoni: direzione, intensità, ⛏️ o ⭐️. Non parlano con Claude e non vedono il manuale.</p>';
+      '<p class="nota">Ricevono la previsione delle 19:30 (Previsione, Giudizio, Testuale) e toccano il loro pronostico per domani; alle 10:30 la domanda con i bottoni: direzione, intensità, ⛏️ o ⭐️. Possono scrivere qualche commento (3 per previsione, solo testo, senza link), che ti arriva subito. Non parlano con Claude e non vedono il manuale: sul bot, /benvenuto ti mostra cosa vedono.</p>';
     html += giudici.length
       ? '<ul class="righe">' + giudici.map(g => '<li><span class="pallino ' + (g.oggi ? "e-ok" : "e-spento") + '" aria-hidden="true"></span><span class="nome">' + esc(g.nome) +
           '</span><span class="det">dal ' + esc(giornoMese(g.quando)) + (g.oggi ? " · giudizio di oggi dato" : "") +
