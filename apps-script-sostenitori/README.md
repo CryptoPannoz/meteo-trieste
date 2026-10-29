@@ -5,7 +5,7 @@ restituisce i nomi di chi ha pagato, per aggiungerli da soli all'elenco "Chi sos
 progetto" del footer (`footer-widgets.js`, costante `SOSTENITORI_URL`).
 
 - Script: https://script.google.com/d/1TJ07Y_BvBDK5pV1lVcgLGbtGY4M36OCe5Fk4cfDhlgNDUHSuItKm0-a5/edit
-- Web app (deployment `@1`, acceso sul sito il 28 ott 2026): https://script.google.com/macros/s/AKfycbx09_Q0STvkwW4vl2q8molo_Q--kwG2H2hwq0CfsQA69PgSIONZY0y7AH2CLaDkdP-3/exec
+- Web app (acceso sul sito il 28 ott 2026; `@2` del 29 ott: maiuscole): https://script.google.com/macros/s/AKfycbx09_Q0STvkwW4vl2q8molo_Q--kwG2H2hwq0CfsQA69PgSIONZY0y7AH2CLaDkdP-3/exec
 - Account: bebroggi@gmail.com. Progetto **separato** dal proxy dei dati (`apps-script/`):
   il proxy non ha e non deve avere accesso a Gmail.
 - Gmail in **sola lettura** (`gmail.readonly`): lo script non segna, sposta né cancella email.

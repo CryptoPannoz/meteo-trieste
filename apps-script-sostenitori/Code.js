@@ -33,6 +33,7 @@ var AGGIORNA_MIN = 15;
 var QUERY = 'from:assistenza@paypal.it subject:"Hai ricevuto denaro"';
 var ESCLUSI_FISSI = ['alberto broggi'];       // giroconti dal proprio conto
 var MAX_LETTURE = 60;                         // email nuove lette per giro, al massimo
+var FORMATO = 2;                              // cambia → le email già lette si rileggono (2: maiuscole, 29 ott 2026)
 
 function doGet(e) {
   var props = PropertiesService.getScriptProperties();
@@ -51,9 +52,10 @@ function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
 }
 
-/* Legge le email PayPal nuove e salva per ognuna "m_<id>" = [nome, ms]. Il momento del
-   tentativo si segna subito: se Gmail non risponde (o l'autorizzazione è stata revocata)
-   si riprova tra AGGIORNA_MIN minuti, non a ogni visita. */
+/* Legge le email PayPal nuove e salva per ognuna "m_<id>" = [nome, ms, FORMATO]. Quelle
+   lette con un FORMATO precedente si rileggono, così una correzione di nomeDa vale anche
+   per i nomi già salvati. Il momento del tentativo si segna subito: se Gmail non risponde
+   (o l'autorizzazione è stata revocata) si riprova tra AGGIORNA_MIN minuti, non a ogni visita. */
 function aggiorna() {
   var props = PropertiesService.getScriptProperties();
   props.setProperty('aggiornato', String(Date.now()));
@@ -63,10 +65,10 @@ function aggiorna() {
     do {
       var r = Gmail.Users.Messages.list('me', { q: QUERY + ' after:' + dopo, maxResults: 100, pageToken: pagina });
       (r.messages || []).forEach(function (m) {
-        if (gia['m_' + m.id] != null || letture >= MAX_LETTURE) return;
+        if (attuale(gia['m_' + m.id]) || letture >= MAX_LETTURE) return;
         letture++;
         var msg = Gmail.Users.Messages.get('me', m.id, { format: 'minimal' });
-        nuovi['m_' + m.id] = JSON.stringify([nomeDa(msg.snippet), Number(msg.internalDate) || 0]);
+        nuovi['m_' + m.id] = JSON.stringify([nomeDa(msg.snippet), Number(msg.internalDate) || 0, FORMATO]);
       });
       pagina = r.nextPageToken;
     } while (pagina && letture < MAX_LETTURE);
@@ -76,6 +78,10 @@ function aggiorna() {
     props.setProperty('errore', new Date().toISOString() + ' ' + String(err).slice(0, 300));
     console.warn('aggiorna: ' + err);
   }
+}
+
+function attuale(valore) {
+  try { return valore != null && JSON.parse(valore)[2] === FORMATO; } catch (e) { return false; }
 }
 
 /* Nomi in ordine di arrivo, senza doppioni (chi dona due volte compare una volta) né esclusi. */
@@ -116,11 +122,13 @@ function nomeDa(snippet) {
   return maiuscole(nome);
 }
 
-/* PayPal riporta il nome come l'ha scritto chi paga: "paolo bastiani", "luca Barbaresco",
-   "MARIO ROSSI" → "Paolo Bastiani", "Luca Barbaresco", "Mario Rossi". */
+/* PayPal riporta il nome come l'ha scritto chi paga. Tutto minuscolo o tutto maiuscolo:
+   "paolo bastiani", "MARIO ROSSI" → "Paolo Bastiani", "Mario Rossi". Già misto si lascia
+   com'è, salvo la prima lettera: "luca Barbaresco" → "Luca Barbaresco", ma
+   "Koen Van der Burg" resta così (prima diventava "Van Der Burg"). */
 function maiuscole(nome) {
-  if (nome === nome.toUpperCase()) nome = nome.toLowerCase();
-  return nome.replace(/(^|[\s'’-])(\S)/g, function (t, sep, c) { return sep + c.toUpperCase(); });
+  if (nome !== nome.toUpperCase() && nome !== nome.toLowerCase()) return nome.charAt(0).toUpperCase() + nome.slice(1);
+  return nome.toLowerCase().replace(/(^|[\s'’-])(\S)/g, function (t, sep, c) { return sep + c.toUpperCase(); });
 }
 
 function chiave(nome) {
