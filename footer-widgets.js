@@ -1177,9 +1177,11 @@
     var badge = document.createElement("span");
     badge.className = "cam-zoom-badge";
     badge.setAttribute("aria-hidden", "true");
-    badge.textContent = "⛶ " + T.badge;
+    // solo l'icona (30 ott 2026): la scritta copriva i dati in fondo all'immagine
+    badge.innerHTML = '<svg viewBox="0 0 24 24" focusable="false"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+    link.title = T.badge;
     link.appendChild(badge);
-    // l'etichetta "Schermo intero" compare solo a immagine caricata
+    // l'icona dello schermo intero compare solo a immagine caricata
     function pronta() { link.classList.toggle("cam-pronta", img.complete && img.naturalWidth > 0); }
     img.addEventListener("load", pronta);
     img.addEventListener("error", pronta);
