@@ -1496,12 +1496,17 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
    Webcam: tocco = schermo intero (footer-widgets.js) e telefono in orizzontale
    ====================================================================== */
 .cam-zoom { position: relative; display: block; width: fit-content; max-width: 100%; margin-left: auto; margin-right: auto; }
+/* 30 ott 2026, Alberto: "la scritta Schermo intero copre i dati meteo sotto la webcam". Ora è solo
+   l'icona, piccola e semitrasparente, in alto a destra: la barra dei dati in basso resta leggibile.
+   Misure in px: con il testo ingrandito del telefono non cresce. */
 .cam-zoom-badge {
-  position: absolute; right: .5rem; bottom: .55rem; display: inline-flex; align-items: center; gap: .3rem;
-  padding: .3rem .55rem; border-radius: 999px; background: rgba(5,7,9,.72); color: #fff;
-  font-size: .7rem; font-weight: 800; line-height: 1; pointer-events: none;
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  position: absolute; top: 6px; right: 6px; display: grid; place-items: center;
+  width: 28px; height: 28px; border-radius: 50%; background: rgba(5,7,9,.4); color: #fff;
+  border: 1px solid rgba(255,255,255,.3); opacity: .8; pointer-events: none;
+  transition: opacity .15s;
 }
+.cam-zoom-badge svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.cam-zoom:hover .cam-zoom-badge, .cam-zoom:focus-visible .cam-zoom-badge { opacity: 1; }
 .cam-zoom:not(.cam-pronta) .cam-zoom-badge { display: none; }
 .cam-lb {
   position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center;
