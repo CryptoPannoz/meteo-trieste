@@ -465,12 +465,12 @@
     $("botPrevisioni").innerHTML = b.previsioni.length
       ? "<thead><tr><th>Giorno</th><th>🔮 Previsione</th><th>📨 Ricevuta</th><th>🗳️ Voti</th><th>☀️ 10:30</th><th>🙋 Giudizi</th><th>✍️</th><th>📊 Com'è andata</th></tr></thead><tbody>" +
         b.previsioni.map(p => "<tr><td>" + esc(giornoBreve(p.giorno)) + "</td>" +
-          '<td class="testo-lungo">' + (p.voto != null ? "<b>" + esc(VOTI[p.voto]) + "</b> " + esc(p.riga || "") + (p.testuale ? "<small>" + esc(p.testuale) + "</small>" : "")
+          '<td class="testo-lungo">' + (p.voto != null ? "<b>" + esc(p.giudizio || VOTI[p.voto]) + "</b> " + esc(p.riga || "") + (p.testuale ? "<small>" + esc(p.testuale) + "</small>" : "")
             : '<span class="nota">solo regola di base: ' + esc(p.base || "–") + "</span>") + "</td>" +
           '<td class="testo-lungo">' + (p.consegna ? quota(p.consegna.mandati, p.consegna.totale) + ko(p.consegna.ko) : "–") + "</td>" +
           "<td>" + (p.pronostici.n ? p.pronostici.n + " · ⌀ " + n1(p.pronostici.media) + (p.pronostici.accordo != null ? " · 🤝 " + p.pronostici.accordo : "") : "–") + "</td>" +
           "<td>" + (p.mattina ? quota(p.mattina.mandati, p.mattina.totale) : "–") + "</td>" +
-          "<td>" + (p.giudizi.n ? p.giudizi.n + (p.giudizi.media != null ? " · ⌀ " + n1(p.giudizi.media) : "") : "–") + "</td>" +
+          "<td>" + (p.giudizi.n ? p.giudizi.n + (p.giudizi.prevalente ? " · " + esc(p.giudizi.prevalente) : p.giudizi.media != null ? " · ⌀ " + n1(p.giudizi.media) : "") : "–") + "</td>" +
           "<td>" + (p.commenti || "–") + "</td>" +
           "<td>" + (p.esito ? esc(USCITA[p.esito.uscita] || p.esito.uscita) + (p.esito.media != null ? " · " + n1(p.esito.media) + " kt" : "") : p.giorno > b.al ? "domani" : "–") + "</td></tr>").join("") + "</tbody>"
       : '<tbody><tr><td class="nota">Nessuna previsione nel periodo.</td></tr></tbody>';
@@ -482,7 +482,7 @@
         persone.map(p => {
           const k = p.tipi || {};
           return '<tr><td class="testo-lungo"><button type="button" class="persona" data-chat="' + esc(p.id) + '"' + (filtroPersona === p.id ? ' aria-pressed="true"' : "") + ">" + esc(p.nome) + "</button>" +
-            "<small>" + [p.gruppo ? esc(p.gruppo) : null, p.dal ? "dal " + esc(giornoMese(p.dal)) : null, p.invitato ? null : "uscito"].filter(Boolean).join(" · ") + "</small></td>" +
+            "<small>" + [p.esperto ? "🎓 parla con l'AI" : null, p.gruppo ? esc(p.gruppo) : null, p.dal ? "dal " + esc(giornoMese(p.dal)) : null, p.invitato ? null : "uscito"].filter(Boolean).join(" · ") + "</small></td>" +
             "<td>" + intero(p.ricevute) + (p.perse ? ' <span class="ko" title="' + esc(p.errore || "") + '">⚠️ ' + p.perse + "</span>" : "") + "</td>" +
             "<td>" + (p.pronostici || "–") + "</td><td>" + (p.giudizi || "–") + "</td><td>" + (k.domanda || "–") + "</td>" +
             "<td>" + ((k.commento || 0) + (k.testo || 0) + (k.nota || 0) || "–") + "</td><td>" + (k.comando || "–") + "</td>" +
@@ -568,18 +568,19 @@
   }
 
   /* ---------------- invitati che danno il giudizio (27 ott 2026) ----------------
-     Ricevono la previsione delle 19:30 nel formato di Alberto e alle 10:30 la domanda con i
-     bottoni (direzione, intensità, ⛏️/⭐️); non parlano con Claude. Link personale (7 giorni) o
-     di gruppo, per un gruppo WhatsApp (28 ott: fino a 25 persone, 30 giorni). */
+     Ricevono la previsione delle 21 e alle 10:30 la domanda con i bottoni; non parlano con Claude,
+     tranne gli esperti (31 ott, /esperto Nome sul bot). Link personale (7 giorni) o di gruppo, per
+     un gruppo WhatsApp (28 ott: fino a 25 persone, 30 giorni). Dal 31 ott il giudizio ha sei voci
+     e le raffiche a parte (vento-previsioni, formato.js). */
   let ultimoInvito = null;
   const giornoMese = iso => new Date(iso).toLocaleDateString("it-IT", { day: "numeric", month: "short" });
   function htmlInvitati(t) {
     const giudici = t.giudici || [], inviti = t.inviti || [];
     let html = '<h3 class="sotto-titolo">Invitati che danno il giudizio</h3>' +
-      '<p class="nota">Ricevono la previsione delle 19:30 (Previsione, Giudizio, Testuale) e toccano il loro pronostico per domani; alle 10:30 la domanda con i bottoni: direzione, intensità, ⛏️ o ⭐️. Possono scrivere qualche commento (3 per previsione, solo testo, senza link), che ti arriva subito. Non parlano con Claude e non vedono il manuale: sul bot, /benvenuto ti mostra cosa vedono.</p>';
+      '<p class="nota">Due passi. 1 · alle 21 ricevono la previsione e dicono se è giusta (✅) o come la vedono. 2 · alle 10:30 com\'è adesso sull\'acqua: giudizio (⛏️⛏️ troppo poco · ⛏️ poco · ⭐️ bello ma rafficato · ⭐️⭐️ bello · ⭐️⭐️⭐️ top · 🌪️ troppo vento) e raffiche, sempre a parte. Possono scrivere qualche commento (3 per previsione, solo testo, senza link), che ti arriva subito. Non parlano con Claude, tranne gli esperti 🎓 (sul bot /esperto Nome); sul bot, /benvenuto ti mostra cosa vedono.</p>';
     html += giudici.length
       ? '<ul class="righe">' + giudici.map(g => '<li><span class="pallino ' + (g.oggi ? "e-ok" : "e-spento") + '" aria-hidden="true"></span><span class="nome">' + esc(g.nome) +
-          (g.gruppo ? ' <small class="nota">' + esc(g.gruppo) + "</small>" : "") + '</span><span class="det">dal ' + esc(giornoMese(g.quando)) + (g.oggi ? " · giudizio di oggi dato" : "") +
+          (g.esperto ? ' <small class="nota">🎓 parla con l\'AI</small>' : "") + (g.gruppo ? ' <small class="nota">' + esc(g.gruppo) + "</small>" : "") + '</span><span class="det">dal ' + esc(giornoMese(g.quando)) + (g.oggi ? " · giudizio di oggi dato" : "") +
           ' <button type="button" class="secondario pericolo piccolo" data-togli-giudice="' + esc(g.id) + '" data-nome="' + esc(g.nome) + '">Togli</button></span></li>').join("") + "</ul>"
       : '<p class="nota">Ancora nessuno.</p>';
     if (inviti.length) html += '<ul class="righe">' + inviti.map(i => '<li><span class="pallino e-attenzione" aria-hidden="true"></span><span class="nome">' + esc(i.nome) +
