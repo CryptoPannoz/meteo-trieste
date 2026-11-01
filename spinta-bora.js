@@ -41,6 +41,7 @@
     stabile: "Stabilno naslednjih 24\u00a0ur", scende: "Potisk pade pod prag", supera: "Potisk preseže prag",
     moderataCorso: "Potisk pod pragom: burja navadno ostane zmerna",
     moderata: "Potisk blizu praga: burja možna, navadno šibka", bassa: "Potisk nizek naslednjih 24\u00a0ur",
+    sottoZero: "Potisk pod ničlo: burje ne bo naslednjih 24\u00a0ur",
     verso: "okoli", domani: "jutri",
     prima: "zadnjih 12 h", ora: "zdaj", dopo: "naslednjih 36 h · napoved",
     previsione: "napoved",
@@ -50,9 +51,11 @@
     giorni: ["ned", "pon", "tor", "sre", "čet", "pet", "sob"],
     titolo: "Potisk burje: kako brati",
     modal:
-      "<p>To je razlika zračnega tlaka na morski gladini med <strong>Mariborom</strong> (onkraj planote) in <strong>Trstom</strong>. Ko je na drugi strani Krasa tlak višji, se hladen in težek zrak prelije proti morju: to je burja. <strong>Višja kot je številka, močneje potiska burja.</strong></p>",
+      "<p>To je razlika zračnega tlaka na morski gladini med <strong>Mariborom</strong> (onkraj planote) in <strong>Trstom</strong>. Ko je na drugi strani Krasa tlak višji, se hladen in težek zrak prelije proti morju: to je burja. <strong>Višja kot je številka, močneje potiska burja.</strong></p>" +
+      "<p><strong>Edinstvena kombinacija Vento Trieste:</strong> to okno združuje <strong>nowcasting</strong>, torej veter, ki ga postaje merijo zdaj, in potisk zdaj, ter <strong>napoved</strong> grafa burje, isto razliko tlaka za naslednjih 36 ur. Na prvi pogled vidiš, ali burja piha, kako močno potiska in kako se bo spremenila.</p>",
     legenda: [
-      ["pod 3,5", "Šibek potisk", "pod 1,5 burje skoraj nikoli ni; med 2,5 in 3,5 je lahko zmerna burja (približno ena ura od petih)."],
+      ["pod 0", "Ni potiska", "tlak je višji nad zalivom kot onkraj Krasa: burje ni."],
+      ["0–3,5", "Šibek potisk", "pod 1,5 burje skoraj nikoli ni; med 2,5 in 3,5 je lahko zmerna burja (približno ena ura od petih)."],
       ["3,5–5", "Nastanek burje", "prag je presežen: burja se vklaplja, prvi sunki s SV."],
       ["5–8", "Občutna burja", "burja je vzpostavljena, sunki so odločni."],
       ["nad 8", "Močna burja", "močni sunki, previdnost na morju in v mestu."]
@@ -66,7 +69,7 @@
     differenza: "Potisk = Maribor − Trst",
     guida: "", chiudi: "Zapri",
     mappaTitolo: "Ni burje · veter zdaj", mappaBadge: "ZALIV · ISTRA",
-    mappaSotto: "Potisk burje je pod ničlo: burje ni. Tu je, kje piha zdaj, od zaliva do Istre.",
+    mappaSotto: "Potisk burje je pri ničli ali pod njo in v naslednjih 24 urah ne naraste: burje ni. Tu je, kje piha zdaj, od zaliva do Istre.",
     mappaSpinta: "Potisk burje", mappaGrafico: "📈 Graf potiska", mappaTorna: "🗺️ Ni burje: pokaži zemljevid",
     mappaIstria: "📍 Spoti v Istri",
     mappaFonte: "Izmerjeni podatki postaj, ne napoved · dotakni se številke za podrobnosti · obala © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · relief Copernicus EU-DEM, USGS, NOAA",
@@ -82,6 +85,7 @@
     stabile: "Stabile per le prossime 24\u00a0h", scende: "La spinta scende sotto la soglia", supera: "La spinta supera la soglia",
     moderataCorso: "Spinta sotto la soglia: di solito la bora resta moderata",
     moderata: "Spinta vicina alla soglia: bora possibile, di solito debole", bassa: "Spinta bassa per le prossime 24\u00a0h",
+    sottoZero: "Spinta sotto zero: niente bora nelle prossime 24\u00a0h",
     verso: "verso le", domani: "domani",
     prima: "ultime 12 h", ora: "ora", dopo: "prossime 36 h · previsione",
     previsione: "previsione",
@@ -91,9 +95,11 @@
     giorni: ["dom", "lun", "mar", "mer", "gio", "ven", "sab"],
     titolo: "Spinta della Bora: come si legge",
     modal:
-      "<p>È la differenza di pressione al livello del mare tra <strong>Maribor</strong> (oltre l'altipiano, in Slovenia) e <strong>Trieste</strong>. Quando dall'altra parte del Carso c'è più pressione, l'aria fredda e pesante trabocca verso il mare: è la bora. <strong>Più il numero è alto, più la bora spinge.</strong></p>",
+      "<p>È la differenza di pressione al livello del mare tra <strong>Maribor</strong> (oltre l'altipiano, in Slovenia) e <strong>Trieste</strong>. Quando dall'altra parte del Carso c'è più pressione, l'aria fredda e pesante trabocca verso il mare: è la bora. <strong>Più il numero è alto, più la bora spinge.</strong></p>" +
+      "<p><strong>Una combinazione unica di Vento Trieste:</strong> questo box unisce il <strong>nowcasting</strong>, cioè il vento misurato adesso dalle centraline e la spinta di adesso, e il <strong>forecasting</strong> del Grafico della Bora, la stessa differenza di pressione prevista per le prossime 36 ore. In un colpo d'occhio vedi se la bora c'è, quanto spinge e come cambierà.</p>",
     legenda: [
-      ["sotto 3,5", "Spinta debole", "sotto 1,5 la bora non c'è quasi mai; tra 2,5 e 3,5 può esserci bora moderata (circa un'ora su cinque)."],
+      ["sotto 0", "Nessuna spinta", "la pressione è più alta sul golfo che oltre il Carso: la bora non c'è."],
+      ["0–3,5", "Spinta debole", "sotto 1,5 la bora non c'è quasi mai; tra 2,5 e 3,5 può esserci bora moderata (circa un'ora su cinque)."],
       ["3,5–5", "Genesi della Bora", "soglia superata: la bora si sta innescando, arrivano i primi rinforzi da NE."],
       ["5–8", "Bora consistente", "bora ben stabilita e raffiche decise: condizioni impegnative in acqua."],
       ["oltre 8", "Bora forte", "raffiche violente: attenzione in mare e in città."]
@@ -107,7 +113,7 @@
     differenza: "Spinta = Maribor − Trieste",
     guida: "<p class=\"sb-guida-link\"><a href=\"/guida/spinta-bora/\">📖 Approfondisci nella guida →</a></p>", chiudi: "Chiudi",
     mappaTitolo: "Niente bora · il vento adesso", mappaBadge: "GOLFO · ISTRIA",
-    mappaSotto: "La spinta della bora è sotto zero: niente bora. Ecco dove soffia adesso, dal Golfo all'Istria.",
+    mappaSotto: "La spinta della bora è a zero o sotto e nelle prossime 24 ore non sale: niente bora. Ecco dove soffia adesso, dal Golfo all'Istria.",
     mappaSpinta: "Spinta della Bora", mappaGrafico: "📈 Grafico della spinta", mappaTorna: "🗺️ Niente bora: mostra la mappa",
     mappaIstria: "📍 Spot Istria",
     mappaFonte: "Dati osservati dalle centraline, non una previsione · tocca un numero per il dettaglio · costa © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · rilievo Copernicus EU-DEM, USGS, NOAA",
@@ -186,8 +192,8 @@
     var h3 = c.querySelector("h3");
     if (!stato) { stato = document.createElement("p"); stato.id = "deltaBoraStato"; }
     stato.className = "stato sb-fonte";
-    var legenda = T.legenda.map(function (r, i) {
-      return '<div><i class="sb-c' + (i + 1) + '"></i><span><strong>' + r[0] + " · " + r[1] + "</strong> — " + r[2] + "</span></div>";
+    var legenda = T.legenda.map(function (r, i) {   // sotto 0 e debole: tutte e due grigie (sb-c1)
+      return '<div><i class="sb-c' + Math.max(1, i) + '"></i><span><strong>' + r[0] + " · " + r[1] + "</strong> — " + r[2] + "</span></div>";
     }).join("");
     c.innerHTML = "";
     if (x) c.appendChild(x);
@@ -347,13 +353,14 @@
     else if (inizio !== null) spinta = T.supera + " " + quando(d, inizio);
     else if (bora) spinta = T.moderataCorso;
     else if (picco >= VICINO) spinta = T.moderata;
-    else spinta = T.bassa;
+    else spinta = picco < 0 ? T.sottoZero : T.bassa;   // sotto zero per tutte le 24 h
     if (bora) { verdetto = v >= S ? T.fasce[f] : T.sit.corso; classe = Math.max(2, f); }
     else if (v >= S) { verdetto = o ? T.sit.arrivo : T.sit.probabile; classe = f; }   // spinta alta, bora non ancora misurata
     else if (inizio !== null) { verdetto = T.sit.arrivo; classe = 2; }
     else if (picco >= VICINO) { verdetto = T.sit.possibile; classe = 2; }
     else { verdetto = o ? T.sit.niente : T.sit.improbabile; classe = 1; }
-    return { verdetto: verdetto, classe: classe, conOss: !!o, righe: (o ? [o.nome + ": " + ventoTesto(o)] : []).concat([spinta]) };
+    // attesa: la bora arriva o è possibile nelle prossime 24 ore (allora in home resta il grafico, non la mappa)
+    return { verdetto: verdetto, classe: classe, conOss: !!o, attesa: inizio !== null || picco >= VICINO, righe: (o ? [o.nome + ": " + ventoTesto(o)] : []).concat([spinta]) };
   }
 
   /* ---------------- grafico ---------------- */
@@ -497,7 +504,7 @@
       return '<span class="' + (i === 0 && sit.conOss ? "sb-oss" : "sb-sp") + '">' + esc(r) + "</span>";
     }).join("");
     rif.info.textContent = T.info + " · " + T.agg + " " + d.adesso.slice(11, 16);
-    if (!modoMappa(rif, d)) disegna(rif, d);
+    if (!modoMappa(rif, d, sit)) disegna(rif, d);
   }
 
   /* ---------------- niente bora: la mappa al posto della spinta (20 ott 2026) ----------------
@@ -586,12 +593,15 @@
   }
 
   // true se il box mostra la mappa (il grafico allora non si disegna)
-  function modoMappa(rif, d) {
+  function modoMappa(rif, d, sit) {
     if (rif.box.id !== "barcolaLive") return false;
     var mp = preparaMappa(rif);
     if (!mp) return false;
     // con la bora misurata a Trieste molo la spinta resta in vista anche se il modello la dà sotto zero
     rif.senzaBora = (rif.senzaBora ? d.ora < MAPPA_ESCI : d.ora < MAPPA_ENTRA) && !osservazioni().some(boraMisurata);
+    // e anche se la spinta sale verso la soglia nelle prossime 24 ore (1 nov 2026): con "Bora in arrivo" la mappa
+    // diceva "niente bora" e nascondeva proprio il grafico che mostra l'arrivo
+    if (sit.attesa) rif.senzaBora = false;
     // versione Lite (28 ott 2026): la mappa del vento non c'è, la spinta resta sempre in vista
     var lite = document.documentElement.classList.contains("vt-lite");
     var mappa = rif.senzaBora && !spintaForzata() && !lite;
@@ -601,7 +611,6 @@
     if (hero) hero.classList.toggle("hero-senza-bora", mappa);
     mp.torna.hidden = !rif.senzaBora || mappa || lite;
     if (mappa) {
-      var sit = situazione(d);
       mp.num.innerHTML = T.mappaSpinta + " <strong>" + fmt(d.ora) + " hPa</strong> · " + esc(sit.verdetto) + " · " + T.agg + " " + d.adesso.slice(11, 16);
       mp.trend.textContent = sit.righe.join(" · ");
     }
