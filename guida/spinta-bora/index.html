@@ -33,7 +33,7 @@
   <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"La Spinta della Bora: prevedere la bora dalla pressione","description":"La Spinta della Bora è la differenza di pressione tra Maribor e Trieste: sopra 3,5 hPa la bora si accende. Come si leggono numero, fasce e grafico delle ultime 12 ore e delle prossime 36.","inLanguage":"it-IT","datePublished":"2026-10-20","dateModified":"2026-10-22","mainEntityOfPage":"https://ventotrieste.info/guida/spinta-bora/","image":"https://ventotrieste.info/og-imagenew.jpg","articleSection":"Strumenti live","isPartOf":{"@type":"Blog","name":"Guida di Vento Trieste","url":"https://ventotrieste.info/guida/"},"author":{"@type":"Person","name":"Alberto Broggi","url":"https://bebroggi.it/"},"publisher":{"@type":"Organization","name":"Vento Trieste","url":"https://ventotrieste.info/","logo":{"@type":"ImageObject","url":"https://ventotrieste.info/icon-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Guida","item":"https://ventotrieste.info/guida/"},{"@type":"ListItem","position":3,"name":"La Spinta della Bora","item":"https://ventotrieste.info/guida/spinta-bora/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"La Spinta della Bora: prevedere la bora dalla pressione","description":"La Spinta della Bora è la differenza di pressione tra Maribor e Trieste: sopra 3,5 hPa la bora si accende. Come si leggono numero, fasce e grafico delle ultime 12 ore e delle prossime 36.","inLanguage":"it-IT","datePublished":"2026-10-20","dateModified":"2026-11-01","mainEntityOfPage":"https://ventotrieste.info/guida/spinta-bora/","image":"https://ventotrieste.info/og-imagenew.jpg","articleSection":"Strumenti live","isPartOf":{"@type":"Blog","name":"Guida di Vento Trieste","url":"https://ventotrieste.info/guida/"},"author":{"@type":"Person","name":"Alberto Broggi","url":"https://bebroggi.it/"},"publisher":{"@type":"Organization","name":"Vento Trieste","url":"https://ventotrieste.info/","logo":{"@type":"ImageObject","url":"https://ventotrieste.info/icon-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Guida","item":"https://ventotrieste.info/guida/"},{"@type":"ListItem","position":3,"name":"La Spinta della Bora","item":"https://ventotrieste.info/guida/spinta-bora/"}]}]}</script>
   <link rel="stylesheet" href="/footer-widgets.css?v=20261030" />
   <link rel="stylesheet" href="/guida/guida.css?v=20261020" />
   <!-- Articolo della Guida di Vento Trieste (20 ott 2026): una pagina per strumento, stile comune in
@@ -117,14 +117,23 @@
       </ul>
 
       <h2>La scritta grande: c'è bora o no?</h2>
-      <p>Accanto al numero c'è una risposta semplice, che unisce due cose: il <strong>vento misurato adesso</strong> e la <strong>spinta</strong> delle prossime 24 ore.</p>
+      <p>Accanto al numero c'è una risposta semplice, che unisce due cose: il <strong>vento misurato adesso</strong> e la <strong>spinta</strong> delle prossime 24 ore. È un'indicazione di <em>nowcasting</em>: cosa succede adesso e nelle prossime ore.</p>
       <ul>
-        <li><strong>Bora in corso</strong>: la bora soffia adesso. In home lo dice la centralina del surfometro (Barcola), oppure Trieste molo: vento da nord-est, tra 20° e 100°, di almeno 8 nodi.</li>
+        <li><strong>Genesi della Bora</strong>, <strong>Bora consistente</strong>, <strong>Bora forte</strong>: la bora soffia adesso e la scritta dice quanto spinge, con le fasce qui sopra. Che soffi lo dice la centralina del surfometro (in home Barcola), oppure Trieste molo: vento da nord-est, tra 20° e 100°, di almeno 8 nodi.</li>
+        <li><strong>Bora in corso</strong>: la bora soffia ma la spinta è sotto 3,5 hPa. Di solito resta moderata.</li>
         <li><strong>Bora in arrivo</strong>: adesso non c'è, ma la spinta supera 3,5 hPa o lo farà nelle prossime 24 ore.</li>
         <li><strong>Bora possibile</strong>: la spinta è vicina alla soglia, tra 2,5 e 3,5 hPa. Se arriva, di solito è debole.</li>
         <li><strong>Niente bora</strong>: nessuna bora misurata e spinta bassa.</li>
       </ul>
-      <p>Sotto ci sono due righe: il vento misurato, scritto come in tutto il sito (per esempio <em>"Barcola: 10-19 kt 051° NE"</em>), e cosa dice la spinta, per esempio <em>"La spinta supera la soglia domani verso le 06"</em> oppure <em>"Spinta sotto la soglia: di solito la bora resta moderata"</em>.</p>
+      <p>Sotto ci sono due righe: il vento misurato, scritto come in tutto il sito (per esempio <em>"Barcola: 10-19 kt 051° NE"</em>), e cosa farà la bora nelle prossime 24 ore secondo la spinta, con l'ora del primo cambio:</p>
+      <ul>
+        <li><em>"In rinforzo: bora forte domani verso le 14"</em>: la spinta sale nella fascia sopra.</li>
+        <li><em>"In calo domani verso le 06"</em>: scende nella fascia sotto, ma resta sopra la soglia.</li>
+        <li><em>"La spinta scende sotto la soglia domani verso le 14"</em>: la bora si sta esaurendo.</li>
+        <li><em>"Stabile per le prossime 24 h"</em>: resta nella stessa fascia.</li>
+        <li><em>"La spinta supera la soglia domani verso le 06"</em>: adesso la spinta è bassa, ma sta per salire.</li>
+      </ul>
+      <p>Per non cambiare scritta a ogni decimo, un passaggio di fascia conta solo se la spinta si sposta di almeno 0,3 hPa.</p>
       <h2>Perché guardare anche il vento misurato</h2>
       <p>Dal 1° settembre al 22 ottobre 2026, a Trieste molo, quasi <strong>metà delle ore con bora sopra i 12 nodi</strong> aveva la spinta sotto 3,5. Con la spinta tra 2,5 e 3,5 c'è stata bora sopra i 12 nodi circa un'ora su cinque; sopra 3,5 quasi un'ora su due; sotto 1,5 quasi mai. La spinta è una stima di modello: dice bene quando la bora è <em>probabile</em>, ma non basta a escluderla. Per questo la scritta grande parte sempre da quello che le centraline misurano.</p>
 

@@ -37,7 +37,8 @@
     sit: { corso: "Burja piha", arrivo: "Burja prihaja", possibile: "Burja možna", niente: "Ni burje",
       probabile: "Burja verjetna", improbabile: "Burja malo verjetna" },
     molo: "Trst, pomol",
-    altaFino: "Potisk visok do", altaResta: "Potisk visok naslednjih 24\u00a0ur", supera: "Potisk preseže prag",
+    rinforzo: ["", "", "", "Krepi se: občutna burja", "Krepi se: močna burja"], calo: "Slabi",
+    stabile: "Stabilno naslednjih 24\u00a0ur", scende: "Potisk pade pod prag", supera: "Potisk preseže prag",
     moderataCorso: "Potisk pod pragom: burja navadno ostane zmerna",
     moderata: "Potisk blizu praga: burja možna, navadno šibka", bassa: "Potisk nizek naslednjih 24\u00a0ur",
     verso: "okoli", domani: "jutri",
@@ -57,7 +58,7 @@
       ["nad 8", "Močna burja", "močni sunki, previdnost na morju in v mestu."]
     ],
     grafico: "<p><strong>Graf:</strong> polna črta je zadnjih 12 ur, črtkana napoved za naslednjih 36 ur, navpična črta je zdaj. Dotakni se grafa za uro in vrednost.</p>",
-    note: "<p><strong>Napis zgoraj</strong> združuje dve stvari: veter, <strong>izmerjen zdaj</strong> na postaji surfometra in na pomolu v Trstu (če piha s severovzhoda, med 20° in 100°, in ima vsaj 8 vozlov, je burja), in potisk, ki pove, kaj se lahko zgodi v naslednjih 24 urah.</p>" +
+    note: "<p><strong>Napis zgoraj</strong> združuje dve stvari: veter, <strong>izmerjen zdaj</strong> na postaji surfometra in na pomolu v Trstu (če piha s severovzhoda, med 20° in 100°, in ima vsaj 8 vozlov, je burja), in potisk. Ko burja piha, napis pove pas potiska (nastanek, občutna, močna); vrstica pod njim pove, kaj se bo zgodilo v naslednjih 24 urah in ob kateri uri: krepi se, slabi, pade pod prag ali ostane stabilno.</p>" +
       "<p class=\"guida-meta\">Kaj kažejo podatki (1. september – 22. oktober 2026, pomol v Trstu): pri potisku pod 1,5 hPa burje nad 12 vozlov skoraj nikoli ni; med 2,5 in 3,5 je približno eno uro od petih; nad 3,5 skoraj vsako drugo uro. Zato nizek potisk ne izključuje burje: šteje izmerjeni veter.</p>" +
       "<p class=\"guida-meta\">Pragovi so okvirni: šteje tudi, koliko hladnega zraka je v višinah. Tlak napove, postaje potrdijo: beri ga skupaj s surfometrom.</p>" +
       "<p class=\"guida-meta\"><strong>Graf burje</strong> v napovedih (profiwetter.ch, model DWD) kaže isto razliko za 6 dni, a z obratnim predznakom (Trst − Maribor): tam je burja pod ničlo, prag je črtkana črta pri −4.</p>",
@@ -77,7 +78,8 @@
     sit: { corso: "Bora in corso", arrivo: "Bora in arrivo", possibile: "Bora possibile", niente: "Niente bora",
       probabile: "Bora probabile", improbabile: "Bora improbabile" },
     molo: "Trieste molo",
-    altaFino: "Spinta alta fino", altaResta: "Spinta alta per le prossime 24\u00a0h", supera: "La spinta supera la soglia",
+    rinforzo: ["", "", "", "In rinforzo: bora consistente", "In rinforzo: bora forte"], calo: "In calo",
+    stabile: "Stabile per le prossime 24\u00a0h", scende: "La spinta scende sotto la soglia", supera: "La spinta supera la soglia",
     moderataCorso: "Spinta sotto la soglia: di solito la bora resta moderata",
     moderata: "Spinta vicina alla soglia: bora possibile, di solito debole", bassa: "Spinta bassa per le prossime 24\u00a0h",
     verso: "verso le", domani: "domani",
@@ -97,7 +99,7 @@
       ["oltre 8", "Bora forte", "raffiche violente: attenzione in mare e in città."]
     ],
     grafico: "<p><strong>Il grafico:</strong> la linea piena sono le ultime 12 ore, quella tratteggiata la previsione delle prossime 36; la riga verticale è adesso. Tocca il grafico per leggere ora e valore.</p>",
-    note: "<p><strong>La scritta in alto</strong> unisce due cose: il vento <strong>misurato adesso</strong> dalla centralina del surfometro e a Trieste molo (se arriva da nord-est, tra 20° e 100°, ed è almeno 8 nodi, è bora) e la spinta, che dice cosa può succedere nelle prossime 24 ore.</p>" +
+    note: "<p><strong>La scritta in alto</strong> unisce due cose: il vento <strong>misurato adesso</strong> dalla centralina del surfometro e a Trieste molo (se arriva da nord-est, tra 20° e 100°, ed è almeno 8 nodi, è bora) e la spinta. Quando la bora soffia, la scritta è la fascia della spinta (genesi, consistente, forte); la riga sotto dice cosa fa nelle prossime 24 ore e a che ora: in rinforzo, in calo, sotto la soglia o stabile.</p>" +
       "<p class=\"guida-meta\">Cosa dicono i dati (1 settembre – 22 ottobre 2026, Trieste molo): con la spinta sotto 1,5 hPa la bora sopra i 12 nodi non c'è quasi mai; tra 2,5 e 3,5 c'è circa un'ora su cinque; sopra 3,5 quasi un'ora su due. Per questo una spinta bassa non basta a escludere la bora: conta il vento misurato.</p>" +
       "<p class=\"guida-meta\">Le soglie sono indicative: conta anche quanta aria fredda c'è in quota. La pressione anticipa, le centraline confermano: leggi questo box insieme al surfometro.</p>" +
       "<p class=\"guida-meta\">Il <strong>Grafico della Bora</strong> nelle Previsioni (profiwetter.ch, modello DWD) mostra la stessa differenza per 6 giorni, ma col segno opposto (Trieste − Maribor): lì la bora è sotto lo zero e la soglia è la riga tratteggiata a −4.</p>",
@@ -246,7 +248,8 @@
     var dom = new Date(Date.parse(oggi + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
     var g = giornoDi(t);
     var giorno = g === oggi ? "" : g === dom ? T.domani + " " : T.giorni[new Date(g + "T12:00:00Z").getUTCDay()] + " ";
-    return giorno + T.verso + " " + ora + (sl ? "h" : "");
+    // "domani verso le 14" non va a capo: sul telefono restava "14" da solo sull'ultima riga
+    return (giorno + T.verso + " " + ora + (sl ? "h" : "")).replace(/ /g, " ");
   }
 
   /* ---------------- la situazione: vento misurato + spinta (22 ott 2026) ----------------
@@ -307,28 +310,46 @@
     return lista;
   }
 
+  /* Scritta e riga sotto come nowcasting (1 nov 2026). Alberto, con la spinta a 7,6 e la bora a
+     Monte Grisa: "Bora in corso" e "Spinta alta per le prossime 24 h" non dicevano quanto spinge né
+     come cambia. Ora, con la bora misurata, la scritta grande è la fascia della guida (genesi,
+     consistente, forte: la stessa del colore e del grafico) e la riga sotto dice cosa fa nelle
+     prossime 24 ore, con l'ora: in rinforzo verso una fascia più alta, in calo, sotto la soglia, o
+     stabile. Un salto di fascia conta solo se il valore si sposta di almeno 0,3 hPa, così un 7,9 che
+     diventa 8,0 non fa scrivere "in rinforzo". */
+  var MARGINE = 0.3;
   // { verdetto, classe (colore sb-v0..4), righe: [vento misurato, cosa dice la spinta] }
   function situazione(d) {
     var lista = osservazioni();
     var o = lista.filter(boraMisurata)[0] || lista[0] || null;   // si mostra quella con la bora, se c'è
-    var v = d.ora, S = SOGLIE[0];
+    var v = d.ora, S = SOGLIE[0], f = fascia(v);
     var da = Math.ceil(d.xOra), a = Math.min(d.serie.length - 1, Math.floor(d.xOra + 24));
-    var picco = v, inizio = null, fine = null;
-    for (var i = da; i <= a; i++) {
-      var s = d.serie[i];
+    var picco = v, inizio = null, fine = null, giu = null, i, s;
+    for (i = da; i <= a; i++) {
+      s = d.serie[i];
       if (s == null) continue;
       if (s > picco) picco = s;
       if (inizio === null && v < S && s >= S) inizio = i;
       if (fine === null && v >= S && s < S) fine = i;
+      if (giu === null && fascia(s) < f && v - s >= MARGINE) giu = i;
     }
+    // il rinforzo si data quando la spinta entra nella fascia del picco
+    var fp = picco - v >= MARGINE ? fascia(picco) : f, su = null;
+    for (i = da; fp > f && i <= a && su === null; i++) if (d.serie[i] != null && fascia(d.serie[i]) >= fp) su = i;
     var bora = boraMisurata(o), verdetto, classe, spinta;
-    if (v >= S) spinta = fine !== null ? T.altaFino + " " + quando(d, fine) : T.altaResta;
+    if (v >= S) {
+      // conta il primo cambio che arriva; "sotto la soglia" vince su un calo di fascia che lo precede
+      if (su !== null && (fine === null || su < fine) && (giu === null || su < giu)) spinta = T.rinforzo[fp] + " " + quando(d, su);
+      else if (fine !== null) spinta = T.scende + " " + quando(d, fine);
+      else if (giu !== null) spinta = T.calo + " " + quando(d, giu);
+      else spinta = T.stabile;
+    }
     else if (inizio !== null) spinta = T.supera + " " + quando(d, inizio);
     else if (bora) spinta = T.moderataCorso;
     else if (picco >= VICINO) spinta = T.moderata;
     else spinta = T.bassa;
-    if (bora) { verdetto = T.sit.corso; classe = Math.max(2, fascia(v)); }
-    else if (v >= S) { verdetto = o ? T.sit.arrivo : T.sit.probabile; classe = fascia(v); }   // spinta alta, bora non ancora misurata
+    if (bora) { verdetto = v >= S ? T.fasce[f] : T.sit.corso; classe = Math.max(2, f); }
+    else if (v >= S) { verdetto = o ? T.sit.arrivo : T.sit.probabile; classe = f; }   // spinta alta, bora non ancora misurata
     else if (inizio !== null) { verdetto = T.sit.arrivo; classe = 2; }
     else if (picco >= VICINO) { verdetto = T.sit.possibile; classe = 2; }
     else { verdetto = o ? T.sit.niente : T.sit.improbabile; classe = 1; }
