@@ -599,68 +599,85 @@
       box-shadow: 0 8px 22px rgba(42,118,204,.16);
     }
     #previsioneAi p { margin: 0; }
-    .ai-head { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: .45rem .7rem; }
-    .ai-logo { width: 44px; height: 44px; border-radius: 11px; box-shadow: 0 0 0 2px var(--ai-acc); }
-    /* telefono: Informazioni sotto il nome, allineato al testo, così il titolo resta su una riga */
-    @media (max-width: 520px) {
-      .ai-head { grid-template-columns: 44px minmax(0, 1fr); }
-      #previsioneAi .ai-info { grid-column: 2; justify-self: start; }
-    }
-    #previsioneAi h2 { display: block; margin: 0; color: var(--ai-testo); font-size: 1.15rem; font-weight: 800; letter-spacing: -.015em; line-height: 1.2; }
+    /* Compatto per il telefono (2 nov sera, Alberto: "migliora drasticamente la UX soprattutto da
+       mobile: il mobile è il 90% dei nostri utenti, sezioni compatte"): intestazione su una riga con
+       Informazioni a icona, giorno ed esito in due righe, fasce, commento, piede con la tendina e
+       l'ora, Telegram su una riga sola. */
+    .ai-head { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: .6rem; }
+    .ai-logo { width: 40px; height: 40px; border-radius: 10px; box-shadow: 0 0 0 2px var(--ai-acc); }
+    #previsioneAi h2 { display: block; margin: 0; color: var(--ai-testo); font-size: 1.1rem; font-weight: 800; letter-spacing: -.015em; line-height: 1.2; white-space: nowrap; }
     #previsioneAi h2::before { display: none; }   /* niente barretta gialla dei titoli: c'è il logo */
     #previsioneAi h2 .ai-tag { color: var(--ai-acc); }
     .ai-beta {
-      display: inline-block; margin-left: .45rem; padding: .05rem .42rem; vertical-align: .18em;
+      display: inline-block; margin-left: .4rem; padding: .05rem .4rem; vertical-align: .18em;
       border: 1px solid var(--ai-acc); border-radius: 999px; color: var(--ai-acc);
-      font-size: .6rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; line-height: 1.5;
+      font-size: .58rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; line-height: 1.5;
     }
-    #previsioneAi .ai-sotto { font-size: .8rem; color: var(--ai-tenue); margin-top: .1rem; }
+    #previsioneAi .ai-sotto { font-size: .78rem; color: var(--ai-tenue); margin-top: .05rem; }
     #previsioneAi .ai-info {
-      padding: .28rem .7rem; border-radius: 999px; cursor: pointer;
-      border: 1px solid var(--ai-tab-bordo); background: var(--ai-tab); color: var(--ai-testo);
-      font: inherit; font-size: .8rem; font-weight: 600; line-height: 1.4; white-space: nowrap;
+      display: inline-flex; align-items: center; justify-content: center; gap: .3rem; min-height: 38px; padding: .25rem .75rem;
+      border-radius: 999px; cursor: pointer; border: 1px solid var(--ai-tab-bordo); background: var(--ai-tab); color: var(--ai-testo);
+      font: inherit; font-size: .8rem; font-weight: 600; line-height: 1.2; white-space: nowrap;
     }
     #previsioneAi .ai-info:hover { border-color: var(--ai-acc); background: var(--ai-acc); color: #071a30; }
-    #aiPrevisione { margin-top: .8rem; }
-    #previsioneAi .ai-titolo { font-size: .95rem; font-weight: 600; }
-    #previsioneAi .ai-esito { font-size: 1rem; margin-top: .15rem; }
+    #aiPrevisione { margin-top: .7rem; }
+    #previsioneAi .ai-esito { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .5rem; font-size: .95rem; line-height: 1.3; }
+    .ai-verdetto { padding: .12rem .6rem; border-radius: 999px; font-size: .9rem; font-weight: 800; white-space: nowrap; background: var(--ai-tab); border: 1px solid var(--ai-tab-bordo); }
+    .ai-verdetto.si { background: #1f8a4c; border-color: #1f8a4c; color: #fff; }
+    .ai-verdetto.no { background: #b8323f; border-color: #b8323f; color: #fff; }
+    .ai-verdetto.forse { background: #c77a0a; border-color: #c77a0a; color: #fff; }
     .ai-tabella {
       display: grid; grid-template-columns: auto auto auto auto 1fr; align-items: center; gap: .3rem .65rem; overflow-x: auto;
-      margin: .6rem 0; padding: .6rem .75rem; border-radius: 10px;
+      margin: .55rem 0; padding: .55rem .75rem; border-radius: 10px;
       background: var(--ai-tab); border: 1px solid var(--ai-tab-bordo);
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .88rem; font-variant-numeric: tabular-nums;
     }
     .ai-riga { display: contents; }
     .ai-riga > span { white-space: nowrap; }
     .ai-riga.passata > span { opacity: .4; }
-    /* telefoni stretti: una riga per fascia sempre, mai a capo dentro "27-44 kt"; sotto i 340 px
-       restano il cardinale e il giudizio, i gradi no (la riga intera non ci sta) */
-    @media (max-width: 400px) {
-      .ai-tabella { font-size: .8rem; gap: .3rem .5rem; padding: .55rem .6rem; }
-      .ai-barra i { width: 6px; }
-    }
-    @media (max-width: 340px) { .ai-gradi { display: none; } }
     .ai-kt { text-align: right; font-weight: 700; }
     .ai-g { white-space: nowrap; }
     .ai-barra { display: inline-flex; gap: 2px; vertical-align: -1px; }
     .ai-barra i { width: 7px; height: 11px; border-radius: 2px; background: var(--ai-off); }
     .ai-barra i.on { background: var(--ai-on); }
-    #previsioneAi .ai-commento { font-size: .92rem; line-height: 1.45; }
-    .ai-fasce { margin-top: .45rem; font-size: .86rem; }
+    #previsioneAi .ai-commento { font-size: .9rem; line-height: 1.42; }
+    /* piede: la tendina delle fasce a sinistra, quando è stata fatta a destra */
+    .ai-piede { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .2rem .8rem; margin-top: .45rem; }
+    .ai-fasce { flex: 1 1 auto; font-size: .84rem; }
     .ai-fasce summary { cursor: pointer; color: var(--ai-acc); font-weight: 700; }
     .ai-fasce ul { margin: .35rem 0 0; padding-left: 1.1rem; }
     .ai-fasce li { margin: .12rem 0; }
-    #previsioneAi .ai-quando,
-    #previsioneAi .ai-nota { font-size: .74rem; color: var(--ai-tenue); margin-top: .5rem; }
+    #previsioneAi .ai-quando { font-size: .72rem; color: var(--ai-tenue); white-space: nowrap; margin-left: auto; }
     #previsioneAi .ai-vuota { font-size: .9rem; color: var(--ai-tenue); }
-    .ai-contribuisci { margin-top: .9rem; padding-top: .85rem; border-top: 1px dashed var(--ai-tab-bordo); }
-    .ai-contribuisci > p:first-child { font-size: .88rem; line-height: 1.45; margin-bottom: .6rem; }
+    .ai-contribuisci { display: flex; align-items: center; gap: .7rem; margin-top: .75rem; padding-top: .7rem; border-top: 1px dashed var(--ai-tab-bordo); }
+    .ai-contribuisci > p { flex: 1 1 auto; min-width: 0; font-size: .84rem; line-height: 1.3; }
+    .ai-contribuisci > p b { display: block; }
+    .ai-contribuisci > p span { display: block; margin-top: .1rem; font-size: .74rem; color: var(--ai-tenue); }
     #previsioneAi .ai-telegram {
-      display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .95rem; border-radius: 999px;
-      background: #2aabee; color: #fff; font-weight: 700; font-size: .9rem; text-decoration: none;
+      flex: none; display: inline-flex; align-items: center; gap: .4rem; min-height: 40px; padding: .4rem .85rem; border-radius: 999px;
+      background: #2aabee; color: #fff; font-weight: 700; font-size: .86rem; text-decoration: none; white-space: nowrap;
     }
     #previsioneAi .ai-telegram:hover { background: #1b92cf; }
     .ai-telegram svg { width: 1.15em; height: 1.15em; fill: currentColor; flex: none; }
+    /* telefono: box più stretto ai bordi, Informazioni solo icona, fasce più piccole (mai a capo
+       dentro "27-44 kt"); sotto i 340 px niente gradi e il bottone Telegram va sotto il testo */
+    @media (max-width: 520px) {
+      #previsioneAi { padding: .8rem .8rem .85rem .85rem; }
+      #previsioneAi .ai-info { width: 38px; padding: 0; font-size: 1rem; }
+      #previsioneAi .ai-info-testo { display: none; }
+      #previsioneAi .ai-commento { font-size: .86rem; }
+      #previsioneAi .ai-esito { font-size: .84rem; gap: .25rem .4rem; }
+      .ai-verdetto { font-size: .8rem; padding: .1rem .5rem; }
+    }
+    @media (max-width: 400px) {
+      .ai-tabella { font-size: .8rem; gap: .28rem .5rem; padding: .5rem .6rem; }
+      .ai-barra i { width: 6px; }
+      #previsioneAi h2 { font-size: 1.02rem; }
+    }
+    @media (max-width: 340px) {
+      .ai-gradi { display: none; }
+      .ai-contribuisci { flex-wrap: wrap; }
+    }
     #modalAi ul { padding-left: 1.1rem; margin: .4rem 0 .7rem; }
     #modalAi li { margin: .35rem 0; }
     #modalAi .ai-scala { font-size: .86rem; margin: 0; }
@@ -1719,7 +1736,7 @@
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261022" defer></script>
   <script src="./spinta-bora.js?v=20261101b"></script>
-  <script src="./previsione-ai.js?v=20261102c" defer></script>
+  <script src="./previsione-ai.js?v=20261102d" defer></script>
   <script src="/pressione-trieste.js?v=20261022b"></script>
 </head>
 <body>
@@ -2229,13 +2246,12 @@
         <h2>Vento Trieste<span class="ai-tag">_AI</span><span class="ai-beta">Beta</span></h2>
         <p class="ai-sotto">Previsione del vento per Barcola</p>
       </div>
-      <button type="button" class="ai-info" onclick="apriInfoAi()">ℹ️ Informazioni</button>
+      <button type="button" class="ai-info" onclick="apriInfoAi()" aria-label="Informazioni su Vento Trieste_AI">ℹ️ <span class="ai-info-testo">Informazioni</span></button>
     </div>
     <div id="aiPrevisione" aria-live="polite"><p class="ai-vuota">Caricamento…</p></div>
     <div class="ai-contribuisci">
-      <p><b>Vuoi contribuire a istruire il modello?</b><br>Ogni sera su Telegram ricevi la previsione e con un tocco dici se è giusta; la mattina dopo, com'era in acqua a Barcola.</p>
-      <a class="ai-telegram" href="https://t.me/Ventotrieste_AI_bot?start=sito" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 4.2 2.8 11.4c-1.1.4-1 1.1-.1 1.4l4.7 1.5 1.8 5.5c.2.6.4.8.8.8s.6-.2.9-.5l2.4-2.3 4.8 3.6c.9.5 1.5.2 1.7-.8l3.1-14.8c.3-1.3-.5-1.9-1.5-1.6ZM9.5 14.5l8.7-5.5c.4-.3.8-.1.5.2l-7.3 6.6-.3 3.1Z"/></svg>Chiedi di entrare nel bot</a>
-      <p class="ai-nota">Alberto approva le richieste una per una.</p>
+      <p><b>Vuoi contribuire a istruire il modello?</b><span>Su Telegram, un tocco la sera e uno la mattina. Approva Alberto.</span></p>
+      <a class="ai-telegram" href="https://t.me/Ventotrieste_AI_bot?start=sito" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 4.2 2.8 11.4c-1.1.4-1 1.1-.1 1.4l4.7 1.5 1.8 5.5c.2.6.4.8.8.8s.6-.2.9-.5l2.4-2.3 4.8 3.6c.9.5 1.5.2 1.7-.8l3.1-14.8c.3-1.3-.5-1.9-1.5-1.6ZM9.5 14.5l8.7-5.5c.4-.3.8-.1.5.2l-7.3 6.6-.3 3.1Z"/></svg>Entra nel bot</a>
     </div>
   </div>
 
@@ -4194,7 +4210,7 @@
           async src="//gc.zgo.at/count.js"></script>
   <script src="/eventi.js?v=20261102b" defer></script>
   <!-- grafico del registro del vento: si scarica solo quando la tendina si apre -->
-  <script src="/registro-vento.js?v=20261021" defer></script>
+  <script src="/registro-vento.js?v=20261102" defer></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       var det = document.getElementById("registro");

@@ -49,13 +49,17 @@
     var note = d.fasce.filter(function (f) { return f.raffiche || f.nota; }).map(function (f) {
       return "<li><b>" + e(f.dalle) + "-" + e(f.alle) + "</b> " + e([f.raffiche, f.nota].filter(Boolean).join(" · ")) + "</li>";
     }).join("");
+    // il verdetto colorato: si esce verde, non si esce rosso, il resto ambra (2 nov sera, telefono)
+    var verdetto = /^non\b/i.test(d.esito) ? "no" : /^si\b|^sì\b/i.test(d.esito) ? "si" : "forse";
+    // per chi e per quando, nel sottotitolo sotto il nome: una riga in meno sul telefono
+    var sotto = document.querySelector("#previsioneAi .ai-sotto");
+    if (sotto) sotto.textContent = "Per " + d.spot + " · " + (oggi ? "oggi" : "domani") + ", " + d.data;
     box.innerHTML =
-      '<p class="ai-titolo">Previsione ' + (oggi ? "di oggi" : "di domani") + " · " + e(d.data) + " · <b>" + e(d.spot) + "</b></p>" +
-      '<p class="ai-esito"><b>' + e(d.esito) + "</b> · " + e(d.giudizio.sim) + " " + e(d.giudizio.nome) + (d.raffiche ? " · " + e(d.raffiche) : "") + "</p>" +
+      '<p class="ai-esito"><b class="ai-verdetto ' + verdetto + '">' + e(d.esito) + "</b><span>" + e(d.giudizio.sim) + " " + e(d.giudizio.nome) + (d.raffiche ? " · " + e(d.raffiche) : "") + "</span></p>" +
       '<div class="ai-tabella" role="table" aria-label="Previsione fascia per fascia: ore, vento medio, media-raffica, direzione, giudizio">' + righe + "</div>" +
       (d.commento ? '<p class="ai-commento">' + e(d.commento) + "</p>" : "") +
-      (note ? '<details class="ai-fasce"><summary>Fascia per fascia</summary><ul>' + note + "</ul></details>" : "") +
-      '<p class="ai-quando">' + (oggi ? "Fatta ieri sera" : "Fatta stasera") + " alle " + e(d.sera) + " · previsione automatica in prova · solo per Barcola</p>";
+      '<div class="ai-piede">' + (note ? '<details class="ai-fasce"><summary>Fascia per fascia</summary><ul>' + note + "</ul></details>" : "") +
+      '<span class="ai-quando" title="Previsione automatica in prova, solo per Barcola">' + (oggi ? "Fatta ieri alle " : "Fatta stasera alle ") + e(d.sera) + "</span></div>";
   }
 
   function chiedi() {
