@@ -625,13 +625,21 @@
     #previsioneAi .ai-titolo { font-size: .95rem; font-weight: 600; }
     #previsioneAi .ai-esito { font-size: 1rem; margin-top: .15rem; }
     .ai-tabella {
-      display: grid; grid-template-columns: auto auto auto auto 1fr; align-items: center; gap: .3rem .65rem;
+      display: grid; grid-template-columns: auto auto auto auto 1fr; align-items: center; gap: .3rem .65rem; overflow-x: auto;
       margin: .6rem 0; padding: .6rem .75rem; border-radius: 10px;
       background: var(--ai-tab); border: 1px solid var(--ai-tab-bordo);
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .88rem; font-variant-numeric: tabular-nums;
     }
     .ai-riga { display: contents; }
+    .ai-riga > span { white-space: nowrap; }
     .ai-riga.passata > span { opacity: .4; }
+    /* telefoni stretti: una riga per fascia sempre, mai a capo dentro "27-44 kt"; sotto i 340 px
+       restano il cardinale e il giudizio, i gradi no (la riga intera non ci sta) */
+    @media (max-width: 400px) {
+      .ai-tabella { font-size: .8rem; gap: .3rem .5rem; padding: .55rem .6rem; }
+      .ai-barra i { width: 6px; }
+    }
+    @media (max-width: 340px) { .ai-gradi { display: none; } }
     .ai-kt { text-align: right; font-weight: 700; }
     .ai-g { white-space: nowrap; }
     .ai-barra { display: inline-flex; gap: 2px; vertical-align: -1px; }
@@ -1711,7 +1719,7 @@
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261022" defer></script>
   <script src="./spinta-bora.js?v=20261101b"></script>
-  <script src="./previsione-ai.js?v=20261102" defer></script>
+  <script src="./previsione-ai.js?v=20261102b" defer></script>
   <script src="/pressione-trieste.js?v=20261022b"></script>
 </head>
 <body>

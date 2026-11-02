@@ -40,7 +40,7 @@
         '<span class="ai-ore" role="cell">' + e(f.dalle) + "-" + e(f.alle) + "</span>" +
         '<span role="cell">' + barra(f.media) + "</span>" +
         '<span class="ai-kt" role="cell">' + e(kt) + " kt</span>" +
-        '<span class="ai-dir" role="cell">' + (f.cardinale ? e(f.cardinale) + " " + e(f.gradi) : "") + "</span>" +
+        '<span class="ai-dir" role="cell">' + (f.cardinale ? e(f.cardinale) + ' <span class="ai-gradi">' + e(f.gradi) + "</span>" : "") + "</span>" +
         '<span class="ai-g" role="cell"' + (f.giudizio ? ' title="' + e(f.raffiche || "") + '"' : "") + ">" + e(f.giudizio || "") + "</span></div>";
     }).join("");
     var note = d.fasce.filter(function (f) { return f.raffiche || f.nota; }).map(function (f) {
