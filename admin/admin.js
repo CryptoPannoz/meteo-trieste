@@ -486,7 +486,7 @@
     const tessere = [
       { e: "👥 Invitati", v: intero(t.invitati), s: t.attivi + " attivi nel periodo" + (t.nuovi ? " · " + t.nuovi + " nuovi" : "") },
       { e: "🔮 Previsioni", v: intero(t.previsioni), s: "📨 ricevute " + quota(t.consegne.mandati, t.consegne.totale) },
-      { e: "🗳️ Voti per domani", v: intero(t.pronostici), s: t.consegne.mandati ? Math.round(t.pronostici / t.consegne.mandati * 100) + "% di chi l'ha ricevuta" : "sotto la previsione" },
+      { e: "🗳️ È giusta?", v: intero(t.pronostici), s: t.consegne.mandati ? Math.round(t.pronostici / t.consegne.mandati * 100) + "% di chi l'ha ricevuta" : "pareri sulla previsione" },
       { e: "🙋 Giudizi", v: intero(t.giudizi), s: "com'era davvero (10:30)" },
       { e: "❓ Domande", v: intero(t.domande), s: "✍️ " + intero(t.commenti) + (t.commenti === 1 ? " commento" : " commenti") + " · 📎 " + intero(t.note) + (t.note === 1 ? " nota" : " note") },
       { e: "🤖 Claude oggi", v: intero(c.oggi) + "/" + intero(c.limiteGiorno), s: "mese " + intero(c.mese) + "/" + intero(c.limiteMese) }
@@ -497,12 +497,13 @@
     // una riga per previsione: cosa diceva, chi l'ha ricevuta, chi ha risposto, com'è andata
     const ko = l => l.length ? '<small class="ko">⚠️ ' + l.map(x => esc(x.nome) + " (" + perche(x.errore) + ")").join(", ") + "</small>" : "";
     $("botPrevisioni").innerHTML = b.previsioni.length
-      ? "<thead><tr><th>Giorno</th><th>🔮 Previsione</th><th>📨 Ricevuta</th><th>🗳️ Voti</th><th>☀️ 10:30</th><th>🙋 Giudizi</th><th>✍️</th><th>📊 Com'è andata</th></tr></thead><tbody>" +
+      ? "<thead><tr><th>Giorno</th><th>🔮 Previsione</th><th>📨 Ricevuta</th><th>🗳️ È giusta?</th><th>☀️ 10:30</th><th>🙋 Giudizi</th><th>✍️</th><th>📊 Com'è andata</th></tr></thead><tbody>" +
         b.previsioni.map(p => "<tr><td>" + esc(giornoBreve(p.giorno)) + "</td>" +
           '<td class="testo-lungo">' + (p.voto != null ? "<b>" + esc(p.giudizio || VOTI[p.voto]) + "</b> " + esc(p.riga || "") + (p.testuale ? "<small>" + esc(p.testuale) + "</small>" : "")
             : '<span class="nota">solo regola di base: ' + esc(p.base || "–") + "</span>") + "</td>" +
           '<td class="testo-lungo">' + (p.consegna ? quota(p.consegna.mandati, p.consegna.totale) + ko(p.consegna.ko) : "–") + "</td>" +
-          "<td>" + (p.pronostici.n ? p.pronostici.n + " · ⌀ " + n1(p.pronostici.media) + (p.pronostici.accordo != null ? " · 🤝 " + p.pronostici.accordo : "") : "–") + "</td>" +
+          "<td>" + (!p.pronostici.n ? "–" : p.pronostici.giuste != null ? "✅ " + p.pronostici.giuste + " · ✖️ " + p.pronostici.nonGiuste
+            : p.pronostici.n + " · ⌀ " + n1(p.pronostici.media) + (p.pronostici.accordo != null ? " · 🤝 " + p.pronostici.accordo : "")) + "</td>" +
           "<td>" + (p.mattina ? quota(p.mattina.mandati, p.mattina.totale) : "–") + "</td>" +
           "<td>" + (p.giudizi.n ? p.giudizi.n + (p.giudizi.prevalente ? " · " + esc(p.giudizi.prevalente) : p.giudizi.media != null ? " · ⌀ " + n1(p.giudizi.media) : "") : "–") + "</td>" +
           "<td>" + (p.commenti || "–") + "</td>" +
@@ -512,7 +513,7 @@
     // le persone invitate, dalla più attiva (Alberto no: le sue chat con Claude sono nella tessera)
     const persone = b.persone.filter(p => !p.admin);
     $("botPersone").innerHTML = persone.length
-      ? "<thead><tr><th>Persona</th><th>📨 Ricevute</th><th>🗳️ Voti</th><th>🙋 Giudizi</th><th>❓ Domande</th><th>✍️ Scritti</th><th>⌨️ Comandi</th><th>📅 Giorni</th><th>🕒 Ultima volta</th></tr></thead><tbody>" +
+      ? "<thead><tr><th>Persona</th><th>📨 Ricevute</th><th>🗳️ Pareri</th><th>🙋 Giudizi</th><th>❓ Domande</th><th>✍️ Scritti</th><th>⌨️ Comandi</th><th>📅 Giorni</th><th>🕒 Ultima volta</th></tr></thead><tbody>" +
         persone.map(p => {
           const k = p.tipi || {};
           return '<tr><td class="testo-lungo"><button type="button" class="persona" data-chat="' + esc(p.id) + '"' + (filtroPersona === p.id ? ' aria-pressed="true"' : "") + ">" + esc(p.nome) + "</button>" +

@@ -645,8 +645,12 @@
     .ai-piede { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .2rem .8rem; margin-top: .45rem; }
     .ai-fasce { flex: 1 1 auto; font-size: .84rem; }
     .ai-fasce summary { cursor: pointer; color: var(--ai-acc); font-weight: 700; }
-    .ai-fasce ul { margin: .35rem 0 0; padding-left: 1.1rem; }
-    .ai-fasce li { margin: .12rem 0; }
+    .ai-fasce ul, .ai-fasce ol { margin: .3rem 0 0; padding-left: 1.1rem; }
+    .ai-fasce li { margin: .15rem 0; line-height: 1.38; }
+    .ai-fasce[open] { flex-basis: 100%; }
+    .ai-fasce h4 { margin: .6rem 0 0; font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--ai-tenue); }
+    .ai-metodo li::marker { color: var(--ai-acc); font-weight: 800; }
+    #previsioneAi .ai-guida { display: inline-block; margin-top: .45rem; color: var(--ai-acc); font-weight: 700; text-decoration: none; }
     #previsioneAi .ai-quando { font-size: .72rem; color: var(--ai-tenue); white-space: nowrap; margin-left: auto; }
     #previsioneAi .ai-vuota { font-size: .9rem; color: var(--ai-tenue); }
     .ai-contribuisci { display: flex; align-items: center; gap: .7rem; margin-top: .75rem; padding-top: .7rem; border-top: 1px dashed var(--ai-tab-bordo); }
@@ -1736,7 +1740,7 @@
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261022" defer></script>
   <script src="./spinta-bora.js?v=20261101b"></script>
-  <script src="./previsione-ai.js?v=20261102d" defer></script>
+  <script src="./previsione-ai.js?v=20261102e" defer></script>
   <script src="/pressione-trieste.js?v=20261022b"></script>
 </head>
 <body>

@@ -29,6 +29,16 @@
     return parseInt(new Date().toLocaleTimeString("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", hour12: false }), 10);
   }
 
+  /* il metodo, in una tendina con le note fascia per fascia (2 nov sera, Alberto: "un dropdown
+     integrando quello già presente, dettagliando il metodo di previsione"). Testo fisso: le fonti come
+     nell'articolo della guida, niente regole del manuale. */
+  var METODO = '<h4>Come nasce la previsione</h4><ol class="ai-metodo">' +
+    "<li><b>Alle 21</b> l'AI legge il bollettino ARPA FVG - S.O.C. OSMER e GRN, ALADIN, i modelli e la Spinta della Bora.</li>" +
+    "<li><b>Il manuale</b>: applica le regole scritte da Alberto con chi esce a Barcola.</li>" +
+    "<li><b>Fascia per fascia</b>: vento medio, raffica, direzione e giudizio da ⛏️⛏️ a 🌪️, le raffiche a parte.</li>" +
+    "<li><b>Il giorno dopo</b> la confronta con il vento misurato e con i feedback su Telegram: dagli errori nascono regole nuove, approvate da Alberto.</li>" +
+    '</ol><a class="ai-guida" href="/guida/vento-trieste-ai/">Come l\'abbiamo fatta →</a>';
+
   function disegna(d) {
     if (!contato && window.vtConta) { contato = true; window.vtConta("ai:box-visto"); }
     if (!d || d.vuota || !d.fasce) {
@@ -58,7 +68,8 @@
       '<p class="ai-esito"><b class="ai-verdetto ' + verdetto + '">' + e(d.esito) + "</b><span>" + e(d.giudizio.sim) + " " + e(d.giudizio.nome) + (d.raffiche ? " · " + e(d.raffiche) : "") + "</span></p>" +
       '<div class="ai-tabella" role="table" aria-label="Previsione fascia per fascia: ore, vento medio, media-raffica, direzione, giudizio">' + righe + "</div>" +
       (d.commento ? '<p class="ai-commento">' + e(d.commento) + "</p>" : "") +
-      '<div class="ai-piede">' + (note ? '<details class="ai-fasce"><summary>Fascia per fascia</summary><ul>' + note + "</ul></details>" : "") +
+      '<div class="ai-piede"><details class="ai-fasce"><summary>Fasce e metodo</summary>' +
+        (note ? "<h4>Fascia per fascia</h4><ul>" + note + "</ul>" : "") + METODO + "</details>" +
       '<span class="ai-quando" title="Previsione automatica in prova, solo per Barcola">' + (oggi ? "Fatta ieri alle " : "Fatta stasera alle ") + e(d.sera) + "</span></div>";
   }
 
