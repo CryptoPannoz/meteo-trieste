@@ -1719,7 +1719,7 @@
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261022" defer></script>
   <script src="./spinta-bora.js?v=20261101b"></script>
-  <script src="./previsione-ai.js?v=20261102b" defer></script>
+  <script src="./previsione-ai.js?v=20261102c" defer></script>
   <script src="/pressione-trieste.js?v=20261022b"></script>
 </head>
 <body>
@@ -1891,7 +1891,7 @@
         try { chiuso = localStorage.getItem(CHIAVE); } catch (e) {}
         if (chiuso) { pop.remove(); return; }
         pop.hidden = false;
-        setTimeout(function () { pop.classList.add("aperto"); }, 1500);
+        setTimeout(function () { pop.classList.add("aperto"); if (window.vtConta) window.vtConta("ai:popup-visto"); }, 1500);
         function chiudi() {
           pop.classList.remove("aperto");
           try { localStorage.setItem(CHIAVE, String(Date.now())); } catch (e) {}
@@ -4192,7 +4192,7 @@
   <!-- GoatCounter (statistiche anonime, senza cookie) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
-  <script src="/eventi.js?v=20261102" defer></script>
+  <script src="/eventi.js?v=20261102b" defer></script>
   <!-- grafico del registro del vento: si scarica solo quando la tendina si apre -->
   <script src="/registro-vento.js?v=20261021" defer></script>
   <script>

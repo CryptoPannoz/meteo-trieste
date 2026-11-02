@@ -275,6 +275,7 @@
     colonne(box, (v.perGiorno || []).map(g => ({ giorno: g.giorno, valore: g.visite })), v.al,
       "Visitatori al giorno dal " + v.dal + " al " + v.al + ", in tutto " + v.totale, "Visitatori");
     disegnaPersone(v.persone, v.al);
+    disegnaAi(v.ai, v.al);
 
     const err = v.errori || {};
     classifica("lPagine", v.pagine, x => x.percorso, x => x.titolo);
@@ -310,6 +311,39 @@
     colonne($("graficoPersone"), giorni.map(g => ({ giorno: g.giorno, valore: g.persone })), oggi,
       "Persone al giorno dal " + p.dal + ", in media " + Math.round(p.personeAlGiorno), "Persone");
     classifica("lQuante", p.quante.map((x, i) => ({ nome: i + 1 === p.quante.length ? (i + 1) + " o più sessioni" : (i + 1) + (i ? " sessioni" : " sessione"), visite: x })), x => x.nome);
+  }
+
+  /* Vento Trieste_AI dal sito al bot (2 nov 2026, Alberto: "il tracking di chi guarda la previsione AI,
+     chi clicca su Telegram"): l'imbuto dal box al bot, il popup della home, giorno per giorno */
+  function imbuto(passi) {
+    const max = Math.max(1, ...passi.map(x => x.v));
+    return '<ol class="classifica">' + passi.map(x => '<li><span class="c-nome">' + esc(x.n) + (x.s ? "<small>" + esc(x.s) + "</small>" : "") + "</span>" +
+      '<span class="c-valore">' + intero(x.v) + '</span><i class="c-barra" style="width:' + (x.v / max * 100).toFixed(1) + '%"></i></li>').join("") + "</ol>";
+  }
+  function disegnaAi(a, oggi) {
+    const box = $("ai");
+    if (!a || a.errore) { box.innerHTML = '<p class="nota">Non disponibile' + (a && a.errore ? ": " + esc(a.errore) : "") + ".</p>"; return; }
+    const s = a.sito, b = a.bot, perc = (x, y) => y ? " · " + Math.round(x / y * 100) + "%" : "";
+    const giorni = a.perGiorno.filter(g => g.visto || g.info || g.telegram || g.arrivati);
+    box.innerHTML = imbuto([
+        { n: "👀 Hanno visto il box", v: s.visto, s: "Previsioni aperta con la previsione AI" },
+        { n: "ℹ️ Informazioni", v: s.info, s: "pulsante del box" + perc(s.info, s.visto) },
+        { n: "📲 Clic su Telegram", v: s.telegramBox + s.telegramGuida, s: "box " + intero(s.telegramBox) + " · guida " + intero(s.telegramGuida) + perc(s.telegramBox + s.telegramGuida, s.visto) },
+        { n: "👤 Arrivati nel bot", v: b.arrivati, s: "dal box " + intero(b.box) + " · dalla guida " + intero(b.guida) },
+        { n: "✅ Approvati", v: b.approvati, s: (b.attesa ? intero(b.attesa) + " in attesa" : "nessuno in attesa") + (b.no ? " · " + intero(b.no) + " no" : "") }
+      ]) +
+      '<h4 class="sotto-titolo" style="margin-top:16px">Popup della home (fino al 9 nov)</h4>' +
+      imbuto([
+        { n: "Visto", v: s.popupVisto },
+        { n: "Guarda la previsione", v: s.popupPrevisione, s: perc(s.popupPrevisione, s.popupVisto).slice(3) },
+        { n: "Come funziona", v: s.popupGuida, s: perc(s.popupGuida, s.popupVisto).slice(3) },
+        { n: "Chiuso con la ✕", v: s.popupChiudi, s: perc(s.popupChiudi, s.popupVisto).slice(3) }
+      ]) +
+      (giorni.length ? '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
+        "<th>Giorno</th><th>👀 Box</th><th>ℹ️ Info</th><th>📲 Telegram</th><th>👤 Nel bot</th></tr></thead><tbody>" +
+        giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + (g.giorno === oggi ? " (oggi)" : "") + "</td><td>" + intero(g.visto) + "</td><td>" + intero(g.info) +
+          "</td><td>" + intero(g.telegram) + "</td><td>" + intero(g.arrivati) + "</td></tr>").join("") +
+        "</tbody></table></div></details>" : "");
   }
 
   /* elenco ordinato: nome, numero, barretta proporzionale (un solo colore: è una grandezza) */
@@ -495,6 +529,7 @@
       if (filtroPersona) $("botTesti").scrollIntoView({ behavior: "smooth", block: "start" });
     }));
 
+    disegnaUtenti(b);
     disegnaTesti(b);
     colonne($("botGrafico"), b.attivita.map(a => ({ giorno: a.giorno, valore: a.persone })), b.al,
       "Invitati che hanno usato il bot, giorno per giorno, dal " + b.dal + " al " + b.al, "Invitati attivi");
@@ -503,6 +538,58 @@
           '</span><span class="det">' + esc(data(a.quando)) + "</span></li>").join("")
       : '<li><span class="nome nota">Niente nel periodo.</span></li>';
   }
+
+  /* ---------------- Utenti Telegram (2 nov 2026) ----------------
+     Alberto: "tieni traccia di username etc così da avere un DB pronto". L'elenco viene da
+     /admin/bot (utenti.js nel Worker): tutti, non solo il periodo; interazioni = nel periodo. */
+  const DA = { sito: "🌐 box del sito", sito_guida: "📖 guida", invito: "✉️ invito", gruppo: "👥 gruppo", avvia: "▶️ Avvia senza link", messaggio: "💬 ha scritto", admin: "⭐ tu" };
+  const STATO = { richiesta: "⏳ chiede di entrare", approvato: "✅ approvato", no: "✖️ no", invitato: "✅ invitato", tolto: "🗑️ tolto", uscito: "🚪 uscito", contatto: "💬 senza invito", admin: "⭐ admin" };
+  const daDove = u => (DA[u.da] || (/^sito/.test(u.da || "") ? "🌐 sito (" + u.da.slice(5) + ")" : u.da || "–")) + (u.gruppo ? " " + u.gruppo : "");
+  function disegnaUtenti(b) {
+    const utenti = b.utenti || [];
+    $("utentiNota").textContent = utenti.length + (utenti.length === 1 ? " persona" : " persone") +
+      " · " + utenti.filter(u => u.dentro).length + " dentro adesso" + (b.utentiMancano ? " · " + b.utentiMancano + " invitati non ancora nell'elenco: tocca «Rileggi da Telegram»" : "");
+    $("botUtenti").innerHTML = utenti.length
+      ? "<thead><tr><th>Persona</th><th>@utente</th><th>Da dove</th><th>Stato</th><th>🌍</th><th>Arrivato</th><th>Ultimo evento</th><th>Interazioni</th><th></th></tr></thead><tbody>" +
+        utenti.map(u => '<tr><td class="testo-lungo"><b>' + esc(u.nome) + "</b>" + (u.esperto ? "<small>🎓 parla con l'AI</small>" : "") + "</td>" +
+          "<td>" + (u.utente ? '<a href="https://t.me/' + esc(u.utente) + '" target="_blank" rel="noopener">@' + esc(u.utente) + "</a>" : '<span class="nota">–</span>') + "</td>" +
+          "<td>" + esc(daDove(u)) + "</td>" +
+          '<td class="testo-lungo">' + esc(STATO[u.stato] || u.stato || "–") + (!u.dentro && (u.stato === "approvato" || u.stato === "invitato") ? "<small>non è più dentro</small>" : "") +
+            ((u.storia || []).length > 1 ? "<small>" + u.storia.map(x => esc(x[0]) + " " + esc(giornoMese(x[1] + ":00Z"))).join(" → ") + "</small>" : "") + "</td>" +
+          "<td>" + esc(u.lingua || "–") + "</td><td>" + esc(quando(u.primo)) + "</td><td>" + esc(quando(u.ultimo)) + "</td>" +
+          "<td>" + (u.interazioni || "–") + "</td>" +
+          '<td><button type="button" class="secondario pericolo piccolo" data-cancella-utente="' + esc(u.id) + '" data-nome="' + esc(u.nome) + '">Cancella</button></td></tr>').join("") + "</tbody>"
+      : '<tbody><tr><td class="nota">Ancora nessuno: l\'elenco si riempie con le prossime richieste e inviti. «Rileggi da Telegram» aggiunge chi è già dentro.</td></tr></tbody>';
+  }
+  $("botUtenti").addEventListener("click", async e => {
+    const x = e.target.closest("[data-cancella-utente]");
+    if (!x || !window.confirm("Cancello " + x.dataset.nome + " dall'elenco degli utenti, anche da Neon? Giudizi e commenti restano.")) return;
+    x.disabled = true;
+    try { const r = await chiama("/admin/utenti/cancella", { id: Number(x.dataset.cancellaUtente) }); if (r.neon && r.neon.startsWith("errore")) alert("Tolto dall'elenco. Neon: " + r.neon); await caricaBot(); }
+    catch (err) { alert("Non riuscito: " + err.message); x.disabled = false; }
+  });
+  $("btnUtentiRileggi").addEventListener("click", async () => {
+    const t = $("btnUtentiRileggi");
+    t.disabled = true; t.textContent = "Leggo da Telegram…";
+    try {
+      const r = await chiama("/admin/utenti/rileggi", {});
+      await caricaBot();
+      alert("Letti " + r.letti + " · nuovi " + r.nuovi + " · cambiati " + r.aggiornati + (r.ko.length ? "\nNon letti: " + r.ko.map(x => x.nome + " (" + x.errore + ")").join(", ") : ""));
+    } catch (err) { alert("Non riuscito: " + err.message); }
+    t.disabled = false; t.textContent = "Rileggi da Telegram";
+  });
+  $("btnUtentiCsv").addEventListener("click", () => {
+    const utenti = (ultimoBot && ultimoBot.utenti) || [];
+    const campi = ["id", "nome", "utente", "lingua", "da", "gruppo", "stato", "dentro", "primo", "ultimo", "interazioni"];
+    const cella = v => { const s = v == null ? "" : v === true ? "sì" : v === false ? "no" : String(v); return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    // punto e virgola: Excel in italiano lo apre già in colonne
+    const csv = "\ufeff" + [campi.join(";")].concat(utenti.map(u => campi.map(k => cella(u[k])).join(";"))).join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    a.download = "utenti-bot-vento-trieste-" + new Date().toLocaleDateString("sv-SE") + ".csv";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  });
 
   /* domande, commenti e note degli invitati, con la risposta del bot (ultimi 7 giorni) */
   function disegnaTesti(b) {

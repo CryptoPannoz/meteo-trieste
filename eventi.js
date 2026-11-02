@@ -11,7 +11,11 @@
      email                         link mailto
      birra: apri | copia bitcoin   sostegno al progetto (Revolut/PayPal = "esce: ...")
      popup barcolana: apri|chiudi  popup in basso della home
-     popup ai: previsione|guida|chiudi  popup Vento Trieste_AI della home (2-9 nov 2026)
+     ai:box-visto · ai:informazioni   box Vento Trieste_AI in Previsioni (previsione-ai.js)
+     ai:telegram-box|guida         link al bot @Ventotrieste_AI_bot (?start=sito, ?start=sito_guida)
+     ai:popup-visto|previsione|guida|chiudi  popup Vento Trieste_AI della home (2-9 nov 2026)
+       (dal 2 nov sera senza spazi, come giorno:…, per leggerli per nome in /admin; prima
+       "popup ai: …" e "ai: informazioni")
      tema: chiaro|scuro · lingua: it|en · menu: apri · dock: <voce>
      apri sezione: <id>            gruppi a scomparsa (es. "istria")
      guida: <spot o bora> · webcam: aggiorna | play
@@ -85,9 +89,14 @@
     if (t.closest("#btnAggiorna, #bcAggiorna")) return conta("aggiorna: " + pagina);
     if (t.closest("#bc58X")) return conta("popup barcolana: chiudi");
     if (t.closest("#bc58Pop .bc58-link")) return conta("popup barcolana: apri");
-    if (t.closest("#aiPopX")) return conta("popup ai: chiudi");
-    if (t.closest("#aiPop .ai-pop-cta")) return conta("popup ai: previsione");
-    if (t.closest("#aiPop .ai-pop-cta2")) return conta("popup ai: guida");
+    if (t.closest("#aiPopX")) return conta("ai:popup-chiudi");
+    if (t.closest("#aiPop .ai-pop-cta")) return conta("ai:popup-previsione");
+    if (t.closest("#aiPop .ai-pop-cta2")) return conta("ai:popup-guida");
+    // il bot della previsione AI: da dove sul sito lo dice il codice del link (sito = il box)
+    if ((el = t.closest("a[href*='t.me/Ventotrieste_AI_bot']"))) {
+      var da = (String(el.getAttribute("href")).match(/[?&]start=sito_?(\w*)/i) || [])[1];
+      return conta("ai:telegram-" + (da || "box").toLowerCase());
+    }
     if (t.closest("[onclick*='copiaBtc']")) return conta("birra: copia bitcoin");
     if (t.closest("#footerSupportButton, .topnav-birra, [onclick*='apriBirra'], .support-primary")) return conta("birra: apri");
     if ((el = t.closest("[onclick*='apriGuida']"))) {

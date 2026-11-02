@@ -3,7 +3,9 @@
    risultato di quello che viene mandato su Telegram", "specificando chiaramente che le previsioni
    sono per Barcola". È la previsione delle 21 del bot @Ventotrieste_AI_bot, in prova (beta).
    I dati vengono dal Worker ventotrieste-previsioni, GET /domani (solo la previsione: niente
-   manuale, regole o nomi). Si chiede quando si apre Previsioni, non a ogni visita. */
+   manuale, regole o nomi). Si chiede quando si apre Previsioni, non a ogni visita.
+   GoatCounter (eventi.js): "ai:box-visto" quando il box si riempie, una volta per pagina, e
+   "ai:informazioni" per il pulsante; i clic sul link del bot li conta eventi.js. */
 (function () {
   "use strict";
   var box = document.getElementById("aiPrevisione");
@@ -11,7 +13,7 @@
   if (!box || !sezione) return;
   var locale = ["localhost", "127.0.0.1"].indexOf(location.hostname) !== -1;
   var API = (locale ? "http://localhost:8787" : "https://ventotrieste-previsioni.bebroggi.workers.dev") + "/domani";
-  var chiesta = false;
+  var chiesta = false, contato = false;
 
   function e(x) {
     return String(x == null ? "" : x).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -28,6 +30,7 @@
   }
 
   function disegna(d) {
+    if (!contato && window.vtConta) { contato = true; window.vtConta("ai:box-visto"); }
     if (!d || d.vuota || !d.fasce) {
       box.innerHTML = '<p class="ai-vuota">Nessuna previsione per oggi. La prossima stasera alle ' + e((d && d.sera) || "21:00") + ".</p>";
       return;
@@ -72,6 +75,6 @@
   window.apriInfoAi = function () {
     var m = document.getElementById("modalAi");
     if (m) m.style.display = "block";
-    if (window.vtConta) window.vtConta("ai: informazioni");
+    if (window.vtConta) window.vtConta("ai:informazioni");
   };
 })();
