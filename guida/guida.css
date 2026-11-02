@@ -132,3 +132,30 @@ body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothin
   .g-fasce div { grid-template-columns: 4.8rem 1fr; }
   .g-carte { grid-template-columns: 1fr; }
 }
+
+/* Vento Trieste_AI (2 nov 2026): esempio del box blu e bottone Telegram (/guida/vento-trieste-ai/) */
+.g-ai { margin: .5rem 0 .9rem; padding: .85rem .9rem .8rem; border: 1px solid #2f78c8; border-left: 5px solid #66bfff; border-radius: 12px;
+  background: linear-gradient(160deg, #123f73, #0a2445); color: #eef5ff; }
+.g-ai p { margin: 0 !important; color: #eef5ff !important; font-size: .9rem !important; }
+.g-ai .g-ai-tit { font-weight: 600; }
+.g-ai .g-ai-tit span { margin-left: .35rem; padding: .05rem .4rem; border: 1px solid #66bfff; border-radius: 999px; color: #66bfff;
+  font-size: .6rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; vertical-align: .15em; }
+.g-ai-tab { display: grid; grid-template-columns: repeat(4, auto) 1fr; gap: .3rem .65rem; align-items: center; overflow-x: auto; margin: .55rem 0;
+  padding: .55rem .7rem; border-radius: 9px; background: rgba(255,255,255,.07); border: 1px solid rgba(130,185,245,.3);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .84rem; font-variant-numeric: tabular-nums; }
+.g-ai-tab span { white-space: nowrap; }
+.g-ai-tab .k { text-align: right; font-weight: 700; }
+.g-ai-tab i { display: inline-block; width: 7px; height: 11px; margin-right: 2px; border-radius: 2px; background: rgba(255,255,255,.16); vertical-align: -1px; }
+.g-ai-tab i.on { background: var(--signal); }
+.g-ai .g-ai-nota { margin-top: .4rem !important; color: #a8c3e2 !important; font-size: .74rem !important; }
+.g-telegram { background: #2aabee !important; color: #fff !important; }
+.g-telegram:hover { background: #1b92cf !important; }
+@media (max-width: 400px) { .g-ai-tab { font-size: .76rem; gap: .3rem .45rem; } .g-ai-tab i { width: 6px; } }
+@media (max-width: 340px) { .g-ai-tab .gr { display: none; } }
+:root[data-theme="light"] .g-ai { background: linear-gradient(160deg, #eaf4ff, #d5e7fb); border-color: #9cc4ef; border-left-color: #2a76cc; color: #0f2238; }
+:root[data-theme="light"] .g-ai p { color: #0f2238 !important; }
+:root[data-theme="light"] .g-ai .g-ai-tit span { border-color: #2a76cc; color: #2a76cc; }
+:root[data-theme="light"] .g-ai-tab { background: rgba(255,255,255,.78); border-color: #b6d2f1; }
+:root[data-theme="light"] .g-ai-tab i { background: #c8dbf1; }
+:root[data-theme="light"] .g-ai-tab i.on { background: #1f6fc4; }
+:root[data-theme="light"] .g-ai .g-ai-nota { color: #48617f !important; }

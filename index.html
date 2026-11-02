@@ -1829,6 +1829,79 @@
         });
       })();
     </script>
+    <!-- POPUP VENTO TRIESTE_AI (2 nov 2026). Alberto: "un pop-up che si apre e chiude per la prossima
+         settimana. A chi l'ha già chiuso, non presentarglielo di nuovo". Stesso schema del popup
+         Barcolana: sale dal basso, Lite e Pro. Chiuso con la X o con un clic sui link = mai più
+         (localStorage vt-ai-pop-chiuso); sparisce da solo dal 10 novembre 2026. -->
+    <aside class="ai-pop" id="aiPop" aria-label="Novità: Vento Trieste_AI" hidden>
+      <button type="button" class="ai-pop-x" id="aiPopX" aria-label="Chiudi" title="Chiudi">✕</button>
+      <div class="ai-pop-testa">
+        <svg class="ai-pop-logo" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#07090c"/><path d="M101 184H288.2C338.6 184 338.6 112 288.2 112C259.4 112 255.8 140.8 273.8 151.6M101 292H389C439.4 292 439.4 220 389 220C360.2 220 356.6 248.8 374.6 259.6M101 400H252.2" fill="none" stroke="#f0f43c" stroke-width="32.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M420 30C427 74 440 87 484 94C440 101 427 114 420 158C413 114 400 101 356 94C400 87 413 74 420 30Z" fill="#66bfff"/></svg>
+        <span class="ai-pop-nome">Vento Trieste<b>_AI</b></span>
+        <span class="ai-pop-pill">Novità · Beta</span>
+      </div>
+      <p class="ai-pop-titolo">Domani c'è vento a Barcola?</p>
+      <p class="ai-pop-sub">Ogni sera alle 21 la previsione dell'AI per Barcola, fascia per fascia, con il giudizio da ⛏️⛏️ a 🌪️. La trovi in cima a Previsioni.</p>
+      <div class="ai-pop-azioni">
+        <a class="ai-pop-cta" href="#previsioneAi">Guarda la previsione <span aria-hidden="true">→</span></a>
+        <a class="ai-pop-cta2" href="/guida/vento-trieste-ai/?utm_source=popup-ai">Come funziona</a>
+      </div>
+    </aside>
+    <style>
+      .ai-pop { position: fixed; z-index: 1200; left: 50%; bottom: 18px; width: min(520px, calc(100vw - 20px)); box-sizing: border-box;
+        transform: translate(-50%, calc(100% + 40px)); opacity: 0; transition: transform .5s cubic-bezier(.2,.8,.25,1), opacity .35s ease;
+        padding: .95rem 1.05rem 1rem; border: 1px solid #2f78c8; border-left: 5px solid #66bfff; border-radius: 14px;
+        background: linear-gradient(160deg, #123f73, #0a2445); color: #eef5ff; box-shadow: 0 18px 48px rgba(0,20,50,.5); }
+      .ai-pop.aperto { transform: translate(-50%, 0); opacity: 1; }
+      .ai-pop[hidden] { display: none; }
+      .ai-pop-testa { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem .65rem; padding-right: 2.4rem; }
+      .ai-pop-logo { width: 38px; height: 38px; flex: none; border-radius: 10px; box-shadow: 0 0 0 2px #66bfff; }
+      .ai-pop-nome { font-size: 1.05rem; font-weight: 800; letter-spacing: -.015em; }
+      .ai-pop-nome b { color: #66bfff; font-weight: 800; }
+      .ai-pop-pill { padding: .1rem .5rem; border: 1px solid #66bfff; border-radius: 999px; color: #66bfff;
+        font-size: .62rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; white-space: nowrap; }
+      #aiPop .ai-pop-titolo { margin: .7rem 0 .2rem; color: #eef5ff; font-size: 1.15rem; font-weight: 800; line-height: 1.25; letter-spacing: -.01em; }
+      #aiPop .ai-pop-sub { margin: 0; color: #b9d0ea; font-size: .86rem; line-height: 1.45; }
+      .ai-pop-azioni { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+      .ai-pop-cta, .ai-pop-cta2 { display: inline-flex; align-items: center; gap: .35rem; padding: .5rem .95rem; border-radius: 999px;
+        font-size: .86rem; font-weight: 800; text-decoration: none !important; transition: background .15s ease; }
+      .ai-pop-cta { background: #66bfff; color: #071a30 !important; }
+      .ai-pop-cta:hover { background: #9ad6ff; }
+      .ai-pop-cta2 { border: 1px solid rgba(130,185,245,.45); background: rgba(255,255,255,.07); color: #eef5ff !important; }
+      .ai-pop-cta2:hover { border-color: #66bfff; }
+      #aiPop .ai-pop-x { position: absolute; top: .45rem; right: .45rem; width: 38px; height: 38px; min-height: 0; min-width: 0; margin: 0; padding: 0;
+        display: grid; place-items: center; border: 0; border-radius: 8px; background: transparent; color: #eef5ff; font-size: 1rem; line-height: 1; cursor: pointer; box-shadow: none; transform: none; }
+      #aiPop .ai-pop-x:hover { background: rgba(255,255,255,.14); color: #fff; }
+      #aiPop .ai-pop-x:focus-visible, .ai-pop-cta:focus-visible, .ai-pop-cta2:focus-visible { outline: 3px solid #66bfff; outline-offset: 2px; }
+      /* sopra la barra di navigazione in basso dei telefoni (footer-widgets.css, <= 700px) */
+      @media (max-width: 700px) { .ai-pop { bottom: calc(84px + env(safe-area-inset-bottom)); } }
+      /* telefono: i due bottoni sulla stessa riga */
+      @media (max-width: 420px) {
+        .ai-pop { padding: .85rem .85rem .9rem; }
+        .ai-pop-cta, .ai-pop-cta2 { padding: .48rem .75rem; font-size: .82rem; }
+      }
+      @media (prefers-reduced-motion: reduce) { .ai-pop { transition: none; } }
+    </style>
+    <script>
+      (function () {
+        var pop = document.getElementById("aiPop");
+        if (!pop) return;
+        if (Date.now() >= Date.parse("2026-11-10T00:00:00+01:00")) { pop.remove(); return; }
+        var CHIAVE = "vt-ai-pop-chiuso", chiuso = null;
+        try { chiuso = localStorage.getItem(CHIAVE); } catch (e) {}
+        if (chiuso) { pop.remove(); return; }
+        pop.hidden = false;
+        setTimeout(function () { pop.classList.add("aperto"); }, 1500);
+        function chiudi() {
+          pop.classList.remove("aperto");
+          try { localStorage.setItem(CHIAVE, String(Date.now())); } catch (e) {}
+          setTimeout(function () { pop.remove(); }, 550);
+        }
+        document.getElementById("aiPopX").addEventListener("click", chiudi);
+        Array.prototype.forEach.call(pop.querySelectorAll("a"), function (a) { a.addEventListener("click", chiudi); });
+        document.addEventListener("keydown", function (e) { if (e.key === "Escape" && pop.isConnected && pop.classList.contains("aperto")) chiudi(); });
+      })();
+    </script>
     <h1 class="site-page-title">Vento a Trieste in tempo reale</h1>
     <section class="hero" id="vento">
       <!-- SURFOMETRO (scheda a parte) -->
@@ -2237,7 +2310,7 @@
         <li><b>Come si legge</b> · una riga per fascia oraria: barra del vento medio (una tacca ogni 4 kt), media-raffica in nodi, direzione da cui arriva, giudizio.</li>
       </ul>
       <p class="ai-scala">⛏️⛏️ troppo poco vento · ⛏️ poco vento · ⭐️ bello ma rafficato · ⭐️⭐️ bello · ⭐️⭐️⭐️ top · 🌪️ troppo vento<br>Raffiche a parte: regolare · rafficato · molto rafficato</p>
-      <p class="guida-meta">Versione di prova: può sbagliare. Prima di uscire guarda il vento live in cima alla pagina. L'AI è Claude (Anthropic); i nomi e i giudizi di chi aiuta restano nel bot.</p>
+      <p class="guida-meta">Versione di prova: può sbagliare. Prima di uscire guarda il vento live in cima alla pagina. L'AI è Claude (Anthropic); i nomi e i giudizi di chi aiuta restano nel bot. <a href="/guida/vento-trieste-ai/">Come l'abbiamo fatta →</a></p>
     </div>
   </div>
 
@@ -4119,7 +4192,7 @@
   <!-- GoatCounter (statistiche anonime, senza cookie) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
-  <script src="/eventi.js?v=20261028" defer></script>
+  <script src="/eventi.js?v=20261102" defer></script>
   <!-- grafico del registro del vento: si scarica solo quando la tendina si apre -->
   <script src="/registro-vento.js?v=20261021" defer></script>
   <script>

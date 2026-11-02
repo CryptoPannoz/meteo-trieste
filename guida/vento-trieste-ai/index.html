@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vento Trieste_AI: la previsione del vento per Barcola con l'AI | Vento Trieste</title>
+  <meta name="description" content="Ogni sera alle 21 la previsione del vento per Barcola, fascia per fascia, fatta da un'AI con le regole di chi il golfo lo conosce dall'acqua. Come l'abbiamo costruita, come si legge e come aiutarla a imparare su Telegram." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Alberto Broggi" />
+  <link rel="canonical" href="https://ventotrieste.info/guida/vento-trieste-ai/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content="Vento Trieste_AI: la previsione del vento per Barcola con l'AI (beta)" />
+  <meta property="og:description" content="Ogni sera alle 21 la previsione del vento per Barcola, fascia per fascia, fatta da un'AI con le regole di chi il golfo lo conosce dall'acqua." />
+  <meta property="og:url" content="https://ventotrieste.info/guida/vento-trieste-ai/" />
+  <meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" />
+  <meta property="og:image:width" content="1080" />
+  <meta property="og:image:height" content="719" />
+  <meta property="article:published_time" content="2026-11-02" />
+  <meta property="article:author" content="Alberto Broggi" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#07090c" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Vento Trieste_AI: la previsione del vento per Barcola con l'AI","description":"Ogni sera alle 21 la previsione del vento per Barcola, fascia per fascia, fatta da un'AI con le regole di chi il golfo lo conosce dall'acqua. Come l'abbiamo costruita, come si legge e come aiutarla a imparare su Telegram.","inLanguage":"it-IT","datePublished":"2026-11-02","dateModified":"2026-11-02","mainEntityOfPage":"https://ventotrieste.info/guida/vento-trieste-ai/","image":"https://ventotrieste.info/og-imagenew.jpg","articleSection":"Previsioni","isPartOf":{"@type":"Blog","name":"Guida di Vento Trieste","url":"https://ventotrieste.info/guida/"},"author":{"@type":"Person","name":"Alberto Broggi","url":"https://bebroggi.it/"},"publisher":{"@type":"Organization","name":"Vento Trieste","url":"https://ventotrieste.info/","logo":{"@type":"ImageObject","url":"https://ventotrieste.info/icon-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Guida","item":"https://ventotrieste.info/guida/"},{"@type":"ListItem","position":3,"name":"Vento Trieste_AI","item":"https://ventotrieste.info/guida/vento-trieste-ai/"}]}]}</script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261030" />
+  <link rel="stylesheet" href="/guida/guida.css?v=20261102" />
+  <!-- Articolo della Guida di Vento Trieste (2 nov 2026): il box blu Vento Trieste_AI in cima a Previsioni
+       (/previsione-ai.js) e il bot @Ventotrieste_AI_bot. Niente regole del manuale, nomi o giudizi degli
+       invitati, niente Windguru: il manuale è il know-how di Alberto e resta privato.
+       "Altri articoli" elenca tutti gli altri: se ne aggiungi uno, aggiornalo anche qui. -->
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle-label">Chiaro</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
+        <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+        Menu
+      </button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni del sito" data-dock="/#vento,/#webcam,/#radarLive,/#previsioni" hidden>
+      <a href="/#vento">Vento ora</a>
+      <a href="/#mappaVento">Mappa e centraline</a>
+      <a href="/#webcam">Webcam</a>
+      <a href="/#radarLive">Radar pioggia</a>
+      <a href="/#boe">Boe e onde</a>
+      <a href="/#previsioni">Previsioni</a>
+      <a href="/registro/">Registro del vento</a>
+    </nav>
+  </header>
+
+  <main class="g">
+    <nav class="g-briciole" aria-label="Percorso"><a href="/">Vento Trieste</a> / <a href="/guida/">Guida</a> / Vento Trieste_AI</nav>
+
+    <header class="g-testa">
+      <span class="g-kicker">Previsioni · Beta</span>
+      <h1>Vento Trieste_AI: la previsione del vento per Barcola, fatta con l'AI</h1>
+      <p>Alla fine la gente vuole sapere una cosa sola: domani c'è vento o no? Da fine ottobre lo chiedo ogni sera a un'intelligenza artificiale e le insegno a rispondere come risponderebbe chi a Barcola va in acqua.</p>
+      <p class="g-meta"><time datetime="2026-11-02">2 novembre 2026</time> · 4 min di lettura · di <a href="https://bebroggi.it/" rel="author">Alberto Broggi</a></p>
+    </header>
+
+    <article class="g-sez g-corpo">
+      <p class="g-in-breve"><strong>In breve:</strong> in cima a <strong>Previsioni</strong> c'è un box blu, <strong>Vento Trieste_AI</strong>: la previsione del vento per <strong>Barcola</strong>, una riga per fascia oraria, con un giudizio da ⛏️⛏️ a 🌪️. La fa ogni sera alle 21 un'AI che legge bollettino e modelli e segue un manuale di regole scritto da me. È in prova: può sbagliare, e impara dagli errori grazie a chi è in acqua.</p>
+
+      <h2>Dove la trovi</h2>
+      <ul>
+        <li><strong>Sul sito</strong>: apri <a href="/#previsioneAi">Previsioni</a>, sia nella versione Lite sia nella Pro. Dalle 21 vedi la previsione di domani; durante il giorno quella di oggi, fatta la sera prima, con le fasce già passate in grigio.</li>
+        <li><strong>Su Telegram</strong>: il bot <strong>@Ventotrieste_AI_bot</strong> la manda ogni sera alle 21 a chi è dentro. Più sotto spiego come entrare.</li>
+      </ul>
+
+      <h2>Come si legge</h2>
+      <div class="g-ai" role="figure" aria-label="Esempio di previsione Vento Trieste_AI">
+        <p class="g-ai-tit">Previsione di domani · <b>Barcola</b><span>Esempio</span></p>
+        <p><b>Si esce</b> · ⭐️⭐️ bello · regolare</p>
+        <div class="g-ai-tab">
+          <span>06-08</span><span><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span class="k">15-24 kt</span><span>ENE <span class="gr">062°</span></span><span>⭐️⭐️</span>
+          <span>08-10</span><span><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span class="k">14-23 kt</span><span>ENE <span class="gr">065°</span></span><span>⭐️⭐️</span>
+          <span>10-12</span><span><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span class="k">12-21 kt</span><span>ENE <span class="gr">068°</span></span><span>⭐️</span>
+          <span>12-15</span><span><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span><span class="k">9-15 kt</span><span>E <span class="gr">080°</span></span><span>⛏️</span>
+          <span>15-17</span><span><i class="on"></i><i></i><i></i><i></i><i></i></span><span class="k">5-9 kt</span><span>ESE <span class="gr">110°</span></span><span>⛏️⛏️</span>
+        </div>
+        <p>Borino dall'alba, il meglio fino alle 10; dal primo pomeriggio cala e gira a est.</p>
+        <p class="g-ai-nota">Esempio inventato, per spiegare come si legge.</p>
+      </div>
+      <p>In alto c'è l'<strong>esito</strong> della giornata (si esce o non si esce) con il giudizio complessivo; sotto, una riga per fascia oraria, dall'alba al tramonto e sempre a ore intere:</p>
+      <table class="g-tabella">
+        <thead><tr><th>Colonna</th><th>Vuol dire</th></tr></thead>
+        <tbody>
+          <tr><td>06-08</td><td>la fascia oraria</td></tr>
+          <tr><td>Barra</td><td>il vento medio previsto: una tacca ogni 4 nodi</td></tr>
+          <tr><td>15-24 kt</td><td>vento medio e raffica, in nodi</td></tr>
+          <tr><td>ENE 062°</td><td>da dove arriva il vento; sui telefoni più stretti restano solo le lettere</td></tr>
+          <tr><td>⭐️⭐️</td><td>com'è per uscire in windsurf o in wing, in quella fascia</td></tr>
+        </tbody>
+      </table>
+      <p>Il giudizio ha sei voci. Le raffiche si giudicano a parte: regolare, rafficato o molto rafficato.</p>
+      <table class="g-tabella">
+        <thead><tr><th>Giudizio</th><th>Vuol dire</th></tr></thead>
+        <tbody>
+          <tr><td>⛏️⛏️</td><td>troppo poco vento</td></tr>
+          <tr><td>⛏️</td><td>poco vento</td></tr>
+          <tr><td>⭐️</td><td>bello ma rafficato</td></tr>
+          <tr><td>⭐️⭐️</td><td>bello</td></tr>
+          <tr><td>⭐️⭐️⭐️</td><td>giornata top</td></tr>
+          <tr><td>🌪️</td><td>troppo vento</td></tr>
+        </tbody>
+      </table>
+      <p>Sotto la tabella c'è una riga di commento: perché e come evolve la giornata. In <strong>Fascia per fascia</strong> ci sono le note sulle singole ore.</p>
+
+      <h2>Come l'abbiamo fatta</h2>
+      <p>Tutto è partito dal <a href="/guida/registro-vento/">registro del vento</a>, che dal 1° settembre salva il vento del golfo ogni 15 minuti. Il 26 ottobre ho contato le giornate davvero surfabili: in 55 giorni solo 10, tutte con vento da nord-est o da est. Una previsione che dice sempre «niente vento» ci avrebbe preso 45 volte su 55 e non sarebbe servita a niente. Il difficile è riconoscere quelle poche giornate buone.</p>
+      <p>Così ho fatto un bot Telegram. Ogni sera un piccolo programma raccoglie quello che guardo io prima di decidere se uscire: il bollettino di ARPA FVG - S.O.C. OSMER e GRN, le mappe ALADIN, la media degli altri modelli meteo, il diagramma della bora, la <a href="/guida/spinta-bora/">Spinta della Bora</a> e le nuvole. Poi passa tutto a <strong>Claude</strong>, l'intelligenza artificiale di Anthropic, che scrive la previsione fascia per fascia.</p>
+      <p>Da sola, l'AI legge i modelli come li legge chiunque. La differenza la fa il <strong>manuale</strong>: regole scritte da me nella forma «se… allora… perché…», su cose che si imparano solo in acqua. Per esempio quando un modello esagera, quando sottostima, quanto peso dare a ciascuno a Barcola. Le detto dal telefono, in chat con il bot. L'AI ne propone di nuove, ma nessuna entra nel manuale senza il mio sì.</p>
+      <p>La prima previsione vera, per il 27 ottobre, era sbagliata: diceva niente vento e all'alba c'era il borino. Le ho spiegato cosa avrei guardato io ed è nata la prima regola. Da allora ogni giorno funziona così:</p>
+      <ol>
+        <li>alle <strong>21</strong> la previsione per domani;</li>
+        <li>il giorno dopo, il vento misurato nel golfo e i giudizi di chi era in acqua dicono com'è andata;</li>
+        <li>la sera, prima della nuova previsione, l'AI rilegge quella di ieri, vede dove ha sbagliato e propone una regola;</li>
+        <li>io la approvo o la scarto.</li>
+      </ol>
+      <p>Il formato l'ho voluto da previsore, non da chatbot: tutto in una schermata, una riga per fascia, una riga di commento.</p>
+
+      <h2>Aiutala a imparare</h2>
+      <p>Per migliorare la previsione bisogna sapere com'era davvero in acqua. Per questo il bot è aperto a chi esce a Barcola, con un passaggio: tocchi il link, chiedi di entrare e io approvo le richieste una per una. Siamo in prova con un gruppo ristretto, quindi potrei chiederti di aspettare.</p>
+      <table class="g-tabella">
+        <thead><tr><th>Quando</th><th>Cosa fai</th></tr></thead>
+        <tbody>
+          <tr><td>21:00</td><td>Arriva la previsione di domani. Se ti torna tocchi <strong>✅ Giusta così</strong>, se no il giudizio che daresti tu.</td></tr>
+          <tr><td>10:30</td><td>«Com'era a Barcola?»: se eri sullo spot, il giudizio di com'è, quanto è rafficato e con che vela sei uscito.</td></tr>
+          <tr><td>Sempre</td><td>Il menu con <strong>Previsione di domani</strong> e <strong>Feedback di oggi</strong>, più una riga di commento se vuoi aggiungere qualcosa.</td></tr>
+        </tbody>
+      </table>
+      <p>Con l'AI del bot non si chiacchiera: i commenti li leggo io e li legge lei la sera, quando prepara la previsione. Nomi, giudizi e commenti restano nel bot e non finiscono sul sito. Per uscire scrivi /esci; per cancellare quello che hai scritto basta chiedermelo.</p>
+      <a class="g-vai g-telegram" href="https://t.me/Ventotrieste_AI_bot?start=sito" target="_blank" rel="noopener">Chiedi di entrare nel bot →</a>
+
+      <h2>I limiti</h2>
+      <ul>
+        <li><strong>Solo Barcola</strong>: a Muggia, a Sistiana o in Istria il vento può essere molto diverso.</li>
+        <li><strong>È giovane</strong>: ha poche settimane di esperienza e le giornate con il vento giusto sono poche, quindi impara piano.</li>
+        <li><strong>Non è una misura</strong>: prima di uscire guarda il <a href="/guida/surfometro/">surfometro</a>, la <a href="/guida/mappa-centraline/">mappa</a> e le <a href="/guida/webcam/">webcam</a>.</li>
+      </ul>
+      <p class="g-nota">Fonti della previsione: ARPA FVG - S.O.C. OSMER e GRN (<a href="https://creativecommons.org/licenses/by/3.0/it/" target="_blank" rel="noopener">CC BY 3.0 IT</a>), ARSO (ALADIN), profiwetter.ch (diagramma della bora, modello DWD), <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (modelli). Il vento misurato per la verifica è quello del <a href="/registro/">registro</a>. L'AI è Claude di Anthropic. Il manuale resta privato.</p>
+      <a class="g-vai" href="/#previsioneAi">Guarda la previsione di adesso →</a>
+    </article>
+
+    <section class="g-sez" aria-labelledby="t-altri">
+      <h2 id="t-altri">Altri articoli della guida</h2>
+      <div class="g-link">
+        <a href="/guida/surfometro/"><b>Il surfometro</b>Vento medio, raffica e una parola in triestino: com'è il vento adesso a Barcola e quando conviene uscire.</a>
+        <a href="/guida/spinta-bora/"><b>La Spinta della Bora</b>Maribor meno Trieste: quando la pressione oltre il Carso supera quella del golfo, la bora trabocca. Sopra 3,5 hPa si accende.</a>
+        <a href="/guida/pressione/"><b>Barometro e vento</b>Pressione in calo, più vento? A Trieste le misure dicono il contrario: con la bora il vento forte arriva quando la pressione sale.</a>
+        <a href="/guida/mappa-centraline/"><b>Mappa e centraline</b>Il vento misurato adesso da Grado a Premantura: numeri, frecce e colori. Serve a capire dove soffia, soprattutto quando la bora non c'è.</a>
+        <a href="/guida/webcam/"><b>Le webcam</b>Barcola, Sistiana, Monfalcone e Grado in diretta: guardare il mare è il modo più semplice per confermare i numeri.</a>
+        <a href="/guida/radar-pioggia/"><b>Il radar pioggia</b>L'animazione ARSO delle ultime ore su Slovenia e Golfo: dove piove adesso e da che parte arrivano i rovesci.</a>
+        <a href="/guida/boe-onde/"><b>Boe e onde</b>MAMBO1, Paloma e Vida: il vento lontano dalla costa, la temperatura del mare e l'altezza dell'onda.</a>
+        <a href="/guida/previsioni/"><b>Le previsioni</b>Il bollettino dei previsori della Regione, il Grafico della Bora a 6 giorni e le mappe ALADIN ogni 3 ore: dal più semplice al più tecnico.</a>
+        <a href="/guida/windguru/"><b>Windguru e il modello WG</b>WG per decidere il giorno, ALADIN e ICON-2I per decidere l'ora. Come si legge la tabella e perché il WG ammorbidisce i picchi.</a>
+        <a href="/guida/registro-vento/"><b>Il registro del vento</b>Dalle 6 alle 19, ogni 15 minuti: com'è andato il vento giorno per giorno, quante giornate surfabili ci sono state e il CSV da scaricare.</a>
+        <a href="/guida/spot/"><b>Gli spot</b>Muggia, Žusterna, Marina Julia, Grado, Lignano, Lago di Cavazzo e l'Istria: ogni spot con il suo surfometro e la sua centralina.</a>
+        <a href="/guida/app/"><b>L'app sul telefono</b>Gratis e senza store: l'icona di Vento Trieste sulla schermata Home di iPhone e Android, a schermo intero come un'app.</a>
+        <a href="/guida/parole-del-vento/"><b>Parole del vento</b>Nodi, raffica, bora, scirocco, hPa, nowcasting: le parole del sito spiegate semplici, più la scala del surfometro in triestino.</a>
+      </div>
+      <p class="g-tutti"><a href="/guida/">📖 Tutti gli articoli della guida →</a></p>
+    </section>
+  </main>
+
+  <footer class="page-footer">Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+
+  <script src="/footer-widgets.js?v=20261102"></script>
+  <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
+  <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script src="/eventi.js?v=20261028" defer></script>
+  <script src="/vt-app.js?v=20261008" defer></script>
+</body>
+</html>
