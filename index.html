@@ -580,6 +580,83 @@
     :root[data-theme="light"] .osmer-tab:hover .mi-sole,
     :root[data-theme="light"] .osmer-tab:hover .mi-acqua { stroke: #17200a; }
 
+    /* ---- Vento Trieste_AI (2 nov 2026): box blu in cima a Previsioni, previsione-ai.js ----
+       Alberto: "un blocco blu che deve risaltare un po', magari con un logotipo di un'AI".
+       Blu scuro col tema scuro, azzurro col chiaro; #previsioneAi batte .section dei due temi. */
+    #previsioneAi {
+      --ai-bg1: #123f73; --ai-bg2: #0a2445; --ai-bordo: #2f78c8; --ai-acc: #66bfff;
+      --ai-testo: #eef5ff; --ai-tenue: #a8c3e2; --ai-tab: rgba(255,255,255,.07); --ai-tab-bordo: rgba(130,185,245,.3);
+      --ai-on: var(--signal); --ai-off: rgba(255,255,255,.16);
+      background: linear-gradient(160deg, var(--ai-bg1), var(--ai-bg2));
+      border: 1px solid var(--ai-bordo); border-left: 5px solid var(--ai-acc);
+      color: var(--ai-testo);
+      box-shadow: 0 10px 28px rgba(8,36,74,.4);
+    }
+    :root[data-theme="light"] #previsioneAi {
+      --ai-bg1: #eaf4ff; --ai-bg2: #d5e7fb; --ai-bordo: #9cc4ef; --ai-acc: #2a76cc;
+      --ai-testo: #0f2238; --ai-tenue: #48617f; --ai-tab: rgba(255,255,255,.78); --ai-tab-bordo: #b6d2f1;
+      --ai-on: #1f6fc4; --ai-off: #c8dbf1;
+      box-shadow: 0 8px 22px rgba(42,118,204,.16);
+    }
+    #previsioneAi p { margin: 0; }
+    .ai-head { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: .45rem .7rem; }
+    .ai-logo { width: 44px; height: 44px; border-radius: 11px; box-shadow: 0 0 0 2px var(--ai-acc); }
+    /* telefono: Informazioni sotto il nome, allineato al testo, così il titolo resta su una riga */
+    @media (max-width: 520px) {
+      .ai-head { grid-template-columns: 44px minmax(0, 1fr); }
+      #previsioneAi .ai-info { grid-column: 2; justify-self: start; }
+    }
+    #previsioneAi h2 { display: block; margin: 0; color: var(--ai-testo); font-size: 1.15rem; font-weight: 800; letter-spacing: -.015em; line-height: 1.2; }
+    #previsioneAi h2::before { display: none; }   /* niente barretta gialla dei titoli: c'è il logo */
+    #previsioneAi h2 .ai-tag { color: var(--ai-acc); }
+    .ai-beta {
+      display: inline-block; margin-left: .45rem; padding: .05rem .42rem; vertical-align: .18em;
+      border: 1px solid var(--ai-acc); border-radius: 999px; color: var(--ai-acc);
+      font-size: .6rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; line-height: 1.5;
+    }
+    #previsioneAi .ai-sotto { font-size: .8rem; color: var(--ai-tenue); margin-top: .1rem; }
+    #previsioneAi .ai-info {
+      padding: .28rem .7rem; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--ai-tab-bordo); background: var(--ai-tab); color: var(--ai-testo);
+      font: inherit; font-size: .8rem; font-weight: 600; line-height: 1.4; white-space: nowrap;
+    }
+    #previsioneAi .ai-info:hover { border-color: var(--ai-acc); background: var(--ai-acc); color: #071a30; }
+    #aiPrevisione { margin-top: .8rem; }
+    #previsioneAi .ai-titolo { font-size: .95rem; font-weight: 600; }
+    #previsioneAi .ai-esito { font-size: 1rem; margin-top: .15rem; }
+    .ai-tabella {
+      display: grid; grid-template-columns: auto auto auto auto 1fr; align-items: center; gap: .3rem .65rem;
+      margin: .6rem 0; padding: .6rem .75rem; border-radius: 10px;
+      background: var(--ai-tab); border: 1px solid var(--ai-tab-bordo);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .88rem; font-variant-numeric: tabular-nums;
+    }
+    .ai-riga { display: contents; }
+    .ai-riga.passata > span { opacity: .4; }
+    .ai-kt { text-align: right; font-weight: 700; }
+    .ai-g { white-space: nowrap; }
+    .ai-barra { display: inline-flex; gap: 2px; vertical-align: -1px; }
+    .ai-barra i { width: 7px; height: 11px; border-radius: 2px; background: var(--ai-off); }
+    .ai-barra i.on { background: var(--ai-on); }
+    #previsioneAi .ai-commento { font-size: .92rem; line-height: 1.45; }
+    .ai-fasce { margin-top: .45rem; font-size: .86rem; }
+    .ai-fasce summary { cursor: pointer; color: var(--ai-acc); font-weight: 700; }
+    .ai-fasce ul { margin: .35rem 0 0; padding-left: 1.1rem; }
+    .ai-fasce li { margin: .12rem 0; }
+    #previsioneAi .ai-quando,
+    #previsioneAi .ai-nota { font-size: .74rem; color: var(--ai-tenue); margin-top: .5rem; }
+    #previsioneAi .ai-vuota { font-size: .9rem; color: var(--ai-tenue); }
+    .ai-contribuisci { margin-top: .9rem; padding-top: .85rem; border-top: 1px dashed var(--ai-tab-bordo); }
+    .ai-contribuisci > p:first-child { font-size: .88rem; line-height: 1.45; margin-bottom: .6rem; }
+    #previsioneAi .ai-telegram {
+      display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .95rem; border-radius: 999px;
+      background: #2aabee; color: #fff; font-weight: 700; font-size: .9rem; text-decoration: none;
+    }
+    #previsioneAi .ai-telegram:hover { background: #1b92cf; }
+    .ai-telegram svg { width: 1.15em; height: 1.15em; fill: currentColor; flex: none; }
+    #modalAi ul { padding-left: 1.1rem; margin: .4rem 0 .7rem; }
+    #modalAi li { margin: .35rem 0; }
+    #modalAi .ai-scala { font-size: .86rem; margin: 0; }
+
     /* ---- Modal ---- */
     .modal {
       display: none;
@@ -1634,6 +1711,7 @@
   <script src="./station-chart.js?v=20260719-dark2"></script>
   <script src="./mappa-golfo.js?v=20261022" defer></script>
   <script src="./spinta-bora.js?v=20261101b"></script>
+  <script src="./previsione-ai.js?v=20261102" defer></script>
   <script src="/pressione-trieste.js?v=20261022b"></script>
 </head>
 <body>
@@ -2057,9 +2135,28 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>📅 Previsioni</strong>
-      <span>OSMER, radar, Bora, Aladin e Windguru</span>
+      <span>Previsione AI, OSMER, radar, Bora, Aladin e Windguru</span>
     </span>
   </summary>
+
+  <!-- VENTO TRIESTE_AI (2 nov 2026): la previsione delle 21 del bot Telegram, in prova, per Barcola.
+       Lite e Pro. Dati dal Worker ventotrieste-previsioni (/domani), disegno in previsione-ai.js -->
+  <div class="section" id="previsioneAi">
+    <div class="ai-head">
+      <svg class="ai-logo" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#07090c"/><path d="M101 184H288.2C338.6 184 338.6 112 288.2 112C259.4 112 255.8 140.8 273.8 151.6M101 292H389C439.4 292 439.4 220 389 220C360.2 220 356.6 248.8 374.6 259.6M101 400H252.2" fill="none" stroke="#f0f43c" stroke-width="32.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M420 30C427 74 440 87 484 94C440 101 427 114 420 158C413 114 400 101 356 94C400 87 413 74 420 30Z" fill="#66bfff"/></svg>
+      <div class="ai-marchio">
+        <h2>Vento Trieste<span class="ai-tag">_AI</span><span class="ai-beta">Beta</span></h2>
+        <p class="ai-sotto">Previsione del vento per Barcola</p>
+      </div>
+      <button type="button" class="ai-info" onclick="apriInfoAi()">ℹ️ Informazioni</button>
+    </div>
+    <div id="aiPrevisione" aria-live="polite"><p class="ai-vuota">Caricamento…</p></div>
+    <div class="ai-contribuisci">
+      <p><b>Vuoi contribuire a istruire il modello?</b><br>Ogni sera su Telegram ricevi la previsione e con un tocco dici se è giusta; la mattina dopo, com'era in acqua a Barcola.</p>
+      <a class="ai-telegram" href="https://t.me/Ventotrieste_AI_bot?start=sito" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 4.2 2.8 11.4c-1.1.4-1 1.1-.1 1.4l4.7 1.5 1.8 5.5c.2.6.4.8.8.8s.6-.2.9-.5l2.4-2.3 4.8 3.6c.9.5 1.5.2 1.7-.8l3.1-14.8c.3-1.3-.5-1.9-1.5-1.6ZM9.5 14.5l8.7-5.5c.4-.3.8-.1.5.2l-7.3 6.6-.3 3.1Z"/></svg>Chiedi di entrare nel bot</a>
+      <p class="ai-nota">Alberto approva le richieste una per una.</p>
+    </div>
+  </div>
 
   <!-- BOLLETTINO OSMER -->
   <div class="section" id="osmer">
@@ -2118,6 +2215,23 @@
   </div>
 
   </details>
+
+  <!-- MODAL VENTO TRIESTE_AI: come nasce la previsione (2 nov 2026) -->
+  <div id="modalAi" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalAiTitolo">
+    <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
+      <h3 id="modalAiTitolo">Vento Trieste_AI · come funziona</h3>
+      <ul>
+        <li><b>Quando</b> · ogni sera alle 21 la previsione per domani, dall'alba al tramonto. Vale solo per <b>Barcola</b>: altrove il vento può essere molto diverso.</li>
+        <li><b>Cosa legge</b> · il bollettino ARPA FVG - S.O.C. OSMER e GRN, il modello ALADIN, la media degli altri modelli meteo, il diagramma della bora, la Spinta della Bora e le nuvole.</li>
+        <li><b>Come decide</b> · pesa i modelli con un manuale di regole scritto da Alberto Broggi, che il vento di Barcola lo conosce dall'acqua, e con i giorni passati simili.</li>
+        <li><b>Come impara</b> · il giorno dopo la previsione si confronta con il vento misurato nel golfo e con i giudizi di chi era in acqua. Dagli errori nascono regole nuove, che Alberto approva una per una.</li>
+        <li><b>Come si legge</b> · una riga per fascia oraria: barra del vento medio (una tacca ogni 4 kt), media-raffica in nodi, direzione da cui arriva, giudizio.</li>
+      </ul>
+      <p class="ai-scala">⛏️⛏️ troppo poco vento · ⛏️ poco vento · ⭐️ bello ma rafficato · ⭐️⭐️ bello · ⭐️⭐️⭐️ top · 🌪️ troppo vento<br>Raffiche a parte: regolare · rafficato · molto rafficato</p>
+      <p class="guida-meta">Versione di prova: può sbagliare. Prima di uscire guarda il vento live in cima alla pagina. L'AI è Claude (Anthropic); i nomi e i giudizi di chi aiuta restano nel bot.</p>
+    </div>
+  </div>
 
   <!-- MODAL POPUP MODELLI -->
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
@@ -3953,7 +4067,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261030"></script>
+  <script src="./footer-widgets.js?v=20261102"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">

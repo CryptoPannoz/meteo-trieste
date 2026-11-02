@@ -216,10 +216,12 @@
 
   var forecastSummary = forecast.querySelector(":scope > .gruppo-sum .gruppo-sum-main > span");
   if (forecastSummary) {
-    forecastSummary.textContent = sl ? "OSMER, burja, Aladin in Windguru" : "OSMER, Bora, Aladin e Windguru";
+    // la previsione dell'AI per Barcola in cima, dove c'è il box (home, 2 nov 2026)
+    var ai = document.getElementById("previsioneAi") ? "AI Barcola, " : "";
+    forecastSummary.textContent = ai + (sl ? "OSMER, burja, Aladin in Windguru" : "OSMER, Bora, Aladin e Windguru");
     // nella Lite le previsioni sono solo Aladin e Windguru (28 ott 2026)
     if (doc.classList.contains("vt-modi")) forecastSummary.innerHTML = '<span class="solo-pro">' + forecastSummary.textContent +
-      '</span><span class="solo-lite">' + (sl ? "Vreme, Aladin in Windguru" : "Meteo, Aladin e Windguru") + "</span>";
+      '</span><span class="solo-lite">' + ai + (sl ? "Vreme, Aladin in Windguru" : (ai ? "meteo" : "Meteo") + ", Aladin e Windguru") + "</span>";
   }
   main.insertBefore(phase(
     "forecast",
