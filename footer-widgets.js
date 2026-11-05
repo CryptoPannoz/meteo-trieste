@@ -687,7 +687,9 @@
     (conVisitatori ? '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' : '') +
     '<section class="footer-widget support-widget" aria-labelledby="footerSupportTitle">' +
       '<div class="support-hero"><span class="support-kicker">' + t.supportKicker + '</span>' +
-      '<span class="support-symbol" aria-hidden="true">🍺</span><h2 id="footerSupportTitle">' + t.supportTitle + '</h2>' +
+      '<span class="support-symbol" aria-hidden="true">' + (document.body.classList.contains("bcn") ? "🍺" :   // Barcolana: com'era
+        '<svg viewBox="0 0 24 24" focusable="false"><path d="M6 8h9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M15 11h2a2 2 0 0 1 0 4h-2"/><path d="M6 8a2.5 2.5 0 0 1 4.5-1.5A2.5 2.5 0 0 1 15 8"/></svg>') +
+        '</span><h2 id="footerSupportTitle">' + t.supportTitle + '</h2>' +
       '<p>' + t.supportText + '</p><a class="dona-btn support-primary" href="#" id="footerSupportButton">' +
       '<span aria-hidden="true">♥</span><span>' + t.supportCta + '</span><span aria-hidden="true">→</span></a>' +
       '<span class="support-methods">' + t.supportMethods + '</span></div>' +
@@ -1111,9 +1113,14 @@
 
   if ("IntersectionObserver" in window &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    /* Niente dissolvenza su cio' che e' gia' sullo schermo all'apertura (surfometro, Spinta):
+       il dato principale si vede subito, anche con la pagina aperta in secondo piano. */
+    var altezzaVista = window.innerHeight || document.documentElement.clientHeight;
     var revealTargets = Array.prototype.slice.call(document.querySelectorAll(
       ".section, .console-card, .side-card, .gruppo-sum"
-    ));
+    )).filter(function (element) {
+      return !element.closest("#vento") && element.getBoundingClientRect().top > altezzaVista;
+    });
     revealTargets.forEach(function (element) { element.classList.add("ux-reveal"); });
     doc.classList.add("ux-motion-ready");
     var revealObserver = new IntersectionObserver(function (entries) {
@@ -1256,7 +1263,7 @@
   };
   var RE = new RegExp("^\\s*(" + Object.keys(EMOJI).join("|") + ")[\\uFE0E\\uFE0F]?\\s*", "u");
   var TITOLO = ".gruppo-sum-main > strong";
-  var SEL = TITOLO + ", summary, button, a, h2, h3, h4, label, .centraline-titolo, .webcam-luogo, .story-kicker, .sun-times, .cam-zoom-badge";
+  var SEL = TITOLO + ", summary, button, a, h2, h3, h4, label, .centraline-titolo, .webcam-luogo, .story-kicker, .sun-times, .cam-zoom-badge, .stato, .surf-agg";
 
   // il primo testo dell'elemento, se nulla di visibile (icona, immagine) lo precede
   function testoIniziale(el) {
@@ -1303,4 +1310,45 @@
     inAttesa = true;
     setTimeout(passa, 50);
   }).observe(document.body, { childList: true, subtree: true, characterData: true });
+})();
+
+/* Footer compatto (audit UI/UX 5 nov 2026): sul telefono il footer della home era lungo
+   2,5 schermate. Le pagine degli spot e "Perché nasce questo progetto" vanno in due tendine
+   chiuse come "Partner e riferimenti" (il testo resta nella pagina, anche per Google); la riga
+   "Suggerimenti e migliorie" era un doppione della firma di vt-app.js: resta solo il saluto. */
+(function () {
+  if (document.body.classList.contains("bcn")) return;   // Barcolana: grafica approvata dai partner
+  // questo script è incluso PRIMA di .site-credits: si lavora a pagina letta
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", compatta);
+  else compatta();
+  function compatta() {
+  var copia = document.querySelector(".site-credits .seo-footer-copy");
+  var sl = document.documentElement.lang === "sl" ||
+    ((document.getElementById("footerWidgets") || { dataset: {} }).dataset.lang === "sl");
+  function tendina(titolo, sotto) {
+    var d = document.createElement("details");
+    d.className = "sources-tendina footer-tendina" + (sl ? " sources-tendina-sl" : "");
+    d.innerHTML = '<summary><span class="sources-tendina-titolo">' + titolo + "<small>" + sotto + "</small></span></summary>";
+    return d;
+  }
+  if (copia && !copia.querySelector(".footer-tendina")) {
+    var spot = copia.querySelector(".seo-spot-pages");
+    var nodi = Array.prototype.slice.call(copia.childNodes);
+    if (spot) {
+      var nSpot = spot.querySelectorAll(".seo-spot-links a").length;
+      var dSpot = tendina(sl ? "Strani spotov" : "Pagine degli spot",
+        (sl ? "Veter v živo za " : "Vento live per ") + nSpot + (sl ? " spotov · nov spot" : " spot · richiedi il tuo"));
+      dSpot.appendChild(spot);
+      copia.appendChild(dSpot);
+    }
+    var dProg = tendina(sl ? "Zakaj je nastal projekt" : "Perché nasce il progetto",
+      sl ? "Vento Trieste in navdih Alessia Vremca" : "Vento Trieste e l'ispirazione di Alessio Vremec");
+    nodi.forEach(function (n) { if (n !== spot) dProg.appendChild(n); });
+    copia.appendChild(dProg);
+    copia.classList.add("seo-footer-tendine");
+  }
+  var meta = document.querySelector(".site-credits .credits-meta");
+  var saluto = meta && meta.querySelector(".credits-signoff");
+  if (saluto) { while (meta.firstChild) meta.removeChild(meta.firstChild); meta.appendChild(saluto); }
+  }
 })();

@@ -1,84 +1,90 @@
-:root {
-  color-scheme: light;
-  --ink: #17212d;
-  --muted: #5f7280;
-  --paper: #eef4f5;
-  --surface: #ffffff;
-  --line: #c8d8dc;
-  --sea: #075d70;
-  --signal: #e8ed25;
-  --shadow: 0 16px 42px rgba(24, 51, 60, .11);
+/* guide.css (5 nov 2026, audit UI/UX G1): complemento di /guida/guida.css per le sei pagine nate fuori
+   dalla guida: /mappa/ e /registro/ (pagine strumento) e /spot/, /bora-trieste/, /come-leggere-surfometro/,
+   /modelli-vento-trieste/ (articoli). Prima questo file aveva una grafica tutta sua, solo chiara, con la
+   testata "Vento ora · Guida": ora tema chiaro/scuro, testata, menu a gruppi e barra in basso arrivano da
+   /footer-widgets.css, la cornice degli articoli da /guida/guida.css. Qui restano solo le aggiunte, con
+   le variabili del tema (niente colori fissi su :root). Ordine nel <head>: footer-widgets.css,
+   guida.css, guide.css. */
+
+/* ---------- pagine strumento: titolo su una riga, lo strumento subito sotto ---------- */
+.g.g-largo { max-width: 1080px; }
+.pg-testa { display: flex; align-items: center; flex-wrap: wrap; gap: .35rem .65rem; margin: .2rem 0 .65rem; }
+.pg-testa h1 { margin: 0; font-size: 1.5rem; line-height: 1.15; letter-spacing: -.02em; }
+.pg-testa .pg-link { margin-left: auto; font-size: .8rem; font-weight: 800; text-decoration: none; white-space: nowrap; }
+.pg-testa .pg-link:hover { text-decoration: underline; }
+
+/* la scheda che contiene lo strumento (mappa, registro) */
+.pg-card { margin: 0 0 .8rem; padding: .75rem; border: 1px solid var(--line); border-radius: 14px; background: #10151a; }
+:root[data-theme="light"] .pg-card { background: #fff; }
+
+/* tendina "Come si legge" sotto lo strumento: chiusa è una riga sola */
+.g-sez.pg-info { padding: 0 .95rem; }
+.g-sez.pg-info[open] { padding-bottom: .9rem; }
+.pg-info > summary { display: flex; align-items: center; justify-content: space-between; gap: .6rem; min-height: 50px; cursor: pointer; list-style: none; }
+.pg-info > summary::-webkit-details-marker { display: none; }
+.pg-info > summary h2 { margin: 0; font-size: 1.02rem; }
+.pg-info > summary::after {
+  content: "apri ▾"; flex: none; padding: .24rem .6rem; border: 1px solid var(--signal); border-radius: 999px;
+  background: var(--signal); color: #090b0d; font-size: .74rem; font-weight: 800; white-space: nowrap;
 }
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0; color: var(--ink); background:
-    radial-gradient(circle at 15% -5%, rgba(232, 237, 37, .22), transparent 26rem),
-    linear-gradient(180deg, #f7faf9 0, var(--paper) 42rem);
-  font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  line-height: 1.62; -webkit-font-smoothing: antialiased;
+.pg-info[open] > summary::after { content: "chiudi ▴"; background: transparent; color: var(--signal); }
+.pg-info > summary:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; border-radius: 8px; }
+.pg-info h3 { margin: 1rem 0 .3rem; font-size: .95rem; }
+:root[data-theme="light"] .pg-info[open] > summary::after { border-color: var(--sea); color: var(--sea-dark); }
+
+/* ---------- /mappa/ ---------- */
+.map-card { padding: .6rem; }
+.map-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem .7rem; margin: .6rem .1rem 0; }
+.map-status { margin: 0; color: var(--label); font-size: .78rem; }
+.map-bar .refresh {
+  min-height: 40px; padding: .45rem .8rem; border: 1px solid var(--signal); border-radius: 9px;
+  background: var(--signal); color: #090b0d; font: inherit; font-size: .78rem; font-weight: 800; cursor: pointer;
 }
-a { color: var(--sea); }
-a:hover { text-decoration-thickness: 2px; }
-.topbar {
-  position: sticky; top: 0; z-index: 20; display: flex; align-items: center;
-  justify-content: space-between; gap: 1rem; min-height: 66px; padding: .7rem max(1rem, calc((100% - 1080px) / 2));
-  border-bottom: 1px solid rgba(157, 181, 188, .75); background: rgba(247, 250, 249, .91);
-  backdrop-filter: blur(14px);
+.map-bar .refresh:hover { background: #fff; border-color: #fff; }
+.map-bar .refresh:disabled { opacity: .6; cursor: default; }
+:root[data-theme="light"] .map-bar .refresh { background: var(--sea); border-color: var(--sea); color: #fff; }
+:root[data-theme="light"] .map-bar .refresh:hover { background: var(--sea-dark); border-color: var(--sea-dark); }
+/* fonti e attribuzioni: sempre visibili sotto la mappa, in piccolo */
+.map-fonti { margin: .1rem .2rem .9rem; color: var(--label); font-size: .72rem; line-height: 1.5; }
+/* computer: mappa (verticale), legenda e ora dell'aggiornamento entrano nello schermo;
+   sul telefono la mappa resta a tutta larghezza */
+@media (min-width: 701px) {
+  .map-quadro { max-width: max(340px, calc((100vh - 330px) * .762)); margin: 0 auto; }
+  .map-card .map-bar { max-width: max(340px, calc((100vh - 330px) * .762)); margin-left: auto; margin-right: auto; }
 }
-.brand { display: flex; flex-direction: column; color: var(--ink); line-height: 1.12; text-decoration: none; }
-.brand strong { font-size: 1rem; font-weight: 850; }
-.brand span { color: var(--muted); font-size: .69rem; font-weight: 700; letter-spacing: .05em; }
-.toplinks { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .4rem; }
-.toplinks a { padding: .42rem .58rem; border-radius: 8px; color: var(--sea); font-size: .72rem; font-weight: 800; text-decoration: none; }
-.toplinks a:hover { background: #e4edef; }
-main { width: min(calc(100% - 2rem), 1080px); margin: 0 auto; padding: 2.2rem 0 3rem; }
-.breadcrumbs { margin-bottom: 1.15rem; color: var(--muted); font-size: .72rem; }
-.breadcrumbs a { font-weight: 750; }
-.hero-guide {
-  position: relative; overflow: hidden; padding: clamp(1.5rem, 4vw, 3.2rem);
-  border: 1px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow);
+
+/* ---------- /registro/ ---------- */
+.reg-card { padding: .9rem; }
+.reg-card > h2 { margin: 0 0 .4rem; font-size: 1.05rem; }
+
+/* ---------- articoli ---------- */
+.g-vai-riga { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
+.g-vai-riga .g-vai { margin-top: 0; }
+.g-vai.g-vai-2 { border: 1px solid var(--signal); background: transparent; color: var(--signal) !important; }
+.g-vai.g-vai-2:hover { background: var(--signal); color: #090b0d !important; }
+:root[data-theme="light"] .g-vai.g-vai-2 { border-color: var(--sea); color: var(--sea-dark) !important; }
+:root[data-theme="light"] .g-vai.g-vai-2:hover { background: var(--sea); color: #fff !important; }
+.g-parole.g-parole-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g-scorri { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.g-scorri .g-tabella { min-width: 300px; }
+
+.page-footer nav { display: flex; flex-wrap: wrap; justify-content: center; gap: .3rem .9rem; margin-bottom: .45rem; }
+.page-footer nav a { font-weight: 750; }
+
+/* ---------- telefono ---------- */
+@media (max-width: 700px) {
+  .pg-briciole { display: none; }
+  .pg-testa { margin-top: .75rem; }
+  .pg-card { padding: .6rem .55rem; border-radius: 12px; }
+  .reg-card > h2 { display: none; }
 }
-.hero-guide::after {
-  content: ""; position: absolute; right: -5rem; top: -7rem; width: 19rem; height: 19rem;
-  border: 3rem solid rgba(232, 237, 37, .34); border-radius: 50%; pointer-events: none;
+@media (max-width: 560px) {
+  .pg-testa { gap: .3rem .5rem; margin-bottom: .55rem; }
+  .pg-testa .g-kicker { display: none; }
+  .pg-testa h1 { font-size: 1.16rem; }
+  .pg-testa .pg-link { font-size: .76rem; }
+  .map-card { padding: .45rem; }
+  .g-sez.pg-info { padding: 0 .8rem; }
+  .g-parole.g-parole-2 { grid-template-columns: 1fr; }
+  .g-scorri .g-tabella td:first-child { white-space: normal; }
 }
-.kicker { display: inline-flex; padding: .3rem .65rem; border-radius: 999px; background: var(--signal); color: #13190e; font-size: .68rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
-h1 { position: relative; max-width: 800px; margin: .85rem 0 .8rem; font-size: clamp(2rem, 6vw, 4rem); line-height: 1.02; letter-spacing: -.045em; }
-.lead { position: relative; max-width: 760px; margin: 0; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.2rem); }
-.quick-links { position: relative; display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.25rem; }
-.button { display: inline-flex; align-items: center; min-height: 44px; padding: .62rem .85rem; border: 1px solid var(--sea); border-radius: 10px; color: var(--sea); font-size: .78rem; font-weight: 850; text-decoration: none; }
-.button.primary { background: var(--sea); color: #fff; }
-.content-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.25rem; margin-top: 1.25rem; align-items: start; }
-.article, .aside-card { border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: 0 9px 28px rgba(24, 51, 60, .07); }
-.article { padding: clamp(1.2rem, 3vw, 2rem); }
-.article h2 { margin: 2rem 0 .55rem; font-size: clamp(1.25rem, 2.8vw, 1.65rem); line-height: 1.2; }
-.article h2:first-child { margin-top: 0; }
-.article h3 { margin: 1.25rem 0 .35rem; font-size: 1rem; }
-.article p { margin: .5rem 0 1rem; color: #344956; }
-.article ul, .article ol { padding-left: 1.25rem; color: #344956; }
-.article li { margin-bottom: .45rem; }
-.callout { margin: 1.25rem 0; padding: 1rem; border-left: 5px solid var(--signal); border-radius: 0 12px 12px 0; background: #f7f9df; }
-.aside-card { position: sticky; top: 82px; padding: 1rem; }
-.aside-card h2 { margin: 0 0 .7rem; font-size: .96rem; }
-.aside-card nav { display: grid; gap: .4rem; }
-.aside-card a { padding: .55rem .65rem; border-radius: 8px; background: #edf4f5; font-size: .73rem; font-weight: 780; text-decoration: none; }
-.spot-grid, .model-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: 1rem 0; }
-.spot-card, .model-card { display: block; min-height: 126px; padding: 1rem; border: 1px solid var(--line); border-radius: 14px; background: #f8fbfb; color: var(--ink); text-decoration: none; }
-.spot-card strong, .model-card strong { display: block; margin-bottom: .35rem; color: var(--sea); }
-.spot-card span, .model-card span { color: var(--muted); font-size: .78rem; }
-.mini-table { width: 100%; margin: 1rem 0; border-collapse: collapse; font-size: .82rem; }
-.mini-table th, .mini-table td { padding: .7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-.mini-table th { color: var(--sea); }
-.page-footer { padding: 1.5rem 1rem 2.5rem; color: var(--muted); text-align: center; font-size: .74rem; }
-.page-footer nav { display: flex; justify-content: center; flex-wrap: wrap; gap: .7rem; margin-bottom: .7rem; }
-@media (max-width: 760px) {
-  .toplinks a:not(:first-child):not(.tl-guida) { display: none; }   /* su telefono: Vento ora + Guida */
-  main { width: min(calc(100% - 1rem), 1080px); padding-top: 1rem; }
-  .hero-guide { border-radius: 18px; }
-  .content-grid { grid-template-columns: 1fr; }
-  .aside-card { position: static; }
-  .spot-grid, .model-grid { grid-template-columns: 1fr; }
-  .mini-table { display: block; overflow-x: auto; }
-}
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

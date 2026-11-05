@@ -8,7 +8,7 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://ventotrieste.info/come-leggere-surfometro/" />
   <meta property="og:type" content="article" /><meta property="og:site_name" content="Vento Trieste" /><meta property="og:title" content="Come leggere il surfometro" /><meta property="og:description" content="Nodi, raffiche, direzione e freschezza del dato spiegati in modo pratico." /><meta property="og:url" content="https://ventotrieste.info/come-leggere-surfometro/" /><meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" /><meta name="twitter:card" content="summary_large_image" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" /><link rel="stylesheet" href="/guide.css?v=20261013" /><link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" /><link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <!-- app installabile (5 ott 2026): icona "raffiche" gialla su nero, vedi /vt-app.js -->
@@ -18,26 +18,78 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261105ux" />
+  <link rel="stylesheet" href="/guida/guida.css?v=20261020" />
+  <link rel="stylesheet" href="/guide.css?v=20261105ux" />
+  <!-- Articolo nella cornice della Guida (5 nov 2026, audit UI/UX G1): tema chiaro/scuro, menu a gruppi e
+       barra in basso da /footer-widgets.css, stile da /guida/guida.css (+ /guide.css). Testo invariato. -->
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Come leggere il surfometro","description":"Guida pratica ai dati del surfometro di Vento Trieste.","inLanguage":"it-IT","mainEntityOfPage":"https://ventotrieste.info/come-leggere-surfometro/","publisher":{"@type":"Organization","name":"Vento Trieste","url":"https://ventotrieste.info/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Come leggere il surfometro","item":"https://ventotrieste.info/come-leggere-surfometro/"}]}]}</script>
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a><nav class="toplinks" aria-label="Navigazione"><a href="/">Vento ora</a><a class="tl-guida" href="/guida/">📖 Guida</a><a href="/mappa/">Mappa live</a><a href="/spot/">Spot</a><a href="/registro/">Registro</a></nav></header>
-  <main><nav class="breadcrumbs" aria-label="Percorso"><a href="/">Home</a> / Come leggere il surfometro</nav>
-    <header class="hero-guide"><span class="kicker">Guida pratica</span><h1>Come leggere il surfometro</h1><p class="lead">Il verdetto sintetico è utile per orientarsi, ma sono vento medio, raffica, direzione e orario a descrivere davvero le condizioni.</p><div class="quick-links"><a class="button primary" href="/#vento">Apri il surfometro</a><a class="button" href="/spot/">Scegli uno spot</a></div></header>
-    <div class="content-grid"><article class="article">
+  <header class="topbar">
+    <a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle-label">Chiaro</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
+        <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+        Menu
+      </button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni del sito" data-dock="/#vento,/#webcam,/#radarLive,/#previsioni" hidden>
+      <a href="/#vento">Vento ora</a>
+      <a href="/#mappaVento">Mappa e centraline</a>
+      <a href="/#webcam">Webcam</a>
+      <a href="/#radarLive">Radar pioggia</a>
+      <a href="/#boe">Boe e onde</a>
+      <a href="/#previsioni">Previsioni</a>
+      <a href="/registro/">Registro del vento</a>
+    </nav>
+  </header>
+
+  <main class="g">
+    <nav class="g-briciole" aria-label="Percorso"><a href="/">Home</a> / Come leggere il surfometro</nav>
+
+    <header class="g-testa">
+      <span class="g-kicker">Guida pratica</span>
+      <h1>Come leggere il surfometro</h1>
+      <p>Il verdetto sintetico è utile per orientarsi, ma sono vento medio, raffica, direzione e orario a descrivere davvero le condizioni.</p>
+    </header>
+
+    <article class="g-sez g-corpo">
       <h2 id="nodi">Che cosa significa “kt”</h2><p>Il nodo, abbreviato kt, è l'unità usata in mare e in meteorologia. Un nodo equivale a un miglio nautico all'ora. Il sito mantiene questa unità perché è quella più familiare a velisti, windsurfisti, kiter e wingfoiler.</p>
       <h2 id="media">Vento medio e raffica</h2><p>Il vento medio riassume l'intensità osservata durante un intervallo. La raffica è il valore massimo breve. Se la raffica è molto più alta della media, il vento è instabile e richiede maggiore attenzione; se i due valori sono vicini, il flusso tende a essere più regolare.</p>
-      <table class="mini-table"><thead><tr><th>Dato</th><th>Che cosa indica</th><th>Come usarlo</th></tr></thead><tbody><tr><td>Vento medio</td><td>Intensità sostenuta</td><td>Valuta la condizione generale</td></tr><tr><td>Raffica</td><td>Picco breve</td><td>Considera attrezzatura ed esperienza</td></tr><tr><td>Direzione</td><td>Origine del vento</td><td>Confrontala con orientamento e ostacoli dello spot</td></tr><tr><td>Orario</td><td>Freschezza della misura</td><td>Evita di leggere come live un dato fermo</td></tr></tbody></table>
+      <div class="g-scorri"><table class="g-tabella"><thead><tr><th>Dato</th><th>Che cosa indica</th><th>Come usarlo</th></tr></thead><tbody><tr><td>Vento medio</td><td>Intensità sostenuta</td><td>Valuta la condizione generale</td></tr><tr><td>Raffica</td><td>Picco breve</td><td>Considera attrezzatura ed esperienza</td></tr><tr><td>Direzione</td><td>Origine del vento</td><td>Confrontala con orientamento e ostacoli dello spot</td></tr><tr><td>Orario</td><td>Freschezza della misura</td><td>Evita di leggere come live un dato fermo</td></tr></tbody></table></div>
       <h2 id="scala">La scala colorata</h2><p>La scala serve a leggere rapidamente l'ordine di grandezza del vento. Non è un'autorizzazione a uscire e non sostituisce la valutazione personale: mare, temperatura, onda, direzione e regole locali restano determinanti.</p>
       <h2 id="direzione">Freccia e direzione</h2><p>La freccia della mappa mostra dove si muove il vento; il dato testuale indica invece la provenienza meteorologica. Questa distinzione evita l'errore comune di interpretare la punta della freccia come settore di origine.</p>
       <h2 id="orario">Aggiornamento, dato fermo e backup</h2><p>Controlla sempre l'orario. Se una centralina non aggiorna, il sito la segnala e può usare una fonte di backup. Il backup è utile per non lasciare la pagina vuota, ma può trovarsi in una posizione diversa e quindi descrivere condizioni differenti.</p>
-      <div class="callout"><strong>Regola semplice:</strong> prima guarda l'orario, poi media e raffica, infine direzione e confronto con le centraline vicine.</div>
+      <p class="g-in-breve"><strong>Regola semplice:</strong> prima guarda l'orario, poi media e raffica, infine direzione e confronto con le centraline vicine.</p>
       <h2 id="confronto">Perché confrontare più punti</h2><p>Il vento nel Golfo cambia molto tra costa, altipiano e mare aperto. La <a href="/mappa/">mappa live</a> rende immediato il confronto; le pagine dei singoli <a href="/spot/">spot</a> aggiungono webcam e previsioni locali.</p>
-    </article><aside class="aside-card"><h2>In questa guida</h2><nav><a href="#nodi">Nodi</a><a href="#media">Media e raffica</a><a href="#scala">Scala</a><a href="#direzione">Direzione</a><a href="#orario">Freschezza del dato</a><a href="#confronto">Confrontare gli spot</a></nav></aside></div>
-  </main><footer class="page-footer"><nav><a href="/guida/">📖 Guida</a><a href="/guida/surfometro/">Il surfometro di Barcola</a><a href="/bora-trieste/">Guida alla Bora</a><a href="/modelli-vento-trieste/">Modelli vento</a><a href="/mappa/">Mappa live</a></nav>Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+      <div class="g-vai-riga"><a class="g-vai" href="/#vento">Apri il surfometro →</a><a class="g-vai g-vai-2" href="/spot/">Scegli uno spot</a></div>
+    </article>
+
+    <section class="g-sez" aria-labelledby="t-altri">
+      <h2 id="t-altri">Per approfondire</h2>
+      <div class="g-link">
+        <a href="/guida/surfometro/"><b>Il surfometro di Barcola</b>Vento medio, raffica e una parola in triestino: com'è il vento adesso a Barcola e quando conviene uscire.</a>
+        <a href="/bora-trieste/"><b>Guida alla Bora</b>Pressione, centraline, raffiche e modelli: il quadro completo della bora.</a>
+        <a href="/modelli-vento-trieste/"><b>Modelli vento</b>OSMER, ALADIN, ICON-2I e Windguru: previsione e nowcasting a confronto.</a>
+        <a href="/mappa/"><b>Mappa live</b>Tutte le centraline del Golfo e dell'Istria, grandi.</a>
+      </div>
+      <p class="g-tutti"><a href="/guida/">Tutti gli articoli della guida →</a></p>
+    </section>
+  </main>
+
+  <footer class="page-footer">Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+
+  <script src="/footer-widgets.js?v=20261105ux"></script>
   <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
   <script src="/eventi.js?v=20261028" defer></script>
-<script src="/vt-app.js?v=20261008" defer></script>
-</body></html>
+  <script src="/vt-app.js?v=20261008" defer></script>
+</body>
+</html>

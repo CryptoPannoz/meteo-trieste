@@ -399,7 +399,11 @@
   }
   var SOLE_C = "var(--rv-sole,#d99a00)", GOCCE_C = C_MEDIA;
   // giornata surfabile: il surfista della schermata di caricamento della home (era un pallino rosso)
-  var SURFISTA = '<i class="rv-surfista" aria-hidden="true">\ud83c\udfc4\u200d\u2642\ufe0f</i>';
+  // 5 nov 2026: un'onda in SVG al posto dell'emoji (le emoji restano solo nella scala del giudizio)
+  var ONDA = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">' +
+    '<path d="M2.5 15.5c2.2 0 3-3.5 6-3.5 2.6 0 3 2.5 5 2.5 1.6 0 2.1-1.6 1.1-2.8C13.4 10 11 9.6 11 7.2 11 5 13.6 3.8 16 4.6c3.4 1.1 5.5 5 5.5 10.9"/>' +
+    '<path d="M2.5 20c2.3 0 2.3-1.5 4.75-1.5S9.6 20 12 20s2.3-1.5 4.75-1.5S19.1 20 21.5 20"/></svg>';
+  var SURFISTA = '<i class="rv-surfista" aria-hidden="true" style="color:' + C_SURF + '">' + ONDA + '</i>';
   var NUVOLA = function (y) { return '<path d="M6.5 ' + y + 'h11a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.6 1.5A3.3 3.3 0 0 0 6.5 ' + y + 'z"/>'; };
   var METEO = {
     sole: { nome: ["sole", "sunny"], svg: '<g stroke="' + SOLE_C + '"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"/></g>' },
@@ -556,7 +560,7 @@
         ' aria-pressed="' + (g === r.giorno) + '" aria-label="' + desc + '">' +
         (x && x.r != null ? '<i style="height:' + pct(x.r) + '"></i>' : "") +
         (x ? '<i class="med' + (x.r != null ? "" : " sola") + '" style="height:' + pct(x.m) + '"></i>' : "") +
-        (x && conSurf && x.surf ? '<b style="bottom:calc(' + cima + ' + 3px)">\ud83c\udfc4\u200d\u2642\ufe0f</b>' : "") +
+        (x && conSurf && x.surf ? '<b style="bottom:calc(' + cima + ' + 3px);color:' + C_SURF + '">' + ONDA + '</b>' : "") +
         (x && eEvento(r, g) ? '<b style="bottom:calc(' + cima + ' + 3px)">' + r.opz.evento.segno + "</b>" : "") +
         // in settimana c'è spazio: sopra il surfista quante ore sopra la soglia
         (x && x.surf && r.per.tipo === "sett" ? '<small style="bottom:calc(' + cima + ' + 23px)">' + ore(x.q) + "</small>" : "") + "</button>";

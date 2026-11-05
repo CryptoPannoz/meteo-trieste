@@ -213,7 +213,7 @@
   border: 1px solid rgba(240,244,60,.45);
   border-radius: 999px;
   color: var(--signal);
-  font-size: .55rem;
+  font-size: .69rem;
   font-weight: 900;
   letter-spacing: .06em;
   line-height: 1;
@@ -404,7 +404,7 @@ td .wind-arrow { width: 1.25rem; height: 1.25rem; margin-right: .22rem; vertical
 }
 .meter-readout-label {
   font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: .61rem;
+  font-size: .69rem;
   font-weight: 850;
   letter-spacing: .075em;
   line-height: 1;
@@ -886,7 +886,7 @@ footer { color: var(--label); }
   color: var(--label); font: inherit; font-size: .78rem; font-weight: 700; text-align: left; cursor: pointer;
 }
 .bora-note:hover { color: var(--ink); border-color: #46535d; background: rgba(21,27,33,.68); }
-:root[data-theme="light"] .bora-note { background: #f3f6f7; border-color: var(--line); color: var(--label); }
+:root[data-theme="light"] .bora-note { background: #f3f6f7; border-color: var(--line); color: #56646d; }
 :root[data-theme="light"] .bora-note:hover { background: #f3f6f7; border-color: var(--sea); color: var(--ink); }
 /* frase breve e riga della fonte, spostate in testa alla finestra */
 #modalDeltaBora .bd-spiega { margin: .2rem 0 .35rem; font-size: .92rem; text-align: left; color: inherit; }
@@ -1310,7 +1310,7 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
    ====================================================================== */
 .sb-box, #modalDeltaBora { --sb-c1: #8d979f; --sb-c2: #f2c230; --sb-c3: #ff8a3d; --sb-c4: #ff5a4f; }
 :root[data-theme="light"] .sb-box,
-:root[data-theme="light"] #modalDeltaBora { --sb-c1: #7b858c; --sb-c2: #c49300; --sb-c3: #d9620c; --sb-c4: #cf2e22; }
+:root[data-theme="light"] #modalDeltaBora { --sb-c1: #7b858c; --sb-c2: #8a6800; --sb-c3: #d9620c; --sb-c4: #cf2e22; }
 .sb { display: grid; gap: .5rem; margin-top: .45rem; }
 .sb-ora { display: flex; align-items: center; gap: .85rem; min-height: 3.1rem; }
 .sb .tws-hero.sb-hero { margin: 0; flex: none; font-size: 2.45rem; line-height: 1; white-space: nowrap; }
@@ -1330,11 +1330,11 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
 .sb-f2 { fill: var(--sb-c2); }
 .sb-f3 { fill: var(--sb-c3); }
 .sb-f4 { fill: var(--sb-c4); }
-.sb-nome { font-size: 8.5px; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+.sb-nome { font-size: 10px; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
 .sb-t2 { fill: var(--sb-c2); }
 .sb-t3 { fill: var(--sb-c3); }
 .sb-t4 { fill: var(--sb-c4); }
-.sb-asse { fill: var(--label); font-size: 9.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sb-asse { fill: var(--label); font-size: 10.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .sb-asse.sb-giorno { fill: var(--ink); font-weight: 850; }
 .sb-zero { stroke: var(--label); stroke-opacity: .5; stroke-width: 1; }
 .sb-soglia { stroke: var(--sb-c2); stroke-width: 1; stroke-dasharray: 3 3; }
@@ -1343,7 +1343,7 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
 .sb-futuro { stroke-width: 2; stroke-dasharray: 5 4; }
 .sb-area { opacity: .18; }
 .sb-adesso { stroke: var(--ink); stroke-opacity: .6; stroke-width: 1; stroke-dasharray: 2 3; }
-.sb-adesso-t { fill: var(--ink); font-size: 8.5px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.sb-adesso-t { fill: var(--ink); font-size: 10px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .sb-punto, .sb-cursore-p { stroke: #10151a; stroke-width: 2.5; }
 .sb-p1 { fill: var(--sb-c1); }
 .sb-p2 { fill: var(--sb-c2); }
@@ -1473,7 +1473,7 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
   html.vt-compatto .hero > .meteo-phase { margin: 0; }
   html.vt-compatto .meteo-phase h2 { font-size: .88rem; }
   html.vt-compatto .meteo-phase p { display: none; }
-  html.vt-compatto .meteo-phase-kicker { margin-top: 0; padding: .26rem .5rem; font-size: .58rem; }
+  html.vt-compatto .meteo-phase-kicker { margin-top: 0; padding: .26rem .5rem; font-size: .66rem; }
   html.vt-compatto .hero { gap: .6rem; margin-top: 0; }
   html.vt-compatto .console-card,
   html.vt-compatto .side-card { padding: .85rem .9rem; border-radius: 12px; }
@@ -1724,3 +1724,95 @@ html.vt-lite #barcolaLive .sb-verdetto { font-size: 1.45rem; }
   html.vt-modi .menu-toggle-icon { font-size: 1.05rem; }
   html .modo-switch button { padding: 0 .5rem; }
 }
+
+/* ======================================================================
+   Audit UI/UX (5 nov 2026): contrasto, bersagli da dito, caratteri minimi.
+   Le aree toccabili si allargano con uno pseudo-elemento trasparente: aspetto e
+   altezza delle schede restano quelli di prima (la prima schermata del telefono
+   è misurata al pixel: Spinta entro 740 px su 375×812).
+   ====================================================================== */
+/* Tutto quello che segue vale fuori da /barcolana2026/ (body.bcn, grafica approvata dai partner):
+   html.vt-compatto la mette footer-widgets.js su tutte le altre pagine. :where() non aggiunge
+   specificità, così le regole più precise delle pagine (es. .side-card .stato) restano.
+   Testo delle tendine "Fonte dati" e delle note: #666 su nero era 3,2:1 */
+:where(html.vt-compatto) .stato { color: var(--label); }
+html.vt-compatto[data-theme="light"] .side-card .tws-hero .u,
+html.vt-compatto[data-theme="light"] .side-card .tws-raffica { color: var(--label); }
+/* etichette della barra in basso e dei partner: almeno 11 px */
+html.vt-compatto .ux-mobile-dock .ux-dock-label { font-size: .69rem; }
+html.vt-compatto .partner-card small { font-size: .69rem; }
+/* Lite · Pro, righe "agg. … min fa" che aprono la fonte, badge del barometro: ≥ 40 px al tocco */
+html .modo-switch button { position: relative; }   /* larghezza invariata: il marchio non deve andare a capo */
+html .modo-switch button::after { content: ""; position: absolute; inset: -4px 0; }
+.surf-note > summary, .fonte-note > summary { position: relative; }
+.surf-note > summary::after, .fonte-note > summary::after { content: ""; position: absolute; inset: -11px 0; }
+.pressione-badge { position: relative; }
+.pressione-badge::after { content: ""; position: absolute; inset: -6px -3px; }
+/* griglia degli spot nel footer: "Lago di Cavazzo" era tagliato a 375 px */
+:where(html.vt-compatto) .seo-spot-links .spot-btn { white-space: normal; overflow: visible; text-overflow: clip; text-align: center; line-height: 1.2; }
+
+/* ======================================================================
+   Pagine spot come la home (audit 5 nov 2026, G2): stessa testata, cifre in Barlow
+   come la home (il DSEG resta solo nei due riquadri del surfometro), banner "Ora"
+   nascosto sul telefono e, nel riquadro della centralina dello spot, solo tendenza e
+   grafico: il numero è già nel surfometro qui sopra (l'avviso "centralina ferma" resta).
+   ====================================================================== */
+html.vt-compatto .topbar .brand span { text-transform: uppercase; letter-spacing: .08em; }
+html.vt-compatto .bora-delta .lcd,
+html.vt-compatto .side-card .tws-hero .lcd { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-variant-numeric: tabular-nums; }
+html.vt-compatto .bora-delta .lcd-ghost,
+html.vt-compatto .sb-hero .lcd-ghost,
+html.vt-compatto .side-card .tws-hero .lcd-ghost { visibility: hidden; }
+@media (max-width: 700px) {
+  html.vt-compatto .hero-copy + .meteo-phase--nowcast { display: none; }
+  html.vt-compatto .hero-copy { padding-top: .15rem; padding-bottom: .1rem; }
+  html.vt-compatto .hero-copy .eyebrow { margin: 0; font-size: .66rem; }
+  html.vt-compatto .hero-copy .site-page-title { margin: .1rem 0 .35rem !important; font-size: 1.12rem !important; line-height: 1.2 !important; letter-spacing: -.01em !important; }
+  html.vt-compatto .hero > .side-card > [id$="Cards"] > :not(.dato-vecchio) { display: none; }
+  html.vt-compatto .hero > .side-card > [id$="Cards"]:not(:has(.dato-vecchio)) { display: none; }   /* niente spazio vuoto */
+}
+
+/* ======================================================================
+   Caricamento (audit 5 nov 2026, G3): niente overlay a tutto schermo al primo accesso.
+   Finché i dati non arrivano (#loader senza .nascondi) la parola del surfometro dice
+   "carico i dati…" in grigio; webcam, previsioni e menu si usano subito.
+   ====================================================================== */
+#loader { display: none !important; }
+#loader:not(.nascondi) ~ main #verdettoBig { font-size: 0 !important; }
+#loader:not(.nascondi) ~ main #verdettoBig::before {
+  content: "carico i dati…"; display: block; color: var(--label);
+  font-size: 1.05rem; font-weight: 700; letter-spacing: 0; text-transform: none;
+  animation: vt-attesa 1.1s ease-in-out infinite alternate;
+}
+html[lang="sl"] #loader:not(.nascondi) ~ main #verdettoBig::before { content: "nalagam podatke…"; }
+@keyframes vt-attesa { from { opacity: .45; } to { opacity: 1; } }
+
+/* ======================================================================
+   Footer compatto (audit 5 nov 2026, G4). Le tendine "Pagine degli spot" e "Perché nasce
+   il progetto" le crea footer-widgets.js; qui: icona della birra in SVG e, sul telefono,
+   visitatori su una riga e invito alla birra senza simbolo grande né paragrafo.
+   ====================================================================== */
+.support-symbol svg { display: block; width: 3rem; height: 3rem; fill: none; stroke: var(--signal); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+:root[data-theme="light"] .support-symbol svg { stroke: var(--sea-dark); }
+.seo-footer-tendine { padding: 0 !important; }
+.seo-footer-tendine > .footer-tendina { border: 1px solid #2a343d; border-radius: 12px; margin: 0 0 .6rem; }
+.seo-footer-tendine > .footer-tendina > summary { padding: .8rem .9rem; }
+.seo-footer-tendine > .footer-tendina[open] > summary { padding-bottom: .4rem; }
+.seo-footer-tendine > .footer-tendina > :not(summary) { margin-left: .9rem; margin-right: .9rem; }
+.seo-footer-tendine > .footer-tendina > :last-child { margin-bottom: .9rem; }
+.seo-footer-tendine .seo-spot-pages { margin: 0 .9rem .9rem; }
+:root[data-theme="light"] .seo-footer-tendine > .footer-tendina { border-color: var(--line); }
+@media (max-width: 700px) {
+  html.vt-compatto .footer-widget.compact { display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: .1rem .45rem; padding: .65rem .8rem; }
+  html.vt-compatto .footer-widget.compact h2 { margin: 0; font-size: .82rem; }
+  html.vt-compatto .footer-widget.compact .visitor-total { margin: 0; font-size: 1.15rem; }
+  html.vt-compatto .support-hero { padding: 1rem .9rem .9rem; }
+  html.vt-compatto .support-kicker,
+  html.vt-compatto .support-symbol,
+  html.vt-compatto .support-hero > p { display: none; }
+  html.vt-compatto .support-widget .support-hero h2 { margin: 0 auto .65rem; font-size: 1.02rem; }
+  html.vt-compatto .support-primary { min-height: 48px; }
+  html.vt-compatto .supporters { padding-top: .85rem; padding-bottom: .85rem; }
+  html.vt-compatto .supporters-heading { margin-bottom: .5rem; }
+}
+.seo-footer-tendine .story-kicker { display: none; }   /* il titolo è già nel summary */

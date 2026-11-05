@@ -202,7 +202,7 @@
       ".mappa-canvas svg{aspect-ratio:762/1000;-webkit-user-select:none;user-select:none}" +
       ".mg-ctrl{position:relative;z-index:3;padding:6px;border-bottom:1px solid #b9d6dd;background:#eef7f9}" +
       ".mg-viste{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #9cc3cc;border-radius:10px;overflow:hidden;background:#fff}" +
-      ".mappa-canvas .mg-ctrl .mg-viste button{min-width:0;min-height:36px;margin:0;padding:.3rem .5rem;border:0;border-left:1px solid #c7dde2;border-radius:0;background:transparent;color:#0f5c6c;box-shadow:none;font:inherit;font-size:.8rem;font-weight:800;line-height:1;cursor:pointer;transform:none}" +
+      ".mappa-canvas .mg-ctrl .mg-viste button{min-width:0;min-height:42px;margin:0;padding:.3rem .5rem;border:0;border-left:1px solid #c7dde2;border-radius:0;background:transparent;color:#0f5c6c;box-shadow:none;font:inherit;font-size:.8rem;font-weight:800;line-height:1;cursor:pointer;transform:none}" +
       ".mappa-canvas .mg-ctrl .mg-viste button:first-child{border-left:0}" +
       ".mappa-canvas .mg-ctrl .mg-viste button:hover{background:#f1f8fa;color:#15313a}" +
       ".mappa-canvas .mg-ctrl .mg-viste button[aria-pressed=true]{background:#15313a;color:#fff}" +
@@ -280,8 +280,10 @@
   }
 
   /* Immagini di fondo: "golfo" (4 px per unità, copre tutta la vista Golfo, 112 KB) e
-     "tutto" (2 px per unità, la mappa intera, 199 KB). Si carica subito quella della vista
-     aperta; l'altra appena la pagina ha finito, così il cambio di vista è istantaneo. */
+     "tutto" (2 px per unità, la mappa intera, 199 KB). Si carica quella della vista aperta
+     solo quando la mappa si vede (5 nov 2026: in home sta spesso in una tendina chiusa e i
+     300 KB pesavano su ogni apertura da telefono); l'altra poco dopo, così il cambio di vista
+     resta istantaneo. */
   var FONDI = {
     golfo: { href: "/mappa/rilievo-golfo.webp", x: 110, y: 0, w: 340, h: 430 },
     tutto: { href: "/mappa/rilievo.webp", x: 0, y: 0, w: MAPPA_W, h: MAPPA_H }
@@ -294,7 +296,15 @@
     img.addEventListener("error", function () { img.remove(); });
     g.appendChild(img);
   }
+  var fondiInAttesa = false;
+  function mappaVisibile() {
+    if (!("ResizeObserver" in window)) return true;   // senza osservatore non sapremmo quando si apre
+    var r = svg.getBoundingClientRect();
+    return r.width > 0 && r.height > 0;
+  }
   function caricaFondi() {
+    if (!mappaVisibile()) { fondiInAttesa = true; return; }   // ci pensa osservaLarghezza all'apertura
+    fondiInAttesa = false;
     caricaFondo(vistaAttiva === "golfo" ? "golfo" : "tutto");
     var altro = function () { caricaFondo("golfo"); caricaFondo("tutto"); };
     if (document.readyState === "complete") setTimeout(altro, 1200);
@@ -763,7 +773,8 @@
     vistaAttiva = nome;
     vb = nome === "tutto" ? vistaIntera() : adatta(VISTE[nome]);
     svg.setAttribute("viewBox", vb.x.toFixed(2) + " " + vb.y.toFixed(2) + " " + vb.w.toFixed(2) + " " + vb.h.toFixed(2));
-    caricaFondo(nome === "golfo" ? "golfo" : "tutto");
+    if (mappaVisibile()) caricaFondo(nome === "golfo" ? "golfo" : "tutto");
+    else fondiInAttesa = true;
     if (ctrl) Array.prototype.forEach.call(ctrl.querySelectorAll("[data-vista]"), function (b) {
       b.setAttribute("aria-pressed", String(b.dataset.vista === vistaAttiva));
     });
@@ -779,6 +790,7 @@
       var w = Math.round(svg.getBoundingClientRect().width);
       if (!w || w === larghezza) return;
       larghezza = w;
+      if (fondiInAttesa) caricaFondi();
       layoutPresto();
     }).observe(svg);
   }

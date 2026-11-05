@@ -6,7 +6,7 @@
   <meta name="description" content="Guida ai modelli del vento per Trieste e l'Alto Adriatico: differenze tra OSMER, ALADIN, ICON e Windguru e come confrontarli con i dati live." />
   <meta name="robots" content="index, follow" /><link rel="canonical" href="https://ventotrieste.info/modelli-vento-trieste/" />
   <meta property="og:type" content="article" /><meta property="og:site_name" content="Vento Trieste" /><meta property="og:title" content="Modelli vento Trieste: come confrontarli" /><meta property="og:description" content="OSMER, ALADIN, ICON e Windguru spiegati senza tecnicismi inutili." /><meta property="og:url" content="https://ventotrieste.info/modelli-vento-trieste/" /><meta property="og:image" content="https://ventotrieste.info/og-imagenew.jpg" /><meta name="twitter:card" content="summary_large_image" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" /><link rel="stylesheet" href="/guide.css?v=20261013" /><link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" /><link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <!-- app installabile (5 ott 2026): icona "raffiche" gialla su nero, vedi /vt-app.js -->
@@ -16,22 +16,76 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261105ux" />
+  <link rel="stylesheet" href="/guida/guida.css?v=20261020" />
+  <link rel="stylesheet" href="/guide.css?v=20261105ux" />
+  <!-- Articolo nella cornice della Guida (5 nov 2026, audit UI/UX G1): tema chiaro/scuro, menu a gruppi e
+       barra in basso da /footer-widgets.css, stile da /guida/guida.css (+ /guide.css). Testo invariato. -->
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Modelli vento Trieste: OSMER, ALADIN e ICON","description":"Guida ai modelli meteorologici mostrati su Vento Trieste.","inLanguage":"it-IT","mainEntityOfPage":"https://ventotrieste.info/modelli-vento-trieste/","publisher":{"@type":"Organization","name":"Vento Trieste","url":"https://ventotrieste.info/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Modelli vento","item":"https://ventotrieste.info/modelli-vento-trieste/"}]}]}</script>
 </head>
-<body><header class="topbar"><a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a><nav class="toplinks" aria-label="Navigazione"><a href="/">Vento ora</a><a class="tl-guida" href="/guida/">📖 Guida</a><a href="/mappa/">Mappa live</a><a href="/spot/">Spot</a><a href="/registro/">Registro</a></nav></header>
-  <main><nav class="breadcrumbs" aria-label="Percorso"><a href="/">Home</a> / Modelli vento</nav><header class="hero-guide"><span class="kicker">Previsioni</span><h1>Modelli del vento per Trieste</h1><p class="lead">Un modello non è una misura e nessun modello è sempre il migliore. Il confronto fra previsioni e osservazioni live è la parte più importante.</p><div class="quick-links"><a class="button primary" href="/#previsioni">Apri le previsioni</a><a class="button" href="/mappa/">Confronta con il live</a></div></header>
-  <div class="content-grid"><article class="article">
-    <h2 id="differenza">Previsione e nowcasting</h2><p>La previsione è una simulazione dell'atmosfera. Il nowcasting usa misure appena raccolte per descrivere il presente. Quando devi capire se il vento è già entrato, guarda le centraline; quando vuoi capire l'evoluzione delle prossime ore, confronta i modelli.</p>
-    <div class="model-grid"><div class="model-card"><strong>OSMER FVG</strong><span>Bollettino locale redatto da meteorologi, utile per il quadro regionale e i fenomeni rilevanti.</span></div><div class="model-card"><strong>ALADIN</strong><span>Mappe ad area limitata molto usate per il Golfo e la Slovenia; rendono visibile la distribuzione spaziale del vento.</span></div><div class="model-card"><strong>ICON-2I</strong><span>Modello ad alta risoluzione per Italia e area alpina, utile come confronto indipendente.</span></div><div class="model-card"><strong>Windguru</strong><span>Interfaccia che raccoglie diversi modelli in tabelle comparabili; non è un singolo modello meteorologico.</span></div></div>
-    <h2 id="lettura">Come confrontare i modelli</h2><ol><li>Controlla l'ora di emissione e l'orizzonte della previsione.</li><li>Confronta direzione, vento medio e raffiche, non un solo valore.</li><li>Cerca accordo o divergenza fra due o più modelli.</li><li>Verifica quale previsione descrive meglio le centraline nelle prime ore.</li><li>Aggiorna la valutazione quando esce una nuova corsa.</li></ol>
-    <h2 id="risoluzione">Risoluzione non significa certezza</h2><p>Una griglia più fine rappresenta meglio costa e rilievi, ma non elimina gli errori iniziali o l'incertezza. Nel Golfo di Trieste pochi chilometri e piccoli cambi di direzione possono produrre condizioni molto diverse.</p>
-    <h2 id="bora">Il caso della Bora</h2><p>Per la Bora è utile osservare insieme pressione, vento sull'altipiano, centraline costiere e previsione. Un modello può anticipare correttamente il flusso generale ma sottostimare le raffiche locali. La <a href="/bora-trieste/">guida alla Bora</a> spiega come unire questi segnali.</p>
-    <h2 id="scelta">Una procedura pratica</h2><div class="callout"><strong>Adesso:</strong> mappa e centraline. <strong>Prossime ore:</strong> OSMER e mappe ALADIN/ICON. <strong>Decisione finale:</strong> condizioni reali, esperienza personale e regole dello spot.</div>
-  </article><aside class="aside-card"><h2>In questa guida</h2><nav><a href="#differenza">Live vs previsione</a><a href="#lettura">Confronto</a><a href="#risoluzione">Risoluzione</a><a href="#bora">Bora</a><a href="#scelta">Procedura</a></nav></aside></div></main>
-  <footer class="page-footer"><nav><a href="/guida/">📖 Guida</a><a href="/guida/previsioni/">Previsioni: OSMER e ALADIN</a><a href="/bora-trieste/">Guida alla Bora</a><a href="/come-leggere-surfometro/">Leggere il surfometro</a><a href="/spot/">Spot</a></nav>Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle-label">Chiaro</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
+        <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+        Menu
+      </button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni del sito" data-dock="/#vento,/#webcam,/#radarLive,/#previsioni" hidden>
+      <a href="/#vento">Vento ora</a>
+      <a href="/#mappaVento">Mappa e centraline</a>
+      <a href="/#webcam">Webcam</a>
+      <a href="/#radarLive">Radar pioggia</a>
+      <a href="/#boe">Boe e onde</a>
+      <a href="/#previsioni">Previsioni</a>
+      <a href="/registro/">Registro del vento</a>
+    </nav>
+  </header>
+
+  <main class="g">
+    <nav class="g-briciole" aria-label="Percorso"><a href="/">Home</a> / Modelli vento</nav>
+
+    <header class="g-testa">
+      <span class="g-kicker">Previsioni</span>
+      <h1>Modelli del vento per Trieste</h1>
+      <p>Un modello non è una misura e nessun modello è sempre il migliore. Il confronto fra previsioni e osservazioni live è la parte più importante.</p>
+    </header>
+
+    <article class="g-sez g-corpo">
+      <h2 id="differenza">Previsione e nowcasting</h2><p>La previsione è una simulazione dell'atmosfera. Il nowcasting usa misure appena raccolte per descrivere il presente. Quando devi capire se il vento è già entrato, guarda le centraline; quando vuoi capire l'evoluzione delle prossime ore, confronta i modelli.</p>
+      <div class="g-parole g-parole-2"><div><b>OSMER FVG</b>Bollettino locale redatto da meteorologi, utile per il quadro regionale e i fenomeni rilevanti.</div><div><b>ALADIN</b>Mappe ad area limitata molto usate per il Golfo e la Slovenia; rendono visibile la distribuzione spaziale del vento.</div><div><b>ICON-2I</b>Modello ad alta risoluzione per Italia e area alpina, utile come confronto indipendente.</div><div><b>Windguru</b>Interfaccia che raccoglie diversi modelli in tabelle comparabili; non è un singolo modello meteorologico.</div></div>
+      <h2 id="lettura">Come confrontare i modelli</h2><ol><li>Controlla l'ora di emissione e l'orizzonte della previsione.</li><li>Confronta direzione, vento medio e raffiche, non un solo valore.</li><li>Cerca accordo o divergenza fra due o più modelli.</li><li>Verifica quale previsione descrive meglio le centraline nelle prime ore.</li><li>Aggiorna la valutazione quando esce una nuova corsa.</li></ol>
+      <h2 id="risoluzione">Risoluzione non significa certezza</h2><p>Una griglia più fine rappresenta meglio costa e rilievi, ma non elimina gli errori iniziali o l'incertezza. Nel Golfo di Trieste pochi chilometri e piccoli cambi di direzione possono produrre condizioni molto diverse.</p>
+      <h2 id="bora">Il caso della Bora</h2><p>Per la Bora è utile osservare insieme pressione, vento sull'altipiano, centraline costiere e previsione. Un modello può anticipare correttamente il flusso generale ma sottostimare le raffiche locali. La <a href="/bora-trieste/">guida alla Bora</a> spiega come unire questi segnali.</p>
+      <h2 id="scelta">Una procedura pratica</h2><p class="g-in-breve"><strong>Adesso:</strong> mappa e centraline. <strong>Prossime ore:</strong> OSMER e mappe ALADIN/ICON. <strong>Decisione finale:</strong> condizioni reali, esperienza personale e regole dello spot.</p>
+      <div class="g-vai-riga"><a class="g-vai" href="/#previsioni">Apri le previsioni →</a><a class="g-vai g-vai-2" href="/mappa/">Confronta con il live</a></div>
+    </article>
+
+    <section class="g-sez" aria-labelledby="t-altri">
+      <h2 id="t-altri">Per approfondire</h2>
+      <div class="g-link">
+        <a href="/guida/previsioni/"><b>Previsioni: OSMER e ALADIN</b>Il bollettino dei previsori della Regione, il Grafico della Bora a 6 giorni e le mappe ALADIN ogni 3 ore: dal più semplice al più tecnico.</a>
+        <a href="/bora-trieste/"><b>Guida alla Bora</b>Pressione, centraline, raffiche e modelli: il quadro completo della bora.</a>
+        <a href="/come-leggere-surfometro/"><b>Leggere il surfometro</b>Nodi, media e raffica, freschezza del dato: le regole di base.</a>
+        <a href="/spot/"><b>Spot</b>Muggia, Žusterna, Marina Julia, Grado, Lignano, Cavazzo.</a>
+      </div>
+      <p class="g-tutti"><a href="/guida/">Tutti gli articoli della guida →</a></p>
+    </section>
+  </main>
+
+  <footer class="page-footer">Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+
+  <script src="/footer-widgets.js?v=20261105ux"></script>
   <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
   <script src="/eventi.js?v=20261028" defer></script>
-<script src="/vt-app.js?v=20261008" defer></script>
-</body></html>
+  <script src="/vt-app.js?v=20261008" defer></script>
+</body>
+</html>

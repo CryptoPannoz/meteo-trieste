@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" media="print" onload="this.media='all'" /><noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" /></noscript>
   <title>Vento Trieste in tempo reale – Bora, raffiche e previsioni</title>
   <meta name="description" content="Vento a Trieste in tempo reale: velocità, raffiche e direzione da Barcola, Monte Grisa e Muggia. Previsioni Bora, modello ALADIN, mare e webcam live." />
   <meta name="robots" content="index, follow" />
@@ -291,6 +291,7 @@
     #surfometroCard.surf-offline .meter-ticks,
     #surfometroCard.surf-offline .meter-labels { filter: grayscale(1); opacity: .42; }
     #surfometroCard.surf-offline .surf2-verdetto { font-size: 1.5rem; letter-spacing: .01em; }
+    #surfometroCard .surf-vecchio { display: block; margin-top: .3rem; font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif; font-size: .8rem; font-weight: 600; letter-spacing: 0; line-height: 1.35; color: var(--label); opacity: .6; }
     .surf-agg { display: block; margin-top: .1rem; }
     .surf-catena { font-size: .74rem; opacity: .72; margin-top: .15rem; }
     /* nota fonti del surfometro: chiusa di default, il riassunto sta nel summary */
@@ -1642,7 +1643,7 @@
         padding: .55rem .7rem;
       }
       .brand strong { font-size: .95rem; }
-      .brand span { font-size: .62rem; }
+      .brand span { font-size: .66rem; }
       .topbar-live { display: none; }
       .menu-toggle { min-height: 42px; padding: .5rem .7rem; }
       .topnav {
@@ -1734,13 +1735,8 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261105" />
-  <script src="./station-chart.js?v=20260719-dark2"></script>
-  <script src="./mappa-golfo.js?v=20261105" defer></script>
-  <script src="./spinta-bora.js?v=20261101b"></script>
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261105ux" />
   <script src="./previsione-ai.js?v=20261102e" defer></script>
-  <script src="/pressione-trieste.js?v=20261022b"></script>
-  <script src="/scala-vento.js?v=20261105"></script>
 </head>
 <body>
 
@@ -2584,6 +2580,11 @@
   </details>
 
   <!-- JS -->
+  <!-- librerie senza effetti al caricamento: qui e non nel <head>, così la pagina si disegna prima -->
+  <script src="./station-chart.js?v=20261105ux"></script>
+  <script src="./spinta-bora.js?v=20261101b"></script>
+  <script src="/pressione-trieste.js?v=20261022b"></script>
+  <script src="/scala-vento.js?v=20261105"></script>
   <script src="/dati-live.js?v=20260929b"></script>
   <script>
     // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
@@ -2927,6 +2928,32 @@
     function ventoPerSpinta(nome, kt, gust, dir) {
       if (window.SpintaBora && window.SpintaBora.vento) window.SpintaBora.vento(nome, kt, gust, dir);
     }
+    /* Offline (5 nov 2026, regola dell'8 ott già in uso su /barcolana2026/): l'ultimo dato
+       ricevuto resta in vista, grigio e sbiadito, con ora ed età e "vecchio, non usato".
+       Non entra in nessun calcolo: né parola, né scala, né Spinta della Bora. */
+    function ultimoDatoVecchioHtml(data) {
+      let nome = null, media = NaN, raffica = NaN, dir = null, ts = null;
+      const b = data && data.barcola;
+      if (b) {
+        const avg = parseFloat(b.wind_avg), max = parseFloat(b.wind_max), quando = barcolaData(b);
+        if (!isNaN(avg) && quando && !(avg === 0 && !(max > 0))) {
+          nome = "Barcola"; media = avg; raffica = max; dir = parseFloat(b.wind_direction); ts = quando;
+        }
+      }
+      const rows = grisaRighe(data);
+      if (Array.isArray(rows) && rows.length && !isNaN(parseFloat(rows[0].kt))) {
+        const eta = etaOraHHMM(rows[0].ora);
+        if (eta && (!ts || eta.ts > ts)) {
+          nome = "Monte Grisa"; media = parseFloat(rows[0].kt); raffica = parseFloat(rows[0].sunki);
+          dir = cardinaleInGradi(rows[0].direzione); ts = eta.ts;
+        }
+      }
+      if (!nome || !ts) return "";
+      const vento = ventoTesto(media, raffica, (dir != null && !isNaN(dir)) ? dir : null);
+      const ora = ts.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+      return '<span class="surf-vecchio">' + nome + " " + ora + " (" + etaTesto((Date.now() - ts.getTime()) / 60000) + "): " +
+        escHtml(vento) + " · vecchio, non usato</span>";
+    }
     function aggiornaSurfometroAuto(data) {
       const titolo = document.getElementById("surfTitolo");
       const fonte  = document.getElementById("surfFonte");
@@ -2971,7 +2998,7 @@
         if (sum)    sum.textContent = "⚠️ Offline — nessuna fonte aggiornata";
         if (fonte)  fonte.innerHTML = "⚠️ Centraline di <strong>Barcola</strong> e <strong>Monte Grisa</strong> e boa <strong>MAMBO1</strong> offline: nessun dato aggiornato, il surfometro riprende da solo appena una fonte torna in linea."
           + (ultimo ? '<span class="surf-agg">🕒 Ultimo dato ricevuto: ' + ultimo + '</span>' : "");
-        aggiornaSurfometro(null, null, null, 'Offline<small>centraline non in linea</small>');
+        aggiornaSurfometro(null, null, null, 'Offline<small>centraline non in linea</small>' + ultimoDatoVecchioHtml(data));
         ventoPerSpinta(null);
       }
     }
@@ -3490,7 +3517,7 @@
       const ultimoTratto = serie[serie.length - 1] - serie[pivot];
       const minuti = minutiTra(win[0].ora, win[win.length - 1].ora);
       const durata = !minuti ? "" : (minuti >= 120 ? " in " + Math.round(minuti / 60) + " ore" : " in " + minuti + " min");
-      const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " kt" + durata;
+      const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1).replace(".", ",") + " kt" + durata;
       const sale = delta >= 0.7 && (slopeTot >= 0.35 || ultimoTratto >= 0.7);
       const cala = delta <= -0.7 && (slopeTot <= -0.35 || ultimoTratto <= -0.7);
       if (sale) return { stato: "in aumento", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
@@ -4162,7 +4189,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261102"></script>
+  <script src="./footer-widgets.js?v=20261105ux"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
@@ -4207,15 +4234,29 @@
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
   <script src="/eventi.js?v=20261102b" defer></script>
-  <!-- grafico del registro del vento: si scarica solo quando la tendina si apre -->
-  <script src="/registro-vento.js?v=20261102b" defer></script>
+  <!-- grafico del registro del vento: dati E script (77 KB) si scaricano solo quando la tendina si
+       apre (5 nov 2026: prima lo script arrivava a ogni apertura della home, anche a tendina chiusa) -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       var det = document.getElementById("registro");
-      if (!det || !window.RegistroVento) return;
-      var g = RegistroVento.grafico(document.getElementById("registroGrafico"), { attendi: true, nomeCampo: ["Media in golfo", "Gulf average"] });
-      if (det.open) g.carica();
-      det.addEventListener("toggle", function () { if (det.open) g.carica(); });
+      if (!det) return;
+      var pronto = null;
+      function grafico() {
+        if (!pronto) pronto = new Promise(function (ok, ko) {
+          if (window.RegistroVento) return ok();
+          var s = document.createElement("script");
+          s.src = "/registro-vento.js?v=20261105ux";
+          s.onload = ok;
+          s.onerror = function () { pronto = null; ko(); };
+          document.head.appendChild(s);
+        }).then(function () {
+          return RegistroVento.grafico(document.getElementById("registroGrafico"), { attendi: true, nomeCampo: ["Media in golfo", "Gulf average"] });
+        });
+        return pronto;
+      }
+      function apri() { if (det.open) grafico().then(function (g) { g.carica(); }, function () {}); }
+      apri();
+      det.addEventListener("toggle", apri);
     });
   </script>
   <!-- Alba/tramonto (calcolo SunCalc offline, golfo di Trieste) -->
@@ -4236,6 +4277,29 @@
       var Jset = J2000 + (J0 + (w + lw) / (2 * Math.PI) + n) + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L), Jrise = Jn - (Jset - Jn);
       var f = function (dt) { return dt.toLocaleTimeString("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" }); };
       el.textContent = "☀ " + f(fJ(Jrise)) + " – " + f(fJ(Jset));
+    })();
+  </script>
+  <!-- mappa del vento (88 KB): si scarica quando la mappa diventa visibile, cioè quando si apre la
+       tendina "Mappa e centraline" o quando senza bora va in cima alla home (5 nov 2026). Prima
+       arrivava a ogni apertura, anche a tendina chiusa. -->
+  <script>
+    (function () {
+      var svg = document.getElementById("mappaGolfo");
+      if (!svg) return;
+      var fatto = false;
+      function carica() {
+        if (fatto) return;
+        fatto = true;
+        var s = document.createElement("script");
+        s.src = "./mappa-golfo.js?v=20261105ux";
+        document.head.appendChild(s);
+      }
+      if (!("ResizeObserver" in window)) return carica();
+      var ro = new ResizeObserver(function () {
+        var r = svg.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) { ro.disconnect(); carica(); }
+      });
+      ro.observe(svg);
     })();
   </script>
 <script src="/vt-app.js?v=20261008" defer></script>

@@ -20,7 +20,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/guide.css?v=20261013" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -31,60 +30,63 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <style>
-    .reg-card { margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow); }
-    .reg-card h2 { margin: 0 0 .4rem; font-size: 1.1rem; }
-    .reg-copy { margin-top: 1.25rem; padding: 1.15rem; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: 0 9px 28px rgba(24,51,60,.07); }
-    .reg-copy h2 { display: inline; margin: 0; font-size: 1.1rem; }
-    .reg-copy summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: .6rem; min-height: 40px; }
-    .reg-copy summary::-webkit-details-marker { display: none; }
-    .reg-copy summary::after { content: "apri ▾"; font-size: .76rem; font-weight: 800; color: var(--sea); white-space: nowrap; }
-    .reg-copy[open] summary::after { content: "chiudi ▴"; }
-    .reg-copy[open] summary { margin-bottom: .4rem; }
-    .reg-copy h3 { margin: 1.1rem 0 .35rem; font-size: .9rem; }
-    .reg-copy p, .reg-copy li { color: #405461; font-size: .82rem; }
-    .reg-copy ul { padding-left: 1.1rem; }
-    /* telefono (2 nov 2026, Alberto: "il mobile è il 90% dei nostri utenti"): intestazione corta,
-       il registro subito sotto e la scheda quasi da bordo a bordo */
-    @media (max-width: 700px) {
-      main { padding-top: .6rem; }
-      .breadcrumbs { display: none; }
-      .hero-guide { padding: 1rem 1.1rem; border-radius: 16px; }
-      .hero-guide::after { width: 11rem; height: 11rem; border-width: 2rem; right: -4rem; top: -5rem; }
-      .hero-guide h1 { margin: .5rem 0 .35rem; font-size: 1.75rem; }
-      .hero-guide .lead { font-size: .88rem; line-height: 1.4; }
-      .reg-card { margin-top: .7rem; padding: .7rem .6rem; border-radius: 14px; }
-      .reg-card > h2 { display: none; }
-      .reg-copy { padding: 1rem .9rem; }
-    }
-  </style>
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261105ux" />
+  <link rel="stylesheet" href="/guida/guida.css?v=20261020" />
+  <link rel="stylesheet" href="/guide.css?v=20261105ux" />
+  <!-- Pagina nella cornice della Guida (5 nov 2026, audit UI/UX G1): tema chiaro/scuro, menu a gruppi e
+       barra in basso da /footer-widgets.css; titolo su una riga e il registro subito sotto, il testo
+       introduttivo nella tendina "Come si legge il registro". Stili in /guide.css. -->
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
     {"@type":"WebPage","name":"Registro del vento – Golfo di Trieste","url":"https://ventotrieste.info/registro/","description":"Registro del vento dalle 6 alle 19, un valore ogni 15 minuti per le centraline del Golfo di Trieste.","inLanguage":"it-IT","isPartOf":{"@type":"WebSite","name":"Vento Trieste","url":"https://ventotrieste.info/"}},
     {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Registro del vento","item":"https://ventotrieste.info/registro/"}]}
   ]}
   </script>
-  <script src="/registro-vento.js?v=20261102b"></script>
+  <script src="/registro-vento.js?v=20261105ux"></script>
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a><nav class="toplinks" aria-label="Navigazione"><a href="/">Vento ora</a><a class="tl-guida" href="/guida/">📖 Guida</a><a href="/mappa/">Mappa live</a><a href="/spot/">Spot</a></nav></header>
-  <main>
-    <nav class="breadcrumbs" aria-label="Percorso"><a href="/">Home</a> / Registro del vento</nav>
-    <header class="hero-guide"><span class="kicker">Storico</span><h1>Registro del vento</h1><p class="lead">Il vento nel Golfo quarto d'ora per quarto d'ora, dalle 6 alle 19: media, raffica e direzione di ogni centralina. <a href="/guida/bora-forte/">La bora del 2-5 novembre →</a></p></header>
+  <header class="topbar">
+    <a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle-label">Chiaro</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
+        <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+        Menu
+      </button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni del sito" data-dock="/#vento,/#webcam,/#radarLive,/#previsioni" hidden>
+      <a href="/#vento">Vento ora</a>
+      <a href="/#mappaVento">Mappa e centraline</a>
+      <a href="/#webcam">Webcam</a>
+      <a href="/#radarLive">Radar pioggia</a>
+      <a href="/#boe">Boe e onde</a>
+      <a href="/#previsioni">Previsioni</a>
+      <a href="/registro/">Registro del vento</a>
+    </nav>
+  </header>
 
-    <section class="reg-card" aria-label="Registro del vento">
+  <main class="g g-largo">
+    <nav class="g-briciole pg-briciole" aria-label="Percorso"><a href="/">Home</a> / Registro del vento</nav>
+    <header class="pg-testa"><span class="g-kicker">Storico</span><h1>Registro del vento</h1><a class="pg-link" href="/guida/bora-forte/">La bora del 2-5 novembre →</a></header>
+
+    <section class="pg-card reg-card" aria-label="Registro del vento">
       <h2>Dalle 6 alle 19, ogni 15 minuti</h2>
       <div id="registroVento"></div>
     </section>
 
     <!-- il testo lungo resta nella pagina ma chiuso (2 nov 2026, telefono): il registro viene prima -->
-    <details class="reg-copy">
+    <details class="g-sez pg-info">
       <summary><h2>Come si legge il registro</h2></summary>
+      <p>Il vento nel Golfo quarto d'ora per quarto d'ora, dalle 6 alle 19: media, raffica e direzione di ogni centralina.</p>
       <p>Ogni casella riassume i 15 minuti che finiscono a quell'ora: il numero grande è il <strong>vento medio</strong> in nodi, quello piccolo la <strong>raffica massima</strong>, la freccia indica <strong>dove va</strong> il vento e la sigla <strong>da dove viene</strong>. Le caselle colorate segnano il vento da 8 nodi in su.</p>
       <h3>Media in golfo</h3>
       <p>La prima colonna è una stima del vento al centro del golfo, sul campo di regata della Barcolana: la media delle centraline a mare (Barcola, Trieste molo, Muggia, boa Paloma), pesata sulla distanza. Monte Grisa è in quota e non entra nella media.</p>
       <h3>Giornate surfabili</h3>
-      <p>Il grafico sopra il registro mostra un mese o una settimana, una colonna per giorno, dalle 6 alle 19: in blu la <strong>media della giornata</strong> della colonna «Media in golfo», sopra, fino in cima, la <strong>raffica massima</strong>, cioè il picco più alto tra Barcola, Trieste molo, Muggia e boa Paloma. Il surfista 🏄‍♂️ segna le <strong>giornate surfabili</strong>: quelle in cui la media in golfo è rimasta sopra i 12 nodi per almeno 4 ore, anche non di fila. Sopra le colonne c'è il <strong>meteo del giorno</strong> (sole, sole e nuvole, nuvoloso, pioggia), ricavato da pioggia e radiazione solare misurate a Trieste molo; sotto, la direzione media. Tocca una colonna per vedere le ore di vento e dove c'è stata la raffica, e aprire quel giorno nel registro. Il conto parte dal 1° settembre 2026.</p>
+      <p>Il grafico sopra il registro mostra un mese o una settimana, una colonna per giorno, dalle 6 alle 19: in blu la <strong>media della giornata</strong> della colonna «Media in golfo», sopra, fino in cima, la <strong>raffica massima</strong>, cioè il picco più alto tra Barcola, Trieste molo, Muggia e boa Paloma. L'onda segna le <strong>giornate surfabili</strong>: quelle in cui la media in golfo è rimasta sopra i 12 nodi per almeno 4 ore, anche non di fila. Sopra le colonne c'è il <strong>meteo del giorno</strong> (sole, sole e nuvole, nuvoloso, pioggia), ricavato da pioggia e radiazione solare misurate a Trieste molo; sotto, la direzione media. Tocca una colonna per vedere le ore di vento e dove c'è stata la raffica, e aprire quel giorno nel registro. Il conto parte dal 1° settembre 2026.</p>
       <h3>Spinta della Bora</h3>
       <p>Sotto il grafico, una barra per giorno: la <strong>spinta della bora</strong> più alta della giornata, cioè la differenza di pressione al livello del mare tra Maribor e Trieste, in hectopascal. È la stessa grandezza del box in home: da 3,5 hPa la bora si innesca, e la barra diventa piena. Toccando un giorno si legge anche la media dalle 6 alle 19. Il valore ora per ora è nel CSV del giorno. Fonte: Open-Meteo, stima di modello e non una misura di stazione; lo storico parte dal 1° settembre 2026.</p>
       <h3>Giorni passati</h3>
@@ -93,7 +95,10 @@
       <ul><li><a href="/mappa/">Mappa del vento in tempo reale</a></li><li><a href="/come-leggere-surfometro/">Media, raffica e direzione</a></li><li><a href="/barcolana2026/">Il vento sul percorso della Barcolana</a></li></ul>
     </details>
   </main>
+
   <footer class="page-footer"><nav><a href="/">Vento Trieste</a><a href="/mappa/">Mappa live</a><a href="/spot/">Spot</a></nav>Dati live e fonti attribuite · ventotrieste.info</footer>
+
+  <script src="/footer-widgets.js?v=20261105ux"></script>
   <script>
     // il registro di oggi si riempie dalle 6; si apre su oggi, o sul giorno del link (/registro/?giorno=AAAA-MM-GG, dal grafico in home)
     var giornoLink = (location.search.match(/[?&]giorno=(\d{4}-\d{2}-\d{2})(?:&|$)/) || [])[1];
@@ -103,6 +108,6 @@
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
   <script src="/eventi.js?v=20261028" defer></script>
-<script src="/vt-app.js?v=20261008" defer></script>
+  <script src="/vt-app.js?v=20261008" defer></script>
 </body>
 </html>

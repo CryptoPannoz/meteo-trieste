@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" media="print" onload="this.media='all'" /><noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" /></noscript>
   <title>Vento Lignano ora, raffiche e onde | Vento Trieste</title>
   <meta name="description" content="Vento a Lignano in tempo reale: velocità, raffiche e direzione della centralina, onde, webcam e previsioni per windsurf, kite e wing nell'Alto Adriatico." />
   <meta name="robots" content="index, follow" />
@@ -940,9 +940,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20261105" />
-  <script src="/station-chart.js?v=20260719-dark2"></script>
-  <script src="/scala-vento.js?v=20261105"></script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261105ux" />
 </head>
 <body>
 
@@ -1320,6 +1318,10 @@
 
 
   <!-- JS -->
+  <!-- librerie senza effetti al caricamento: qui e non nel <head>, così la pagina si disegna prima -->
+  <script src="/station-chart.js?v=20261105ux"></script>
+  <script src="/spinta-bora.js?v=20261101b"></script>
+  <script src="/scala-vento.js?v=20261105"></script>
   <script src="/dati-live.js?v=20260929b"></script>
   <script>
     // Endpoint Apps Script che legge le centraline da vetercek.com (cartella apps-script/ nel repo)
@@ -1828,7 +1830,7 @@
       const pivot = Math.max(0, Math.floor(serie.length * 0.66));
       const ultimoTratto = serie[serie.length - 1] - serie[pivot];
       const minuti = minutiTra(win[0].ora, win[win.length - 1].ora);
-      const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1) + " kt" + (minuti ? " in " + minuti + " min" : "");
+      const txt = (delta >= 0 ? "+" : "") + delta.toFixed(1).replace(".", ",") + " kt" + (minuti ? " in " + minuti + " min" : "");
       const sale = delta >= 0.7 && (slopeTot >= 0.35 || ultimoTratto >= 0.7);
       const cala = delta <= -0.7 && (slopeTot <= -0.35 || ultimoTratto <= -0.7);
       if (sale) return { stato: "in aumento", freccia: "↗", colore: "#3b6d11", deltaTxt: txt };
@@ -2147,6 +2149,7 @@
        (la pressione di superficie sarebbe ~30 hPa più bassa solo per via dell'altitudine). */
     function apriDeltaBora(){ document.getElementById("modalDeltaBora").style.display = "block"; }
     function caricaDeltaBora() {
+      if (window.SpintaBora) return window.SpintaBora.aggiorna();   // grafico e tendenza: /spinta-bora.js (come Grado e Muggia)
       const stato = document.getElementById("deltaBoraStato");
       const infoBtn = ' · <button type="button" class="bd-info" onclick="apriDeltaBora()">ℹ️ come si legge</button>';
       const api = (lat, lon) =>
@@ -2331,7 +2334,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js?v=20261030"></script>
+  <script src="/footer-widgets.js?v=20261105ux"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoGradoSeo">

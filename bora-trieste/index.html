@@ -17,7 +17,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/guide.css?v=20261013" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -28,6 +27,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261105ux" />
+  <link rel="stylesheet" href="/guida/guida.css?v=20261020" />
+  <link rel="stylesheet" href="/guide.css?v=20261105ux" />
+  <!-- Articolo nella cornice della Guida (5 nov 2026, audit UI/UX G1): tema chiaro/scuro, menu a gruppi e
+       barra in basso da /footer-widgets.css, stile da /guida/guida.css (+ /guide.css). Testo invariato. -->
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
     {"@type":"Article","headline":"Bora a Trieste: come nasce e come leggerla","description":"Guida pratica alla lettura della Bora nel Golfo di Trieste.","inLanguage":"it-IT","mainEntityOfPage":"https://ventotrieste.info/bora-trieste/","publisher":{"@type":"Organization","name":"Vento Trieste","url":"https://ventotrieste.info/"}},
@@ -36,35 +41,75 @@
   </script>
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a><nav class="toplinks" aria-label="Navigazione"><a href="/">Vento ora</a><a class="tl-guida" href="/guida/">📖 Guida</a><a href="/mappa/">Mappa live</a><a href="/spot/">Spot</a><a href="/registro/">Registro</a></nav></header>
-  <main>
-    <nav class="breadcrumbs" aria-label="Percorso"><a href="/">Home</a> / Guida alla Bora</nav>
-    <header class="hero-guide"><span class="kicker">Guida locale</span><h1>Bora a Trieste: come nasce e come leggerla</h1><p class="lead">La Bora non è soltanto un numero di nodi. Pressione, direzione, raffiche e posizione della centralina raccontano insieme ciò che sta accadendo sul Golfo.</p><div class="quick-links"><a class="button primary" href="/#vento">Guarda la Bora adesso</a><a class="button" href="/mappa/">Apri la mappa live</a></div></header>
-    <div class="content-grid">
-      <article class="article">
-        <h2 id="origine">Da dove arriva la Bora</h2>
-        <p>La Bora è un vento nord-orientale che scende dall'altipiano carsico verso il mare. Quando l'aria più fredda e densa presente oltre il Carso trova una differenza di pressione favorevole, accelera nei passaggi naturali e raggiunge Trieste con un flusso spesso irregolare.</p>
-        <p>Per questo la velocità media non racconta tutto: una giornata con media moderata può produrre raffiche molto più intense, alternate a pause nette. È il comportamento tipico che rende importante leggere insieme media, raffica e tendenza.</p>
-        <h2 id="pressione">La differenza di pressione</h2>
-        <p>Nel pannello live di Vento Trieste confrontiamo la pressione sul Golfo con quella oltre l'altipiano. Una differenza favorevole non garantisce da sola vento forte in ogni quartiere, ma segnala la presenza della spinta che può alimentare la Bora.</p>
-        <div class="callout"><strong>Come usarla:</strong> considera la pressione un indicatore di contesto. Conferma sempre il segnale con Barcola, Monte Grisa, Muggia e con la mappa delle osservazioni.</div>
-        <h2 id="centraline">Perché le centraline non misurano lo stesso vento</h2>
-        <p>Monte Grisa è esposta in quota e può intercettare il flusso prima che raggiunga il mare. Barcola rappresenta meglio una parte della costa urbana; Muggia osserva il settore sud-orientale del Golfo. Ostacoli, edifici e forma della costa modificano velocità e turbolenza.</p>
-        <ul><li><strong>Monte Grisa:</strong> utile per capire se il flusso è già attivo sull'altipiano.</li><li><strong>Barcola:</strong> riferimento vicino al mare per il settore triestino.</li><li><strong>Muggia:</strong> permette di confrontare la distribuzione della Bora nel Golfo.</li><li><strong>Boe:</strong> mostrano che cosa accade lontano dagli ostacoli della costa.</li></ul>
-        <h2 id="raffiche">Media, raffica e direzione</h2>
-        <p>La media descrive l'intensità sostenuta; la raffica è il picco registrato in un intervallo breve. Una distanza crescente fra i due valori indica vento più irregolare. La direzione aiuta invece a distinguere la Bora da brezze locali o altri flussi orientali.</p>
-        <h2 id="previsioni">Osservazione e previsione</h2>
-        <p>Il nowcasting dice che cosa sta succedendo adesso. I modelli indicano che cosa potrebbe accadere nelle ore successive. Prima di decidere un'uscita, confronta i dati live con OSMER, ALADIN e gli altri modelli, senza trattare una singola previsione come certezza.</p>
-        <p><a href="/modelli-vento-trieste/">Leggi la guida ai modelli del vento</a> oppure torna al <a href="/">surfometro live di Trieste</a>.</p>
-      </article>
-      <aside class="aside-card"><h2>In questa guida</h2><nav><a href="#origine">Come nasce</a><a href="#pressione">Differenza di pressione</a><a href="#centraline">Centraline</a><a href="#raffiche">Media e raffiche</a><a href="#previsioni">Previsioni</a></nav></aside>
+  <header class="topbar">
+    <a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle-label">Chiaro</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
+        <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+        Menu
+      </button>
     </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni del sito" data-dock="/#vento,/#webcam,/#radarLive,/#previsioni" hidden>
+      <a href="/#vento">Vento ora</a>
+      <a href="/#mappaVento">Mappa e centraline</a>
+      <a href="/#webcam">Webcam</a>
+      <a href="/#radarLive">Radar pioggia</a>
+      <a href="/#boe">Boe e onde</a>
+      <a href="/#previsioni">Previsioni</a>
+      <a href="/registro/">Registro del vento</a>
+    </nav>
+  </header>
+
+  <main class="g">
+    <nav class="g-briciole" aria-label="Percorso"><a href="/">Home</a> / Guida alla Bora</nav>
+
+    <header class="g-testa">
+      <span class="g-kicker">Guida locale</span>
+      <h1>Bora a Trieste: come nasce e come leggerla</h1>
+      <p>La Bora non è soltanto un numero di nodi. Pressione, direzione, raffiche e posizione della centralina raccontano insieme ciò che sta accadendo sul Golfo.</p>
+    </header>
+
+    <article class="g-sez g-corpo">
+      <h2 id="origine">Da dove arriva la Bora</h2>
+      <p>La Bora è un vento nord-orientale che scende dall'altipiano carsico verso il mare. Quando l'aria più fredda e densa presente oltre il Carso trova una differenza di pressione favorevole, accelera nei passaggi naturali e raggiunge Trieste con un flusso spesso irregolare.</p>
+      <p>Per questo la velocità media non racconta tutto: una giornata con media moderata può produrre raffiche molto più intense, alternate a pause nette. È il comportamento tipico che rende importante leggere insieme media, raffica e tendenza.</p>
+      <h2 id="pressione">La differenza di pressione</h2>
+      <p>Nel pannello live di Vento Trieste confrontiamo la pressione sul Golfo con quella oltre l'altipiano. Una differenza favorevole non garantisce da sola vento forte in ogni quartiere, ma segnala la presenza della spinta che può alimentare la Bora.</p>
+      <p class="g-in-breve"><strong>Come usarla:</strong> considera la pressione un indicatore di contesto. Conferma sempre il segnale con Barcola, Monte Grisa, Muggia e con la mappa delle osservazioni.</p>
+      <h2 id="centraline">Perché le centraline non misurano lo stesso vento</h2>
+      <p>Monte Grisa è esposta in quota e può intercettare il flusso prima che raggiunga il mare. Barcola rappresenta meglio una parte della costa urbana; Muggia osserva il settore sud-orientale del Golfo. Ostacoli, edifici e forma della costa modificano velocità e turbolenza.</p>
+      <ul><li><strong>Monte Grisa:</strong> utile per capire se il flusso è già attivo sull'altipiano.</li><li><strong>Barcola:</strong> riferimento vicino al mare per il settore triestino.</li><li><strong>Muggia:</strong> permette di confrontare la distribuzione della Bora nel Golfo.</li><li><strong>Boe:</strong> mostrano che cosa accade lontano dagli ostacoli della costa.</li></ul>
+      <h2 id="raffiche">Media, raffica e direzione</h2>
+      <p>La media descrive l'intensità sostenuta; la raffica è il picco registrato in un intervallo breve. Una distanza crescente fra i due valori indica vento più irregolare. La direzione aiuta invece a distinguere la Bora da brezze locali o altri flussi orientali.</p>
+      <h2 id="previsioni">Osservazione e previsione</h2>
+      <p>Il nowcasting dice che cosa sta succedendo adesso. I modelli indicano che cosa potrebbe accadere nelle ore successive. Prima di decidere un'uscita, confronta i dati live con OSMER, ALADIN e gli altri modelli, senza trattare una singola previsione come certezza.</p>
+      <p><a href="/modelli-vento-trieste/">Leggi la guida ai modelli del vento</a> oppure torna al <a href="/">surfometro live di Trieste</a>.</p>
+      <div class="g-vai-riga"><a class="g-vai" href="/#vento">Guarda la Bora adesso →</a><a class="g-vai g-vai-2" href="/mappa/">Apri la mappa live</a></div>
+    </article>
+
+    <section class="g-sez" aria-labelledby="t-altri">
+      <h2 id="t-altri">Per approfondire</h2>
+      <div class="g-link">
+        <a href="/guida/spinta-bora/"><b>Spinta della Bora</b>Maribor meno Trieste: quando la pressione oltre il Carso supera quella del golfo, la bora trabocca. Sopra 3,5 hPa si accende.</a>
+        <a href="/come-leggere-surfometro/"><b>Leggere il surfometro</b>Nodi, media e raffica, freschezza del dato: le regole di base.</a>
+        <a href="/modelli-vento-trieste/"><b>Modelli vento</b>OSMER, ALADIN, ICON-2I e Windguru: previsione e nowcasting a confronto.</a>
+        <a href="/spot/"><b>Spot del Golfo</b>Muggia, Žusterna, Marina Julia, Grado, Lignano, Cavazzo.</a>
+      </div>
+      <p class="g-tutti"><a href="/guida/">Tutti gli articoli della guida →</a></p>
+    </section>
   </main>
-  <footer class="page-footer"><nav><a href="/guida/">📖 Guida</a><a href="/guida/spinta-bora/">Spinta della Bora</a><a href="/come-leggere-surfometro/">Leggere il surfometro</a><a href="/modelli-vento-trieste/">Modelli vento</a><a href="/spot/">Spot del Golfo</a></nav>Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+
+  <footer class="page-footer">Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+
+  <script src="/footer-widgets.js?v=20261105ux"></script>
   <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
   <script src="/eventi.js?v=20261028" defer></script>
-<script src="/vt-app.js?v=20261008" defer></script>
+  <script src="/vt-app.js?v=20261008" defer></script>
 </body>
 </html>

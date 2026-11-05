@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" media="print" onload="this.media='all'" /><noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css" /></noscript>
   <title>Vento Lago di Cavazzo in tempo reale – surfometro, raffiche e direzione</title>
   <meta name="description" content="Vento al Lago di Cavazzo (Lago dei Tre Comuni) in tempo reale per windsurf, wing e vela: surfometro, raffiche, direzione e temperatura dalla stazione di Interneppo (boranucleare.it)." />
   <meta name="keywords" content="vento lago di cavazzo, lago dei tre comuni vento, windsurf lago di cavazzo, wing foil cavazzo, meteo interneppo, surfometro" />
@@ -920,8 +920,7 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="/footer-widgets.css?v=20261105" />
-  <script src="/scala-vento.js?v=20261105"></script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261105ux" />
 </head>
 <body>
 
@@ -1031,7 +1030,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js?v=20261030"></script>
+  <script src="/footer-widgets.js?v=20261105ux"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoCavazzoSeo">
@@ -1060,6 +1059,8 @@
   </main>
 
   <!-- JS -->
+  <!-- librerie senza effetti al caricamento: qui e non nel <head>, così la pagina si disegna prima -->
+  <script src="/scala-vento.js?v=20261105"></script>
   <script src="/dati-live.js?v=20260929b"></script>
   <script>
     // Endpoint Apps Script del progetto (cartella apps-script/ nel repo): il campo
