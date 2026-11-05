@@ -881,7 +881,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20261105ux" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261106" />
 </head>
 <body>
 
@@ -929,6 +929,8 @@
         <span id="solare" class="sun-times" aria-label="alba e tramonto"></span>
         <h2 id="surfTitolo">Surfometro – Muggia</h2>
         <div class="surf2">
+          <!-- caricamento con il logo: visibile solo finché arrivano i dati (footer-widgets.css, .vt-buffer) -->
+          <div class="vt-buffer" role="status"><svg class="vt-buffer-logo" viewBox="0 0 512 512" aria-hidden="true" focusable="false"><rect width="512" height="512" rx="96" fill="#07090c"/><path class="vt-r1" pathLength="1" d="M101.0 184.0H288.2C338.6 184.0 338.6 112.0 288.2 112.0C259.4 112.0 255.8 140.8 273.8 151.6"/><path class="vt-r2" pathLength="1" d="M101.0 292.0H389.0C439.4 292.0 439.4 220.0 389.0 220.0C360.2 220.0 356.6 248.8 374.6 259.6"/><path class="vt-r3" pathLength="1" d="M101.0 400.0H252.2"/></svg><span class="vt-buffer-dx"><span class="vt-buffer-testo">Carico il vento…</span><span class="vt-buffer-scala" aria-hidden="true"></span></span></div>
           <div class="surf2-verdetto" id="verdettoBig">—</div>
           <div class="meter">
             <div class="meter-pointer no-gust" id="meterPointer" style="opacity:0;" aria-live="polite">

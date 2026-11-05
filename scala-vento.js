@@ -5,8 +5,8 @@
    Colori presi cella per cella da una tabella di previsione del 5 nov (vento medio e raffiche
    da 2 a 38 kt); oltre i 38 kt la scala prosegue verso il viola.
    Li usano la mappa delle centraline (mappa-golfo.js) e il surfometro di tutte le pagine spot.
-   La barra del surfometro ha gli stessi colori scritti a mano in footer-widgets.css (.meter-scala):
-   se cambia qualcosa qui, va cambiata anche lì. */
+   La barra del surfometro e il caricamento con il logo hanno gli stessi colori scritti a mano in
+   footer-widgets.css (variabile --vt-scala-vento): se cambia qualcosa qui, va cambiata anche lì. */
 (function () {
   var PUNTI = [
     [0, "#ffffff"], [5, "#ffffff"], [7, "#b5f8f5"], [8.5, "#abf6f4"], [10, "#87f5c9"],

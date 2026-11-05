@@ -479,9 +479,12 @@ td .wind-arrow { width: 1.25rem; height: 1.25rem; margin-right: .22rem; vertical
 }
 /* scala del surfometro (5 nov 2026): i colori del vento di scala-vento.js, da 0 a 40 kt, gli stessi
    della mappa delle centraline. Prima erano sei fasce fisse (grigio, verde acqua, tre verdi, rosso). */
+/* Scala dei colori del vento, 0-40 kt: la stessa di scala-vento.js (5 nov 2026). Una volta sola,
+   la usano la barra del surfometro e il caricamento (.vt-buffer-scala). */
+:root { --vt-scala-vento: linear-gradient(90deg,#ffffff 0%,#ffffff 12.5%,#b5f8f5 17.5%,#abf6f4 21.3%,#87f5c9 25%,#7cf78a 27.5%,#76f95f 30%,#75fb4c 33.8%,#80f74b 37.5%,#95f54b 40%,#c4f24d 42.5%,#dff14e 45%,#fced4f 47.5%,#f8d548 50%,#f3b341 52.5%,#ef8f3a 55%,#ed7538 57.5%,#ec5a38 60%,#eb4640 62.5%,#eb4449 65%,#ea3c7a 70%,#ea3a8e 72.5%,#ea36b6 77.5%,#ea35cb 81.3%,#ea34d8 85%,#ea34e7 90%,#ea33f4 95%,#da36f5 100%); }
 .meter-scala {
   flex: 1;
-  background: linear-gradient(90deg,#ffffff 0%,#ffffff 12.5%,#b5f8f5 17.5%,#abf6f4 21.3%,#87f5c9 25%,#7cf78a 27.5%,#76f95f 30%,#75fb4c 33.8%,#80f74b 37.5%,#95f54b 40%,#c4f24d 42.5%,#dff14e 45%,#fced4f 47.5%,#f8d548 50%,#f3b341 52.5%,#ef8f3a 55%,#ed7538 57.5%,#ec5a38 60%,#eb4640 62.5%,#eb4449 65%,#ea3c7a 70%,#ea3a8e 72.5%,#ea36b6 77.5%,#ea35cb 81.3%,#ea34d8 85%,#ea34e7 90%,#ea33f4 95%,#da36f5 100%);
+  background: var(--vt-scala-vento);
   box-shadow: inset 0 0 0 1px rgba(9,11,13,.35);
 }
 /* fascia raffica tratteggiata: non cambia i colori della scala sotto */
@@ -1778,14 +1781,61 @@ html.vt-compatto .side-card .tws-hero .lcd-ghost { visibility: hidden; }
    "carico i dati…" in grigio; webcam, previsioni e menu si usano subito.
    ====================================================================== */
 #loader { display: none !important; }
-#loader:not(.nascondi) ~ main #verdettoBig { font-size: 0 !important; }
-#loader:not(.nascondi) ~ main #verdettoBig::before {
-  content: "carico i dati…"; display: block; color: var(--label);
-  font-size: 1.05rem; font-weight: 700; letter-spacing: 0; text-transform: none;
-  animation: vt-attesa 1.1s ease-in-out infinite alternate;
+/* Caricamento con il logo ufficiale (6 nov 2026, Alberto: "caricamento di buffering con logo ufficiale
+   di Vento Trieste, giallo e nero, e scala nuova del surfometro"). Sta dentro il surfometro (.surf2),
+   al posto di parola e scala, finché i dati non arrivano: le raffiche del logo si disegnano una dopo
+   l'altra come il vento che passa, la scala dei colori si riempie da bavisela a buriana. Il contenuto
+   sotto resta impaginato ma invisibile: all'arrivo dei dati non si sposta niente. */
+.vt-buffer { display: none; }
+#loader:not(.nascondi) ~ main .surf2 { position: relative; min-height: 64px; }
+#loader:not(.nascondi) ~ main .surf2 > :not(.vt-buffer) { visibility: hidden; }
+/* telefono: la parola con i badge è alta 109 px nelle pagine spot (parola, sottotitolo, badge) e 89 in
+   home; senza riservarla, all'arrivo dei dati la Spinta sotto scendeva di 46 px (CLS 0,048) */
+@media (max-width: 700px) {
+  #loader:not(.nascondi) ~ main #surfometroCard .surf2-verdetto { min-height: 109px; }
+  #loader:not(.nascondi) ~ main:has(#barcolaLive) #surfometroCard .surf2-verdetto { min-height: 89px; }
 }
-html[lang="sl"] #loader:not(.nascondi) ~ main #verdettoBig::before { content: "nalagam podatke…"; }
-@keyframes vt-attesa { from { opacity: .45; } to { opacity: 1; } }
+#loader:not(.nascondi) ~ main .vt-buffer {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .85rem;
+  text-align: center;
+}
+.vt-buffer-logo { flex: none; width: 68px; height: 68px; border-radius: 16px; box-shadow: 0 10px 26px rgba(0,0,0,.35); }
+/* Lite: il surfometro è una riga di riquadri, poco alto: logo e scritta affiancati */
+html.vt-lite #loader:not(.nascondi) ~ main .vt-buffer { flex-direction: row; gap: .8rem; text-align: left; }
+html.vt-lite .vt-buffer-logo { width: 48px; height: 48px; border-radius: 11px; }
+.vt-buffer-logo path {
+  fill: none; stroke: #f0f43c; stroke-width: 32.4; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1 1; stroke-dashoffset: 0;
+  animation: vt-raffica 1.9s cubic-bezier(.45,.05,.55,.95) infinite;
+}
+.vt-buffer-logo .vt-r2 { animation-delay: .2s; }
+.vt-buffer-logo .vt-r3 { animation-delay: .4s; }
+@keyframes vt-raffica {
+  0%       { stroke-dashoffset: 1; }
+  40%, 72% { stroke-dashoffset: 0; }
+  100%     { stroke-dashoffset: -1; }
+}
+.vt-buffer-dx { display: grid; gap: .55rem; width: min(250px, 78%); min-width: 0; }
+html.vt-lite .vt-buffer-dx { width: min(220px, 60%); }
+.vt-buffer-testo {
+  color: var(--ink); font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: .95rem; font-weight: 800; line-height: 1.2; letter-spacing: -.005em;
+}
+.vt-buffer-scala {
+  display: block; height: 10px; border-radius: 999px;
+  background: var(--vt-scala-vento); box-shadow: inset 0 0 0 1px rgba(9,11,13,.35);
+  clip-path: inset(0 100% 0 0 round 999px);
+  animation: vt-scala-riempi 1.9s cubic-bezier(.5,.15,.75,.55) infinite;
+}
+@keyframes vt-scala-riempi {
+  0%        { clip-path: inset(0 100% 0 0 round 999px); }
+  82%, 100% { clip-path: inset(0 0 0 0 round 999px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vt-buffer-logo path { animation: none !important; stroke-dashoffset: 0; }
+  .vt-buffer-scala { animation: none !important; clip-path: none; }
+}
 
 /* ======================================================================
    Footer compatto (audit 5 nov 2026, G4). Le tendine "Pagine degli spot" e "Perché nasce
