@@ -871,10 +871,8 @@
     }
     .loader-bar-fill {
       position: absolute; inset: 0;
-      /* le sei fasce del surfometro, stesse proporzioni della scala vera */
-      background: linear-gradient(90deg,
-        #b9b8b2 0 20%, #79CFC8 20% 32.5%, #97C459 32.5% 45%,
-        #639922 45% 62.5%, #3B6D11 62.5% 87.5%, #E24B4A 87.5% 100%);
+      /* i colori del surfometro (scala-vento.js), stessa scala 0-40 kt */
+      background: linear-gradient(90deg,#ffffff 0%,#ffffff 12.5%,#b5f8f5 17.5%,#abf6f4 21.3%,#87f5c9 25%,#7cf78a 27.5%,#76f95f 30%,#75fb4c 33.8%,#80f74b 37.5%,#95f54b 40%,#c4f24d 42.5%,#dff14e 45%,#fced4f 47.5%,#f8d548 50%,#f3b341 52.5%,#ef8f3a 55%,#ed7538 57.5%,#ec5a38 60%,#eb4640 62.5%,#eb4449 65%,#ea3c7a 70%,#ea3a8e 72.5%,#ea36b6 77.5%,#ea35cb 81.3%,#ea34d8 85%,#ea34e7 90%,#ea33f4 95%,#da36f5 100%);
       clip-path: inset(0 100% 0 0);
       animation: loader-vento 2.4s cubic-bezier(.5,.15,.75,.55) infinite;
     }
@@ -942,8 +940,9 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20261030" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261105" />
   <script src="/station-chart.js?v=20260719-dark2"></script>
+  <script src="/scala-vento.js?v=20261105"></script>
 </head>
 <body>
 
@@ -1003,12 +1002,7 @@
             </div>
             <div class="meter-over" id="meterOver" aria-hidden="true"></div>
             <div class="meter-bar">
-              <div style="flex:20;background:#b9b8b2;"></div>
-              <div style="flex:12.5;background:#79CFC8;"></div>
-              <div style="flex:12.5;background:#97C459;"></div>
-              <div style="flex:17.5;background:#639922;"></div>
-              <div style="flex:25;background:#3B6D11;"></div>
-              <div style="flex:12.5;background:#E24B4A;"></div>
+              <div class="meter-scala"></div>
               <div class="meter-range" id="meterRange" style="left:0%;width:0%;opacity:0;"></div>
               <div class="meter-mean-line" id="meterMeanLine" style="left:0%;opacity:0;"></div>
               <div class="meter-gust-line" id="meterGustLine" style="left:0%;opacity:0;"></div>
@@ -1466,7 +1460,12 @@
           '<span style="text-transform:none;letter-spacing:.02em">' + ventoTesto(kt, gust, dir) + '</span></span>'
         : "";
       verd.innerHTML = ver.txt + "<small>" + ver.gloss + "</small>" + ventoBadge;
-      verd.style.color = ver.bg;
+      // la parola ha il colore del vento su cui si sceglie, come la mappa (scala-vento.js, 5 nov 2026)
+      if (window.VTScala) {
+        verd.style.color = "";
+        verd.style.setProperty("--surf-col", VTScala.colore(kt));
+        verd.style.setProperty("--surf-col-scuro", VTScala.scuro(kt));
+      } else verd.style.color = ver.bg;
       const gustValida = gust != null && !isNaN(gust);
       if (gustValida) {
         if (gapp) gapp.style.display = "";

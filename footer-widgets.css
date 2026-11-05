@@ -477,6 +477,21 @@ td .wind-arrow { width: 1.25rem; height: 1.25rem; margin-right: .22rem; vertical
   background: linear-gradient(90deg, var(--signal) 0 50%, #62d9ff 50% 100%);
   box-shadow: 0 0 0 3px #090b0d, 0 0 15px rgba(181,235,130,.9);
 }
+/* scala del surfometro (5 nov 2026): i colori del vento di scala-vento.js, da 0 a 40 kt, gli stessi
+   della mappa delle centraline. Prima erano sei fasce fisse (grigio, verde acqua, tre verdi, rosso). */
+.meter-scala {
+  flex: 1;
+  background: linear-gradient(90deg,#ffffff 0%,#ffffff 12.5%,#b5f8f5 17.5%,#abf6f4 21.3%,#87f5c9 25%,#7cf78a 27.5%,#76f95f 30%,#75fb4c 33.8%,#80f74b 37.5%,#95f54b 40%,#c4f24d 42.5%,#dff14e 45%,#fced4f 47.5%,#f8d548 50%,#f3b341 52.5%,#ef8f3a 55%,#ed7538 57.5%,#ec5a38 60%,#eb4640 62.5%,#eb4449 65%,#ea3c7a 70%,#ea3a8e 72.5%,#ea36b6 77.5%,#ea35cb 81.3%,#ea34d8 85%,#ea34e7 90%,#ea33f4 95%,#da36f5 100%);
+  box-shadow: inset 0 0 0 1px rgba(9,11,13,.35);
+}
+/* fascia raffica tratteggiata: non cambia i colori della scala sotto */
+.meter-bar .meter-range {
+  background: repeating-linear-gradient(135deg, rgba(9,11,13,.34) 0 3px, transparent 3px 7px);
+  border-left: 0;
+}
+/* parola del surfometro: colore del vento su cui si sceglie; sul tema chiaro la versione scura */
+#verdettoBig { color: var(--surf-col, var(--label)); }
+:root[data-theme="light"] #verdettoBig { color: var(--surf-col-scuro, var(--label)); }
 .meter-over {
   position: relative;
   top: auto;
@@ -811,11 +826,11 @@ footer { color: var(--label); }
   border-color: #167b91;
   color: #0b5666;
 }
-:root[data-theme="light"] .meter-mean-line { box-shadow: 0 0 0 3px #fff, 0 0 12px rgba(160,170,8,.55); }
-:root[data-theme="light"] .meter-gust-line { background: #167b91; box-shadow: 0 0 0 3px #fff, 0 0 12px rgba(22,123,145,.52); }
+:root[data-theme="light"] .meter-mean-line { box-shadow: 0 0 0 3px #10202a, 0 0 10px rgba(16,32,42,.35); }
+:root[data-theme="light"] .meter-gust-line { background: #62d9ff; box-shadow: 0 0 0 3px #10202a, 0 0 10px rgba(16,32,42,.35); }
 :root[data-theme="light"] .meter-bar.gust-close .meter-mean-line {
-  background: linear-gradient(90deg, var(--signal) 0 50%, #167b91 50% 100%);
-  box-shadow: 0 0 0 3px #fff, 0 0 13px rgba(80,135,90,.55);
+  background: linear-gradient(90deg, var(--signal) 0 50%, #62d9ff 50% 100%);
+  box-shadow: 0 0 0 3px #10202a, 0 0 10px rgba(16,32,42,.35);
 }
 :root[data-theme="light"] .meter-over { background: #fff; color: var(--ink); }
 :root[data-theme="light"] .meter-over.gust-over { color: #0b6478; }

@@ -64,13 +64,17 @@
   var GRADI_CARDINALE = { N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
     S:180, SSW:202.5, SW:225, WSW:247.5, W:270, WNW:292.5, NW:315, NNW:337.5 };
 
+  /* nomi delle fasce, solo per il riquadro di dettaglio; i colori sono quelli della scala
+     comune (scala-vento.js, 5 nov 2026: prima erano cinque colori fissi, grigio, verde, arancio,
+     rosso e viola) */
   var FASCE_VENTO = [
-    { max: 8,  colore: "#596574", range: "< 8",   nome: "Debole" },
-    { max: 15, colore: "#007f67", range: "8–14",  nome: "Moderato" },
-    { max: 25, colore: "#d96f00", range: "15–24", nome: "Teso" },
-    { max: 35, colore: "#c92b3a", range: "25–34", nome: "Forte" },
-    { max: Infinity, colore: "#7b246c", range: "≥ 35", nome: "Molto forte" }
+    { max: 8,  nome: "Debole" },
+    { max: 15, nome: "Moderato" },
+    { max: 25, nome: "Teso" },
+    { max: 35, nome: "Forte" },
+    { max: Infinity, nome: "Molto forte" }
   ];
+  var INCHIOSTRO = "#15313a";   // bordo dei simboli e numeri: i colori chiari restano leggibili sul mare
 
   function fasciaVento(kt) {
     if (isNaN(kt)) return FASCE_VENTO[0];
@@ -81,7 +85,10 @@
   }
 
   function classeColore(kt) {
-    return fasciaVento(kt).colore;
+    return window.VTScala ? VTScala.colore(kt) : "#ffffff";
+  }
+  function coloreTesto(kt) {
+    return window.VTScala ? VTScala.scuro(kt) : INCHIOSTRO;
   }
 
   /* minuti trascorsi da un orario "HH:MM" (senza data): un orario nel futuro è di ieri.
@@ -182,14 +189,13 @@
       ".mappa-canvas{position:relative;overflow:hidden;border:1px solid #87b4bf;border-radius:14px;background:#c9eaf0;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 22px rgba(31,82,94,.1)}" +
       ".mappa-canvas svg{display:block;width:100%;height:auto;border-radius:0!important;touch-action:manipulation}" +
       ".mappa-popover{--mappa-accent:#0f6f7e;position:absolute;z-index:2;width:min(320px,calc(100% - 24px));padding:.72rem .8rem .68rem;border:2px solid var(--mappa-accent);border-radius:13px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(26,62,69,.2);color:#1d3035;transform:translateY(-50%)}" +
-      ".mappa-popover[hidden]{display:none}.mappa-popover-head{display:flex;align-items:center;gap:.45rem;padding-right:1.7rem}.mappa-popover-dot{width:9px;height:9px;border-radius:50%;background:var(--mappa-accent);flex:0 0 auto}.mappa-popover strong{font-size:.9rem}.mappa-popover-valore{margin:.28rem 0 .12rem;color:var(--mappa-accent);font-size:.88rem;font-weight:800}.mappa-popover-meta{margin:0;color:#5d7075;font-size:.72rem;font-weight:650}.mappa-popover-close{position:absolute;top:.35rem;right:.35rem;display:grid;place-items:center;width:1.75rem;height:1.75rem;padding:0!important;border:0!important;border-radius:50%!important;background:#edf4f5!important;color:#4f6267!important;font:700 1rem/1 inherit!important;cursor:pointer}" +
-      ".mappa-legenda{display:flex;gap:.42rem;flex-wrap:wrap;align-items:center;margin:.7rem 0 0}" +
-      ".mappa-legenda span{min-height:30px;display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .5rem;border:1px solid #c7dadd;border-radius:999px;background:#f5fafb;color:#40545b;font-size:.67rem;font-weight:650;line-height:1}" +
-      ".mappa-legenda i{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:0 0 0 2px #fff,0 0 0 3px currentColor}" +
-      ".mappa-legenda strong{color:#1b3037;font-size:.7rem}.mappa-legenda em{color:#6a7a80;font-style:normal}" +
-      ".mg-speed text{paint-order:stroke;stroke:#15313a;stroke-width:.8px}" +
+      ".mappa-popover[hidden]{display:none}.mappa-popover-head{display:flex;align-items:center;gap:.45rem;padding-right:1.7rem}.mappa-popover-dot{width:10px;height:10px;border-radius:50%;background:var(--mappa-dot,var(--mappa-accent));box-shadow:0 0 0 1.5px #15313a;flex:0 0 auto}.mappa-popover strong{font-size:.9rem}.mappa-popover-valore{margin:.28rem 0 .12rem;color:var(--mappa-accent);font-size:.88rem;font-weight:800}.mappa-popover-meta{margin:0;color:#5d7075;font-size:.72rem;font-weight:650}.mappa-popover-close{position:absolute;top:.35rem;right:.35rem;display:grid;place-items:center;width:1.75rem;height:1.75rem;padding:0!important;border:0!important;border-radius:50%!important;background:#edf4f5!important;color:#4f6267!important;font:700 1rem/1 inherit!important;cursor:pointer}" +
+      ".mappa-legenda{display:grid;grid-template-columns:auto 1fr;gap:.45rem;align-items:center;margin:.6rem 0 0}" +
+      ".mappa-legenda>b{font-size:.7rem;font-weight:800;color:var(--label,#5d7075)}" +
+      ".mg-leg{position:relative;height:22px;border:1px solid #15313a;border-radius:6px;background:#fff;overflow:hidden}" +
+      ".mg-leg span{position:absolute;top:50%;transform:translate(-50%,-50%);color:#15313a;font-size:.64rem;font-weight:850;line-height:1;font-variant-numeric:tabular-nums}" +
       "#mappaVentoContenuto>.stato{margin-top:.55rem}" +
-      "@media(max-width:540px){.mappa-nowcast-head{align-items:flex-start}.mappa-nowcast-hint{font-size:.68rem}.mappa-legenda span{min-height:28px;padding:.28rem .42rem;font-size:.62rem}.mappa-legenda em{display:none}.mg-halo{opacity:.06}}" +
+      "@media(max-width:540px){.mappa-nowcast-head{align-items:flex-start}.mappa-nowcast-hint{font-size:.68rem}.mg-leg span{font-size:.6rem}.mg-halo{opacity:.06}}" +
       "@media(prefers-reduced-motion:no-preference){.mg-stazione{transition:opacity .15s ease}.mg-stazione:hover .mg-halo,.mg-stazione:focus .mg-halo{opacity:.9}.mappa-popover:not([hidden]){animation:mg-in .16s ease-out}@keyframes mg-in{from{opacity:0}to{opacity:1}}}";
     style.textContent +=
       /* la grandezza della mappa la decide il CSS, non il viewBox che cambia con la vista */
@@ -306,10 +312,10 @@
       canvas.parentNode.insertBefore(legend, canvas.nextSibling);
     }
     legend.setAttribute("aria-label", "Intensità del vento in nodi");
-    legend.innerHTML = FASCE_VENTO.map(function (fascia) {
-      return '<span style="color:' + fascia.colore + '"><i style="background:' + fascia.colore + '"></i>' +
-        '<strong>' + fascia.range + ' kt</strong><em>' + fascia.nome + '</em></span>';
-    }).join("");
+    /* barra sfumata da 0 a 40 kt con i nodi scritti dentro, come le celle delle tabelle di previsione */
+    legend.innerHTML = '<b>kt</b><div class="mg-leg"' + (window.VTScala ? ' style="background:' + VTScala.gradiente(40) + '"' : "") + '>' +
+      [5, 10, 15, 20, 25, 30, 35].map(function (n) { return '<span style="left:' + (n / 40 * 100) + '%">' + n + "</span>"; }).join("") +
+      '<span style="left:96%">40+</span></div>';
   }
 
   // vento nel formato dei velisti, come in tutto il sito: "5-18 kt 063° NE" (22 ott 2026)
@@ -337,8 +343,8 @@
     if (marker) marker.classList.add("mg-selected");
     stazioneSelezionata = st.id;
 
-    var colore = classeColore(v.kt);
-    htmlDettaglio.style.setProperty("--mappa-accent", colore);
+    htmlDettaglio.style.setProperty("--mappa-accent", coloreTesto(v.kt));
+    htmlDettaglio.style.setProperty("--mappa-dot", classeColore(v.kt));
     // dove sta il simbolo sullo schermo (in percentuale della mappa): il riquadro va dall'altra parte
     var s = simboli[st.id], r = svg.getBoundingClientRect();
     var sopra = r.top - svg.parentNode.getBoundingClientRect().top;   // altezza della barra dei pulsanti (gli svg non hanno offsetTop)
@@ -407,7 +413,7 @@
     var titolo = st.nome + ": " + ventoTesto(v) + (v.ora ? " · agg. " + v.ora : "");
     g.setAttribute("aria-label", titolo + ". Apri dettaglio");
     g.appendChild(el("circle", { cx: x, cy: y, r: 22, fill: "transparent", "pointer-events": "all" }));
-    g.appendChild(el("circle", { cx: x, cy: y, r: 16, fill: colore, "fill-opacity": .07, stroke: colore,
+    g.appendChild(el("circle", { cx: x, cy: y, r: 16, fill: colore, "fill-opacity": .07, stroke: INCHIOSTRO,
       "stroke-width": 2.4, "class": "mg-halo" }));
 
     /* Direzione: una punta attaccata al cerchio che indica dove VA il vento (20 ott 2026,
@@ -415,16 +421,17 @@
        La punta arriva a PUNTA unità dal centro: dispostiSimboli() ne tiene conto. */
     if (v.deg != null && v.kt >= 1) {
       g.appendChild(el("path", { d: "M-7.4,-10 L0," + (-PUNTA) + " L7.4,-10 Z", fill: colore,
-        stroke: "#ffffff", "stroke-width": 2.2, "stroke-linejoin": "round",
+        stroke: INCHIOSTRO, "stroke-width": 1.6, "stroke-linejoin": "round",
         transform: "rotate(" + ((v.deg + 180) % 360) + ")" }));
     }
 
-    /* Valore e origine della freccia sono un unico simbolo: numero = nodi. */
+    /* Valore e origine della freccia sono un unico simbolo: numero = nodi, scuro sul colore
+       del vento (5 nov 2026, prima numero bianco su cerchio scuro col bordo colorato) */
     var speed = el("g", { "class": "mg-speed", "aria-hidden": "true" });
     speed.appendChild(el("circle", { cx: x, cy: y, r: 12.5,
-      fill: "#15313a", stroke: colore, "stroke-width": 2.8 }));
+      fill: colore, stroke: INCHIOSTRO, "stroke-width": 1.6 }));
     speed.appendChild(el("text", { x: x, y: y + 4.1,
-      fill: "#ffffff", "font-size": 11.5, "font-weight": 900, "text-anchor": "middle" }, String(kt)));
+      fill: INCHIOSTRO, "font-size": 11.5, "font-weight": 900, "text-anchor": "middle" }, String(kt)));
     g.appendChild(speed);
     /* nome della centralina, visibile da vicino (classe mg-con-nome): il lato lo sceglie
        piazzaNome() a ogni zoom, lontano dalla freccia e dentro la mappa */
