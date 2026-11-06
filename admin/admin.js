@@ -207,7 +207,11 @@
           sotto: intero(o.sessioni) + " sessioni · " + n1(o.persone ? o.sessioni / o.persone : 0) + " a testa" });
         t.push({ etichetta: "Lite oggi", valore: intero(o.lite),
           sotto: "Pro " + intero(o.pro) + (o.lite + o.pro ? " · " + Math.round(o.lite / (o.lite + o.pro) * 100) + "% in Lite" : "") });
+        t.push({ etichetta: "Scuro oggi", valore: intero(o.scuro || 0),
+          sotto: "Chiaro " + intero(o.chiaro || 0) + (o.scuro + o.chiaro ? " · " + Math.round(o.scuro / (o.scuro + o.chiaro) * 100) + "% scuro" : "") });
       }
+      if (v.qr && !v.qr.errore) t.push({ etichetta: "Qr code scan, " + v.giorni + " giorni", valore: intero(v.qr.totale),
+        sotto: "oggi " + intero(v.qr.oggi) + " · " + intero(v.qr.nuovi) + (v.qr.nuovi === 1 ? " persona nuova" : " persone nuove") });
     }
     if (s.surfabili30) t.push({ etichetta: "Giornate surfabili", valore: s.surfabili30.surfabili, sotto: "negli ultimi " + s.surfabili30.giorni + " giorni del registro" });
     t.push({ etichetta: "Servizi che funzionano", valore: ok + " su " + s.servizi.length, sotto: ok === s.servizi.length ? "tutto a posto" : "guarda sotto" });
@@ -274,7 +278,9 @@
     }
     colonne(box, (v.perGiorno || []).map(g => ({ giorno: g.giorno, valore: g.visite })), v.al,
       "Visitatori al giorno dal " + v.dal + " al " + v.al + ", in tutto " + v.totale, "Visitatori");
+    disegnaQr(v.qr, v.al);
     disegnaPersone(v.persone, v.al);
+    disegnaVersioneTema(v.persone);
     disegnaAi(v.ai, v.al);
 
     const err = v.errori || {};
@@ -287,6 +293,31 @@
     const sb = (v.sistemi || []).slice(0, 5).concat((v.browser || []).slice(0, 5));
     classifica("lSistemi", sb.length ? sb : null, x => x.nome, null, (v.sistemi || []).slice(0, 5).length, err.systems || err.browsers);
   }
+  /* Qr code scan (6 nov 2026, Alberto: "voglio misurare quanti scannerizzano il qr"): un QR per riga col
+     totale di GoatCounter, poi le scansioni al giorno e le persone nuove dagli eventi qr:… del sito */
+  function disegnaQr(q, oggi) {
+    const box = $("qr");
+    if (!q || q.errore) { box.innerHTML = '<p class="nota">Non disponibile' + (q && q.errore ? ": " + esc(q.errore) : "") + ".</p>"; return; }
+    // i due adesivi sempre, gli altri QR (Barcolana, nuovi) solo se qualcuno li ha usati nel periodo
+    const qr = q.qr.filter((x, i) => i < 2 || x.totale);
+    const giorni = q.dal ? q.perGiorno.filter(g => g.giorno >= q.dal) : [];
+    const altri = g => g.scan - (g.qr.surfisti || 0) - (g.qr["adesivo-vt"] || 0);
+    box.innerHTML = imbuto(qr.map(x => ({ n: x.nome, v: x.totale,
+        s: x.eventi || x.nuovi ? "oggi " + intero(x.oggi) + " · " + intero(x.nuovi) + " nuove" : "?utm_source=" + (x.id.indexOf("qr-") === 0 ? x.id : "qr-" + x.id) }))) +
+      // il grafico da tre giorni in su (con uno solo è un blocco unico); la tabella divisa per adesivo sempre
+      (giorni.length ? (giorni.length >= 3 ? '<h4 class="sotto-titolo" style="margin-top:16px">Scansioni al giorno</h4><div id="graficoQr"></div>' : "") +
+        '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
+          "<th>Giorno</th><th>Tavole</th><th>Tondo</th><th>Altri</th><th>Nuove</th></tr></thead><tbody>" +
+          giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + "</td><td>" + intero(g.qr.surfisti || 0) +
+            "</td><td>" + intero(g.qr["adesivo-vt"] || 0) + "</td><td>" + intero(altri(g)) + "</td><td>" + intero(g.nuovi) + "</td></tr>").join("") +
+        "</tbody></table></div></details>"
+        : '<p class="nota">Giorno per giorno: ancora nessuna scansione dal 6 nov.</p>');
+    if (giorni.length >= 3) {
+      colonne($("graficoQr"), giorni.map(g => ({ giorno: g.giorno, valore: g.scan })), oggi, "Scansioni dei QR al giorno dal " + q.dal, "Scansioni");
+      $("graficoQr").querySelector(".g-tabella").remove();
+    }
+  }
+
   /* Persone e sessioni (28 ott 2026, Alberto: "quante persone guardano il sito al giorno e quante
      sessioni fa ognuna"): medie del periodo, persone al giorno, quante sessioni fa ognuno, tabella */
   function disegnaPersone(p, oggi) {
@@ -299,18 +330,42 @@
         '<div class="numero"><b>' + intero(Math.round(p.personeAlGiorno)) + "</b><span>persone al giorno</span></div>" +
         '<div class="numero"><b>' + n1(p.sessioniPerPersona) + "</b><span>sessioni a testa</span></div>" +
         '<div class="numero"><b>' + intero(p.nuove) + "</b><span>persone nuove</span></div>" +
-        '<div class="numero"><b>' + (p.lite + p.pro ? Math.round(p.lite / (p.lite + p.pro) * 100) + "%" : "–") + "</b><span>in Lite (" + intero(p.lite) + " su " + intero(p.lite + p.pro) + ")</span></div>" +
       "</div>" +
       '<div id="graficoPersone"></div>' +
       '<h4 class="sotto-titolo">Quante sessioni fa ognuno (persone, somma dei giorni)</h4><div id="lQuante"></div>' +
       '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
-        "<th>Giorno</th><th>Persone</th><th>Sessioni</th><th>A testa</th><th>Nuove</th><th>Lite</th><th>Pro</th></tr></thead><tbody>" +
+        "<th>Giorno</th><th>Persone</th><th>Sessioni</th><th>A testa</th><th>Nuove</th></tr></thead><tbody>" +
         giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + "</td><td>" + intero(g.persone) + "</td><td>" + intero(g.sessioni) +
-          "</td><td>" + (g.persone ? n1(g.sessioni / g.persone) : "–") + "</td><td>" + intero(g.nuove) + "</td><td>" + intero(g.lite) + "</td><td>" + intero(g.pro) + "</td></tr>").join("") +
+          "</td><td>" + (g.persone ? n1(g.sessioni / g.persone) : "–") + "</td><td>" + intero(g.nuove) + "</td></tr>").join("") +
       "</tbody></table></div></details>";
     colonne($("graficoPersone"), giorni.map(g => ({ giorno: g.giorno, valore: g.persone })), oggi,
       "Persone al giorno dal " + p.dal + ", in media " + Math.round(p.personeAlGiorno), "Persone");
     classifica("lQuante", p.quante.map((x, i) => ({ nome: i + 1 === p.quante.length ? (i + 1) + " o più sessioni" : (i + 1) + (i ? " sessioni" : " sessione"), visite: x })), x => x.nome);
+  }
+
+  /* Lite · Pro · Scuro · Chiaro (6 nov 2026, Alberto: "quanti usano la versione light quanti la pro quanti
+     dark mode quanti light"): persone al giorno sommate sul periodo, eventi giorno:lite|pro|scuro|chiaro */
+  function disegnaVersioneTema(p) {
+    const box = $("versioneTema");
+    if (!p || p.errore) { box.innerHTML = '<p class="nota">Non disponibile' + (p && p.errore ? ": " + esc(p.errore) : "") + ".</p>"; return; }
+    const o = p.oggi || {};
+    const coppia = (a, b) => { const tot = a.v + b.v; return [a, b].map(x => ({ n: x.n, v: x.v,
+      s: (tot ? Math.round(x.v / tot * 100) + "% · " : "") + "oggi " + intero(x.oggi || 0) })); };
+    const giorni = p.perGiorno.filter(g => g.lite || g.pro || g.scuro || g.chiaro);
+    // prima del primo giorno col tema il contatore non c'era: "–", non zero
+    const primoTema = (giorni.find(g => g.scuro || g.chiaro) || {}).giorno || "9999";
+    const tema = (g, k) => g.giorno < primoTema ? "–" : intero(g[k] || 0);
+    box.innerHTML =
+      '<h4 class="sotto-titolo">Versione della home</h4>' +
+      imbuto(coppia({ n: "Lite", v: p.lite, oggi: o.lite }, { n: "Pro", v: p.pro, oggi: o.pro })) +
+      '<h4 class="sotto-titolo" style="margin-top:16px">Tema</h4>' +
+      (p.scuro + p.chiaro ? imbuto(coppia({ n: "Scuro", v: p.scuro, oggi: o.scuro }, { n: "Chiaro", v: p.chiaro, oggi: o.chiaro }))
+        : '<p class="nota">Ancora niente: si conta dal 6 nov.</p>') +
+      (giorni.length ? '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
+        "<th>Giorno</th><th>Lite</th><th>Pro</th><th>Scuro</th><th>Chiaro</th></tr></thead><tbody>" +
+        giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + "</td><td>" + intero(g.lite) + "</td><td>" + intero(g.pro) +
+          "</td><td>" + tema(g, "scuro") + "</td><td>" + tema(g, "chiaro") + "</td></tr>").join("") +
+        "</tbody></table></div></details>" : "");
   }
 
   /* Vento Trieste_AI dal sito al bot (2 nov 2026, Alberto: "il tracking di chi guarda la previsione AI,

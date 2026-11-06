@@ -24,7 +24,8 @@
      registro: scarica csv | cambia giorno | mostra tutto | centralina <id>   (/registro/ e Barcolana; titolo = pagina)
      registro: giorno dal grafico | grafico mese|sett   grafico dei giorni ventosi (/registro/)
      versione: passa a lite|pro    interruttore Lite · Pro della home (footer-widgets.js)
-     giorno:sessione-N · giorno:nuova-persona · giorno:lite|pro   persone e sessioni (sotto)
+     giorno:sessione-N · giorno:nuova-persona · giorno:lite|pro · giorno:scuro|chiaro   persone e sessioni (sotto)
+     qr:<nome> · qr:<nome>-nuovo   arrivo da un QR stampato (?utm_source=qr-<nome>, sotto)
 
    GoatCounter invia con sendBeacon: il conteggio arriva anche se il clic cambia pagina.
    Su localhost GoatCounter non conta nulla (è normale). Per contare altro da una pagina:
@@ -115,8 +116,11 @@
       return;
     }
     if (t.closest("#themeToggle")) {
-      // il tema cambia dopo questo clic: lo leggo appena applicato
-      setTimeout(function () { conta("tema: " + (document.documentElement.getAttribute("data-theme") === "light" ? "chiaro" : "scuro")); }, 0);
+      // il tema cambia dopo questo clic: lo leggo appena applicato (e il nuovo tema conta subito per oggi)
+      setTimeout(function () {
+        conta("tema: " + (document.documentElement.getAttribute("data-theme") === "light" ? "chiaro" : "scuro"));
+        ultimaSessione = 0; sessione();
+      }, 0);
       return;
     }
     if ((el = t.closest("details > summary"))) {
@@ -147,6 +151,7 @@
        giorno:sessione-1 … giorno:sessione-10   la 10 vale "dalla decima in poi" e parte una volta
        giorno:nuova-persona                     prima volta su ventotrieste.info da questo browser
        giorno:lite · giorno:pro                 versione usata oggi in home, una volta ciascuna
+       giorno:scuro · giorno:chiaro             tema usato oggi (6 nov 2026), su ogni pagina con l'interruttore
      Visitatori di giorno:sessione-1 = persone del giorno; somma di tutte le giorno:sessione-N =
      sessioni del giorno; giorno:sessione-N meno giorno:sessione-(N+1) = chi ne ha fatte N.
      Sessione nuova = più di 30 minuti senza attività, o un giorno nuovo (ora di Roma). Nomi senza
@@ -156,6 +161,11 @@
   var CHIAVE_VISITE = "vt-visite", PAUSA = 30 * 60000, MAX_SESSIONI = 10;
   var ultimaSessione = 0;
   function oggiRoma() { return new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Rome" }); }
+  // chi ha già altre voci del sito (tema, cache dei dati…) c'era prima di questo contatore; non
+  // contano le due che footer-widgets.js scrive subito arrivando da un link ?lite
+  function maiVenuto() {
+    return !Object.keys(localStorage).some(function (k) { return !/^(vento-trieste-modo|vt-lite-provata)$/.test(k); });
+  }
   function sessione() {
     var ora = Date.now();
     if (ora - ultimaSessione < 60000) return;   // al più un controllo al minuto (clic, visibilità, timer)
@@ -163,13 +173,11 @@
     var s, nuovaPersona = false, eventi = [];
     try {
       s = JSON.parse(localStorage.getItem(CHIAVE_VISITE) || "null");
-      // chi ha già altre voci del sito (tema, cache dei dati…) c'era prima di questo contatore; non
-      // contano le due che footer-widgets.js scrive subito arrivando da un link ?lite
-      if (!s) nuovaPersona = !Object.keys(localStorage).some(function (k) { return !/^(vento-trieste-modo|vt-lite-provata)$/.test(k); });
+      if (!s) nuovaPersona = maiVenuto();
     } catch (e) { return; }
     var giorno = oggiRoma();
-    if (!s || typeof s !== "object") s = { g: giorno, n: 0, u: 0, v: "" };
-    if (s.g !== giorno) { s.g = giorno; s.n = 0; s.v = ""; }
+    if (!s || typeof s !== "object") s = { g: giorno, n: 0, u: 0, v: "", t: "" };
+    if (s.g !== giorno) { s.g = giorno; s.n = 0; s.v = ""; s.t = ""; }
     if (!s.n || ora - s.u > PAUSA) {
       s.n++;
       if (s.n <= MAX_SESSIONI) eventi.push("giorno:sessione-" + s.n);
@@ -184,12 +192,33 @@
         eventi.push("giorno:" + versione);
       }
     }
+    // tema (data-theme di footer-widgets.js): solo dove c'è l'interruttore, una volta al giorno ciascuno
+    var tema = { dark: "scuro", light: "chiaro" }[doc.getAttribute("data-theme")];
+    if (tema && (s.t || "").split(",").indexOf(tema) < 0) {
+      s.t = (s.t ? s.t + "," : "") + tema;
+      eventi.push("giorno:" + tema);
+    }
     s.u = ora;
     try { localStorage.setItem(CHIAVE_VISITE, JSON.stringify(s)); } catch (e) { return; }   // non salvato: si conterebbe due volte
     eventi.forEach(function (nome) { conta(nome); });
   }
   // dopo il cambio Lite ↔ Pro (footer-widgets.js) la nuova versione va contata subito
   window.vtSessione = function () { ultimaSessione = 0; sessione(); };
+
+  /* Scansioni dei QR stampati (6 nov 2026, Alberto: "voglio misurare quanti scannerizzano il qr").
+     I QR portano a ?utm_source=qr-<nome>: qr-surfisti = adesivo delle tavole, qr-adesivo-vt = adesivo
+     tondo, qr-adesivo|poster|biglietto|circoli = Barcolana (via /barcolana/?s=…). Arrivando così si
+     manda "qr:<nome>" e, se il browser non era mai stato su ventotrieste.info, anche "qr:<nome>-nuovo"
+     (prima di sessione(), che scrive vt-visite). GoatCounter conta visitatori: chi ricarica la pagina
+     non conta due volte. /admin li legge per nome, giorno per giorno (vento-previsioni, src/visite.js). */
+  var qr = (location.search.match(/[?&]utm_source=qr-([a-z0-9-]{1,30})(?:&|$)/i) || [])[1];
+  if (qr) {
+    qr = qr.toLowerCase();
+    var nuovo = false;
+    try { nuovo = !localStorage.getItem(CHIAVE_VISITE) && maiVenuto(); } catch (e) {}
+    conta("qr:" + qr);
+    if (nuovo) conta("qr:" + qr + "-nuovo");
+  }
   sessione();
   // tornando sulla pagina si controlla subito; andando via si segna l'ora dell'ultima attività
   document.addEventListener("visibilitychange", function () { ultimaSessione = 0; sessione(); });
