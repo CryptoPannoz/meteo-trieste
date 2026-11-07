@@ -18,6 +18,7 @@
   const CHIAVE_SESSIONE = "vt-admin-sessione";
   const CHIAVE_PERIODO = "vt-admin-periodo";
   const CHIAVE_CLASSIFICA = "vt-admin-classifica";
+  const CHIAVE_SERIE = "vt-admin-grafico";
 
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -296,6 +297,7 @@
       righe.map(r => "<tr>" + r.map(x => "<td>" + x + "</td>").join("") + "</tr>").join("") + "</tbody></table></div></details>";
   }
 
+  let serieGrafico = leggi(CHIAVE_SERIE) === "viste" ? "viste" : "persone";
   /* Persone (28 ott 2026, rifatta il 7 nov): le persone vere al giorno dagli eventi giorno:sessione-1,
      le pagine viste senza eventi, un grafico solo e la tabella con tutto */
   function disegnaPersone(v) {
@@ -311,22 +313,37 @@
         c ? intero(x.nuove) : "–", w ? intero(g.viste) : "–"];
     });
     const dalDopo = p.dal && p.dal > v.dal;
+    const serie = serieGrafico === "viste" && w ? "viste" : "persone";
+    const punti = serie === "viste" ? w.perGiorno.map(g => ({ giorno: g.giorno, valore: g.viste }))
+      : giorni.map(g => ({ giorno: g.giorno, valore: g.persone }));
     box.innerHTML =
       '<div class="numeri">' +
         '<div class="numero"><b>' + intero(o.persone || 0) + "</b><span>oggi, finora</span></div>" +
-        '<div class="numero"><b>' + intero(Math.round(p.personeAlGiorno)) + "</b><span>al giorno, in media</span></div>" +
+        '<div class="numero"><b>' + intero(Math.round(p.personeAlGiorno)) + "</b><span>al giorno, in media" + (dalDopo ? " dal " + esc(giornoBreve(p.dal)) : "") + "</span></div>" +
         '<div class="numero"><b>' + intero(p.nuove) + "</b><span>nuove " + (dalDopo ? "dal " + esc(giornoBreve(p.dal)) : "in " + v.giorni + " giorni") + "</span></div>" +
         '<div class="numero"><b>' + n1(p.sessioniPerPersona) + "</b><span>sessioni a testa</span></div>" +
       "</div>" +
-      (giorni.length ? '<div id="graficoPersone"></div>' : '<p class="nota">Ancora niente: i primi numeri arrivano con le prime visite.</p>') +
+      // il grafico mostra persone (dal 28 ott) o pagine viste (tutto il periodo): con le sole persone 30 e 90
+      // giorni davano lo stesso grafico (7 nov 2026, Alberto: "il filtro 90 giorni non cambia")
+      (w ? '<div class="schede-tasti" role="group" aria-label="Cosa mostra il grafico">' +
+        [["persone", "Persone"], ["viste", "Pagine viste"]].map(x => '<button type="button" class="chip" data-serie="' + x[0] + '" aria-pressed="' + (serie === x[0]) + '">' + x[1] + "</button>").join("") +
+        "</div>" : "") +
+      (punti.length ? '<div id="graficoPersone"></div>' : '<p class="nota">Ancora niente: i primi numeri arrivano con le prime visite.</p>') +
+      (serie === "persone" && dalDopo ? '<p class="nota">Persone contate dal ' + esc(giornoBreve(p.dal)) + ": per tutti i " + v.giorni + " giorni tocca «Pagine viste».</p>" : "") +
       (w ? '<p class="riga-viste"><b>' + intero(w.oggi) + "</b> pagine viste oggi · <b>" + intero(w.totale) + "</b> in " + v.giorni + " giorni" +
         esc(variazione(w, v.giorni)) + "</p>" : "") +
       tabella(["Giorno", "Persone", "Sessioni", "Nuove", "Pagine"], righe);
-    if (giorni.length) {
-      colonne($("graficoPersone"), giorni.map(g => ({ giorno: g.giorno, valore: g.persone })), v.al,
-        "Persone al giorno dal " + p.dal + ", in media " + Math.round(p.personeAlGiorno), "Persone");
+    if (punti.length) {
+      colonne($("graficoPersone"), punti, v.al, serie === "viste"
+        ? "Pagine viste al giorno dal " + v.dal + ", in tutto " + w.totale
+        : "Persone al giorno dal " + p.dal + ", in media " + Math.round(p.personeAlGiorno), serie === "viste" ? "Pagine viste" : "Persone");
       $("graficoPersone").querySelector(".g-tabella").remove();
     }
+    box.querySelectorAll("[data-serie]").forEach(b => b.addEventListener("click", () => {
+      serieGrafico = b.dataset.serie;
+      scrivi(CHIAVE_SERIE, serieGrafico);
+      disegnaPersone(v);
+    }));
   }
 
   /* Come lo usano (6 nov 2026, Alberto: "quanti usano la versione light quanti la pro quanti dark mode
@@ -361,14 +378,15 @@
   function disegnaQr(q) {
     const box = $("qr");
     if (!q || q.errore) { nonDisponibile(box, q); return; }
-    // i due adesivi sempre, gli altri QR (Barcolana, nuovi) solo se qualcuno li ha usati nel periodo
-    const qr = q.qr.filter((x, i) => i < 2 || x.totale);
+    // l'adesivo delle tavole sempre, gli altri QR (Barcolana, nuovi) solo se qualcuno li ha usati nel periodo;
+    // l'adesivo tondo non c'è più (7 nov 2026, Alberto: "Adesivo tondo > TOGLI", tolto anche nel Worker)
+    const qr = q.qr.filter((x, i) => i < 1 || x.totale);
     const giorni = q.dal ? q.perGiorno.filter(g => g.giorno >= q.dal) : [];
-    const altri = g => g.scan - (g.qr.surfisti || 0) - (g.qr["adesivo-vt"] || 0);
+    const altri = g => g.scan - (g.qr.surfisti || 0);
     box.innerHTML = imbuto(qr.map(x => ({ n: x.nome, v: x.totale,
         s: x.eventi || x.nuovi ? "oggi " + intero(x.oggi) + " · " + intero(x.nuovi) + " nuove" : "?utm_source=" + (x.id.indexOf("qr-") === 0 ? x.id : "qr-" + x.id) }))) +
-      (giorni.length ? tabella(["Giorno", "Tavole", "Tondo", "Altri", "Nuove"], giorni.slice().reverse().map(g =>
-        [esc(giornoBreve(g.giorno)), intero(g.qr.surfisti || 0), intero(g.qr["adesivo-vt"] || 0), intero(altri(g)), intero(g.nuovi)]))
+      (giorni.length ? tabella(["Giorno", "Tavole", "Altri", "Nuove"], giorni.slice().reverse().map(g =>
+        [esc(giornoBreve(g.giorno)), intero(g.qr.surfisti || 0), intero(altri(g)), intero(g.nuovi)]))
         : '<p class="nota">Giorno per giorno: ancora nessuna scansione dal 6 nov.</p>');
   }
 
