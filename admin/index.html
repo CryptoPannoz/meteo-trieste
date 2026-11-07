@@ -66,42 +66,38 @@
           <button type="button" class="periodo" data-giorni="90" aria-pressed="false">90 giorni</button>
         </div>
       </div>
-      <article class="scheda" aria-labelledby="tGrafico">
-        <h3 id="tGrafico">Visitatori al giorno</h3>
-        <div id="grafico"></div>
-        <p class="nota">GoatCounter conta una persona una volta per pagina in ogni visita, senza cookie. Chi torna un altro giorno conta di nuovo. La barra di oggi è parziale.</p>
-      </article>
-      <!-- Qr code scan (6 nov 2026): campagne qr-… di GoatCounter + eventi qr:… del sito (visite.js) -->
-      <article class="scheda" aria-labelledby="tQr">
-        <h3 id="tQr">Qr code scan</h3>
-        <div id="qr"></div>
-        <p class="nota">Chi arriva da un QR stampato. Totale da GoatCounter, anche di prima; giorni e persone nuove (mai state sul sito) dal 6 nov. Due scansioni nella stessa visita contano una.</p>
-      </article>
+      <!-- Visite riorganizzate (7 nov 2026, Alberto: "realmente ho 2000 persone oggi?"): in cima le persone
+           vere (eventi giorno:sessione-1) e le pagine viste senza eventi; il totale di GoatCounter conta anche
+           gli eventi, 4-5 per visita, e non si mostra più. Poi uso, QR, AI e classifiche in una scheda sola. -->
       <article class="scheda" aria-labelledby="tPersone">
-        <h3 id="tPersone">Persone e sessioni</h3>
+        <h3 id="tPersone">Persone</h3>
         <div id="persone"></div>
-        <p class="nota">Dal 28 ott 2026. Il browser tiene solo il giorno e quante sessioni ha fatto: niente cookie, niente codici. Sessione nuova = più di 30 minuti senza usare il sito. "10" vuol dire 10 o più.</p>
+        <p class="nota">Persona = un browser in un giorno (telefono e computer contano due), dal 28 ott. Pagine viste = ogni pagina aperta in una visita, senza gli eventi dei bottoni. Niente cookie. La barra di oggi è parziale.</p>
       </article>
-      <!-- Lite · Pro · Scuro · Chiaro (6 nov 2026): eventi giorno:lite|pro|scuro|chiaro (visite.js) -->
-      <article class="scheda" aria-labelledby="tVersioneTema">
-        <h3 id="tVersioneTema">Lite · Pro · Scuro · Chiaro</h3>
-        <div id="versioneTema"></div>
-        <p class="nota">Persone al giorno, sommate sul periodo: chi c'è tre giorni conta tre volte, chi cambia nello stesso giorno conta in tutte e due. Lite e Pro in home dal 28 ott, tema su tutte le pagine dal 6 nov.</p>
-      </article>
-      <!-- Vento Trieste_AI dal sito al bot (2 nov 2026): eventi GoatCounter + chi arriva nel bot (visite.js) -->
-      <article class="scheda" aria-labelledby="tAi">
-        <h3 id="tAi">Vento Trieste_AI: dal box al bot</h3>
-        <div id="ai"></div>
-        <p class="nota">Dalla sera del 2 nov 2026. I primi passi sono visitatori di GoatCounter, senza nome; da «Arrivati nel bot» sono persone, con nome e @utente nella scheda Bot › Utenti. Il link della guida porta ?start=sito_guida, quello del box ?start=sito.</p>
-      </article>
-      <div class="griglia">
-        <article class="scheda" aria-labelledby="tPagine"><h3 id="tPagine">Pagine più viste</h3><div id="lPagine"></div></article>
-        <article class="scheda" aria-labelledby="tEventi"><h3 id="tEventi">Eventi (app, bottoni, link)</h3><div id="lEventi"></div></article>
-        <article class="scheda" aria-labelledby="tProv"><h3 id="tProv">Da dove arrivano</h3><div id="lProvenienze"></div></article>
-        <article class="scheda" aria-labelledby="tCamp"><h3 id="tCamp">Campagne (link con utm, QR)</h3><div id="lCampagne"></div></article>
-        <article class="scheda" aria-labelledby="tPaesi"><h3 id="tPaesi">Paesi</h3><div id="lPaesi"></div></article>
-        <article class="scheda" aria-labelledby="tSchermi"><h3 id="tSchermi">Schermi</h3><div id="lSchermi"></div></article>
-        <article class="scheda" aria-labelledby="tSistemi"><h3 id="tSistemi">Sistemi e browser</h3><div id="lSistemi"></div></article>
+      <div class="griglia spazio">
+        <!-- Lite · Pro · Scuro · Chiaro (6 nov 2026) e sessioni a testa: eventi giorno:… (visite.js) -->
+        <article class="scheda" aria-labelledby="tUso">
+          <h3 id="tUso">Come lo usano</h3>
+          <div id="uso"></div>
+          <p class="nota">Persone al giorno sommate sul periodo: chi c'è tre giorni conta tre volte. Sessione nuova dopo 30 minuti fermi.</p>
+        </article>
+        <!-- Qr code scan (6 nov 2026): campagne qr-… di GoatCounter + eventi qr:… del sito (visite.js) -->
+        <article class="scheda" aria-labelledby="tQr">
+          <h3 id="tQr">Qr code scan</h3>
+          <div id="qr"></div>
+          <p class="nota">Totale da GoatCounter, anche di prima; oggi e persone nuove (mai state sul sito) dal 6 nov.</p>
+        </article>
+        <!-- Vento Trieste_AI dal sito al bot (2 nov 2026): eventi GoatCounter + chi arriva nel bot (visite.js) -->
+        <article class="scheda" aria-labelledby="tAi">
+          <h3 id="tAi">Vento Trieste_AI: dal box al bot</h3>
+          <div id="ai"></div>
+          <p class="nota">Dal 2 nov. Fino a «Arrivati nel bot» sono visitatori senza nome; nomi e @utente in Bot › Utenti.</p>
+        </article>
+        <article class="scheda" aria-labelledby="tClassifiche">
+          <h3 id="tClassifiche">Classifiche</h3>
+          <div class="schede-tasti" id="tastiClassifica" role="group" aria-label="Quale classifica"></div>
+          <div id="lClassifica" aria-live="polite"></div>
+        </article>
       </div>
 
       <div class="sezione-titolo"><h2>Vento e servizi</h2></div>

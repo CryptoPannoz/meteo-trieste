@@ -17,6 +17,7 @@
   const API = locale ? "http://localhost:8787" : "https://ventotrieste-previsioni.bebroggi.workers.dev";
   const CHIAVE_SESSIONE = "vt-admin-sessione";
   const CHIAVE_PERIODO = "vt-admin-periodo";
+  const CHIAVE_CLASSIFICA = "vt-admin-classifica";
 
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -170,13 +171,13 @@
     }
   }
   async function caricaVisite() {
-    $("grafico").setAttribute("aria-busy", "true");
+    $("persone").setAttribute("aria-busy", "true");
     try {
       ultimeVisite = await chiama("/admin/visite?giorni=" + periodo);
     } catch (err) {
       ultimeVisite = { configurato: true, errore: err.message };
     }
-    $("grafico").removeAttribute("aria-busy");
+    $("persone").removeAttribute("aria-busy");
     disegnaVisite(ultimeVisite);
     if (ultimoStato) disegnaTessere(ultimoStato, ultimeVisite);
   }
@@ -196,20 +197,13 @@
     const fresche = s.centraline.filter(x => x.esito === "ok").length;
     const t = [];
     if (v && v.configurato && !v.errore) {
-      const delta = v.totalePrecedente ? Math.round((v.totale - v.totalePrecedente) / v.totalePrecedente * 100) : null;
-      t.push({ etichetta: "Visitatori oggi", valore: intero(v.oggi), sotto: "giornata in corso" });
-      t.push({ etichetta: "Visitatori, " + v.giorni + " giorni", valore: intero(v.totale),
-        sotto: delta == null ? "" : (delta >= 0 ? "▲ +" : "▼ −") + Math.abs(delta) + "% sui " + v.giorni + " giorni prima" });
-      // persone vere del giorno e versione della home (eventi giorno:… di eventi.js, dal 28 ott 2026)
-      const o = v.persone && !v.persone.errore ? v.persone.oggi : null;
-      if (o) {
-        t.push({ etichetta: "Persone oggi", valore: intero(o.persone),
-          sotto: intero(o.sessioni) + " sessioni · " + n1(o.persone ? o.sessioni / o.persone : 0) + " a testa" });
-        t.push({ etichetta: "Lite oggi", valore: intero(o.lite),
-          sotto: "Pro " + intero(o.pro) + (o.lite + o.pro ? " · " + Math.round(o.lite / (o.lite + o.pro) * 100) + "% in Lite" : "") });
-        t.push({ etichetta: "Scuro oggi", valore: intero(o.scuro || 0),
-          sotto: "Chiaro " + intero(o.chiaro || 0) + (o.scuro + o.chiaro ? " · " + Math.round(o.scuro / (o.scuro + o.chiaro) * 100) + "% scuro" : "") });
-      }
+      // persone vere (eventi giorno:sessione-1) e pagine viste senza eventi: il totale di GoatCounter
+      // conta anche gli eventi, 4-5 per visita (7 nov 2026: 2082 "visitatori" non erano persone)
+      const p = v.persone && !v.persone.errore ? v.persone : null;
+      if (p && p.oggi) t.push({ etichetta: "Persone oggi", valore: intero(p.oggi.persone),
+        sotto: "in media " + intero(Math.round(p.personeAlGiorno)) + " al giorno" });
+      if (v.viste) t.push({ etichetta: "Pagine viste oggi", valore: intero(v.viste.oggi),
+        sotto: intero(v.viste.totale) + " in " + v.giorni + " giorni" + variazione(v.viste, v.giorni).replace(/ sui .*/, "") });
       if (v.qr && !v.qr.errore) t.push({ etichetta: "Qr code scan, " + v.giorni + " giorni", valore: intero(v.qr.totale),
         sotto: "oggi " + intero(v.qr.oggi) + " · " + intero(v.qr.nuovi) + (v.qr.nuovi === 1 ? " persona nuova" : " persone nuove") });
     }
@@ -236,6 +230,8 @@
     tip.style.top = Math.max(8, r.top + window.scrollY - tip.offsetHeight - 8) + "px";
   }
   function nascondiTip() { tip.hidden = true; }
+  document.addEventListener("click", nascondiTip);
+  window.addEventListener("scroll", nascondiTip, { passive: true });
   function scalaTonda(max) {
     if (max <= 5) return 5;
     const p = Math.pow(10, Math.floor(Math.log10(max)));
@@ -259,117 +255,125 @@
       '<div class="g-date" aria-hidden="true"><span>' + esc(giornoBreve(punti[0] ? punti[0].giorno : oggi)) + "</span><span>" + esc(giornoBreve(oggi)) + " (oggi)</span></div>" +
       '<details class="g-tabella"><summary>Mostra i numeri</summary><div class="tabella-box"><table><thead><tr><th>Giorno</th><th>' + esc(nome) + "</th></tr></thead><tbody>" +
         punti.slice().reverse().map(p => "<tr><td>" + esc(giornoBreve(p.giorno)) + "</td><td>" + intero(p.valore) + "</td></tr>").join("") + "</tbody></table></div></details>";
+    // passando sopra col mouse e, sul telefono, toccando la colonna (7 nov 2026)
     box.querySelectorAll(".g-col").forEach(c => {
-      c.addEventListener("mouseenter", e => mostraTip(e, giornoBreve(c.dataset.giorno) + (c.dataset.giorno === oggi ? " (finora)" : ""), intero(+c.dataset.valore) + " " + parola));
+      const apri = e => mostraTip(e, giornoBreve(c.dataset.giorno) + (c.dataset.giorno === oggi ? " (finora)" : ""), intero(+c.dataset.valore) + " " + parola);
+      c.addEventListener("mouseenter", apri);
+      c.addEventListener("click", e => { e.stopPropagation(); apri(e); });
       c.addEventListener("mouseleave", nascondiTip);
     });
   }
   function disegnaVisite(v) {
-    const box = $("grafico");
-    const liste = ["lPagine", "lEventi", "lProvenienze", "lCampagne", "lPaesi", "lSchermi", "lSistemi"];
+    const box = $("persone");
+    const altri = ["uso", "qr", "ai", "lClassifica"];
     if (!v || !v.configurato) {
       box.innerHTML = '<p class="nota">Aggiungi il token API di GoatCounter in Impostazioni per vedere le visite.</p>';
-      liste.forEach(id => { $(id).innerHTML = ""; });
+      altri.forEach(id => { $(id).innerHTML = ""; });
       return;
     }
     if (v.errore) {
       box.innerHTML = '<p class="errore">' + esc(v.errore) + "</p>";
       return;
     }
-    colonne(box, (v.perGiorno || []).map(g => ({ giorno: g.giorno, valore: g.visite })), v.al,
-      "Visitatori al giorno dal " + v.dal + " al " + v.al + ", in tutto " + v.totale, "Visitatori");
-    disegnaQr(v.qr, v.al);
-    disegnaPersone(v.persone, v.al);
-    disegnaVersioneTema(v.persone);
+    disegnaPersone(v);
+    disegnaUso(v.persone);
+    disegnaQr(v.qr);
     disegnaAi(v.ai, v.al);
-
-    const err = v.errori || {};
-    classifica("lPagine", v.pagine, x => x.percorso, x => x.titolo);
-    classifica("lEventi", v.eventi, x => x.nome);
-    classifica("lProvenienze", v.provenienze, x => x.nome, null, null, err.toprefs);
-    classifica("lCampagne", v.campagne, x => x.nome, null, null, err.campaigns);
-    classifica("lPaesi", v.paesi, x => x.nome, null, null, err.locations);
-    classifica("lSchermi", v.schermi, x => x.nome, null, null, err.sizes);
-    const sb = (v.sistemi || []).slice(0, 5).concat((v.browser || []).slice(0, 5));
-    classifica("lSistemi", sb.length ? sb : null, x => x.nome, null, (v.sistemi || []).slice(0, 5).length, err.systems || err.browsers);
+    disegnaClassifiche(v);
   }
+  function nonDisponibile(box, x) {
+    box.innerHTML = '<p class="nota">Non disponibile' + (x && x.errore ? ": " + esc(x.errore) : "") + ".</p>";
+  }
+  // "▲ +12% sui 30 giorni prima": solo pagine viste, il periodo prima ha gli stessi giorni
+  function variazione(w, giorni) {
+    if (!w || !w.precedente) return "";
+    const d = Math.round((w.totale - w.precedente) / w.precedente * 100);
+    return " · " + (d >= 0 ? "▲ +" : "▼ −") + Math.abs(d) + "% sui " + giorni + " giorni prima";
+  }
+  function tabella(intestazioni, righe) {
+    return '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
+      intestazioni.map(x => "<th>" + esc(x) + "</th>").join("") + "</tr></thead><tbody>" +
+      righe.map(r => "<tr>" + r.map(x => "<td>" + x + "</td>").join("") + "</tr>").join("") + "</tbody></table></div></details>";
+  }
+
+  /* Persone (28 ott 2026, rifatta il 7 nov): le persone vere al giorno dagli eventi giorno:sessione-1,
+     le pagine viste senza eventi, un grafico solo e la tabella con tutto */
+  function disegnaPersone(v) {
+    const box = $("persone"), p = v.persone, w = v.viste;
+    if (!p || p.errore) { nonDisponibile(box, p); return; }
+    const o = p.oggi || {};
+    const giorni = p.giorniConDati ? p.perGiorno.filter(g => g.giorno >= p.dal) : [];
+    const perGiorno = {};
+    p.perGiorno.forEach(g => { perGiorno[g.giorno] = g; });
+    const righe = (w ? w.perGiorno : p.perGiorno).slice().reverse().map(g => {
+      const x = perGiorno[g.giorno], c = x && p.dal && g.giorno >= p.dal;
+      return [esc(giornoBreve(g.giorno)) + (g.giorno === v.al ? " (oggi)" : ""), c ? intero(x.persone) : "–", c ? intero(x.sessioni) : "–",
+        c ? intero(x.nuove) : "–", w ? intero(g.viste) : "–"];
+    });
+    const dalDopo = p.dal && p.dal > v.dal;
+    box.innerHTML =
+      '<div class="numeri">' +
+        '<div class="numero"><b>' + intero(o.persone || 0) + "</b><span>oggi, finora</span></div>" +
+        '<div class="numero"><b>' + intero(Math.round(p.personeAlGiorno)) + "</b><span>al giorno, in media</span></div>" +
+        '<div class="numero"><b>' + intero(p.nuove) + "</b><span>nuove " + (dalDopo ? "dal " + esc(giornoBreve(p.dal)) : "in " + v.giorni + " giorni") + "</span></div>" +
+        '<div class="numero"><b>' + n1(p.sessioniPerPersona) + "</b><span>sessioni a testa</span></div>" +
+      "</div>" +
+      (giorni.length ? '<div id="graficoPersone"></div>' : '<p class="nota">Ancora niente: i primi numeri arrivano con le prime visite.</p>') +
+      (w ? '<p class="riga-viste"><b>' + intero(w.oggi) + "</b> pagine viste oggi · <b>" + intero(w.totale) + "</b> in " + v.giorni + " giorni" +
+        esc(variazione(w, v.giorni)) + "</p>" : "") +
+      tabella(["Giorno", "Persone", "Sessioni", "Nuove", "Pagine"], righe);
+    if (giorni.length) {
+      colonne($("graficoPersone"), giorni.map(g => ({ giorno: g.giorno, valore: g.persone })), v.al,
+        "Persone al giorno dal " + p.dal + ", in media " + Math.round(p.personeAlGiorno), "Persone");
+      $("graficoPersone").querySelector(".g-tabella").remove();
+    }
+  }
+
+  /* Come lo usano (6 nov 2026, Alberto: "quanti usano la versione light quanti la pro quanti dark mode
+     quanti light"; dal 7 nov con le sessioni a testa): una barra al 100% per domanda, il testo dice le
+     percentuali (il colore aiuta soltanto) */
+  function barraQuote(titolo, parti, vuoto) {
+    const tot = parti.reduce((a, x) => a + x.v, 0);
+    if (!tot) return '<div class="quota"><div class="q-testa"><b>' + esc(titolo) + "</b><span>" + esc(vuoto) + "</span></div></div>";
+    const pc = x => Math.round(x.v / tot * 100);
+    return '<div class="quota"><div class="q-testa"><b>' + esc(titolo) + "</b><span>" + parti.map(x => esc(x.n) + " " + pc(x) + "%").join(" · ") + "</span></div>" +
+      '<div class="q-barra" aria-hidden="true">' + parti.map((x, i) => '<i class="q-' + i + '" style="width:' + (x.v / tot * 100).toFixed(1) + '%"></i>').join("") + "</div></div>";
+  }
+  function disegnaUso(p) {
+    const box = $("uso");
+    if (!p || p.errore) { nonDisponibile(box, p); return; }
+    const o = p.oggi || {}, q = p.quante || [];
+    const giorni = p.perGiorno.filter(g => g.lite || g.pro || g.scuro || g.chiaro);
+    // prima del primo giorno col tema il contatore non c'era: "–", non zero
+    const primoTema = (giorni.find(g => g.scuro || g.chiaro) || {}).giorno || "9999";
+    const tema = (g, k) => g.giorno < primoTema ? "–" : intero(g[k] || 0);
+    box.innerHTML =
+      barraQuote("Home", [{ n: "Lite", v: p.lite }, { n: "Pro", v: p.pro }], "ancora niente") +
+      barraQuote("Tema", [{ n: "Scuro", v: p.scuro }, { n: "Chiaro", v: p.chiaro }], "si conta dal 6 nov") +
+      barraQuote("Sessioni al giorno", [{ n: "una", v: q[0] || 0 }, { n: "due", v: q[1] || 0 }, { n: "tre o più", v: q.slice(2).reduce((a, b) => a + b, 0) }], "ancora niente") +
+      '<p class="riga-viste">Oggi: Lite ' + intero(o.lite || 0) + " · Pro " + intero(o.pro || 0) + " · Scuro " + intero(o.scuro || 0) + " · Chiaro " + intero(o.chiaro || 0) + "</p>" +
+      (giorni.length ? tabella(["Giorno", "Lite", "Pro", "Scuro", "Chiaro"], giorni.slice().reverse().map(g =>
+        [esc(giornoBreve(g.giorno)), intero(g.lite), intero(g.pro), tema(g, "scuro"), tema(g, "chiaro")])) : "");
+  }
+
   /* Qr code scan (6 nov 2026, Alberto: "voglio misurare quanti scannerizzano il qr"): un QR per riga col
-     totale di GoatCounter, poi le scansioni al giorno e le persone nuove dagli eventi qr:… del sito */
-  function disegnaQr(q, oggi) {
+     totale di GoatCounter, oggi e persone nuove dagli eventi qr:… del sito, tabella divisa per adesivo */
+  function disegnaQr(q) {
     const box = $("qr");
-    if (!q || q.errore) { box.innerHTML = '<p class="nota">Non disponibile' + (q && q.errore ? ": " + esc(q.errore) : "") + ".</p>"; return; }
+    if (!q || q.errore) { nonDisponibile(box, q); return; }
     // i due adesivi sempre, gli altri QR (Barcolana, nuovi) solo se qualcuno li ha usati nel periodo
     const qr = q.qr.filter((x, i) => i < 2 || x.totale);
     const giorni = q.dal ? q.perGiorno.filter(g => g.giorno >= q.dal) : [];
     const altri = g => g.scan - (g.qr.surfisti || 0) - (g.qr["adesivo-vt"] || 0);
     box.innerHTML = imbuto(qr.map(x => ({ n: x.nome, v: x.totale,
         s: x.eventi || x.nuovi ? "oggi " + intero(x.oggi) + " · " + intero(x.nuovi) + " nuove" : "?utm_source=" + (x.id.indexOf("qr-") === 0 ? x.id : "qr-" + x.id) }))) +
-      // il grafico da tre giorni in su (con uno solo è un blocco unico); la tabella divisa per adesivo sempre
-      (giorni.length ? (giorni.length >= 3 ? '<h4 class="sotto-titolo" style="margin-top:16px">Scansioni al giorno</h4><div id="graficoQr"></div>' : "") +
-        '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
-          "<th>Giorno</th><th>Tavole</th><th>Tondo</th><th>Altri</th><th>Nuove</th></tr></thead><tbody>" +
-          giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + "</td><td>" + intero(g.qr.surfisti || 0) +
-            "</td><td>" + intero(g.qr["adesivo-vt"] || 0) + "</td><td>" + intero(altri(g)) + "</td><td>" + intero(g.nuovi) + "</td></tr>").join("") +
-        "</tbody></table></div></details>"
+      (giorni.length ? tabella(["Giorno", "Tavole", "Tondo", "Altri", "Nuove"], giorni.slice().reverse().map(g =>
+        [esc(giornoBreve(g.giorno)), intero(g.qr.surfisti || 0), intero(g.qr["adesivo-vt"] || 0), intero(altri(g)), intero(g.nuovi)]))
         : '<p class="nota">Giorno per giorno: ancora nessuna scansione dal 6 nov.</p>');
-    if (giorni.length >= 3) {
-      colonne($("graficoQr"), giorni.map(g => ({ giorno: g.giorno, valore: g.scan })), oggi, "Scansioni dei QR al giorno dal " + q.dal, "Scansioni");
-      $("graficoQr").querySelector(".g-tabella").remove();
-    }
-  }
-
-  /* Persone e sessioni (28 ott 2026, Alberto: "quante persone guardano il sito al giorno e quante
-     sessioni fa ognuna"): medie del periodo, persone al giorno, quante sessioni fa ognuno, tabella */
-  function disegnaPersone(p, oggi) {
-    const box = $("persone");
-    if (!p || p.errore) { box.innerHTML = '<p class="nota">Non disponibile' + (p && p.errore ? ": " + esc(p.errore) : "") + ".</p>"; return; }
-    if (!p.giorniConDati) { box.innerHTML = '<p class="nota">Ancora niente: i primi numeri arrivano con le prime visite dopo la pubblicazione.</p>'; return; }
-    const giorni = p.perGiorno.filter(g => g.giorno >= p.dal);
-    box.innerHTML =
-      '<div class="numeri">' +
-        '<div class="numero"><b>' + intero(Math.round(p.personeAlGiorno)) + "</b><span>persone al giorno</span></div>" +
-        '<div class="numero"><b>' + n1(p.sessioniPerPersona) + "</b><span>sessioni a testa</span></div>" +
-        '<div class="numero"><b>' + intero(p.nuove) + "</b><span>persone nuove</span></div>" +
-      "</div>" +
-      '<div id="graficoPersone"></div>' +
-      '<h4 class="sotto-titolo">Quante sessioni fa ognuno (persone, somma dei giorni)</h4><div id="lQuante"></div>' +
-      '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
-        "<th>Giorno</th><th>Persone</th><th>Sessioni</th><th>A testa</th><th>Nuove</th></tr></thead><tbody>" +
-        giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + "</td><td>" + intero(g.persone) + "</td><td>" + intero(g.sessioni) +
-          "</td><td>" + (g.persone ? n1(g.sessioni / g.persone) : "–") + "</td><td>" + intero(g.nuove) + "</td></tr>").join("") +
-      "</tbody></table></div></details>";
-    colonne($("graficoPersone"), giorni.map(g => ({ giorno: g.giorno, valore: g.persone })), oggi,
-      "Persone al giorno dal " + p.dal + ", in media " + Math.round(p.personeAlGiorno), "Persone");
-    classifica("lQuante", p.quante.map((x, i) => ({ nome: i + 1 === p.quante.length ? (i + 1) + " o più sessioni" : (i + 1) + (i ? " sessioni" : " sessione"), visite: x })), x => x.nome);
-  }
-
-  /* Lite · Pro · Scuro · Chiaro (6 nov 2026, Alberto: "quanti usano la versione light quanti la pro quanti
-     dark mode quanti light"): persone al giorno sommate sul periodo, eventi giorno:lite|pro|scuro|chiaro */
-  function disegnaVersioneTema(p) {
-    const box = $("versioneTema");
-    if (!p || p.errore) { box.innerHTML = '<p class="nota">Non disponibile' + (p && p.errore ? ": " + esc(p.errore) : "") + ".</p>"; return; }
-    const o = p.oggi || {};
-    const coppia = (a, b) => { const tot = a.v + b.v; return [a, b].map(x => ({ n: x.n, v: x.v,
-      s: (tot ? Math.round(x.v / tot * 100) + "% · " : "") + "oggi " + intero(x.oggi || 0) })); };
-    const giorni = p.perGiorno.filter(g => g.lite || g.pro || g.scuro || g.chiaro);
-    // prima del primo giorno col tema il contatore non c'era: "–", non zero
-    const primoTema = (giorni.find(g => g.scuro || g.chiaro) || {}).giorno || "9999";
-    const tema = (g, k) => g.giorno < primoTema ? "–" : intero(g[k] || 0);
-    box.innerHTML =
-      '<h4 class="sotto-titolo">Versione della home</h4>' +
-      imbuto(coppia({ n: "Lite", v: p.lite, oggi: o.lite }, { n: "Pro", v: p.pro, oggi: o.pro })) +
-      '<h4 class="sotto-titolo" style="margin-top:16px">Tema</h4>' +
-      (p.scuro + p.chiaro ? imbuto(coppia({ n: "Scuro", v: p.scuro, oggi: o.scuro }, { n: "Chiaro", v: p.chiaro, oggi: o.chiaro }))
-        : '<p class="nota">Ancora niente: si conta dal 6 nov.</p>') +
-      (giorni.length ? '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
-        "<th>Giorno</th><th>Lite</th><th>Pro</th><th>Scuro</th><th>Chiaro</th></tr></thead><tbody>" +
-        giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + "</td><td>" + intero(g.lite) + "</td><td>" + intero(g.pro) +
-          "</td><td>" + tema(g, "scuro") + "</td><td>" + tema(g, "chiaro") + "</td></tr>").join("") +
-        "</tbody></table></div></details>" : "");
   }
 
   /* Vento Trieste_AI dal sito al bot (2 nov 2026, Alberto: "il tracking di chi guarda la previsione AI,
-     chi clicca su Telegram"): l'imbuto dal box al bot, il popup della home, giorno per giorno */
+     chi clicca su Telegram"): l'imbuto dal box al bot; popup della home e giorni a richiesta */
   function imbuto(passi) {
     const max = Math.max(1, ...passi.map(x => x.v));
     return '<ol class="classifica">' + passi.map(x => '<li><span class="c-nome">' + esc(x.n) + (x.s ? "<small>" + esc(x.s) + "</small>" : "") + "</span>" +
@@ -377,28 +381,48 @@
   }
   function disegnaAi(a, oggi) {
     const box = $("ai");
-    if (!a || a.errore) { box.innerHTML = '<p class="nota">Non disponibile' + (a && a.errore ? ": " + esc(a.errore) : "") + ".</p>"; return; }
-    const s = a.sito, b = a.bot, perc = (x, y) => y ? " · " + Math.round(x / y * 100) + "%" : "";
+    if (!a || a.errore) { nonDisponibile(box, a); return; }
+    const s = a.sito, b = a.bot, perc = (x, y) => y ? Math.round(x / y * 100) + "%" : "";
     const giorni = a.perGiorno.filter(g => g.visto || g.info || g.telegram || g.arrivati);
     box.innerHTML = imbuto([
-        { n: "👀 Hanno visto il box", v: s.visto, s: "Previsioni aperta con la previsione AI" },
-        { n: "ℹ️ Informazioni", v: s.info, s: "pulsante del box" + perc(s.info, s.visto) },
-        { n: "📲 Clic su Telegram", v: s.telegramBox + s.telegramGuida, s: "box " + intero(s.telegramBox) + " · guida " + intero(s.telegramGuida) + perc(s.telegramBox + s.telegramGuida, s.visto) },
-        { n: "👤 Arrivati nel bot", v: b.arrivati, s: "dal box " + intero(b.box) + " · dalla guida " + intero(b.guida) },
-        { n: "✅ Approvati", v: b.approvati, s: (b.attesa ? intero(b.attesa) + " in attesa" : "nessuno in attesa") + (b.no ? " · " + intero(b.no) + " no" : "") }
+        { n: "Hanno visto il box", v: s.visto, s: "Previsioni con la previsione AI" },
+        { n: "Informazioni", v: s.info, s: perc(s.info, s.visto) },
+        { n: "Clic su Telegram", v: s.telegramBox + s.telegramGuida, s: "box " + intero(s.telegramBox) + " · guida " + intero(s.telegramGuida) + " · " + perc(s.telegramBox + s.telegramGuida, s.visto) },
+        { n: "Arrivati nel bot", v: b.arrivati, s: "dal box " + intero(b.box) + " · dalla guida " + intero(b.guida) },
+        { n: "Approvati", v: b.approvati, s: (b.attesa ? intero(b.attesa) + " in attesa" : "nessuno in attesa") + (b.no ? " · " + intero(b.no) + " no" : "") }
       ]) +
-      '<h4 class="sotto-titolo" style="margin-top:16px">Popup della home (fino al 9 nov)</h4>' +
-      imbuto([
+      (s.popupVisto ? '<details class="g-tabella"><summary>Popup della home (fino al 9 nov)</summary>' + imbuto([
         { n: "Visto", v: s.popupVisto },
-        { n: "Guarda la previsione", v: s.popupPrevisione, s: perc(s.popupPrevisione, s.popupVisto).slice(3) },
-        { n: "Come funziona", v: s.popupGuida, s: perc(s.popupGuida, s.popupVisto).slice(3) },
-        { n: "Chiuso con la ✕", v: s.popupChiudi, s: perc(s.popupChiudi, s.popupVisto).slice(3) }
-      ]) +
-      (giorni.length ? '<details class="g-tabella"><summary>Giorno per giorno</summary><div class="tabella-box"><table><thead><tr>' +
-        "<th>Giorno</th><th>👀 Box</th><th>ℹ️ Info</th><th>📲 Telegram</th><th>👤 Nel bot</th></tr></thead><tbody>" +
-        giorni.slice().reverse().map(g => "<tr><td>" + esc(giornoBreve(g.giorno)) + (g.giorno === oggi ? " (oggi)" : "") + "</td><td>" + intero(g.visto) + "</td><td>" + intero(g.info) +
-          "</td><td>" + intero(g.telegram) + "</td><td>" + intero(g.arrivati) + "</td></tr>").join("") +
-        "</tbody></table></div></details>" : "");
+        { n: "Guarda la previsione", v: s.popupPrevisione, s: perc(s.popupPrevisione, s.popupVisto) },
+        { n: "Come funziona", v: s.popupGuida, s: perc(s.popupGuida, s.popupVisto) },
+        { n: "Chiuso con la ✕", v: s.popupChiudi, s: perc(s.popupChiudi, s.popupVisto) }
+      ]) + "</details>" : "") +
+      (giorni.length ? tabella(["Giorno", "Box", "Info", "Telegram", "Nel bot"], giorni.slice().reverse().map(g =>
+        [esc(giornoBreve(g.giorno)) + (g.giorno === oggi ? " (oggi)" : ""), intero(g.visto), intero(g.info), intero(g.telegram), intero(g.arrivati)])) : "");
+  }
+
+  /* Classifiche (7 nov 2026): sette elenchi in una scheda sola, uno alla volta, la scelta resta */
+  const CLASSIFICHE = [
+    { id: "pagine", nome: "Pagine", dati: v => v.pagine, nomeDi: x => x.percorso, sotto: x => x.titolo },
+    { id: "provenienze", nome: "Provenienze", dati: v => v.provenienze, err: "toprefs" },
+    { id: "campagne", nome: "Campagne", dati: v => v.campagne, err: "campaigns" },
+    { id: "paesi", nome: "Paesi", dati: v => v.paesi, err: "locations" },
+    { id: "schermi", nome: "Schermi", dati: v => v.schermi, err: "sizes" },
+    { id: "sistemi", nome: "Sistemi", dati: v => { const sb = (v.sistemi || []).slice(0, 5).concat((v.browser || []).slice(0, 5)); return sb.length ? sb : null; },
+      divisore: v => (v.sistemi || []).slice(0, 5).length, err: "systems" },
+    { id: "eventi", nome: "Eventi", dati: v => v.eventi }
+  ];
+  let sceltaClassifica = CLASSIFICHE.some(c => c.id === leggi(CHIAVE_CLASSIFICA)) ? leggi(CHIAVE_CLASSIFICA) : "pagine";
+  function disegnaClassifiche(v) {
+    const tasti = $("tastiClassifica");
+    tasti.innerHTML = CLASSIFICHE.map(c => '<button type="button" class="chip" data-id="' + c.id + '" aria-pressed="' + (c.id === sceltaClassifica) + '">' + esc(c.nome) + "</button>").join("");
+    tasti.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => {
+      sceltaClassifica = b.dataset.id;
+      scrivi(CHIAVE_CLASSIFICA, sceltaClassifica);
+      disegnaClassifiche(v);
+    }));
+    const c = CLASSIFICHE.find(x => x.id === sceltaClassifica), err = v.errori || {};
+    classifica("lClassifica", c.dati(v), c.nomeDi || (x => x.nome), c.sotto, c.divisore ? c.divisore(v) : null, c.err && (err[c.err] || (c.id === "sistemi" && err.browsers)));
   }
 
   /* elenco ordinato: nome, numero, barretta proporzionale (un solo colore: è una grandezza) */

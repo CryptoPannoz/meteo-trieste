@@ -164,6 +164,24 @@ small.ko { color: var(--attenzione); }
 .testi .nome { font-weight: 500; overflow-wrap: anywhere; }
 .testi small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--etichetta); }
 
-/* persone e sessioni (28 ott 2026) */
+/* visite riorganizzate (7 nov 2026): persone in cima, uso a barre al 100%, classifiche a schede */
 #persone { display: flex; flex-direction: column; gap: 14px; }
+#persone .numeri { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+@media (min-width: 600px) { #persone .numeri { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+#persone .numero b { font-size: 34px; font-variant-numeric: tabular-nums; }
+#persone .grafico { height: 160px; }
+.riga-viste { margin: 0; font-size: 13.5px; color: var(--testo-2); }
+.riga-viste b { color: var(--testo); font-variant-numeric: tabular-nums; }
+#uso { display: flex; flex-direction: column; gap: 12px; }
+.quota { display: flex; flex-direction: column; gap: 6px; }
+.q-testa { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 14px; }
+.q-testa span { font-size: 13px; color: var(--testo-2); font-variant-numeric: tabular-nums; }
+.q-barra { display: flex; gap: 2px; height: 10px; border-radius: 5px; overflow: hidden; background: var(--scheda-2); }
+.q-barra i { min-width: 2px; }
+.q-0 { background: var(--segnale); } .q-1 { background: var(--testo-2); } .q-2 { background: var(--linea-2); }
+.schede-tasti { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { min-height: 40px; padding: 0 12px; border: 1px solid var(--linea); border-radius: 999px; background: none; font-weight: 700; font-size: 13px; cursor: pointer; }
+.chip:hover { border-color: var(--linea-2); }
+.chip[aria-pressed="true"] { background: var(--scheda-2); color: var(--segnale); border-color: var(--segnale); }
+.g-tabella > .classifica { margin-top: 10px; }
 .sotto-titolo { margin: 0; font-size: 13px; font-weight: 700; color: var(--etichetta); }
