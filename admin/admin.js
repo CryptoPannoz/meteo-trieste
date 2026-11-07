@@ -18,7 +18,6 @@
   const CHIAVE_SESSIONE = "vt-admin-sessione";
   const CHIAVE_PERIODO = "vt-admin-periodo";
   const CHIAVE_CLASSIFICA = "vt-admin-classifica";
-  const CHIAVE_SERIE = "vt-admin-grafico";
 
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -45,7 +44,7 @@
   function scrivi(chiave, v) { try { v == null ? localStorage.removeItem(chiave) : localStorage.setItem(chiave, v); } catch (e) { /* storage bloccato */ } }
 
   let sessione = leggi(CHIAVE_SESSIONE);
-  let periodo = [7, 30, 90].includes(+leggi(CHIAVE_PERIODO)) ? +leggi(CHIAVE_PERIODO) : 30;
+  let periodo = [7, 30, 90, 365].includes(+leggi(CHIAVE_PERIODO)) ? +leggi(CHIAVE_PERIODO) : 30;
   let periodoBot = 7;
   let ultimoStato = null, ultimeVisite = null, ultimoBot = null;
 
@@ -204,8 +203,8 @@
       if (p && p.oggi) t.push({ etichetta: "Persone oggi", valore: intero(p.oggi.persone),
         sotto: "in media " + intero(Math.round(p.personeAlGiorno)) + " al giorno" });
       if (v.viste) t.push({ etichetta: "Pagine viste oggi", valore: intero(v.viste.oggi),
-        sotto: intero(v.viste.totale) + " in " + v.giorni + " giorni" + variazione(v.viste, v.giorni).replace(/ sui .*/, "") });
-      if (v.qr && !v.qr.errore) t.push({ etichetta: "Qr code scan, " + v.giorni + " giorni", valore: intero(v.qr.totale),
+        sotto: intero(v.viste.totale) + " " + nelPeriodo(v) + variazione(v.viste, v.giorni).replace(/ sui .*/, "") });
+      if (v.qr && !v.qr.errore) t.push({ etichetta: "Qr code scan" + (v.giorni === 365 ? "" : ", " + v.giorni + " giorni"), valore: intero(v.qr.totale),
         sotto: "oggi " + intero(v.qr.oggi) + " · " + intero(v.qr.nuovi) + (v.qr.nuovi === 1 ? " persona nuova" : " persone nuove") });
     }
     if (s.surfabili30) t.push({ etichetta: "Giornate surfabili", valore: s.surfabili30.surfabili, sotto: "negli ultimi " + s.surfabili30.giorni + " giorni del registro" });
@@ -241,16 +240,21 @@
   }
   /* grafico a colonne giorno per giorno (visite, invitati attivi sul bot): punti [{ giorno, valore }],
      oggi = la barra parziale, nome = intestazione della tabella e parola del tooltip */
-  function colonne(box, punti, oggi, descrizione, nome) {
+  /* nome2: seconda serie dentro la barra (p.dentro, es. le persone dentro le pagine viste, 7 nov 2026):
+     barra chiara = valore, parte piena = dentro; senza nome2 il grafico resta a un colore */
+  function colonne(box, punti, oggi, descrizione, nome, nome2) {
     const max = scalaTonda(Math.max(1, ...punti.map(p => p.valore)));
     const parola = nome.toLowerCase();
+    const dentro = p => nome2 && p.dentro != null && p.valore ? '<i class="g-dentro" style="height:' + Math.min(100, p.dentro / p.valore * 100).toFixed(1) + '%"></i>' : "";
     box.innerHTML =
       '<div class="grafico" role="img" aria-label="' + esc(descrizione) + '">' +
         '<div class="g-asse" aria-hidden="true"><span>' + intero(max) + "</span><span>" + intero(max / 2) + "</span><span>0</span></div>" +
         '<div class="g-area"><i class="g-linea" style="bottom:100%"></i><i class="g-linea" style="bottom:50%"></i>' +
-          '<div class="g-colonne">' + punti.map(p =>
-            '<span class="g-col" data-giorno="' + esc(p.giorno) + '" data-valore="' + p.valore + '"><i class="g-barra' + (p.giorno === oggi ? " oggi" : "") +
-            '" style="height:' + (p.valore / max * 100).toFixed(1) + '%"></i></span>').join("") + "</div>" +
+          // con tante colonne (90 giorni, "Tutto") lo spazio fisso tra le barre se le mangia: si stringe
+          '<div class="g-colonne' + (punti.length > 100 ? " fittissime" : punti.length > 45 ? " fitte" : "") + '">' + punti.map(p =>
+            '<span class="g-col" data-giorno="' + esc(p.giorno) + '" data-valore="' + p.valore + '"' + (nome2 && p.dentro != null ? ' data-dentro="' + p.dentro + '"' : "") +
+            '><i class="g-barra' + (p.giorno === oggi ? " oggi" : "") + (nome2 ? " doppia" : "") +
+            '" style="height:' + (p.valore / max * 100).toFixed(1) + '%">' + dentro(p) + "</i></span>").join("") + "</div>" +
         "</div>" +
       "</div>" +
       '<div class="g-date" aria-hidden="true"><span>' + esc(giornoBreve(punti[0] ? punti[0].giorno : oggi)) + "</span><span>" + esc(giornoBreve(oggi)) + " (oggi)</span></div>" +
@@ -258,7 +262,8 @@
         punti.slice().reverse().map(p => "<tr><td>" + esc(giornoBreve(p.giorno)) + "</td><td>" + intero(p.valore) + "</td></tr>").join("") + "</tbody></table></div></details>";
     // passando sopra col mouse e, sul telefono, toccando la colonna (7 nov 2026)
     box.querySelectorAll(".g-col").forEach(c => {
-      const apri = e => mostraTip(e, giornoBreve(c.dataset.giorno) + (c.dataset.giorno === oggi ? " (finora)" : ""), intero(+c.dataset.valore) + " " + parola);
+      const apri = e => mostraTip(e, giornoBreve(c.dataset.giorno) + (c.dataset.giorno === oggi ? " (finora)" : ""), intero(+c.dataset.valore) + " " + parola +
+        (c.dataset.dentro != null ? " · " + intero(+c.dataset.dentro) + " " + nome2.toLowerCase() : ""));
       c.addEventListener("mouseenter", apri);
       c.addEventListener("click", e => { e.stopPropagation(); apri(e); });
       c.addEventListener("mouseleave", nascondiTip);
@@ -286,8 +291,14 @@
     box.innerHTML = '<p class="nota">Non disponibile' + (x && x.errore ? ": " + esc(x.errore) : "") + ".</p>";
   }
   // "▲ +12% sui 30 giorni prima": solo pagine viste, il periodo prima ha gli stessi giorni
+  // "in 30 giorni"; con "Tutto" (365) il conteggio parte dal primo giorno con visite (GoatCounter dal 23 giu 2026)
+  function nelPeriodo(v) {
+    if (v.giorni !== 365) return "in " + v.giorni + " giorni";
+    const g = v.viste && v.viste.perGiorno.find(x => x.viste > 0);
+    return g ? "dal " + giornoBreve(g.giorno) : "da sempre";
+  }
   function variazione(w, giorni) {
-    if (!w || !w.precedente) return "";
+    if (!w || !w.precedente || giorni === 365) return "";
     const d = Math.round((w.totale - w.precedente) / w.precedente * 100);
     return " · " + (d >= 0 ? "▲ +" : "▼ −") + Math.abs(d) + "% sui " + giorni + " giorni prima";
   }
@@ -297,7 +308,6 @@
       righe.map(r => "<tr>" + r.map(x => "<td>" + x + "</td>").join("") + "</tr>").join("") + "</tbody></table></div></details>";
   }
 
-  let serieGrafico = leggi(CHIAVE_SERIE) === "viste" ? "viste" : "persone";
   /* Persone (28 ott 2026, rifatta il 7 nov): le persone vere al giorno dagli eventi giorno:sessione-1,
      le pagine viste senza eventi, un grafico solo e la tabella con tutto */
   function disegnaPersone(v) {
@@ -313,37 +323,35 @@
         c ? intero(x.nuove) : "–", w ? intero(g.viste) : "–"];
     });
     const dalDopo = p.dal && p.dal > v.dal;
-    const serie = serieGrafico === "viste" && w ? "viste" : "persone";
-    const punti = serie === "viste" ? w.perGiorno.map(g => ({ giorno: g.giorno, valore: g.viste }))
+    // senza le pagine viste (risposta vecchia del Worker) il grafico torna a sole persone
+    let punti = w ? w.perGiorno.map(g => ({ giorno: g.giorno, valore: g.viste,
+        dentro: perGiorno[g.giorno] && p.dal && g.giorno >= p.dal ? perGiorno[g.giorno].persone : null }))
       : giorni.map(g => ({ giorno: g.giorno, valore: g.persone }));
+    // "Tutto": si parte dal primo giorno con visite, non da mesi vuoti
+    const primo = punti.findIndex(x => x.valore > 0);
+    if (primo > 0) punti = punti.slice(primo);
     box.innerHTML =
       '<div class="numeri">' +
         '<div class="numero"><b>' + intero(o.persone || 0) + "</b><span>oggi, finora</span></div>" +
         '<div class="numero"><b>' + intero(Math.round(p.personeAlGiorno)) + "</b><span>al giorno, in media" + (dalDopo ? " dal " + esc(giornoBreve(p.dal)) : "") + "</span></div>" +
-        '<div class="numero"><b>' + intero(p.nuove) + "</b><span>nuove " + (dalDopo ? "dal " + esc(giornoBreve(p.dal)) : "in " + v.giorni + " giorni") + "</span></div>" +
+        '<div class="numero"><b>' + intero(p.nuove) + "</b><span>nuove " + (dalDopo ? "dal " + esc(giornoBreve(p.dal)) : nelPeriodo(v)) + "</span></div>" +
         '<div class="numero"><b>' + n1(p.sessioniPerPersona) + "</b><span>sessioni a testa</span></div>" +
       "</div>" +
-      // il grafico mostra persone (dal 28 ott) o pagine viste (tutto il periodo): con le sole persone 30 e 90
-      // giorni davano lo stesso grafico (7 nov 2026, Alberto: "il filtro 90 giorni non cambia")
-      (w ? '<div class="schede-tasti" role="group" aria-label="Cosa mostra il grafico">' +
-        [["persone", "Persone"], ["viste", "Pagine viste"]].map(x => '<button type="button" class="chip" data-serie="' + x[0] + '" aria-pressed="' + (serie === x[0]) + '">' + x[1] + "</button>").join("") +
-        "</div>" : "") +
-      (punti.length ? '<div id="graficoPersone"></div>' : '<p class="nota">Ancora niente: i primi numeri arrivano con le prime visite.</p>') +
-      (serie === "persone" && dalDopo ? '<p class="nota">Persone contate dal ' + esc(giornoBreve(p.dal)) + ": per tutti i " + v.giorni + " giorni tocca «Pagine viste».</p>" : "") +
-      (w ? '<p class="riga-viste"><b>' + intero(w.oggi) + "</b> pagine viste oggi · <b>" + intero(w.totale) + "</b> in " + v.giorni + " giorni" +
+      // un grafico solo su tutto il periodo (7 nov 2026, Alberto: "voglio vedere tutto lo storico, il picco
+      // della Barcolana come prima; distingui visite da utenti unici"): barra = pagine viste, parte piena = persone
+      (punti.length ? '<div id="graficoPersone"></div>' +
+        '<p class="g-legenda"><span><i class="lg-viste"></i>Pagine viste</span><span><i class="lg-persone"></i>Persone' +
+        (dalDopo ? " (contate dal " + esc(giornoBreve(p.dal)) + ")" : "") + "</span></p>"
+        : '<p class="nota">Ancora niente: i primi numeri arrivano con le prime visite.</p>') +
+      (w ? '<p class="riga-viste"><b>' + intero(w.oggi) + "</b> pagine viste oggi · <b>" + intero(w.totale) + "</b> " + nelPeriodo(v) +
         esc(variazione(w, v.giorni)) + "</p>" : "") +
       tabella(["Giorno", "Persone", "Sessioni", "Nuove", "Pagine"], righe);
     if (punti.length) {
-      colonne($("graficoPersone"), punti, v.al, serie === "viste"
-        ? "Pagine viste al giorno dal " + v.dal + ", in tutto " + w.totale
-        : "Persone al giorno dal " + p.dal + ", in media " + Math.round(p.personeAlGiorno), serie === "viste" ? "Pagine viste" : "Persone");
+      colonne($("graficoPersone"), punti, v.al, w
+        ? "Pagine viste al giorno dal " + punti[0].giorno + ", in tutto " + w.totale + "; dentro, le persone dal " + p.dal
+        : "Persone al giorno dal " + p.dal + ", in media " + Math.round(p.personeAlGiorno), w ? "Pagine viste" : "Persone", w ? "Persone" : null);
       $("graficoPersone").querySelector(".g-tabella").remove();
     }
-    box.querySelectorAll("[data-serie]").forEach(b => b.addEventListener("click", () => {
-      serieGrafico = b.dataset.serie;
-      scrivi(CHIAVE_SERIE, serieGrafico);
-      disegnaPersone(v);
-    }));
   }
 
   /* Come lo usano (6 nov 2026, Alberto: "quanti usano la versione light quanti la pro quanti dark mode

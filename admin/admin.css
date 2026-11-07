@@ -185,3 +185,19 @@ small.ko { color: var(--attenzione); }
 .chip[aria-pressed="true"] { background: var(--scheda-2); color: var(--segnale); border-color: var(--segnale); }
 .g-tabella > .classifica { margin-top: 10px; }
 .sotto-titolo { margin: 0; font-size: 13px; font-weight: 700; color: var(--etichetta); }
+
+/* grafico a due serie (7 nov 2026): barra chiara = pagine viste, parte piena = persone */
+.g-barra.doppia { position: relative; background: rgba(240,244,60,.32); }
+.g-barra.doppia.oggi { background: rgba(240,244,60,.18); }
+.g-col:hover .g-barra.doppia { background: rgba(247,248,122,.5); }
+.g-dentro { position: absolute; left: 0; right: 0; bottom: 0; background: var(--segnale); border-radius: 3px 3px 0 0; }
+.g-barra.oggi .g-dentro { background: var(--testo-2); }
+.g-legenda { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; font-size: 12.5px; color: var(--testo-2); }
+.g-legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.g-legenda i { width: 12px; height: 12px; border-radius: 3px; }
+.lg-viste { background: rgba(240,244,60,.32); }
+.lg-persone { background: var(--segnale); }
+.g-colonne.fitte { gap: 1px; }
+.g-colonne.fittissime { gap: 0; }
+.g-colonne.fitte .g-barra, .g-colonne.fittissime .g-barra { border-radius: 1px 1px 0 0; }
+.g-colonne.fittissime .g-dentro, .g-colonne.fitte .g-dentro { border-radius: 0; }
