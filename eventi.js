@@ -24,6 +24,7 @@
      registro: scarica csv | cambia giorno | mostra tutto | centralina <id>   (/registro/ e Barcolana; titolo = pagina)
      registro: giorno dal grafico | grafico mese|sett   grafico dei giorni ventosi (/registro/)
      versione: passa a lite|pro    interruttore Lite · Pro della home (footer-widgets.js)
+     inizia:menu|banner|banner-chiudi|banner-visto|indice   guida "Inizia da qui" (7 nov 2026, footer-widgets.js)
      giorno:sessione-N · giorno:nuova-persona · giorno:lite|pro · giorno:scuro|chiaro   persone e sessioni (sotto)
      qr:<nome> · qr:<nome>-nuovo   arrivo da un QR stampato (?utm_source=qr-<nome>, sotto)
 
@@ -90,6 +91,7 @@
     if (t.closest("#btnAggiorna, #bcAggiorna")) return conta("aggiorna: " + pagina);
     if (t.closest("#bc58X")) return conta("popup barcolana: chiudi");
     if (t.closest("#bc58Pop .bc58-link")) return conta("popup barcolana: apri");
+    if ((el = t.closest("[data-inizia]"))) return conta("inizia:" + el.getAttribute("data-inizia"));
     if (t.closest("#aiPopX")) return conta("ai:popup-chiudi");
     if (t.closest("#aiPop .ai-pop-cta")) return conta("ai:popup-previsione");
     if (t.closest("#aiPop .ai-pop-cta2")) return conta("ai:popup-guida");

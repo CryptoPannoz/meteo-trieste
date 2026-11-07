@@ -446,12 +446,14 @@
     sezioni: "Razdelki", spot: "Spoti", guida: "Vodnik in orodja",
     guidaChip: "Vodnik", guidaTitolo: "Vodnik Vento Trieste (v italijanščini)",
     app: "Namesti aplikacijo", birra: "Plačaj mi pivo",
-    mappaCentraline: "Zemljevid in postaje", radar: "Radar padavin", boe: "Boje in valovi"
+    mappaCentraline: "Zemljevid in postaje", radar: "Radar padavin", boe: "Boje in valovi",
+    inizia: "Prvič tukaj? Začni tukaj", iniziaSotto: "Vento Trieste v 2 minutah (v italijanščini)"
   } : {
     sezioni: "Sezioni", spot: "Spot", guida: "Guida e strumenti",
     guidaChip: "Guida", guidaTitolo: "Guida di Vento Trieste: un articolo per strumento",
     app: "Installa l'app", birra: "Offrimi una birra",
-    mappaCentraline: "Mappa e centraline", radar: "Radar pioggia", boe: "Boe e onde"
+    mappaCentraline: "Mappa e centraline", radar: "Radar pioggia", boe: "Boe e onde",
+    inizia: "Nuovo qui? Inizia da qui", iniziaSotto: "Cos'è Vento Trieste e come si usa, in 2 minuti"
   };
   var ICONE = {
     vento: '<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h7"/>',
@@ -564,8 +566,20 @@
     azioni.appendChild(birra);
   }
 
+  /* "Inizia da qui" (7 nov 2026, Alberto: "mettilo in evidenza nel menu: sei nuovo sulla piattaforma,
+     leggi qui"): prima voce del pannello, a tutta larghezza, verso /guida/inizia-da-qui/ */
+  var inizia = document.createElement("a");
+  var suInizia = qui === "/guida/inizia-da-qui/";
+  inizia.className = "mn-inizia" + (suInizia ? " is-qui" : "");
+  inizia.href = "/guida/inizia-da-qui/";
+  inizia.setAttribute("data-inizia", "menu");
+  if (suInizia) inizia.setAttribute("aria-current", "page");
+  inizia.innerHTML = '<span class="mn-ico">' + svg("guida") + '</span><span class="mn-inizia-testo"><b>' + T.inizia +
+    "</b><small>" + T.iniziaSotto + '</small></span><span class="mn-inizia-freccia" aria-hidden="true">→</span>';
+
   nav.innerHTML = "";
   nav.classList.add("mn");
+  nav.appendChild(inizia);
   nav.appendChild(gruppoSez);
   nav.appendChild(gruppoSpot);
   nav.appendChild(gruppoGuida);
@@ -582,6 +596,54 @@
   }
   new MutationObserver(sync).observe(nav, { attributes: true, attributeFilter: ["hidden"] });
   sync();
+})();
+
+/* Benvenuto per chi è nuovo (7 nov 2026, Alberto: "nel banner di un nuovo visitatore la possibilità di
+   avere una guida veloce su cos'è quest'app: non tutti sanno come funziona"). Una riga dentro la pagina,
+   sopra il surfometro (niente overlay: audit del 5 nov), verso /guida/inizia-da-qui/; ✕ per chiuderla.
+   Nuovo = browser senza vt-visite (eventi.js, dal 28 ott; footer-widgets.js gira prima di eventi.js,
+   che è defer). Resta per 3 giorni dalla prima volta, finché non la chiudi o non apri la guida
+   (localStorage vt-benvenuto: ora della prima volta, poi "fatto"). Non su guida, Barcolana, admin e
+   pagine slovene (la guida è in italiano). Con il banner il popup Vento Trieste_AI resta chiuso:
+   html.vt-con-benvenuto, letto dal popup della home. */
+(function () {
+  var doc = document.documentElement;
+  var main = document.querySelector("main");
+  var percorso = location.pathname;
+  // arrivato alla guida da qualunque parte (menu, indice, link): il benvenuto ha fatto il suo lavoro
+  if (percorso.indexOf("/guida/inizia-da-qui") === 0) { try { localStorage.setItem("vt-benvenuto", "fatto"); } catch (e) {} return; }
+  if (!main || doc.lang !== "it" || document.body.classList.contains("bcn") ||
+      /^\/(guida|barcolana|admin)/.test(percorso)) return;
+  var CHIAVE = "vt-benvenuto", GIORNI = 3;
+  function leggi(k) { try { return localStorage.getItem(k); } catch (e) { return "fatto"; } }
+  function salva(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  var v = leggi(CHIAVE);
+  if (v === "fatto") return;
+  if (!v) {
+    if (leggi("vt-visite")) return;   // c'era già prima: niente benvenuto
+    v = String(Date.now());
+    salva(CHIAVE, v);
+  }
+  if (Date.now() - Number(v) > GIORNI * 864e5) { salva(CHIAVE, "fatto"); return; }
+
+  var box = document.createElement("aside");
+  box.className = "vt-benvenuto";
+  box.setAttribute("aria-label", "Benvenuto su Vento Trieste");
+  box.innerHTML =
+    '<a class="vb-link" href="/guida/inizia-da-qui/" data-inizia="banner">' +
+      '<span class="vb-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg></span>' +
+      '<span class="vb-testo"><b>Prima volta qui? Inizia da qui</b><small>Cos\'è Vento Trieste e come si legge, in 2 minuti</small></span>' +
+      '<span class="vb-freccia" aria-hidden="true">→</span>' +
+    "</a>" +
+    '<button type="button" class="vb-x" data-inizia="banner-chiudi" aria-label="Chiudi il benvenuto" title="Chiudi">✕</button>';
+  var hero = main.querySelector(".hero");
+  if (hero) hero.parentNode.insertBefore(box, hero); else main.insertBefore(box, main.firstChild);
+  doc.classList.add("vt-con-benvenuto");
+  function fatto() { salva(CHIAVE, "fatto"); }
+  box.querySelector(".vb-link").addEventListener("click", fatto);
+  box.querySelector(".vb-x").addEventListener("click", function () { fatto(); box.remove(); });
+  // eventi.js è defer: il conteggio "visto" parte quando c'è
+  window.addEventListener("load", function () { if (window.vtConta) window.vtConta("inizia:banner-visto"); });
 })();
 
 (function () {

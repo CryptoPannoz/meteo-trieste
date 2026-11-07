@@ -1735,7 +1735,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261106" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261107" />
   <script src="./previsione-ai.js?v=20261102e" defer></script>
 </head>
 <body>
@@ -1907,7 +1907,12 @@
         try { chiuso = localStorage.getItem(CHIAVE); } catch (e) {}
         if (chiuso) { pop.remove(); return; }
         pop.hidden = false;
-        setTimeout(function () { pop.classList.add("aperto"); if (window.vtConta) window.vtConta("ai:popup-visto"); }, 1500);
+        // chi vede il benvenuto "Inizia da qui" (footer-widgets.js, 7 nov 2026) non riceve anche il popup:
+        // resta per la prossima visita, non conta come chiuso
+        setTimeout(function () {
+          if (document.documentElement.classList.contains("vt-con-benvenuto")) { pop.remove(); return; }
+          pop.classList.add("aperto"); if (window.vtConta) window.vtConta("ai:popup-visto");
+        }, 1500);
         function chiudi() {
           pop.classList.remove("aperto");
           try { localStorage.setItem(CHIAVE, String(Date.now())); } catch (e) {}
@@ -4191,7 +4196,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261105ux"></script>
+  <script src="./footer-widgets.js?v=20261107"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
@@ -4235,7 +4240,7 @@
   <!-- GoatCounter (statistiche anonime, senza cookie) -->
   <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
-  <script src="/eventi.js?v=20261106" defer></script>
+  <script src="/eventi.js?v=20261107" defer></script>
   <!-- grafico del registro del vento: dati E script (77 KB) si scaricano solo quando la tendina si
        apre (5 nov 2026: prima lo script arrivava a ogni apertura della home, anche a tendina chiusa) -->
   <script>

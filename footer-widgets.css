@@ -1447,6 +1447,21 @@ html.ux-enhanced.ux-motion-ready .ux-reveal.is-visible {
 .topbar > #topnav.mn a.mn-chip.is-qui { border-color: var(--signal); background: rgba(240,244,60,.09); color: var(--signal); }
 /* "📖 Guida" (20 ott 2026): una pastiglia come le altre, col bordo giallo perché porta al blog */
 .topbar > #topnav.mn a.mn-chip-guida { gap: .3rem; border-color: rgba(240,244,60,.45); font-weight: 850; }
+/* "Nuovo qui? Inizia da qui" (7 nov 2026): prima voce del pannello, a tutta larghezza, bordo giallo */
+.topbar > #topnav.mn a.mn-inizia {
+  display: flex; align-items: center; gap: .6rem; min-height: 56px; margin: 0 0 .7rem; padding: .5rem .7rem .5rem .55rem;
+  border: 1px solid var(--signal); border-radius: 11px; background: rgba(240,244,60,.1); color: var(--ink);
+  text-align: left; text-decoration: none; line-height: 1.2;
+}
+.topbar > #topnav.mn a.mn-inizia:hover { background: rgba(240,244,60,.18); }
+.topbar > #topnav.mn a.mn-inizia .mn-ico { width: 32px; height: 32px; border-radius: 8px; background: var(--signal); color: #090b0d; }
+.mn-inizia-testo { display: flex; flex: 1 1 auto; flex-direction: column; gap: .12rem; min-width: 0; }
+.mn-inizia-testo b { font-size: .9rem; font-weight: 850; }
+.mn-inizia-testo small { color: var(--label); font-size: .72rem; font-weight: 600; }
+.mn-inizia-freccia { flex: none; color: var(--signal); font-size: 1.1rem; font-weight: 800; }
+:root[data-theme="light"] .topbar > #topnav.mn a.mn-inizia { border-color: var(--sea); background: rgba(23,111,128,.08); }
+:root[data-theme="light"] .topbar > #topnav.mn a.mn-inizia .mn-ico { background: var(--sea); color: #fff; }
+:root[data-theme="light"] .mn-inizia-freccia { color: var(--sea-dark); }
 #topnav.mn .mn-azioni { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; margin-top: .75rem; }
 .topbar > #topnav.mn .mn-azioni a { min-height: 42px; justify-content: center; padding: .4rem .45rem; font-size: .78rem; text-align: center; }
 .topbar > #topnav.mn .mn-azioni .topnav-birra { grid-column: auto; }
@@ -1866,3 +1881,29 @@ html.vt-lite .vt-buffer-dx { width: min(220px, 60%); }
   html.vt-compatto .supporters-heading { margin-bottom: .5rem; }
 }
 .seo-footer-tendine .story-kicker { display: none; }   /* il titolo è già nel summary */
+
+/* ======================================================================
+   Benvenuto per chi è nuovo (7 nov 2026, footer-widgets.js): una riga sopra il surfometro verso
+   /guida/inizia-da-qui/. Tutta la riga è il link (>= 56px), la ✕ è un bottone a parte da 44px.
+   ====================================================================== */
+.vt-benvenuto { position: relative; display: flex; align-items: stretch; margin: 0 0 .7rem; border: 1px solid var(--signal);
+  border-radius: 12px; background: linear-gradient(105deg, rgba(240,244,60,.14), rgba(240,244,60,.04) 75%); }
+.vt-benvenuto .vb-link { display: flex; flex: 1 1 auto; align-items: center; gap: .65rem; min-width: 0; min-height: 56px;
+  padding: .5rem .3rem .5rem .65rem; border-radius: 12px; color: var(--ink); text-decoration: none; }
+.vt-benvenuto .vb-ico { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 34px; height: 34px;
+  border-radius: 9px; background: var(--signal); color: #090b0d; }
+.vt-benvenuto .vb-ico svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.vt-benvenuto .vb-testo { display: flex; flex: 1 1 auto; flex-direction: column; gap: .12rem; min-width: 0; line-height: 1.2; }
+.vt-benvenuto .vb-testo b { font-size: .92rem; font-weight: 850; }
+.vt-benvenuto .vb-testo small { color: var(--label); font-size: .76rem; font-weight: 600; }
+.vt-benvenuto .vb-freccia { flex: none; color: var(--signal); font-size: 1.15rem; font-weight: 800; }
+.vt-benvenuto .vb-link:hover .vb-testo b { text-decoration: underline; text-decoration-color: var(--signal); text-underline-offset: 3px; }
+.vt-benvenuto .vb-link:focus-visible, html .vt-benvenuto .vb-x:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+html .vt-benvenuto .vb-x { flex: none; align-self: center; width: 44px; height: 44px; min-width: 0; min-height: 0; margin: 0 .2rem 0 0; padding: 0;
+  display: grid; place-items: center; border: 0; border-radius: 9px; background: transparent; box-shadow: none; transform: none;
+  color: var(--label); font-size: 1rem; line-height: 1; cursor: pointer; }
+html .vt-benvenuto .vb-x:hover { background: rgba(255,255,255,.08); color: var(--ink); }
+:root[data-theme="light"] .vt-benvenuto { border-color: var(--sea); background: linear-gradient(105deg, #fdfee9, #fff 75%); }
+:root[data-theme="light"] .vt-benvenuto .vb-ico { background: var(--sea); color: #fff; }
+:root[data-theme="light"] .vt-benvenuto .vb-freccia { color: var(--sea-dark); }
+:root[data-theme="light"] html .vt-benvenuto .vb-x:hover, :root[data-theme="light"] .vt-benvenuto .vb-x:hover { background: rgba(0,0,0,.06); }

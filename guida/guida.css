@@ -159,3 +159,41 @@ body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothin
 :root[data-theme="light"] .g-ai-tab i { background: #c8dbf1; }
 :root[data-theme="light"] .g-ai-tab i.on { background: #1f6fc4; }
 :root[data-theme="light"] .g-ai .g-ai-nota { color: #48617f !important; }
+
+/* Inizia da qui (7 nov 2026): una tendina per argomento, riga intera da toccare (>= 56px), titolo e
+   una riga di spiegazione; il corpo usa gli stili degli articoli. Tabella Lite/Pro compatta a 375px. */
+.g-tendine { display: grid; gap: .5rem; margin: .4rem 0 .9rem; }
+.g-tendina { border: 1px solid var(--line); border-radius: 12px; background: #10151a; scroll-margin-top: 4.5rem; }
+.g-tendina[open] { border-color: var(--signal); }
+.g-tendina summary { display: grid; grid-template-columns: 1fr auto; column-gap: .6rem; align-items: center; min-height: 56px;
+  padding: .6rem .85rem; cursor: pointer; list-style: none; border-radius: 12px; }
+.g-tendina summary::-webkit-details-marker { display: none; }
+.g-tendina summary::after { content: ""; grid-column: 2; grid-row: 1 / span 2; width: .6rem; height: .6rem; margin-right: .2rem;
+  border-right: 2px solid var(--label); border-bottom: 2px solid var(--label); transform: rotate(45deg) translateY(-2px); }
+@media (prefers-reduced-motion: no-preference) { .g-tendina summary::after { transition: transform .15s ease; } }
+.g-tendina[open] summary::after { transform: rotate(-135deg) translateY(-2px); border-color: var(--signal); }
+.g-tendina summary:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+.g-tendina summary b { font-size: 1rem; line-height: 1.25; }
+.g-tendina summary span { grid-column: 1; color: var(--label); font-size: .82rem; line-height: 1.35; }
+.g-tendina-corpo { padding: 0 .85rem .9rem; }
+.g-tendina-corpo p { margin: .35rem 0 .65rem; color: var(--ink); font-size: .93rem; }
+.g-tendina-corpo .g-vai { margin: .2rem .3rem 0 0; }
+.g-confronto { table-layout: fixed; font-size: .8rem; }
+.g-confronto th, .g-confronto td { vertical-align: top; text-align: left; white-space: normal !important; }
+.g-confronto tbody th { width: 34%; color: var(--ink); font-size: .8rem; letter-spacing: 0; text-transform: none; }
+.g-confronto td:first-child { font-weight: 500; white-space: normal; }
+.g-breve ol a { color: inherit; text-decoration: underline; text-decoration-color: var(--signal); text-underline-offset: 3px; }
+/* indice della guida: la carta "Inizia da qui" in evidenza */
+.g-inizia { display: grid; grid-template-columns: 1fr auto; gap: .2rem .8rem; align-items: center; margin: .8rem 0; padding: .95rem 1rem;
+  border: 2px solid var(--signal); border-radius: 14px; background: linear-gradient(105deg, rgba(240,244,60,.12), #10151a 70%); color: var(--ink); text-decoration: none; }
+.g-inizia:hover { background: linear-gradient(105deg, rgba(240,244,60,.2), #10151a 70%); }
+.g-inizia:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+.g-inizia small { grid-column: 1; color: var(--signal); font-size: .7rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+.g-inizia b { grid-column: 1; font-size: 1.12rem; line-height: 1.25; }
+.g-inizia span { grid-column: 1; color: var(--label); font-size: .86rem; }
+.g-inizia i { grid-column: 2; grid-row: 1 / span 3; font-style: normal; font-size: 1.4rem; color: var(--signal); }
+:root[data-theme="light"] .g-tendina { background: #fff; }
+:root[data-theme="light"] .g-tendina[open] { border-color: var(--sea); }
+:root[data-theme="light"] .g-tendina[open] summary::after { border-color: var(--sea-dark); }
+:root[data-theme="light"] .g-inizia { border-color: var(--sea); background: linear-gradient(105deg, #fdfee9, #fff 70%); }
+:root[data-theme="light"] .g-inizia small, :root[data-theme="light"] .g-inizia i { color: var(--sea-dark); }
