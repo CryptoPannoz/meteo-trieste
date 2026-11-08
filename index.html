@@ -506,6 +506,8 @@
       margin: .5rem 0;
     }
     .aladin-controlli span { font-variant-numeric: tabular-nums; color: #444; }
+    /* nuvole e pioggia: spazio riservato 640×480, così cambiando ora la pagina non salta */
+    #pioggiaImg { display: block; width: 100%; max-width: 640px; height: auto; aspect-ratio: 4 / 3; margin: 0 auto; }
 
     /* ---- Webcam ---- */
     .webcam-luogo {
@@ -1735,7 +1737,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261107" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261108" />
   <script src="./previsione-ai.js?v=20261102e" defer></script>
 </head>
 <body>
@@ -2294,6 +2296,20 @@
          onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Mappa Aladin momentaneamente non disponibile.</p>'); this.style.display='none';" />
   </div>
 
+  <!-- NUVOLE E PIOGGIA ALADIN (8 nov 2026, chiesta da Roby): mappa ARSO TCC+TP3h, la stessa che si
+       guarda su vetercek accanto al vento. Solo Pro. Il nome del file contiene la corsa: vedi mostraPioggia() -->
+  <div class="section" id="pioggia">
+    <h2>Nuvole e pioggia – modello Aladin</h2>
+    <p class="stato">Viola = nuvole (più scuro, più coperto) · giallo e verde = pioggia caduta nelle 3 ore prima, in mm · fonte ARSO</p>
+    <div class="aladin-controlli">
+      <button id="pioggiaPrec" aria-label="Ora precedente">◀</button>
+      <span id="pioggiaOra" aria-live="polite">–</span>
+      <button id="pioggiaSucc" aria-label="Ora successiva">▶</button>
+    </div>
+    <p class="stato aladin-status" id="pioggiaCorsa"></p>
+    <img id="pioggiaImg" alt="Mappa nuvole e pioggia del modello Aladin" loading="lazy" width="640" height="480" />
+  </div>
+
   <!-- WINDGURU: caricamento differito all'apertura di Previsioni -->
   <div class="section windguru-section" id="windy">
     <div class="sec-head"><h2>Windguru – Trieste</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info sugli altri modelli</button><span class="windguru-badge">on demand</span></div>
@@ -2651,6 +2667,57 @@
     }
     document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
     document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
+
+    /* ---------- Nuvole e pioggia Aladin (ARSO tcc-rr, 8 nov 2026) ----------
+       A differenza del vento non c'è una serie senza data: il nome contiene la corsa
+       (00 o 12 UTC, pubblicata verso le 03:05 / 15:05 UTC) e il passo +003..+072 h.
+       Provo la corsa più recente; se non è ancora uscita ripiego su quella prima, tenendo la stessa ora. */
+    const ORA_MS = 3600e3, PASSI_PIOGGIA = 24;     // una mappa ogni 3 ore, fino a +72 h
+    let corsaPioggia = null, passoPioggia = 1, ripiegoPioggia = false;
+    function corsaPioggiaRecente() {
+      const d = new Date(Date.now() - 3.25 * ORA_MS);
+      d.setUTCHours(d.getUTCHours() < 12 ? 0 : 12, 0, 0, 0);
+      return d;
+    }
+    function urlPioggia(corsa, passo) {
+      const p2 = n => String(n).padStart(2, "0");
+      const c = corsa.getUTCFullYear() + p2(corsa.getUTCMonth() + 1) + p2(corsa.getUTCDate()) + "-" + p2(corsa.getUTCHours()) + "00";
+      return "https://meteo.arso.gov.si/uploads/probase/www/model/aladin/field/as_" + c +
+        "_tcc-rr_si-neighbours_" + String(passo * 3).padStart(3, "0") + ".png";
+    }
+    function oraPioggia(d) {
+      return d.toLocaleString("it-IT", { weekday: "short", hour: "2-digit", minute: "2-digit" });
+    }
+    function mostraPioggia() {
+      const img = document.getElementById("pioggiaImg");
+      document.getElementById("pioggiaOra").textContent = oraPioggia(new Date(corsaPioggia.getTime() + passoPioggia * 3 * ORA_MS));
+      document.getElementById("pioggiaPrec").disabled = passoPioggia <= 1;
+      document.getElementById("pioggiaSucc").disabled = passoPioggia >= PASSI_PIOGGIA;
+      document.getElementById("pioggiaCorsa").textContent = passoPioggia + " / " + PASSI_PIOGGIA +
+        " · modello di " + oraPioggia(corsaPioggia) + (ripiegoPioggia ? " (il nuovo non è ancora uscito)" : "");
+      img.style.display = "";
+      img.src = urlPioggia(corsaPioggia, passoPioggia);
+    }
+    function avviaPioggia() {
+      corsaPioggia = corsaPioggiaRecente();
+      ripiegoPioggia = false;
+      // parto dalla prima mappa che non è già passata
+      passoPioggia = Math.min(PASSI_PIOGGIA, Math.max(1, Math.ceil((Date.now() - corsaPioggia.getTime()) / (3 * ORA_MS))));
+      mostraPioggia();
+    }
+    document.getElementById("pioggiaImg").addEventListener("error", function () {
+      if (!ripiegoPioggia) {
+        corsaPioggia = new Date(corsaPioggia.getTime() - 12 * ORA_MS);
+        ripiegoPioggia = true;
+        passoPioggia = Math.min(PASSI_PIOGGIA, passoPioggia + 4);
+        mostraPioggia();
+        return;
+      }
+      this.style.display = "none";
+      document.getElementById("pioggiaCorsa").textContent = "⚠️ Mappa nuvole e pioggia momentaneamente non disponibile.";
+    });
+    document.getElementById("pioggiaPrec").addEventListener("click", () => { passoPioggia--; mostraPioggia(); });
+    document.getElementById("pioggiaSucc").addEventListener("click", () => { passoPioggia++; mostraPioggia(); });
 
     /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
     const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
@@ -3742,6 +3809,7 @@
       document.getElementById("boraImg").src = urlBora();
       document.getElementById("radarImg").src = urlRadar();
       mostraAladin();
+      avviaPioggia();
     });
 
     /* ---------- Webcam ---------- */
@@ -4136,6 +4204,7 @@
     document.getElementById("boraImg").src = urlBora();
     document.getElementById("radarImg").src = urlRadar();
     mostraAladin();
+    avviaPioggia();
     aggiornaWebcam();
     autoCamSvbg();
     caricaCamSaturnia();

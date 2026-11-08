@@ -1576,7 +1576,7 @@ html.cam-lb-aperto, html.cam-lb-aperto body { overflow: hidden; }
   html.vt-compatto { scroll-padding-top: 8px; }
   html.vt-compatto a > img.webcam { display: block; width: auto; max-width: 100%; max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); margin: 0 auto; object-fit: contain; }
   html.vt-compatto .cam-video { display: block; width: min(100%, calc((100vh - 2rem) * 16 / 9)); width: min(100%, calc((100dvh - 2rem) * 16 / 9)); margin-left: auto; margin-right: auto; }
-  html.vt-compatto #radarImg, html.vt-compatto #boraImg, html.vt-compatto #aladinImg { display: block; width: auto; max-width: 100%; max-height: calc(100dvh - 2rem); margin: 0 auto; }
+  html.vt-compatto #radarImg, html.vt-compatto #boraImg, html.vt-compatto #aladinImg, html.vt-compatto #pioggiaImg { display: block; width: auto; max-width: 100%; max-height: calc(100dvh - 2rem); margin: 0 auto; }
   .bc58-pop { display: none; }
 }
 
@@ -1685,6 +1685,7 @@ html.vt-lite #boe,
 html.vt-lite #registro,
 html.vt-lite #istria,
 html.vt-lite #bora,
+html.vt-lite #pioggia,
 html.vt-lite .osmer-mappa,
 html.vt-lite #barcola,
 html.vt-lite #barcolaCamLuogo,
