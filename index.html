@@ -508,6 +508,16 @@
     .aladin-controlli span { font-variant-numeric: tabular-nums; color: #444; }
     /* nuvole e pioggia: spazio riservato 640×480, così cambiando ora la pagina non salta */
     #pioggiaImg { display: block; width: 100%; max-width: 640px; height: auto; aspect-ratio: 4 / 3; margin: 0 auto; }
+    /* scale colorate sotto le mappe ARSO (8 nov 2026): una cella per classe, coi colori letti dalla
+       legenda dell'immagine; il numero sta sul bordo sinistro, dove la classe comincia */
+    .mscala { max-width: 640px; margin: .6rem auto 0; }
+    .mscala-nome { display: block; font-size: .8rem; color: var(--label, #555); margin-bottom: .2rem; }
+    .mscala ol { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; }
+    .mscala li { font-size: .8rem; line-height: 1.2; color: var(--label, #555); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .mscala li::before { content: ""; display: block; height: 14px; margin-bottom: .15rem; border-radius: 3px; background: var(--c); }
+    .mscala li b { font-weight: 600; }
+    .mscala li.mscala-vuoto::before { background: repeating-conic-gradient(#f5f5f5 0 25%, #d9d9d9 0 50%) 0 0 / 8px 8px; }
+    .mscala li.mscala-velo::before { background: repeating-conic-gradient(#6b9385 0 25%, #496f63 0 50%) 0 0 / 8px 8px; }
 
     /* ---- Webcam ---- */
     .webcam-luogo {
@@ -2294,13 +2304,20 @@
     <p class="stato aladin-status" id="aladinAggiornamento"></p>
     <img id="aladinImg" alt="Mappa vento modello Aladin" loading="lazy"
          onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Mappa Aladin momentaneamente non disponibile.</p>'); this.style.display='none';" />
+    <!-- la legenda della mappa è in m/s: qui in nodi (1 m/s = 1,944 kt), con gli stessi colori ARSO -->
+    <div class="mscala" role="img" aria-label="Vento in nodi: senza colore sotto 5, poi grigioverde 5-10, verde 10-15, verde acqua 15-19, blu 19-24, blu viola 24-29, viola oltre 29">
+      <span class="mscala-nome">Vento medio, nodi</span>
+      <ol>
+        <li class="mscala-vuoto"><b>0</b></li><li class="mscala-velo"><b>5</b></li><li style="--c:#009966"><b>10</b></li><li style="--c:#00808c"><b>15</b></li>
+        <li style="--c:#0066b2"><b>19</b></li><li style="--c:#4c66bf"><b>24</b></li><li style="--c:#9966cc"><b>29</b></li>
+      </ol>
+    </div>
   </div>
 
   <!-- NUVOLE E PIOGGIA ALADIN (8 nov 2026, chiesta da Roby): mappa ARSO TCC+TP3h, la stessa che si
        guarda su vetercek accanto al vento. Solo Pro. Il nome del file contiene la corsa: vedi mostraPioggia() -->
   <div class="section" id="pioggia">
     <h2>Nuvole e pioggia – modello Aladin</h2>
-    <p class="stato">Viola = nuvole (più scuro, più coperto) · giallo e verde = pioggia caduta nelle 3 ore prima, in mm · fonte ARSO</p>
     <div class="aladin-controlli">
       <button id="pioggiaPrec" aria-label="Ora precedente">◀</button>
       <span id="pioggiaOra" aria-live="polite">–</span>
@@ -2308,6 +2325,21 @@
     </div>
     <p class="stato aladin-status" id="pioggiaCorsa"></p>
     <img id="pioggiaImg" alt="Mappa nuvole e pioggia del modello Aladin" loading="lazy" width="640" height="480" />
+    <div class="mscala" role="img" aria-label="Pioggia nelle 3 ore prima: da giallo chiaro (1 mm) a verde (50 mm) a verde acqua (100 mm e oltre)">
+      <span class="mscala-nome">Pioggia nelle 3 ore prima, mm</span>
+      <ol>
+        <li class="mscala-vuoto"></li><li style="--c:#ffff99"><b>1</b></li><li style="--c:#e5ff7f"></li><li style="--c:#ccff66"><b>5</b></li>
+        <li style="--c:#99e566"></li><li style="--c:#7fcc66"><b>20</b></li><li style="--c:#4cb24c"></li><li style="--c:#33994c"></li>
+        <li style="--c:#007f33"><b>50</b></li><li style="--c:#009966"></li><li style="--c:#19b27f"></li><li style="--c:#19cc99"></li>
+        <li style="--c:#00e5b2"></li><li style="--c:#00ffcc"><b>100</b></li>
+      </ol>
+    </div>
+    <div class="mscala" role="img" aria-label="Nuvole: senza colore sotto il 40% di cielo coperto, poi viola sempre più scuro fino al 100%">
+      <span class="mscala-nome">Nuvole, % di cielo coperto</span>
+      <ol>
+        <li class="mscala-vuoto"><b>0</b></li><li style="--c:#ccccff"><b>40</b></li><li style="--c:#b2b2e5"><b>60</b></li><li style="--c:#9999cc"><b>80</b></li>
+      </ol>
+    </div>
   </div>
 
   <!-- WINDGURU: caricamento differito all'apertura di Previsioni -->
@@ -2694,7 +2726,7 @@
       document.getElementById("pioggiaPrec").disabled = passoPioggia <= 1;
       document.getElementById("pioggiaSucc").disabled = passoPioggia >= PASSI_PIOGGIA;
       document.getElementById("pioggiaCorsa").textContent = passoPioggia + " / " + PASSI_PIOGGIA +
-        " · modello di " + oraPioggia(corsaPioggia) + (ripiegoPioggia ? " (il nuovo non è ancora uscito)" : "");
+        " · modello di " + oraPioggia(corsaPioggia) + (ripiegoPioggia ? " (il nuovo non è ancora uscito)" : "") + " · fonte ARSO";
       img.style.display = "";
       img.src = urlPioggia(corsaPioggia, passoPioggia);
     }
