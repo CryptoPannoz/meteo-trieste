@@ -3,7 +3,7 @@
  * Legge i dati delle centraline da vetercek.com e li espone come JSON
  * per la pagina https://github.com/CryptoPannoz/meteo-trieste
  *
- * Endpoint: doGet -> { trieste, triesteFonte, monteGrisa, muggia, grado, lignano, lignanoLive, cavazzo, preluka, antenal, porec, rovinj, liznjan, savudrija, barcola, meteogrado, gps, updated }
+ * Endpoint: doGet -> { trieste, triesteFonte, monteGrisa, muggia, grado, lignano, lignanoLive, cavazzo, preluka, svivan, antenal, porec, fazana, liznjan, premantura, barcola, meteogrado, gps, updated }
  * Ogni riga centralina: { ora, direzione, kt, sunki, temp }
  * trieste, muggia, marinajulia, lignano: righe a 15 min dalla Protezione Civile FVG (rete regionale, CC BY 4.0)
  * barcola: stazione Windguru 5307 (Terrapieno di Barcola), media e raffica sugli ultimi 10 minuti
@@ -30,15 +30,18 @@ var STATIONS = {
   zusterna:   { id: 147, postaja: 'kjdbum' },
   preluka:    { id: 149, postaja: 'preluka' },
   // Dajla (id 39) ferma dal 20 ago 2026: sostituita da Antenal (Cittanova), 4 km a sud
+  // Sv. Ivan (Umago) e Fažana (Pola) aggiunte il 9 nov 2026, Poreč (Istramet, porto) di nuovo in
+  // linea: coprono la costa ovest dell'Istria nella mappa Spot Istria (id numerico obbligatorio per le croate)
+  svivan:     { id: 82,  postaja: 'svivan' },
   antenal:    { id: 127, postaja: 'antenal' },
+  porec:      { id: 19,  postaja: 'porec' },
+  fazana:     { id: 158, postaja: 'fazana' },
   liznjan:    { id: 74,  postaja: 'liznjan' },
   // savudrija, porec e rovinj: spente su vetercek dal 24 ago 2026, tolte il 29 set
   // (3 letture in meno per giro). Per riattivarle basta togliere il commento.
   // savudrija:  { id: 124, postaja: 'savudrija' },
   premantura: { id: 86,  postaja: 'stupice' }
-  // costa ovest tra Dajla e Premantura (stazioni DHMZ via vetercek, ogni 10-20 min)
-  // porec:      { postaja: 'porec' },
-  // rovinj:     { postaja: 'rovinj' },
+  // rovinj:     { postaja: 'rovinj' },   // ferma su vetercek (9 nov 2026)
 };
 
 var BARCOLA_URL = 'https://www.windguru.cz/int/iapi.php?q=station_data_current&id_station=5307';
