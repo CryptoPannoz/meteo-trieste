@@ -4352,7 +4352,7 @@
 
     /* ---------- Centraline live per la tendina Stats del footer (9 nov 2026) ----------
        Stesso elenco e stesse soglie della scheda "Centraline" di /admin (vento-previsioni,
-       src/stato.js): verde se il dato è fresco, giallo se la centralina è ferma, rosso senza dato.
+       src/stato.js), più Sv. Ivan, Poreč e Fažana (9 nov 2026): verde se il dato è fresco, giallo se la centralina è ferma, rosso senza dato.
        footer-widgets.js la chiama quando si apre la tendina. */
     window.__statoCentraline = function () {
       const d = ultimoPayload || {};
@@ -4372,7 +4372,10 @@
         ["Pirano", locale(d.piran && d.piran.time), 30],
         ["Lago di Cavazzo", d.cavazzo && d.cavazzo.epoch ? (Date.now() - d.cavazzo.epoch * 1000) / 60000 : null, 40],
         ["Preluka", hhmm(primo("preluka")), 30],
+        ["Sv. Ivan", hhmm(primo("svivan")), 30],
         ["Antenal", hhmm(primo("antenal")), 30],
+        ["Poreč", hhmm(primo("porec")), 30],
+        ["Fažana", hhmm(primo("fazana")), 30],
         ["Lisignano", hhmm(primo("liznjan")), 30],
         ["Premantura", hhmm(primo("premantura")), 30]
       ];
