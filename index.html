@@ -294,9 +294,11 @@
     #surfometroCard .surf-vecchio { display: block; margin-top: .3rem; font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif; font-size: .8rem; font-weight: 600; letter-spacing: 0; line-height: 1.35; color: var(--label); opacity: .6; }
     .surf-agg { display: block; margin-top: .1rem; }
     /* nota fonti del surfometro: chiusa di default, il riassunto sta nel summary */
-    .surf-credits { margin: .55rem 0 0; font-size: .7rem; line-height: 1.45; color: var(--label); opacity: .8; }
-    .surf-credits a { color: inherit; }
-    #surfNoteSum { font-weight: 700; opacity: 1; }
+    .surf-piede { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin: .55rem 0 0; font-size: .74rem; font-weight: 600; color: var(--label); }
+    /* Modello Aladin: le due mappe ARSO (640×480) nelle loro proporzioni */
+    #pioggia { margin-top: 1rem; }
+    #aladinImg, #pioggiaImg { display: block; width: 100%; max-width: 640px; height: auto; margin: 0 auto; }
+    .surf-fonti { display: inline-flex; align-items: center; min-height: 24px; color: inherit; text-decoration: underline; text-underline-offset: 2px; }
     /* scheda della stazione toccata sulla mappa (9 nov 2026) */
     .scheda-stazione { position: relative; margin-top: .75rem; padding: .85rem .9rem .3rem; border: 1px solid var(--bordo); border-radius: 12px; scroll-margin-top: var(--section-sticky-top, 90px); }
     .scheda-stazione[hidden] { display: none; }
@@ -886,23 +888,26 @@
     /* Meteo ora (9 nov 2026): cielo, aria, mare e pressione in una riga in cima alla card
        del surfometro, con alba/tramonto a destra (prima stava da solo, in alto a destra) */
     #surfometroCard { position: relative; }
-    .meteo-ora { margin: 0 0 .5rem; font-size: .8rem; font-weight: 600; color: var(--label); line-height: 1.3; }
-    .meteo-ora:has(.mo-dati:empty) { display: none; }
-    .mo-dati { display: flex; align-items: center; flex-wrap: wrap; gap: .2rem .75rem; }
     .surf-testa { display: flex; align-items: baseline; justify-content: space-between; gap: .2rem .8rem; flex-wrap: wrap; }
     .surf-testa > h2 { min-width: 0; }
-    .mo-dati > span { display: inline-flex; align-items: center; gap: .3rem; white-space: nowrap; }
-    .mo-dati b { color: var(--ink); font-weight: 800; font-variant-numeric: tabular-nums; }
-    .mo-ico { width: 1.15rem; height: 1.15rem; flex: 0 0 auto; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-    .mo-ico .mi-sole { stroke: #f2c230; } .mo-ico .mi-nuvola { stroke: currentColor; } .mo-ico .mi-acqua { stroke: #5fb4ff; }
-    .mo-parola { color: var(--ink); }
-    .mo-baro { display: inline-flex; align-items: center; gap: .25rem; color: inherit; text-decoration: none; }
-    .mo-baro svg { width: .95rem; height: .95rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
-    .mo-baro:hover b, .mo-baro:focus-visible b { text-decoration: underline; }
-    #pioggia { margin-top: 1rem; }
-    #aladinImg, #pioggiaImg { display: block; width: 100%; max-width: 640px; height: auto; margin: 0 auto; }
     .sun-times { font-size: .78rem; font-weight: 600; color: #6b7480; white-space: nowrap; }
-    @media (max-width: 400px) { .mo-parola { display: none; } }
+    /* Meteo ora: quattro caselle allineate, etichetta piccola sopra e valore sotto */
+    .meteo-ora { display: flex; margin: .8rem 0 0; padding: 0; border: 1px solid var(--bordo); border-radius: 10px; }
+    .meteo-ora:not(:has(> div:not([hidden]))) { display: none; }
+    .meteo-ora > div { flex: 1 1 0; min-width: 0; padding: .45rem .5rem; }
+    .meteo-ora > div + div { border-left: 1px solid var(--bordo); }
+    .meteo-ora > #moCielo { flex-grow: 1.7; }
+    .meteo-ora > #moBaro { flex-grow: 1.3; }
+    .meteo-ora > div[hidden] { display: none; }
+    .meteo-ora dt { margin: 0 0 .15rem; color: var(--label); font-size: .62rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+    .meteo-ora dd { display: flex; align-items: center; gap: .3rem; margin: 0; color: var(--ink); font-size: .95rem; font-weight: 800; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .meteo-ora dd small { color: var(--label); font-size: .7rem; font-weight: 700; }
+    .meteo-ora dd a { display: inline-flex; align-items: center; gap: .25rem; color: inherit; text-decoration: none; }
+    .mo-ico { width: 1.25rem; height: 1.25rem; flex: 0 0 auto; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .mo-ico .mi-sole { stroke: #f2c230; } .mo-ico .mi-nuvola { stroke: currentColor; } .mo-ico .mi-acqua { stroke: #5fb4ff; }
+    .mo-cielo-parola { font-size: .8rem; white-space: normal; }
+    .mo-freccia { width: .95rem; height: .95rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+    @media (max-width: 420px) { .meteo-ora dd small { display: none; } }
     .console-card .surf2-verdetto {
       font-size: clamp(2.2rem, 8vw, 5.4rem);
       text-align: left;
@@ -1767,7 +1772,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261109b" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261109c" />
   <script src="./previsione-ai.js?v=20261102e" defer></script>
 </head>
 <body>
@@ -1958,7 +1963,6 @@
     <section class="hero" id="vento">
       <!-- SURFOMETRO (scheda a parte) -->
       <div class="console-card" id="surfometroCard">
-        <div class="meteo-ora" id="meteoOra"><span class="mo-dati" id="meteoOraDati"></span></div>
         <div class="surf-testa">
           <h2 id="surfTitolo">Surfometro – Barcola</h2>
           <span id="solare" class="sun-times" aria-label="alba e tramonto"></span>
@@ -1998,9 +2002,17 @@
             </div>
           </div>
         </div>
-        <!-- 9 nov 2026: niente più tendina "Fonte dati" (Alberto: "togli"). Resta una riga di credits,
-             obbligatoria per la licenza dei dati della Protezione Civile FVG (aria e barometro di Meteo ora) -->
-        <p class="surf-credits"><span id="surfNoteSum"></span> · Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> (<a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a>, dati elaborati) · OGS · NIB · Open-Meteo · <a href="/guida/surfometro/">Guida</a></p>
+        <!-- METEO ORA (9 nov 2026): quattro caselle sotto il surfometro, riempite da scriviMeteoOra().
+             Una casella senza dato fresco resta nascosta. -->
+        <dl class="meteo-ora" id="meteoOra" aria-label="Meteo adesso a Trieste">
+          <div id="moCielo" hidden><dt>Cielo</dt><dd></dd></div>
+          <div id="moAria" hidden><dt>Aria</dt><dd></dd></div>
+          <div id="moMare" hidden><dt>Mare</dt><dd></dd></div>
+          <div id="moBaro" hidden><dt>Barometro</dt><dd></dd></div>
+        </dl>
+        <!-- in fondo solo l'ora del dato e "Fonti": le diciture (licenza CC BY 4.0 della Protezione
+             Civile FVG compresa) stanno in "Partner e riferimenti" del footer, a cui porta il link -->
+        <p class="surf-piede"><span id="surfNoteSum"></span><a href="#fonti" class="surf-fonti" onclick="apriFonti(event)">Fonti</a></p>
       </div>
 
       <!-- SPINTA DELLA BORA: DIFFERENZA DI PRESSIONE TRIESTE–MARIBOR (MSLP), RESA LEGGIBILE.
@@ -2184,7 +2196,7 @@
   <div class="section" id="barcola">
     <div id="camBarcolaBlock" data-cam-box>
       <div class="webcam-intestazione">
-        <h2>Webcam Barcola</h2>
+        <h2>Barcola</h2>
         <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
       </div>
       <a id="barcolaLink" href="https://content.meteobridge.com/cam/98c72e78ea6476e8074295ab40c6a429/camplus.jpg" target="_blank" rel="noopener">
@@ -2193,52 +2205,52 @@
     </div>
 
     <div id="camSvbgBlock">
-      <h2 style="margin-top:1.25rem;">Webcam Barcola – S.V.B.G.</h2>
+      <h2 style="margin-top:1.25rem;">Barcola – S.V.B.G.</h2>
       <div id="camSvbgWrap">
-        <button class="cam-play" onclick="caricaCamSvbg()">▶ Avvia webcam live (Soc. Velica Barcola Grignano)</button>
+        <button class="cam-play" onclick="caricaCamSvbg()">▶ Avvia la webcam</button>
       </div>
-      <p class="stato">Fonte: <a href="https://www.svbg.it/" target="_blank" rel="noopener">svbg.it</a> · stream live (HLS)</p>
+      <p class="stato">Fonte: <a href="https://www.svbg.it/" target="_blank" rel="noopener">svbg.it</a></p>
     </div>
   </div>
 
   <!-- WEBCAM SATURNIA (Sacchetta): la sezione compare solo se lo stream rtsp.me è online -->
   <div class="section" id="saturniaCam" style="display:none;">
-    <h2>Webcam – Canottieri Saturnia</h2>
+    <h2>Trieste – Canottieri Saturnia</h2>
     <div id="camSaturniaWrap"></div>
-    <p class="stato">Fonte: <a href="https://www.canottierisaturniatrieste.com/webcam/" target="_blank" rel="noopener">canottierisaturniatrieste.com</a> · stream live (rtsp.me)</p>
+    <p class="stato">Fonte: <a href="https://www.canottierisaturniatrieste.com/webcam/" target="_blank" rel="noopener">canottierisaturniatrieste.com</a></p>
   </div>
 
   <!-- WEBCAM · SISTIANA: HLS whatsupcams, nascosta se lo stream è offline -->
   <div class="webcam-luogo">📍 Sistiana</div>
   <div class="section" id="sistianaCam">
-    <h2>Webcam Baia di Sistiana</h2>
+    <h2>Baia di Sistiana</h2>
     <div id="camSistianaWrap">
-      <button class="cam-play" onclick="caricaCamSistiana()">▶ Avvia webcam live (Baia di Sistiana)</button>
+      <button class="cam-play" onclick="caricaCamSistiana()">▶ Avvia la webcam</button>
     </div>
-    <p class="stato">Fonte: <a href="https://www.whatsupcams.com/it/webcams/italia/friuli-venezia-giulia-it/sistiana-it/webcam-sistiana/" target="_blank" rel="noopener">whatsupcams.com</a> · stream live (HLS)</p>
+    <p class="stato">Fonte: <a href="https://www.whatsupcams.com/it/webcams/italia/friuli-venezia-giulia-it/sistiana-it/webcam-sistiana/" target="_blank" rel="noopener">whatsupcams.com</a></p>
   </div>
 
   <!-- WEBCAM · MONFALCONE -->
   <div class="webcam-luogo">📍 Monfalcone</div>
   <div class="section" id="monfalconeCam">
-    <h2>Webcam Marina Monfalcone – panoramica 360°</h2>
+    <h2>Marina Monfalcone · 360°</h2>
     <div id="camMonfalconeWrap">
-      <button class="cam-play" onclick="caricaCamMonfalcone()">▶ Avvia webcam live (Marina Monfalcone · Panomax 360°)</button>
+      <button class="cam-play" onclick="caricaCamMonfalcone()">▶ Avvia la webcam</button>
     </div>
-    <p class="stato">Fonte: <a href="https://marinamonfalcone.panomax.com/" target="_blank" rel="noopener">marinamonfalcone.panomax.com</a> · panorama live (Panomax)</p>
+    <p class="stato">Fonte: <a href="https://marinamonfalcone.panomax.com/" target="_blank" rel="noopener">marinamonfalcone.panomax.com</a></p>
   </div>
 
   <!-- WEBCAM · GRADO: immagine statica Kite Life FVG, se offline il blocco sparisce -->
   <div class="webcam-luogo" id="gradoCamLuogo">📍 Grado</div>
   <div class="section" id="gradoCam" data-cam-box data-cam-label="gradoCamLuogo">
     <div class="webcam-intestazione">
-      <h2>Webcam Grado</h2>
+      <h2>Grado</h2>
       <button onclick="aggiornaWebcam()">🔄 Aggiorna webcam</button>
     </div>
     <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">
       <img class="webcam" data-src="https://cam.kitelifefvg.it/webcam_grado.php" alt="Webcam Grado – spiaggia kite" loading="lazy" />
     </a>
-    <p class="stato">Fonte: <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">cam.kitelifefvg.it</a> · Kite Life FVG</p>
+    <p class="stato">Fonte: <a href="https://cam.kitelifefvg.it/" target="_blank" rel="noopener">Kite Life FVG</a></p>
   </div>
 
   </details>
@@ -2272,9 +2284,9 @@
 
   <!-- BOLLETTINO OSMER -->
   <div class="section" id="osmer">
-    <h2><span class="solo-pro">Previsione descrittiva – OSMER FVG</span><span class="solo-lite">Il tempo nei prossimi giorni</span></h2>
+    <h2><span class="solo-pro">Previsione OSMER FVG</span><span class="solo-lite">Il tempo nei prossimi giorni</span></h2>
     <div id="osmerBollettino"><p class="stato">Caricamento…</p></div>
-    <p class="stato">Fonte: <a href="https://www.meteo.fvg.it/" target="_blank" rel="noopener">ARPA FVG - S.O.C. OSMER e GRN</a> · <a href="https://creativecommons.org/licenses/by/3.0/it/" target="_blank" rel="noopener">CC BY 3.0 IT</a> · icona e temperature: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (modello, Trieste)</p>
+    <p class="stato">Fonte: <a href="https://www.meteo.fvg.it/" target="_blank" rel="noopener">ARPA FVG - S.O.C. OSMER e GRN</a> · <a href="https://creativecommons.org/licenses/by/3.0/it/" target="_blank" rel="noopener">CC BY 3.0 IT</a> · <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a></p>
   </div>
 
   <!-- WINDGURU (subito sotto OSMER dal 9 nov 2026): caricamento differito all'apertura di Previsioni -->
@@ -2293,7 +2305,7 @@
     <h2>Radar pioggia – ARSO</h2>
     <img id="radarImg" alt="Radar precipitazioni ARSO (Slovenia e Golfo di Trieste)" loading="lazy"
          onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Radar momentaneamente non disponibile.</p>'); this.style.display='none';" />
-    <p class="stato">Fonte: <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a> · animazione delle ultime ore</p>
+    <p class="stato">Fonte: <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a></p>
   </div>
 
   <!-- GRAFICO BORA -->
@@ -2312,7 +2324,10 @@
        ha la serie con la data della corsa (ad_<corsa>_vm-va10m_si-sw_<ore>.png): vedi mostraAladin().
        Nuvole e pioggia solo nella Pro (html.vt-lite #pioggia). -->
   <div class="section" id="aladin">
-    <h2>Modello Aladin</h2>
+    <div class="sec-head">
+      <h2>Modello Aladin · vento e nuvolosità</h2>
+      <button type="button" class="bd-info" onclick="apriGuidaAladin()">ℹ️ come si legge</button>
+    </div>
     <div class="aladin-controlli">
       <button id="aladinPrec" aria-label="Ora precedente">◀</button>
       <span id="aladinOra" aria-live="polite">–</span>
@@ -2433,6 +2448,21 @@
     </div>
   </div>
 
+  <!-- MODAL "COME SI LEGGE" – MODELLO ALADIN (9 nov 2026) -->
+  <div id="modalGuidaAladin" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaAladinTitolo">
+    <div class="contenuto">
+      <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
+      <h3 id="guidaAladinTitolo">Modello Aladin – come si legge</h3>
+      <ul class="modelli-info">
+        <li><strong>◀ ▶</strong> · cambiano l'ora per tutte e due le mappe, a passi di 3 ore fino a 3 giorni.</li>
+        <li><strong>Vento</strong> · le freccette dicono dove va il vento; il colore di fondo è l'intensità media, in nodi nella scala sotto.</li>
+        <li><strong>Nuvole e pioggia</strong> · il viola è il cielo coperto (più scuro, più nuvole); dal giallo al verde la pioggia caduta nelle 3 ore prima.</li>
+        <li><strong>Modello di …</strong> · l'ora della corsa ARSO da cui viene la previsione: ne esce una nuova ogni 12 ore.</li>
+      </ul>
+      <p>Guardale insieme: nuvole e pioggia cambiano il vento, soprattutto le brezze. <a href="/guida/nuvole-pioggia-vento/">Nuvole, pioggia e vento →</a></p>
+    </div>
+  </div>
+
   <!-- MODAL GUIDA SPOT -->
   <div id="modalGuida" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaTitolo">
     <div class="contenuto">
@@ -2459,7 +2489,7 @@
 
   <div class="section" id="registroHome">
     <div id="registroGrafico"><p class="stato">Caricamento…</p></div>
-    <p class="stato registro-home-link"><a href="/registro/">📋 Apri il registro completo →</a> ogni 15 minuti dalle 6 alle 19 per ogni centralina, giorni passati e CSV.</p>
+    <p class="stato registro-home-link"><a href="/registro/">Apri il registro completo →</a></p>
   </div>
   </details>
 
@@ -2485,10 +2515,10 @@
     </details>
     <p class="stato" id="statoZusterna"></p>
     <div id="camZusternaWrap" data-yt="LD8GEJzTnCc" style="margin-top:.6rem;">
-      <button class="cam-play" onclick="caricaCamYoutube('camZusternaWrap')">▶ Avvia webcam live (KJD BUM · YouTube)</button>
+      <button class="cam-play" onclick="caricaCamYoutube('camZusternaWrap')">▶ Avvia la webcam</button>
     </div>
     <div class="spot-azioni">
-      <a class="spot-btn" href="https://maps.app.goo.gl/9pY9H27cpYz2Y9ws6" target="_blank" rel="noopener">📍 Spot Position</a>
+      <a class="spot-btn" href="https://maps.app.goo.gl/9pY9H27cpYz2Y9ws6" target="_blank" rel="noopener">📍 Posizione</a>
       <a class="spot-btn" href="https://kjdbum.si/" target="_blank" rel="noopener">🏠 Club KJD BUM</a>
       <button class="spot-btn" onclick="apriGuida('zusterna')">ℹ️ Guida spot</button>
     </div>
@@ -2508,7 +2538,7 @@
     </details>
     <p class="stato" id="statoSavudrija"></p>
     <div class="spot-azioni">
-      <a class="spot-btn" href="https://maps.app.goo.gl/jWbtsnTCoohrNenY7" target="_blank" rel="noopener">📍 Spot Position</a>
+      <a class="spot-btn" href="https://maps.app.goo.gl/jWbtsnTCoohrNenY7" target="_blank" rel="noopener">📍 Posizione</a>
       <button class="spot-btn" onclick="apriGuida('savudrija')">ℹ️ Guida spot</button>
     </div>
   </div>
@@ -2526,7 +2556,7 @@
     </details>
     <p class="stato" id="statoAntenal"></p>
     <div class="spot-azioni">
-      <a class="spot-btn" href="https://www.google.com/maps?q=45.3138,13.5740" target="_blank" rel="noopener">📍 Spot Position</a>
+      <a class="spot-btn" href="https://www.google.com/maps?q=45.3138,13.5740" target="_blank" rel="noopener">📍 Posizione</a>
       <button class="spot-btn" onclick="apriGuida('antenal')">ℹ️ Guida spot</button>
     </div>
   </div>
@@ -2545,7 +2575,7 @@
     </details>
     <p class="stato" id="statoPorec"></p>
     <div class="spot-azioni">
-      <a class="spot-btn" href="https://www.google.com/maps?q=45.2220,13.6036" target="_blank" rel="noopener">📍 Spot Position</a>
+      <a class="spot-btn" href="https://www.google.com/maps?q=45.2220,13.6036" target="_blank" rel="noopener">📍 Posizione</a>
       <button class="spot-btn" onclick="apriGuida('porec')">ℹ️ Guida spot</button>
     </div>
   </div>
@@ -2564,7 +2594,7 @@
     </details>
     <p class="stato" id="statoRovinj"></p>
     <div class="spot-azioni">
-      <a class="spot-btn" href="https://www.google.com/maps?q=45.0433,13.6138" target="_blank" rel="noopener">📍 Spot Position</a>
+      <a class="spot-btn" href="https://www.google.com/maps?q=45.0433,13.6138" target="_blank" rel="noopener">📍 Posizione</a>
       <button class="spot-btn" onclick="apriGuida('rovinj')">ℹ️ Guida spot</button>
     </div>
   </div>
@@ -2582,7 +2612,7 @@
     </details>
     <p class="stato" id="statoPreluka"></p>
     <div class="spot-azioni">
-      <a class="spot-btn" href="https://maps.app.goo.gl/6Depfw25rKGRZX5p8" target="_blank" rel="noopener">📍 Spot Position</a>
+      <a class="spot-btn" href="https://maps.app.goo.gl/6Depfw25rKGRZX5p8" target="_blank" rel="noopener">📍 Posizione</a>
       <button class="spot-btn" onclick="apriGuida('preluka')">ℹ️ Guida spot</button>
     </div>
   </div>
@@ -2600,7 +2630,7 @@
     </details>
     <p class="stato" id="statoLiznjan"></p>
     <div class="spot-azioni">
-      <a class="spot-btn" href="https://maps.app.goo.gl/92vRknd8orHBPiVVA" target="_blank" rel="noopener">📍 Spot Position</a>
+      <a class="spot-btn" href="https://maps.app.goo.gl/92vRknd8orHBPiVVA" target="_blank" rel="noopener">📍 Posizione</a>
       <button class="spot-btn" onclick="apriGuida('liznjan')">ℹ️ Guida spot</button>
     </div>
   </div>
@@ -2618,7 +2648,7 @@
     </details>
     <p class="stato" id="statoPremantura"></p>
     <div class="spot-azioni">
-      <a class="spot-btn" href="https://maps.app.goo.gl/5q7aUMkzww4VWtfU6" target="_blank" rel="noopener">📍 Spot Position</a>
+      <a class="spot-btn" href="https://maps.app.goo.gl/5q7aUMkzww4VWtfU6" target="_blank" rel="noopener">📍 Posizione</a>
       <button class="spot-btn" onclick="apriGuida('premantura')">ℹ️ Guida spot</button>
     </div>
   </div>
@@ -2627,8 +2657,8 @@
   <!-- JS -->
   <!-- librerie senza effetti al caricamento: qui e non nel <head>, così la pagina si disegna prima -->
   <script src="./station-chart.js?v=20261105ux"></script>
-  <script src="./spinta-bora.js?v=20261109"></script>
-  <script src="/pressione-trieste.js?v=20261109b"></script>
+  <script src="./spinta-bora.js?v=20261109c"></script>
+  <script src="/pressione-trieste.js?v=20261109c"></script>
   <script src="/scala-vento.js?v=20261105"></script>
   <script src="/dati-live.js?v=20260929b"></script>
   <script>
@@ -3990,6 +4020,7 @@
         document.body.removeChild(t);
       }
     }
+    function apriGuidaAladin(){ document.getElementById("modalGuidaAladin").style.display = "block"; }
     function apriGuidaBora(){ document.getElementById("modalGuidaBora").style.display = "block"; }
 
     /* ---------- Differenza pressione Trieste–Maribor (live, Open-Meteo MSLP) ----------
@@ -4295,26 +4326,43 @@
     const meteoOra = { cielo: null, aria: null, mareMambo: null, marePiran: null };
     function gradiUno(v) { return Number(v).toFixed(1).replace(".", ",") + "°"; }
     function scriviMeteoOra() {
-      const box = document.getElementById("meteoOraDati");
-      if (!box) return;
-      const pezzi = [];
+      const casella = (id, html, titolo) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.hidden = !html;
+        if (!html) return;
+        el.querySelector("dd").innerHTML = html;
+        if (titolo) el.title = titolo; else el.removeAttribute("title");
+      };
       const c = meteoOra.cielo;
-      if (c) pezzi.push('<span class="mo-cielo" title="' + c.parola + ' (Open-Meteo)">' + iconaMeteo(c.m, "mo-ico") + '<span class="mo-parola">' + c.parola + '</span></span>');
-      if (meteoOra.aria) pezzi.push('<span title="Aria a Trieste molo, agg. ' + meteoOra.aria.ora + '">aria <b>' + gradiUno(meteoOra.aria.t) + '</b></span>');
+      casella("moCielo", c ? iconaMeteo(c.m, "mo-ico") + '<span class="mo-cielo-parola">' + c.parola + "</span>" : "", "Modello Open-Meteo, Trieste");
+      const a = meteoOra.aria;
+      casella("moAria", a ? Math.round(a.t) + "°" : "", a ? "Trieste molo: " + gradiUno(a.t) + ", agg. " + a.ora : "");
       const fresco = x => x && Date.now() - x.ts < 6 * 3600000;
       const m = fresco(meteoOra.mareMambo) ? meteoOra.mareMambo : fresco(meteoOra.marePiran) ? meteoOra.marePiran : null;
-      if (m) pezzi.push('<span title="Mare a ' + m.dove + '">mare <b>' + gradiUno(m.t) + '</b></span>');
-      /* barometro: freccia della tendenza (±1 hPa in 3 ore a Trieste molo) e hPa, niente parole
-         (Alberto, 9 nov 2026); i dettagli nel titolo, il link porta all'articolo */
+      casella("moMare", m ? Math.round(m.t) + "°" : "", m ? m.dove + ": " + gradiUno(m.t) : "");
+      /* barometro: freccia della tendenza (±1 hPa in 3 ore a Trieste molo) e hPa (Alberto, 9 nov 2026);
+         i dettagli nel titolo, il tocco porta all'articolo */
       const pr = window.VTPressione && VTPressione.ultimo && VTPressione.ultimo();
+      let baro = "", baroT = "";
       if (pr && Date.now() - pr.t < 45 * 60000) {
         const rot = { su: -90, stabile: 0, giu: 90 }[pr.classe];
         const d = (pr.delta > 0 ? "+" : pr.delta < 0 ? "−" : "±") + Math.abs(pr.delta).toFixed(1).replace(".", ",");
-        const titolo = "Barometro a Trieste molo: " + pr.p.toFixed(1).replace(".", ",") + " hPa, " + d + " hPa in 3 ore. Fonte: Protezione Civile della Regione Friuli Venezia Giulia, dati elaborati";
-        pezzi.push('<a class="mo-baro mo-' + pr.classe + '" href="/guida/pressione/" title="' + titolo + '" aria-label="' + titolo + '">' +
-          '<svg viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(' + rot + 'deg)"><path d="M4 12h15m-5-5 5 5-5 5"/></svg><b>' + Math.round(pr.p) + "</b>hPa</a>");
+        baroT = "Trieste molo: " + pr.p.toFixed(1).replace(".", ",") + " hPa, " + d + " hPa in 3 ore";
+        baro = '<a href="/guida/pressione/" aria-label="Barometro, ' + baroT + '"><svg class="mo-freccia" viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(' + rot + 'deg)"><path d="M4 12h15m-5-5 5 5-5 5"/></svg>' +
+          Math.round(pr.p) + " <small>hPa</small></a>";
       }
-      box.innerHTML = pezzi.join("");
+      casella("moBaro", baro, baroT);
+    }
+    /* "Fonti" in fondo al surfometro: apre "Partner e riferimenti" nel footer, dove ci sono tutte
+       le fonti con le licenze (CC BY 4.0 della Protezione Civile FVG: l'attribuzione può stare in
+       una risorsa collegata, sezione 3(a)(2) della licenza). */
+    function apriFonti(e) {
+      const t = document.querySelector("#footerWidgets .sources-tendina:not(.footer-stats)");
+      if (!t) return;
+      if (e) e.preventDefault();
+      t.open = true;
+      t.scrollIntoView({ block: "start" });
     }
     function caricaCielo() {
       fetch("https://api.open-meteo.com/v1/forecast?latitude=45.6495&longitude=13.7768&current=weather_code,cloud_cover,precipitation,is_day&timezone=Europe%2FRome")
@@ -4401,7 +4449,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261109b"></script>
+  <script src="./footer-widgets.js?v=20261109c"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
@@ -4457,7 +4505,7 @@
         if (!pronto) pronto = new Promise(function (ok, ko) {
           if (window.RegistroVento) return ok();
           var s = document.createElement("script");
-          s.src = "/registro-vento.js?v=20261105ux";
+          s.src = "/registro-vento.js?v=20261109";
           s.onload = ok;
           s.onerror = function () { pronto = null; ko(); };
           document.head.appendChild(s);

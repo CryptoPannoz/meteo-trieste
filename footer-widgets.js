@@ -138,24 +138,8 @@
   var forecast = document.getElementById("previsioni");
   if (!main || !hero || !forecast) return;
 
-  function phase(kind, kicker, title, text) {
-    var section = document.createElement("section");
-    section.className = "meteo-phase meteo-phase--" + kind;
-    section.setAttribute("aria-labelledby", "meteoPhase" + kind);
-    section.innerHTML = '<span class="meteo-phase-kicker">' + kicker + '</span>' +
-      '<div><h2 id="meteoPhase' + kind + '">' + title + '</h2><p>' + text + '</p></div>';
-    return section;
-  }
-
-  var nowcastHeading = phase(
-    "nowcast",
-    sl ? "ZDAJ" : "ORA",
-    "Nowcasting",
-    sl ? "Opazovanja, slike v živo in trenutne razmere." : "Osservazioni, immagini live e condizioni in questo momento."
-  );
-  var heroCopy = hero.querySelector(":scope > .hero-copy");
-  if (heroCopy) hero.insertBefore(nowcastHeading, heroCopy.nextSibling);
-  else main.insertBefore(nowcastHeading, hero);
+  /* I divisori "Nowcasting" e "Forecasting" non ci sono più (9 nov 2026, "meno AI slop"): le
+     tendine hanno già i loro titoli e la barra in basso dice "Ora" e "Previsioni". */
 
   /* Sulle pagine spot il gradiente live era storicamente dentro il grafico
      previsionale: torna accanto al Surfometro, dove il suo significato è attuale. */
@@ -218,17 +202,11 @@
   if (forecastSummary) {
     // la previsione dell'AI per Barcola in cima, dove c'è il box (home, 2 nov 2026)
     var ai = document.getElementById("previsioneAi") ? "AI Barcola, " : "";
-    forecastSummary.textContent = ai + (sl ? "OSMER, burja, Aladin in Windguru" : "OSMER, Bora, Aladin e Windguru");
+    forecastSummary.textContent = ai + (sl ? "OSMER, Windguru, burja in Aladin" : "OSMER, Windguru, Bora e Aladin");
     // nella Lite le previsioni sono solo Aladin e Windguru (28 ott 2026)
     if (doc.classList.contains("vt-modi")) forecastSummary.innerHTML = '<span class="solo-pro">' + forecastSummary.textContent +
       '</span><span class="solo-lite">' + ai + (sl ? "Vreme, Aladin in Windguru" : (ai ? "meteo" : "Meteo") + ", Aladin e Windguru") + "</span>";
   }
-  main.insertBefore(phase(
-    "forecast",
-    sl ? "NASLEDNJE URE IN DNEVI" : "PROSSIME ORE E GIORNI",
-    "Forecasting",
-    sl ? "Bilteni in modeli za razvoj vremena." : "Bollettini e modelli per capire come evolverà il tempo."
-  ), forecast);
 
   var nav = document.getElementById("topnav");
   if (nav) {
@@ -712,7 +690,7 @@
     { name: "Open-Meteo", url: "https://open-meteo.com/" },
     { name: "OGS · NODC", url: "https://nodc.ogs.it/geoportal/?msv=1" },
     { name: "NIB · boja Vida", url: "https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" },
-    { name: "Protezione Civile della Regione Friuli Venezia Giulia (stazioni, CC BY 4.0)", url: "https://monitor.protezionecivile.fvg.it/licenza" },
+    { name: "Fonte: Protezione Civile della Regione Friuli Venezia Giulia (stazioni, CC BY 4.0, dati elaborati)", url: "https://monitor.protezionecivile.fvg.it/licenza" },
     { name: "Windguru", url: "https://www.windguru.cz/" },
     { name: "Windy", url: "https://www.windy.com/" },
     { name: "KJD BUM", url: "https://kjdbum.si/" }

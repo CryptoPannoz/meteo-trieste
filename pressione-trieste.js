@@ -77,7 +77,7 @@
       return;
     }
     var verd = document.getElementById("verdettoBig");
-    if (document.getElementById("meteoOraDati")) return;   // home: il barometro sta nella riga "Meteo ora" (9 nov 2026)
+    if (document.getElementById("meteoOra")) return;   // home: il barometro sta nella riga "Meteo ora" (9 nov 2026)
     if (html && verd && verd.textContent.trim() && verd.textContent.trim() !== "—") verd.insertAdjacentHTML("beforeend", html);
   }
 

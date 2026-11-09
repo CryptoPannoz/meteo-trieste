@@ -73,7 +73,7 @@
     mappaSpinta: "Potisk burje", mappaGrafico: "📈 Graf potiska", mappaTorna: "🗺️ Ni burje: pokaži zemljevid",
     mappaIstria: "📍 Spoti v Istri",
     mappaFonte: "Obala © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · relief Copernicus EU-DEM, USGS, NOAA",
-    mappaQui: "🗺️ Zdaj ni burje: zemljevid je na vrhu strani, namesto potiska burje.", mappaVai: "Na zemljevid ↑"
+    mappaQui: "Brez burje je zemljevid na vrhu strani.", mappaVai: "Na zemljevid ↑"
   } : {
     fasce: ["Nessuna spinta", "Spinta debole", "Genesi della Bora", "Bora consistente", "Bora forte"],
     sotto: ["pressione più alta sul golfo", "sotto la soglia della bora", "", "", ""],
@@ -117,7 +117,7 @@
     mappaSpinta: "Spinta della Bora", mappaGrafico: "📈 Grafico della spinta", mappaTorna: "🗺️ Niente bora: mostra la mappa",
     mappaIstria: "📍 Spot Istria",
     mappaFonte: "Costa © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · rilievo Copernicus EU-DEM, USGS, NOAA",
-    mappaQui: "🗺️ Adesso non c'è bora: la mappa è salita in cima alla pagina, al posto della Spinta della Bora.", mappaVai: "Vai alla mappa ↑"
+    mappaQui: "Senza bora la mappa sta in cima alla pagina.", mappaVai: "Vai alla mappa ↑"
   };
 
   function fascia(v) {

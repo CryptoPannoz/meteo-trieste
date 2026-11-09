@@ -197,3 +197,4 @@ body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothin
 :root[data-theme="light"] .g-tendina[open] summary::after { border-color: var(--sea-dark); }
 :root[data-theme="light"] .g-inizia { border-color: var(--sea); background: linear-gradient(105deg, #fdfee9, #fff 70%); }
 :root[data-theme="light"] .g-inizia small, :root[data-theme="light"] .g-inizia i { color: var(--sea-dark); }
+.g-tabella-a-capo td:first-child { white-space: normal; width: 50%; }

@@ -682,8 +682,8 @@
       }).join("") + "</div>" : "") +
       (conSurf ? "" : storica) +
       (r.opz.soloGrafico ? '<p class="rv-nota">' + tr(
-        "Fonti: Barcola, Windguru · Trieste molo, Muggia, boa Paloma e meteo: Fonte: " + FONTE_PC + " · dati elaborati",
-        "Sources: Barcola, Windguru · Trieste pier, Muggia, Paloma buoy and weather: Source: " + FONTE_PC + " · processed data") +
+        "Barcola: Windguru · Trieste molo, Muggia, boa Paloma e meteo – Fonte: " + FONTE_PC + " · dati elaborati",
+        "Barcola: Windguru · Trieste pier, Muggia, Paloma buoy and weather – Source: " + FONTE_PC + " · processed data") +
         (striscia ? ' · ' + tr("spinta della bora: ", "bora push: ") + '<a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> ' + tr("(modello)", "(model)") : "") + ".</p>" : "");
     box.hidden = false;
   }
