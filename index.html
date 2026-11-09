@@ -294,11 +294,12 @@
     #surfometroCard .surf-vecchio { display: block; margin-top: .3rem; font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif; font-size: .8rem; font-weight: 600; letter-spacing: 0; line-height: 1.35; color: var(--label); opacity: .6; }
     .surf-agg { display: block; margin-top: .1rem; }
     /* nota fonti del surfometro: chiusa di default, il riassunto sta nel summary */
-    .surf-piede { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin: .55rem 0 0; font-size: .74rem; font-weight: 600; color: var(--label); }
-    /* Modello Aladin: le due mappe ARSO (640×480) nelle loro proporzioni */
-    #pioggia { margin-top: 1rem; }
-    #aladinImg, #pioggiaImg { display: block; width: 100%; max-width: 640px; height: auto; margin: 0 auto; }
-    .surf-fonti { display: inline-flex; align-items: center; min-height: 24px; color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+    .surf-note { margin-top: .55rem; }
+    .surf-note > summary { font-size: .78rem; font-weight: 600; color: var(--label); cursor: pointer; }
+    .surf-note > summary:hover { color: var(--ink); }
+    .surf-note p { margin: .45rem 0 0; font-size: .8rem; line-height: 1.5; color: var(--label); }
+    .surf-note .surf-fonti { font-size: .72rem; }
+    .surf-note a { color: inherit; }
     /* scheda della stazione toccata sulla mappa (9 nov 2026) */
     .scheda-stazione { position: relative; margin-top: .75rem; padding: .85rem .9rem .3rem; border: 1px solid var(--bordo); border-radius: 12px; scroll-margin-top: var(--section-sticky-top, 90px); }
     .scheda-stazione[hidden] { display: none; }
@@ -1997,9 +1998,6 @@
             <div class="meter-ticks">
               <span style="left:20%;">8</span><span style="left:32.5%;">13</span><span style="left:45%;">18</span><span style="left:62.5%;">25</span><span style="left:87.5%;">35</span>
             </div>
-            <div class="meter-labels">
-              <div style="flex:20;">bavisela</div><div style="flex:12.5;">arietta</div><div style="flex:12.5;">sufia</div><div style="flex:17.5;">sufia ben</div><div style="flex:25;">sufia sai ben</div><div style="flex:12.5;">buriana</div>
-            </div>
           </div>
         </div>
         <!-- METEO ORA (9 nov 2026): quattro caselle sotto il surfometro, riempite da scriviMeteoOra().
@@ -2010,9 +2008,14 @@
           <div id="moMare" hidden><dt>Mare</dt><dd></dd></div>
           <div id="moBaro" hidden><dt>Barometro</dt><dd></dd></div>
         </dl>
-        <!-- in fondo solo l'ora del dato e "Fonti": le diciture (licenza CC BY 4.0 della Protezione
-             Civile FVG compresa) stanno in "Partner e riferimenti" del footer, a cui porta il link -->
-        <p class="surf-piede"><span id="surfNoteSum"></span><a href="#fonti" class="surf-fonti" onclick="apriFonti(event)">Fonti</a></p>
+        <!-- In fondo una tendina (9 nov 2026, Alberto): nel titolo lo stato del dato ("⚠️ Surfometro su
+             Monte Grisa – Barcola offline"), dentro cos'è il surfometro e le fonti con i link
+             (dicitura della Protezione Civile FVG richiesta dalla licenza CC BY 4.0) -->
+        <details class="surf-note">
+          <summary id="surfNoteSum">Fonte dati</summary>
+          <p>Il surfometro dice quanto vento c'è adesso a Barcola: vento medio e raffica degli ultimi 10 minuti e una parola in triestino. Se Barcola è ferma usa Monte Grisa, poi la boa MAMBO1. <a href="/guida/surfometro/">Come si legge →</a></p>
+          <p class="surf-fonti">Fonti: vento di Barcola da <a href="https://www.windguru.cz/station/5307" target="_blank" rel="noopener">Windguru</a> e di Monte Grisa da <a href="https://vetercek.com/" target="_blank" rel="noopener">vetercek.com</a> · aria, barometro e Trieste molo: Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> (<a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a>, dati elaborati) · mare: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS</a> e <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB</a> · cielo: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a></p>
+        </details>
       </div>
 
       <!-- SPINTA DELLA BORA: DIFFERENZA DI PRESSIONE TRIESTE–MARIBOR (MSLP), RESA LEGGIBILE.
@@ -3057,7 +3060,7 @@
       if (bTws != null) {                       // Barcola attiva → tutto normale
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Barcola";
-        if (sum)    sum.textContent = bTws.ts ? "agg. " + oraBreve(bTws.ts) : "";
+        if (sum)    sum.textContent = "Barcola" + (bTws.ts ? " · agg. " + oraBreve(bTws.ts) : "");
         aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir, null, BARCOLA_PAROLA_SU_RAFFICA ? bTws.gust : null);
         ventoPerSpinta("Barcola", bTws.avg, bTws.gust, bTws.dir);
         return;
@@ -3067,7 +3070,7 @@
       if (gTws != null) {
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
-        if (sum)    sum.textContent = "Barcola ferma" + (gTws.ts ? " · agg. " + oraBreve(gTws.ts) : "");
+        if (sum)    sum.textContent = "⚠️ Surfometro su Monte Grisa – Barcola offline" + (gTws.ts ? " · agg. " + oraBreve(gTws.ts) : "");
         aggiornaSurfometro(gTws.avg, gTws.gust, gTws.dir);
         ventoPerSpinta("Monte Grisa", gTws.avg, gTws.gust, gTws.dir);
         return;
@@ -3077,14 +3080,14 @@
       if (mTws != null) {
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Boa Mambo";
-        if (sum)    sum.textContent = "Barcola e Monte Grisa ferme" + (mTws.ts ? " · agg. " + oraBreve(mTws.ts) : "");
+        if (sum)    sum.textContent = "⚠️ Surfometro sulla boa MAMBO1 – Barcola e Monte Grisa offline" + (mTws.ts ? " · agg. " + oraBreve(mTws.ts) : "");
         aggiornaSurfometro(mTws.avg, mTws.gust, mTws.dir);
         ventoPerSpinta("Boa MAMBO1", mTws.avg, mTws.gust, mTws.dir);
       } else {                                  // nessuna fonte aggiornata → offline
         const ultimo = ultimoDatoNoto(data);
         if (card)   card.classList.add("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – non disponibile";
-        if (sum)    sum.textContent = "Nessuna fonte aggiornata" + (ultimo ? " · ultimo dato " + ultimo : "");
+        if (sum)    sum.textContent = "⚠️ Surfometro offline – nessuna fonte aggiornata" + (ultimo ? " · ultimo dato " + ultimo : "");
         aggiornaSurfometro(null, null, null, 'Offline<small>centraline non in linea</small>' + ultimoDatoVecchioHtml(data));
         ventoPerSpinta(null);
       }
@@ -4353,16 +4356,6 @@
           Math.round(pr.p) + " <small>hPa</small></a>";
       }
       casella("moBaro", baro, baroT);
-    }
-    /* "Fonti" in fondo al surfometro: apre "Partner e riferimenti" nel footer, dove ci sono tutte
-       le fonti con le licenze (CC BY 4.0 della Protezione Civile FVG: l'attribuzione può stare in
-       una risorsa collegata, sezione 3(a)(2) della licenza). */
-    function apriFonti(e) {
-      const t = document.querySelector("#footerWidgets .sources-tendina:not(.footer-stats)");
-      if (!t) return;
-      if (e) e.preventDefault();
-      t.open = true;
-      t.scrollIntoView({ block: "start" });
     }
     function caricaCielo() {
       fetch("https://api.open-meteo.com/v1/forecast?latitude=45.6495&longitude=13.7768&current=weather_code,cloud_cover,precipitation,is_day&timezone=Europe%2FRome")
