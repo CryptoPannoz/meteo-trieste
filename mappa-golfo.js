@@ -175,7 +175,9 @@
   var MAPPA_W = 762, MAPPA_H = 1000;
   var VISTE = {
     golfo:  { x: 118, y: 55,  w: 322, h: 285 },
-    istria: { x: 180, y: 400, w: 540, h: 590 },
+    /* 9 nov 2026: più spazio in alto, prima la costa sopra Umago restava tagliata; ora dalla costa
+       slovena e Muggia (y ≈ 250) a Premantura (y ≈ 920) con margine, Quarnero compreso */
+    istria: { x: 125, y: 180, w: 615, h: 790 },
     tutto:  { x: 0,   y: 0,   w: MAPPA_W, h: MAPPA_H }
   };
   var vb = { x: 0, y: 0, w: MAPPA_W, h: MAPPA_H };
