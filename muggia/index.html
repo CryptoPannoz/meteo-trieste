@@ -881,7 +881,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20261109" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261109b" />
 </head>
 <body>
 
@@ -1119,7 +1119,7 @@
 
   <!-- WINDY + WINDGURU -->
   <div class="section" id="windy">
-    <div class="sec-head"><h2>Windguru – WG Trieste</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info sugli altri modelli</button></div>
+    <div class="sec-head"><h2>Windguru – WG Trieste</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info sui modelli</button></div>
     <div style="margin-top: 1rem; overflow-x:auto;">
       <!-- Windguru widget WG (model mix) -->
       <script id="wg_fwdg_49156_100_wg">
@@ -1226,18 +1226,13 @@
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
     <div class="contenuto">
       <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
-      <h3 id="modalTitolo">Modelli Meteo – Spiegazione</h3>
-      <p>
-        • <strong>WG (model mix)</strong>: la "media intelligente" di Windguru, che combina più modelli in un'unica previsione di sintesi.<br>
-        • <strong>ALADIN 2.3 km</strong>: modello locale ad alta risoluzione, molto preciso sul Nord Adriatico e sulla Bora.<br>
-        • <strong>ICON-2I 2.2 km</strong>: modello italiano ad alta risoluzione, ottimo dettaglio sulla costa e sui fenomeni locali (brezze, raffiche).<br>
-        • <strong>ICON (globale)</strong>: modello tedesco globale, buon compromesso ma meno fine sotto costa.<br>
-        • <strong>GFS</strong>: modello globale americano, utile per le tendenze a più giorni ma poco dettagliato.<br><br>
-        <strong>La risoluzione (km)</strong> è la dimensione della "griglia" del modello: più è piccola, più dettaglio. I modelli ad alta risoluzione (ALADIN 2,3 km, ICON-2I 2,2 km) "vedono" coste, rilievi e brezze locali; i globali (GFS ~13–27 km, ICON ~13 km) hanno maglie larghe e perdono i dettagli sotto costa.<br><br>
-        <strong>Cos'è il modello WG di Windguru?</strong> Non è un modello a sé, ma una <em>combinazione pesata</em> di più modelli: Windguru li fonde per dare una previsione di sintesi più stabile. Comodo come riferimento generale; per i fenomeni locali guarda i modelli ad alta risoluzione (ALADIN, ICON-2I).<br><br>
-        <strong>Cos'è ICON-2I?</strong> È la versione italiana ad alta risoluzione (2,2 km) del modello tedesco ICON, ottimizzata per l'Italia: si aggiorna spesso e coglie meglio brezze termiche e raffiche locali rispetto ai modelli globali.<br><br>
-        👉 Per il golfo di Trieste confronta <strong>ALADIN</strong> e <strong>ICON-2I</strong>: se concordano la previsione è più affidabile, se divergono c'è più incertezza.
-      </p>
+      <h3 id="modalTitolo">Info sui modelli</h3>
+      <ul class="modelli-info">
+        <li><strong>WG</strong> · media di più modelli fatta da Windguru: buona come riferimento generale.</li>
+        <li><strong>ALADIN</strong> · modello locale a 2,3 km: il più preciso sul Nord Adriatico e sulla bora.</li>
+        <li><strong>ICON-2I</strong> · modello italiano a 2,2 km: dettaglio sulla costa, brezze e raffiche.</li>
+      </ul>
+      <p>Se ALADIN e ICON-2I concordano, la previsione è più affidabile. <a href="/guida/windguru/">Guida →</a></p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="chiudiModal()">Chiudi</button>
       </div>
@@ -2323,7 +2318,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="/footer-widgets.js?v=20261109"></script>
+  <script src="/footer-widgets.js?v=20261109b"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoMuggiaSeo">

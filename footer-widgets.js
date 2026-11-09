@@ -653,8 +653,8 @@
   var proxy = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
   var t = sl ? {
     visitors: "Obiskovalci", since: "obiskovalcev od začetka",
-    stats: "Statistika", statsSotto: "obiskovalci, različica in posodobitve", version: "Različica strani",
-    siteUpdated: "Stran posodobljena", liveData: "Postaje v živo", fresh: function (a, b) { return a + " od " + b + " svežih"; }, loading: "nalagam…", na: "ni na voljo",
+    stats: "Statistika", statsSotto: "obiskovalci, različica in posodobitve", version: "Različica spletne aplikacije",
+    siteUpdated: "Aplikacija posodobljena", liveData: "Postaje v živo", fresh: function (a, b) { return a + " od " + b + " svežih"; }, loading: "nalagam…", na: "ni na voljo",
     supportKicker: "Neodvisen projekt", supportTitle: "Pomagaj, da Vento Trieste ostane brezplačen",
     supportText: "Podatki v živo, napovedi in vzdrževanje ostajajo dostopni vsem. Če ti je storitev uporabna, lahko podpreš njeno prihodnost.",
     supportCta: "Plačaj mi pivo", supportMethods: "Prostovoljni prispevek · PayPal, Revolut ali Bitcoin",
@@ -664,8 +664,8 @@
     dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri"
   } : {
     visitors: "Visitatori", since: "visitatori dall’inizio",
-    stats: "Stats", statsSotto: "visitatori, versione e aggiornamenti", version: "Versione del sito",
-    siteUpdated: "Sito aggiornato", liveData: "Centraline live", fresh: function (a, b) { return a + " su " + b + " fresche"; }, loading: "carico…", na: "non disponibile",
+    stats: "Stats", statsSotto: "visitatori, versione e aggiornamenti", version: "Versione WebApp",
+    siteUpdated: "WebApp aggiornata", liveData: "Centraline live", fresh: function (a, b) { return a + " su " + b + " fresche"; }, loading: "carico…", na: "non disponibile",
     supportKicker: "Progetto indipendente", supportTitle: "Aiuta Vento Trieste a restare gratuito",
     supportText: "Dati live, previsioni e manutenzione restano accessibili a tutti. Se il servizio ti è utile, puoi contribuire al suo futuro.",
     supportCta: "Offrimi una birra", supportMethods: "Donazione libera · PayPal, Revolut o Bitcoin",
@@ -808,14 +808,13 @@
     }
     if (stats.dataset.versione) return;
     stats.dataset.versione = "1";
-    var CHIAVE = "vt-versione-sito", copia = null;
+    var CHIAVE = "vt-versione-webapp", copia = null;
     try { copia = JSON.parse(sessionStorage.getItem(CHIAVE) || "null"); } catch (e) {}
     var scrivi = function (c) {
       var quando = new Date(c.data);
       document.getElementById("fsVersione").innerHTML = (c.n ? "n. " + Number(c.n).toLocaleString(sl ? "sl-SI" : "it-IT") + " · " : "") +
         '<a href="https://github.com/CryptoPannoz/meteo-trieste/commit/' + c.sha + '" target="_blank" rel="noopener"><code>' + c.sha.slice(0, 7) + "</code></a>";
-      document.getElementById("fsAggiornato").innerHTML = quando.toLocaleString(sl ? "sl-SI" : "it-IT", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) +
-        '<small>' + escNome(c.msg) + "</small>";
+      document.getElementById("fsAggiornato").textContent = quando.toLocaleString(sl ? "sl-SI" : "it-IT", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
     };
     if (copia && Date.now() - copia.t < 10 * 60000) { scrivi(copia); return; }
     fetch("https://api.github.com/repos/CryptoPannoz/meteo-trieste/commits?sha=main&per_page=1").then(function (r) {
@@ -824,7 +823,7 @@
       return r.json().then(function (j) {
         var c = j && j[0];
         if (!c) throw new Error("vuoto");
-        return { sha: c.sha, data: c.commit.committer.date, msg: String(c.commit.message || "").split("\n")[0], n: ultima ? +ultima[1] : 0, t: Date.now() };
+        return { sha: c.sha, data: c.commit.committer.date, n: ultima ? +ultima[1] : 0, t: Date.now() };
       });
     }).then(function (c) {
       try { sessionStorage.setItem(CHIAVE, JSON.stringify(c)); } catch (e) {}

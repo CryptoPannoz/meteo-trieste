@@ -879,7 +879,7 @@
   }
   </script>
   <link rel="stylesheet" href="/station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="/footer-widgets.css?v=20261109" />
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261109b" />
 </head>
 <body>
 
@@ -1138,7 +1138,7 @@
 
   <!-- WINDY + WINDGURU -->
   <div class="section" id="windy">
-    <div class="sec-head"><h2>Windguru – WG Trst</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info o drugih modelih</button></div>
+    <div class="sec-head"><h2>Windguru – WG Trst</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info o modelih</button></div>
     <div style="margin-top: 1rem; overflow-x:auto;">
       <!-- Windguru widget WG (model mix) -->
       <script id="wg_fwdg_49156_100_wg">
@@ -1245,18 +1245,13 @@
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
     <div class="contenuto">
       <button type="button" class="modal-x" aria-label="Zapri" onclick="this.closest('.modal').style.display='none'">✕</button>
-      <h3 id="modalTitolo">Vremenski modeli – razlaga</h3>
-      <p>
-        • <strong>WG (model mix)</strong>: "pametno povprečje" Windguruja, ki združi več modelov v eno povzeto napoved.<br>
-        • <strong>ALADIN 2.3 km</strong>: lokalni model visoke ločljivosti, zelo natančen za severni Jadran in burjo.<br>
-        • <strong>ICON-2I 2.2 km</strong>: italijanski model visoke ločljivosti, odlična razčlenjenost ob obali in pri lokalnih pojavih (termika, sunki).<br>
-        • <strong>ICON (globalni)</strong>: nemški globalni model, dober kompromis, a manj natančen ob obali.<br>
-        • <strong>GFS</strong>: ameriški globalni model, uporaben za večdnevne trende, a manj podroben.<br><br>
-        <strong>Ločljivost (km)</strong> je velikost mreže modela: manjša kot je, več podrobnosti. Modeli visoke ločljivosti (ALADIN 2,3 km, ICON-2I 2,2 km) "vidijo" obalo, relief in lokalne vetrove; globalni (GFS ~13–27 km, ICON ~13 km) imajo široko mrežo in izgubijo podrobnosti ob obali.<br><br>
-        <strong>Kaj je Windgurujev model WG?</strong> Ni samostojen model, ampak <em>uteženo povprečje</em> več modelov: Windguru jih združi v bolj stabilno povzeto napoved. Priročen kot splošno vodilo; za lokalne pojave glej modele visoke ločljivosti (ALADIN, ICON-2I).<br><br>
-        <strong>Kaj je ICON-2I?</strong> Je italijanska različica visoke ločljivosti (2,2 km) nemškega modela ICON, prilagojena Italiji: pogosto se posodablja in bolje zazna termične vetrove ter lokalne sunke kot globalni modeli.<br><br>
-        👉 Za Tržaški zaliv primerjaj <strong>ALADIN</strong> in <strong>ICON-2I</strong>: če se ujemata, je napoved bolj zanesljiva, če se razhajata, je več negotovosti.
-      </p>
+      <h3 id="modalTitolo">Info o modelih</h3>
+      <ul class="modelli-info">
+        <li><strong>WG</strong> · povprečje več modelov, ki ga pripravi Windguru: dobro za splošno sliko.</li>
+        <li><strong>ALADIN</strong> · lokalni model 2,3 km: najbolj natančen za severni Jadran in burjo.</li>
+        <li><strong>ICON-2I</strong> · italijanski model 2,2 km: podrobnosti ob obali, termika in sunki.</li>
+      </ul>
+      <p>Če se ALADIN in ICON-2I ujemata, je napoved bolj zanesljiva.</p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="chiudiModal()">Zapri</button>
       </div>
@@ -2314,7 +2309,7 @@
 
   <footer class="site-footer" aria-label="Informacije, podpora in zasluge">
   <div class="footer-widgets" id="footerWidgets" data-lang="sl"></div>
-  <script src="/footer-widgets.js?v=20261109"></script>
+  <script src="/footer-widgets.js?v=20261109b"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="veterZusternaSeo">

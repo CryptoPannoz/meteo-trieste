@@ -1921,3 +1921,5 @@ html .vt-benvenuto .vb-x:hover { background: rgba(255,255,255,.08); color: var(-
 .fs-det { flex: none; color: var(--label); font-size: .74rem; text-align: right; }
 .fs-pallino { width: 9px; height: 9px; border-radius: 50%; flex: none; transform: translateY(1px); }
 .fs-ok { background: #3ecf6e; } .fs-attenzione { background: #f2c230; } .fs-errore { background: #ef5350; }
+.modelli-info { margin: .4rem 0 .6rem; padding-left: 1.1rem; }
+.modelli-info li { margin: .3rem 0; line-height: 1.45; }

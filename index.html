@@ -899,6 +899,8 @@
     .mo-baro { display: inline-flex; align-items: center; gap: .25rem; color: inherit; text-decoration: none; }
     .mo-baro svg { width: .95rem; height: .95rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
     .mo-baro:hover b, .mo-baro:focus-visible b { text-decoration: underline; }
+    #pioggia { margin-top: 1rem; }
+    #aladinImg, #pioggiaImg { display: block; width: 100%; max-width: 640px; height: auto; margin: 0 auto; }
     .sun-times { font-size: .78rem; font-weight: 600; color: #6b7480; white-space: nowrap; }
     @media (max-width: 400px) { .mo-parola { display: none; } }
     .console-card .surf2-verdetto {
@@ -1094,7 +1096,7 @@
     .statbox .valore,
     .surf2-verdetto,
     .meter-pointer,
-    #aladinPasso,
+    #aladinOra,
     .visitor-total {
       font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
       font-variant-numeric: tabular-nums;
@@ -1765,7 +1767,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261109" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261109b" />
   <script src="./previsione-ai.js?v=20261102e" defer></script>
 </head>
 <body>
@@ -2277,13 +2279,13 @@
 
   <!-- WINDGURU (subito sotto OSMER dal 9 nov 2026): caricamento differito all'apertura di Previsioni -->
   <div class="section windguru-section" id="windy">
-    <div class="sec-head"><h2>Windguru – Trieste</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info sugli altri modelli</button></div>
+    <div class="sec-head"><h2>Windguru – Trieste</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info sui modelli</button></div>
     <div class="windguru-tabs" role="tablist" aria-label="Modelli Windguru per Trieste">
       <button class="windguru-tab is-active" type="button" role="tab" aria-selected="true" data-wg-spot="49156" data-wg-model="100" data-wg-uid="wg_lazy_49156_100" data-wg-lang="it">WG</button>
       <button class="windguru-tab" type="button" role="tab" aria-selected="false" data-wg-spot="49156" data-wg-model="107" data-wg-uid="wg_lazy_49156_107" data-wg-lang="it">ALADIN</button>
       <button class="windguru-tab" type="button" role="tab" aria-selected="false" data-wg-spot="49156" data-wg-model="104" data-wg-uid="wg_lazy_49156_104" data-wg-lang="it">ICON-2I</button>
     </div>
-    <div class="windguru-stage"><p class="windguru-placeholder">Il modello apparirà qui quando apri Previsioni.</p></div>
+    <div class="windguru-stage"></div>
   </div>
 
   <!-- RADAR ARSO -->
@@ -2305,21 +2307,19 @@
          onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Grafico Bora momentaneamente non disponibile.</p>'); this.style.display='none';" />
   </div>
 
-  <!-- MODELLO ALADIN -->
+  <!-- MODELLO ALADIN (9 nov 2026, Alberto: "un solo selettore, ora i due grafici non sono allineati"):
+       vento e nuvole/pioggia della STESSA corsa ARSO e della stessa ora, un solo ◀ ▶. Anche il vento
+       ha la serie con la data della corsa (ad_<corsa>_vm-va10m_si-sw_<ore>.png): vedi mostraAladin().
+       Nuvole e pioggia solo nella Pro (html.vt-lite #pioggia). -->
   <div class="section" id="aladin">
-    <h2>Modello Aladin – vento golfo di Trieste</h2>
-    <p class="stato">
-      Previsioni a passi di 3 ore (fonte ARSO) – serie completa su
-      <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">kuguluff.altervista.org</a>
-    </p>
+    <h2>Modello Aladin</h2>
     <div class="aladin-controlli">
-      <button id="aladinPrec" aria-label="Mappa precedente">◀</button>
-      <span id="aladinPasso">1 / 23</span>
-      <button id="aladinSucc" aria-label="Mappa successiva">▶</button>
+      <button id="aladinPrec" aria-label="Ora precedente">◀</button>
+      <span id="aladinOra" aria-live="polite">–</span>
+      <button id="aladinSucc" aria-label="Ora successiva">▶</button>
     </div>
-    <p class="stato aladin-status" id="aladinAggiornamento"></p>
-    <img id="aladinImg" alt="Mappa vento modello Aladin" loading="lazy"
-         onerror="this.insertAdjacentHTML('afterend','<p class=errore>⚠️ Mappa Aladin momentaneamente non disponibile.</p>'); this.style.display='none';" />
+    <p class="stato aladin-status" id="aladinCorsa"></p>
+    <img id="aladinImg" alt="Mappa del vento del modello Aladin" loading="lazy" width="640" height="480" />
     <!-- la legenda della mappa è in m/s: qui in nodi (1 m/s = 1,944 kt), con gli stessi colori ARSO -->
     <div class="mscala" role="img" aria-label="Vento in nodi: senza colore sotto 5, poi grigioverde 5-10, verde 10-15, verde acqua 15-19, blu 19-24, blu viola 24-29, viola oltre 29">
       <span class="mscala-nome">Vento medio, nodi</span>
@@ -2328,34 +2328,25 @@
         <li style="--c:#0066b2"><b>19</b></li><li style="--c:#4c66bf"><b>24</b></li><li style="--c:#9966cc"><b>29</b></li>
       </ol>
     </div>
-  </div>
-
-  <!-- NUVOLE E PIOGGIA ALADIN (8 nov 2026, chiesta da Roby): mappa ARSO TCC+TP3h, la stessa che si
-       guarda su vetercek accanto al vento. Solo Pro. Il nome del file contiene la corsa: vedi mostraPioggia() -->
-  <div class="section" id="pioggia">
-    <h2>Nuvole e pioggia – modello Aladin</h2>
-    <div class="aladin-controlli">
-      <button id="pioggiaPrec" aria-label="Ora precedente">◀</button>
-      <span id="pioggiaOra" aria-live="polite">–</span>
-      <button id="pioggiaSucc" aria-label="Ora successiva">▶</button>
+    <div id="pioggia">
+      <img id="pioggiaImg" alt="Mappa nuvole e pioggia del modello Aladin" loading="lazy" width="640" height="480" />
+      <div class="mscala" role="img" aria-label="Pioggia nelle 3 ore prima: da giallo chiaro (1 mm) a verde (50 mm) a verde acqua (100 mm e oltre)">
+        <span class="mscala-nome">Pioggia nelle 3 ore prima, mm</span>
+        <ol>
+          <li class="mscala-vuoto"></li><li style="--c:#ffff99"><b>1</b></li><li style="--c:#e5ff7f"></li><li style="--c:#ccff66"><b>5</b></li>
+          <li style="--c:#99e566"></li><li style="--c:#7fcc66"><b>20</b></li><li style="--c:#4cb24c"></li><li style="--c:#33994c"></li>
+          <li style="--c:#007f33"><b>50</b></li><li style="--c:#009966"></li><li style="--c:#19b27f"></li><li style="--c:#19cc99"></li>
+          <li style="--c:#00e5b2"></li><li style="--c:#00ffcc"><b>100</b></li>
+        </ol>
+      </div>
+      <div class="mscala" role="img" aria-label="Nuvole: senza colore sotto il 40% di cielo coperto, poi viola sempre più scuro fino al 100%">
+        <span class="mscala-nome">Nuvole, % di cielo coperto</span>
+        <ol>
+          <li class="mscala-vuoto"><b>0</b></li><li style="--c:#ccccff"><b>40</b></li><li style="--c:#b2b2e5"><b>60</b></li><li style="--c:#9999cc"><b>80</b></li>
+        </ol>
+      </div>
     </div>
-    <p class="stato aladin-status" id="pioggiaCorsa"></p>
-    <img id="pioggiaImg" alt="Mappa nuvole e pioggia del modello Aladin" loading="lazy" width="640" height="480" />
-    <div class="mscala" role="img" aria-label="Pioggia nelle 3 ore prima: da giallo chiaro (1 mm) a verde (50 mm) a verde acqua (100 mm e oltre)">
-      <span class="mscala-nome">Pioggia nelle 3 ore prima, mm</span>
-      <ol>
-        <li class="mscala-vuoto"></li><li style="--c:#ffff99"><b>1</b></li><li style="--c:#e5ff7f"></li><li style="--c:#ccff66"><b>5</b></li>
-        <li style="--c:#99e566"></li><li style="--c:#7fcc66"><b>20</b></li><li style="--c:#4cb24c"></li><li style="--c:#33994c"></li>
-        <li style="--c:#007f33"><b>50</b></li><li style="--c:#009966"></li><li style="--c:#19b27f"></li><li style="--c:#19cc99"></li>
-        <li style="--c:#00e5b2"></li><li style="--c:#00ffcc"><b>100</b></li>
-      </ol>
-    </div>
-    <div class="mscala" role="img" aria-label="Nuvole: senza colore sotto il 40% di cielo coperto, poi viola sempre più scuro fino al 100%">
-      <span class="mscala-nome">Nuvole, % di cielo coperto</span>
-      <ol>
-        <li class="mscala-vuoto"><b>0</b></li><li style="--c:#ccccff"><b>40</b></li><li style="--c:#b2b2e5"><b>60</b></li><li style="--c:#9999cc"><b>80</b></li>
-      </ol>
-    </div>
+    <p class="stato">Fonte: <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a> · serie completa su <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">kuguluff.altervista.org</a></p>
   </div>
 
 
@@ -2382,18 +2373,13 @@
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitolo">
     <div class="contenuto">
       <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
-      <h3 id="modalTitolo">Modelli Meteo – Spiegazione</h3>
-      <p>
-        • <strong>WG (model mix)</strong>: la "media intelligente" di Windguru, che combina più modelli in un'unica previsione di sintesi.<br>
-        • <strong>ALADIN 2.3 km</strong>: modello locale ad alta risoluzione, molto preciso sul Nord Adriatico e sulla Bora.<br>
-        • <strong>ICON-2I 2.2 km</strong>: modello italiano ad alta risoluzione, ottimo dettaglio sulla costa e sui fenomeni locali (brezze, raffiche).<br>
-        • <strong>ICON (globale)</strong>: modello tedesco globale, buon compromesso ma meno fine sotto costa.<br>
-        • <strong>GFS</strong>: modello globale americano, utile per le tendenze a più giorni ma poco dettagliato.<br><br>
-        <strong>La risoluzione (km)</strong> è la dimensione della "griglia" del modello: più è piccola, più dettaglio. I modelli ad alta risoluzione (ALADIN 2,3 km, ICON-2I 2,2 km) "vedono" coste, rilievi e brezze locali; i globali (GFS ~13–27 km, ICON ~13 km) hanno maglie larghe e perdono i dettagli sotto costa.<br><br>
-        <strong>Cos'è il modello WG di Windguru?</strong> Non è un modello a sé, ma una <em>combinazione pesata</em> di più modelli: Windguru li fonde per dare una previsione di sintesi più stabile. Comodo come riferimento generale; per i fenomeni locali guarda i modelli ad alta risoluzione (ALADIN, ICON-2I).<br><br>
-        <strong>Cos'è ICON-2I?</strong> È la versione italiana ad alta risoluzione (2,2 km) del modello tedesco ICON, ottimizzata per l'Italia: si aggiorna spesso e coglie meglio brezze termiche e raffiche locali rispetto ai modelli globali.<br><br>
-        👉 Per il golfo di Trieste confronta <strong>ALADIN</strong> e <strong>ICON-2I</strong>: se concordano la previsione è più affidabile, se divergono c'è più incertezza.
-      </p>
+      <h3 id="modalTitolo">Info sui modelli</h3>
+      <ul class="modelli-info">
+        <li><strong>WG</strong> · media di più modelli fatta da Windguru: buona come riferimento generale.</li>
+        <li><strong>ALADIN</strong> · modello locale a 2,3 km: il più preciso sul Nord Adriatico e sulla bora.</li>
+        <li><strong>ICON-2I</strong> · modello italiano a 2,2 km: dettaglio sulla costa, brezze e raffiche.</li>
+      </ul>
+      <p>Se ALADIN e ICON-2I concordano, la previsione è più affidabile. <a href="/guida/windguru/">Guida →</a></p>
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="chiudiModal()">Chiudi</button>
       </div>
@@ -2642,7 +2628,7 @@
   <!-- librerie senza effetti al caricamento: qui e non nel <head>, così la pagina si disegna prima -->
   <script src="./station-chart.js?v=20261105ux"></script>
   <script src="./spinta-bora.js?v=20261109"></script>
-  <script src="/pressione-trieste.js?v=20261109"></script>
+  <script src="/pressione-trieste.js?v=20261109b"></script>
   <script src="/scala-vento.js?v=20261105"></script>
   <script src="/dati-live.js?v=20260929b"></script>
   <script>
@@ -2682,78 +2668,57 @@
     function urlRadar() {
       return "https://meteo.arso.gov.si/uploads/probase/www/observ/radar/si0-rm-anim.gif?ts=" + Date.now();
     }
-    let passoAladin = 1;            // mappe 01..23, una ogni 3 ore
-    const PASSI_ALADIN = 23;
-    function urlAladin(n) {
-      const nn = String(n).padStart(2, "0");
-      return "https://meteo.arso.gov.si/uploads/probase/www/model/aladin/field/ad_vm-va10m_si-sw_" + nn + ".png?ts=" + Date.now();
-    }
-    function testoAggiornamentoUtc(d) {
-      const loc = d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
-      const utc = d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
-      return loc + " locali · " + utc + " UTC";
-    }
-    function mostraAladin() {
-      document.getElementById("aladinImg").src = urlAladin(passoAladin);
-      document.getElementById("aladinPasso").textContent = passoAladin + " / " + PASSI_ALADIN;
-      document.getElementById("aladinPrec").disabled = passoAladin <= 1;
-      document.getElementById("aladinSucc").disabled = passoAladin >= PASSI_ALADIN;
-      const st = document.getElementById("aladinAggiornamento");
-      if (st) st.textContent = "Immagine ricaricata " + testoAggiornamentoUtc(new Date()) + " · fonte ARSO";
-    }
-    document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
-    document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
-
-    /* ---------- Nuvole e pioggia Aladin (ARSO tcc-rr, 8 nov 2026) ----------
-       A differenza del vento non c'è una serie senza data: il nome contiene la corsa
-       (00 o 12 UTC, pubblicata verso le 03:05 / 15:05 UTC) e il passo +003..+072 h.
-       Provo la corsa più recente; se non è ancora uscita ripiego su quella prima, tenendo la stessa ora. */
-    const ORA_MS = 3600e3, PASSI_PIOGGIA = 24;     // una mappa ogni 3 ore, fino a +72 h
-    let corsaPioggia = null, passoPioggia = 1, ripiegoPioggia = false;
-    function corsaPioggiaRecente() {
+    /* ---------- Modello Aladin: vento + nuvole e pioggia (ARSO) ----------
+       Le due serie hanno nel nome la corsa (00 o 12 UTC, pubblicata verso le 03:05 / 15:05 UTC) e
+       l'ora +003..+072: stessa corsa e stessa ora per le due mappe, un solo selettore (9 nov 2026).
+       Provo la corsa più recente; se una delle due mappe non c'è ancora ripiego su quella prima,
+       tenendo la stessa ora. */
+    const ORA_MS = 3600e3, PASSI_ALADIN = 24;     // una mappa ogni 3 ore, fino a +72 h
+    const ARSO_FIELD = "https://meteo.arso.gov.si/uploads/probase/www/model/aladin/field/";
+    let corsaAladin = null, passoAladin = 1, ripiegoAladin = false;
+    function corsaAladinRecente() {
       const d = new Date(Date.now() - 3.25 * ORA_MS);
       d.setUTCHours(d.getUTCHours() < 12 ? 0 : 12, 0, 0, 0);
       return d;
     }
-    function urlPioggia(corsa, passo) {
+    function urlArso(prefisso, campo, corsa, passo) {
       const p2 = n => String(n).padStart(2, "0");
       const c = corsa.getUTCFullYear() + p2(corsa.getUTCMonth() + 1) + p2(corsa.getUTCDate()) + "-" + p2(corsa.getUTCHours()) + "00";
-      return "https://meteo.arso.gov.si/uploads/probase/www/model/aladin/field/as_" + c +
-        "_tcc-rr_si-neighbours_" + String(passo * 3).padStart(3, "0") + ".png";
+      return ARSO_FIELD + prefisso + "_" + c + "_" + campo + "_" + String(passo * 3).padStart(3, "0") + ".png";
     }
-    function oraPioggia(d) {
+    function oraAladin(d) {
       return d.toLocaleString("it-IT", { weekday: "short", hour: "2-digit", minute: "2-digit" });
     }
-    function mostraPioggia() {
-      const img = document.getElementById("pioggiaImg");
-      document.getElementById("pioggiaOra").textContent = oraPioggia(new Date(corsaPioggia.getTime() + passoPioggia * 3 * ORA_MS));
-      document.getElementById("pioggiaPrec").disabled = passoPioggia <= 1;
-      document.getElementById("pioggiaSucc").disabled = passoPioggia >= PASSI_PIOGGIA;
-      document.getElementById("pioggiaCorsa").textContent = passoPioggia + " / " + PASSI_PIOGGIA +
-        " · modello di " + oraPioggia(corsaPioggia) + (ripiegoPioggia ? " (il nuovo non è ancora uscito)" : "") + " · fonte ARSO";
-      img.style.display = "";
-      img.src = urlPioggia(corsaPioggia, passoPioggia);
+    function mostraAladin() {
+      document.getElementById("aladinOra").textContent = oraAladin(new Date(corsaAladin.getTime() + passoAladin * 3 * ORA_MS));
+      document.getElementById("aladinPrec").disabled = passoAladin <= 1;
+      document.getElementById("aladinSucc").disabled = passoAladin >= PASSI_ALADIN;
+      document.getElementById("aladinCorsa").textContent = passoAladin + " / " + PASSI_ALADIN +
+        " · modello di " + oraAladin(corsaAladin) + (ripiegoAladin ? " (il nuovo non è ancora uscito)" : "");
+      ["aladinImg", "pioggiaImg"].forEach(id => { document.getElementById(id).style.display = ""; });
+      document.getElementById("aladinImg").src = urlArso("ad", "vm-va10m_si-sw", corsaAladin, passoAladin);
+      document.getElementById("pioggiaImg").src = urlArso("as", "tcc-rr_si-neighbours", corsaAladin, passoAladin);
     }
-    function avviaPioggia() {
-      corsaPioggia = corsaPioggiaRecente();
-      ripiegoPioggia = false;
+    function avviaAladin() {
+      corsaAladin = corsaAladinRecente();
+      ripiegoAladin = false;
       // parto dalla prima mappa che non è già passata
-      passoPioggia = Math.min(PASSI_PIOGGIA, Math.max(1, Math.ceil((Date.now() - corsaPioggia.getTime()) / (3 * ORA_MS))));
-      mostraPioggia();
+      passoAladin = Math.min(PASSI_ALADIN, Math.max(1, Math.ceil((Date.now() - corsaAladin.getTime()) / (3 * ORA_MS))));
+      mostraAladin();
     }
-    document.getElementById("pioggiaImg").addEventListener("error", function () {
-      if (!ripiegoPioggia) {
-        corsaPioggia = new Date(corsaPioggia.getTime() - 12 * ORA_MS);
-        ripiegoPioggia = true;
-        passoPioggia = Math.min(PASSI_PIOGGIA, passoPioggia + 4);
-        mostraPioggia();
+    ["aladinImg", "pioggiaImg"].forEach(id => document.getElementById(id).addEventListener("error", function () {
+      if (!ripiegoAladin) {
+        corsaAladin = new Date(corsaAladin.getTime() - 12 * ORA_MS);
+        ripiegoAladin = true;
+        passoAladin = Math.min(PASSI_ALADIN, passoAladin + 4);
+        mostraAladin();
         return;
       }
       this.style.display = "none";
-      document.getElementById("pioggiaCorsa").textContent = "⚠️ Mappa nuvole e pioggia momentaneamente non disponibile.";
-    });
-    document.getElementById("pioggiaPrec").addEventListener("click", () => { passoPioggia--; mostraPioggia(); });
-    document.getElementById("pioggiaSucc").addEventListener("click", () => { passoPioggia++; mostraPioggia(); });
+      document.getElementById("aladinCorsa").textContent = "Mappa Aladin momentaneamente non disponibile · " + passoAladin + " / " + PASSI_ALADIN;
+    }));
+    document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
+    document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
 
     /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
     const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
@@ -3839,8 +3804,7 @@
       caricaMare();
       document.getElementById("boraImg").src = urlBora();
       document.getElementById("radarImg").src = urlRadar();
-      mostraAladin();
-      avviaPioggia();
+      avviaAladin();
     });
 
     /* ---------- Webcam ---------- */
@@ -4340,16 +4304,15 @@
       const fresco = x => x && Date.now() - x.ts < 6 * 3600000;
       const m = fresco(meteoOra.mareMambo) ? meteoOra.mareMambo : fresco(meteoOra.marePiran) ? meteoOra.marePiran : null;
       if (m) pezzi.push('<span title="Mare a ' + m.dove + '">mare <b>' + gradiUno(m.t) + '</b></span>');
-      /* barometro: solo la tendenza (Alberto, 9 nov 2026: "metti solo calo o pressione costante"),
-         ±1 hPa in 3 ore a Trieste molo; i valori stanno nel titolo, il link porta all'articolo */
+      /* barometro: freccia della tendenza (±1 hPa in 3 ore a Trieste molo) e hPa, niente parole
+         (Alberto, 9 nov 2026); i dettagli nel titolo, il link porta all'articolo */
       const pr = window.VTPressione && VTPressione.ultimo && VTPressione.ultimo();
       if (pr && Date.now() - pr.t < 45 * 60000) {
-        const parola = { su: "in salita", stabile: "costante", giu: "in calo" }[pr.classe];
         const rot = { su: -90, stabile: 0, giu: 90 }[pr.classe];
         const d = (pr.delta > 0 ? "+" : pr.delta < 0 ? "−" : "±") + Math.abs(pr.delta).toFixed(1).replace(".", ",");
         const titolo = "Barometro a Trieste molo: " + pr.p.toFixed(1).replace(".", ",") + " hPa, " + d + " hPa in 3 ore. Fonte: Protezione Civile della Regione Friuli Venezia Giulia, dati elaborati";
         pezzi.push('<a class="mo-baro mo-' + pr.classe + '" href="/guida/pressione/" title="' + titolo + '" aria-label="' + titolo + '">' +
-          '<svg viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(' + rot + 'deg)"><path d="M4 12h15m-5-5 5 5-5 5"/></svg>barometro <b>' + parola + "</b></a>");
+          '<svg viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(' + rot + 'deg)"><path d="M4 12h15m-5-5 5 5-5 5"/></svg><b>' + Math.round(pr.p) + "</b>hPa</a>");
       }
       box.innerHTML = pezzi.join("");
     }
@@ -4376,8 +4339,7 @@
     }
     document.getElementById("boraImg").src = urlBora();
     document.getElementById("radarImg").src = urlRadar();
-    mostraAladin();
-    avviaPioggia();
+    avviaAladin();
     aggiornaWebcam();
     autoCamSvbg();
     caricaCamSaturnia();
@@ -4439,7 +4401,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261109"></script>
+  <script src="./footer-widgets.js?v=20261109b"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
