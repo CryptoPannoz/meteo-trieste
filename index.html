@@ -2512,7 +2512,7 @@
        e Guida spot, compare sotto la mappa (stessa logica della mappa in cima, evento mappa:stazione) -->
   <div class="section" id="istriaMappaBox">
     <div class="mappa-canvas">
-      <svg id="mappaIstria" viewBox="0 0 762 1000" data-vista="istria" role="img" aria-label="Mappa del vento negli spot dell'Istria"></svg>
+      <svg id="mappaIstria" viewBox="0 0 762 1000" data-vista="istria" data-escludi="grado marinajulia monteGrisa barcola trieste muggia mambo paloma" role="img" aria-label="Mappa del vento negli spot dell'Istria"></svg>
     </div>
     <p class="stato mappa-credits">Costa © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · rilievo Copernicus EU-DEM, USGS, NOAA · <a href="/guida/spot-istria/">Guida agli spot dell'Istria →</a></p>
   </div>
@@ -4608,7 +4608,7 @@
         if (fatto) return;
         fatto = true;
         var s = document.createElement("script");
-        s.src = "./mappa-golfo.js?v=20261109e";
+        s.src = "./mappa-golfo.js?v=20261109f";
         document.head.appendChild(s);
       }
       if (!("ResizeObserver" in window)) return carica();

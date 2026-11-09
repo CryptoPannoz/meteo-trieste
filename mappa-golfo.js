@@ -175,9 +175,9 @@
   var MAPPA_W = 762, MAPPA_H = 1000;
   var VISTE = {
     golfo:  { x: 118, y: 55,  w: 322, h: 285 },
-    /* 9 nov 2026: più spazio in alto, prima la costa sopra Umago restava tagliata; ora dalla costa
-       slovena e Muggia (y ≈ 250) a Premantura (y ≈ 920) con margine, Quarnero compreso */
-    istria: { x: 125, y: 180, w: 615, h: 790 },
+    /* 9 nov 2026: l'Istria da Žusterna e dalla boa di Pirano (y ≈ 290) a Premantura (y ≈ 920), con
+       margine sopra e sotto e il Quarnero a destra */
+    istria: { x: 150, y: 255, w: 590, h: 705 },
     tutto:  { x: 0,   y: 0,   w: MAPPA_W, h: MAPPA_H }
   };
   var vb = { x: 0, y: 0, w: MAPPA_W, h: MAPPA_H };
@@ -497,9 +497,13 @@
      Serve alle pagine spot, che mostrano la stessa mappa centrata sul proprio
      angolo di golfo senza i punti lontani (es. /marinajulia/ nasconde Trieste,
      Barcola, Muggia e Zusterna). Assente sulla home: si disegna tutto. */
+  /* data-escludi="id id …" sull'svg: esclusioni di quella sola mappa (9 nov 2026: la mappa Spot Istria
+     della home non mostra le stazioni italiane) */
   function escluso(st) {
     var e = window.__mappaEscludi;
-    return !!(e && e.indexOf && e.indexOf(st.id) !== -1);
+    if (e && e.indexOf && e.indexOf(st.id) !== -1) return true;
+    var locali = svg && svg.getAttribute("data-escludi");
+    return !!(locali && (" " + locali + " ").indexOf(" " + st.id + " ") !== -1);
   }
 
   function render(data) {
