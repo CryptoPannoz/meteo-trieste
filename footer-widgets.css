@@ -9,10 +9,7 @@
   box-shadow: 0 8px 24px rgba(0,0,0,.26); padding: 1rem;
   margin: 0 auto 1rem; text-align: center;
 }
-.footer-widget.compact { max-width: 420px; }
 .footer-widget h2 { margin: 0 0 .7rem; font-size: 1.05rem; color: var(--slate); }
-.visitor-total { margin: .15rem 0; font-size: 1.65rem; font-weight: 850; color: var(--signal); font-variant-numeric: tabular-nums; }
-.visitor-label { margin: 0; color: var(--label); font-size: .78rem; }
 .visually-hidden {
   position: absolute !important; width: 1px !important; height: 1px !important;
   padding: 0 !important; margin: -1px !important; overflow: hidden !important;
@@ -151,11 +148,9 @@
 }
 .site-page-title + .hero { margin-top: 0; }
 .windguru-section .sec-head { align-items: center; }
-.windguru-badge { padding: .22rem .5rem; border: 1px solid var(--signal); border-radius: 999px; color: var(--signal); font-size: .63rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
 .windguru-tabs { display: flex; gap: .45rem; flex-wrap: wrap; margin: .9rem 0; }
 .windguru-section .sec-head { flex-wrap: wrap; gap: .5rem; }
 .windguru-info { font-size: .8rem !important; padding: .38rem .7rem !important; border-radius: 999px !important; }
-.windguru-consiglio { color: var(--ink) !important; font-size: .9rem !important; }
 .windguru-tab { min-height: 42px; padding: .55rem .8rem; border: 1px solid #3b4650; border-radius: 10px; background: #171d23; color: #c8d0d4; font: inherit; font-size: .74rem; font-weight: 800; cursor: pointer; }
 .windguru-tab:hover, .windguru-tab.is-active { border-color: var(--signal); background: var(--signal); color: #090b0d; }
 .windguru-stage { min-height: 92px; overflow-x: auto; padding: .7rem; border: 1px solid #303a43; border-radius: 11px; background: #0c1115; }
@@ -1869,9 +1864,6 @@ html.vt-lite .vt-buffer-dx { width: min(220px, 60%); }
 .seo-footer-tendine .seo-spot-pages { margin: 0 .9rem .9rem; }
 :root[data-theme="light"] .seo-footer-tendine > .footer-tendina { border-color: var(--line); }
 @media (max-width: 700px) {
-  html.vt-compatto .footer-widget.compact { display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: .1rem .45rem; padding: .65rem .8rem; }
-  html.vt-compatto .footer-widget.compact h2 { margin: 0; font-size: .82rem; }
-  html.vt-compatto .footer-widget.compact .visitor-total { margin: 0; font-size: 1.15rem; }
   html.vt-compatto .support-hero { padding: 1rem .9rem .9rem; }
   html.vt-compatto .support-kicker,
   html.vt-compatto .support-symbol,
@@ -1908,3 +1900,24 @@ html .vt-benvenuto .vb-x:hover { background: rgba(255,255,255,.08); color: var(-
 :root[data-theme="light"] .vt-benvenuto .vb-ico { background: var(--sea); color: #fff; }
 :root[data-theme="light"] .vt-benvenuto .vb-freccia { color: var(--sea-dark); }
 :root[data-theme="light"] html .vt-benvenuto .vb-x:hover, :root[data-theme="light"] .vt-benvenuto .vb-x:hover { background: rgba(0,0,0,.06); }
+
+/* Stats (9 nov 2026): visitatori, versione Git e aggiornamenti in una tendina del footer */
+.footer-widgets > .footer-stats { border: 1px solid #2a343d; border-radius: 12px; margin: 0 0 .6rem; }
+.footer-widgets > .footer-stats > summary { padding: .8rem .9rem; }
+:root[data-theme="light"] .footer-widgets > .footer-stats { border-color: var(--line); }
+.fs-lista { display: grid; gap: .55rem; margin: .2rem 0 .9rem; padding: 0 .9rem; }
+.footer-widgets > .footer-stats .fs-lista { padding: 0 .9rem; }
+.seo-footer-tendine > .footer-stats .fs-lista { padding: 0; }
+.fs-lista > div { display: grid; grid-template-columns: minmax(7.5rem, 38%) 1fr; gap: .2rem .8rem; align-items: baseline; }
+.fs-lista dt { margin: 0; color: var(--label); font-size: .76rem; font-weight: 650; }
+.fs-lista dd { margin: 0; color: var(--ink); font-size: .84rem; font-weight: 750; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.fs-lista dd small { display: block; margin-top: .15rem; color: var(--label); font-size: .74rem; font-weight: 550; }
+.fs-lista code { font-size: .8rem; }
+.fs-centraline { list-style: none; margin: -.3rem 0 .9rem; padding: 0 .9rem; }
+.seo-footer-tendine > .footer-stats .fs-centraline { padding: 0; }
+.fs-centraline li { display: flex; align-items: baseline; gap: .55rem; padding: .38rem 0; border-top: 1px solid #2a343d; font-size: .8rem; }
+:root[data-theme="light"] .fs-centraline li { border-top-color: var(--line); }
+.fs-nome { flex: 1 1 auto; min-width: 0; color: var(--ink); font-weight: 700; }
+.fs-det { flex: none; color: var(--label); font-size: .74rem; text-align: right; }
+.fs-pallino { width: 9px; height: 9px; border-radius: 50%; flex: none; transform: translateY(1px); }
+.fs-ok { background: #3ecf6e; } .fs-attenzione { background: #f2c230; } .fs-errore { background: #ef5350; }

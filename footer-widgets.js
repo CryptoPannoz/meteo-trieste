@@ -653,6 +653,8 @@
   var proxy = "https://script.google.com/macros/s/AKfycbxev3jcFdaCa1MM8lAx56sMBWYCkoUprA7C3Q_uGyCxNEYEjgKF6P3BiDaadr4zvUTpPg/exec";
   var t = sl ? {
     visitors: "Obiskovalci", since: "obiskovalcev od začetka",
+    stats: "Statistika", statsSotto: "obiskovalci, različica in posodobitve", version: "Različica strani",
+    siteUpdated: "Stran posodobljena", liveData: "Postaje v živo", fresh: function (a, b) { return a + " od " + b + " svežih"; }, loading: "nalagam…", na: "ni na voljo",
     supportKicker: "Neodvisen projekt", supportTitle: "Pomagaj, da Vento Trieste ostane brezplačen",
     supportText: "Podatki v živo, napovedi in vzdrževanje ostajajo dostopni vsem. Če ti je storitev uporabna, lahko podpreš njeno prihodnost.",
     supportCta: "Plačaj mi pivo", supportMethods: "Prostovoljni prispevek · PayPal, Revolut ali Bitcoin",
@@ -662,6 +664,8 @@
     dataSources: "Podatki in napovedi", localSources: "Kamere in lokalni viri"
   } : {
     visitors: "Visitatori", since: "visitatori dall’inizio",
+    stats: "Stats", statsSotto: "visitatori, versione e aggiornamenti", version: "Versione del sito",
+    siteUpdated: "Sito aggiornato", liveData: "Centraline live", fresh: function (a, b) { return a + " su " + b + " fresche"; }, loading: "carico…", na: "non disponibile",
     supportKicker: "Progetto indipendente", supportTitle: "Aiuta Vento Trieste a restare gratuito",
     supportText: "Dati live, previsioni e manutenzione restano accessibili a tutti. Se il servizio ti è utile, puoi contribuire al suo futuro.",
     supportCta: "Offrimi una birra", supportMethods: "Donazione libera · PayPal, Revolut o Bitcoin",
@@ -746,7 +750,17 @@
   var senza = (root.dataset.senza || "").split(/\s+/);
   var conVisitatori = senza.indexOf("visitatori") < 0;
   root.innerHTML =
-    (conVisitatori ? '<section class="footer-widget compact" aria-labelledby="footerVisitorsTitle"><h2 id="footerVisitorsTitle">👥 ' + t.visitors + '</h2><p class="visitor-total" id="footerVisitorTotal">2.885</p><p class="visitor-label">' + t.since + '</p></section>' : '') +
+    /* Stats (9 nov 2026, Alberto: "un dropdown STATS con visitatori, versioni Git, ultimo
+       aggiornamento"): era il riquadro grande dei visitatori in cima al footer. Ora è una tendina
+       chiusa che il footer compatto (più giù) mette sotto "Perché nasce il progetto". */
+    (conVisitatori ? '<details class="sources-tendina footer-tendina footer-stats' + (sl ? ' sources-tendina-sl' : '') + '" id="footerStats">' +
+      '<summary><span class="sources-tendina-titolo">' + t.stats + '<small><span id="footerVisitorTotal">…</span> ' + t.since + '</small></span></summary>' +
+      '<dl class="fs-lista">' +
+        '<div><dt>' + t.visitors + '</dt><dd id="fsVisitatori">…</dd></div>' +
+        '<div><dt>' + t.version + '</dt><dd id="fsVersione">' + t.loading + '</dd></div>' +
+        '<div><dt>' + t.siteUpdated + '</dt><dd id="fsAggiornato">' + t.loading + '</dd></div>' +
+        (typeof window.__statoCentraline === "function" ? '<div><dt>' + t.liveData + '</dt><dd id="fsDati"></dd></div>' : '') +
+      '</dl><ul class="fs-centraline" id="fsCentraline" hidden></ul></details>' : '') +
     '<section class="footer-widget support-widget" aria-labelledby="footerSupportTitle">' +
       '<div class="support-hero"><span class="support-kicker">' + t.supportKicker + '</span>' +
       '<span class="support-symbol" aria-hidden="true">' + (document.body.classList.contains("bcn") ? "🍺" :   // Barcolana: com'era
@@ -768,8 +782,59 @@
     '</section>';
 
   if (conVisitatori) fetch(proxy + "?views=1&ts=" + Date.now()).then(function (r) { return r.json(); }).then(function (v) {
-    if (v && v.total != null) document.getElementById("footerVisitorTotal").textContent = Number(v.total).toLocaleString(sl ? "sl-SI" : "it-IT");
+    if (!v || v.total == null) return;
+    var tot = Number(v.total).toLocaleString(sl ? "sl-SI" : "it-IT");
+    document.getElementById("footerVisitorTotal").textContent = tot;
+    document.getElementById("fsVisitatori").textContent = tot;
   }).catch(function () {});
+
+  /* Versione = numero di commit su main (dal link "last" dell'API GitHub, una richiesta sola che
+     porta anche l'ultimo commit). Si chiede solo all'apertura della tendina: l'API pubblica
+     concede 60 richieste l'ora per IP. Copia in sessionStorage per 10 minuti. */
+  var stats = document.getElementById("footerStats");
+  if (stats) stats.addEventListener("toggle", function () {
+    if (!stats.open) return;
+    // centraline live come in /admin: pallino verde (fresca), giallo (ferma), rosso (nessun dato)
+    var fsDati = document.getElementById("fsDati"), lista = document.getElementById("fsCentraline");
+    if (fsDati && lista && typeof window.__statoCentraline === "function") {
+      var cc = window.__statoCentraline();
+      var fresche = cc.filter(function (x) { return x.esito === "ok"; }).length;
+      fsDati.textContent = t.fresh(fresche, cc.length);
+      lista.innerHTML = cc.map(function (x) {
+        return '<li><span class="fs-pallino fs-' + x.esito + '" aria-hidden="true"></span><span class="fs-nome">' + escNome(x.nome) +
+          '</span><span class="fs-det">' + escNome(x.dettaglio) + "</span></li>";
+      }).join("");
+      lista.hidden = false;
+    }
+    if (stats.dataset.versione) return;
+    stats.dataset.versione = "1";
+    var CHIAVE = "vt-versione-sito", copia = null;
+    try { copia = JSON.parse(sessionStorage.getItem(CHIAVE) || "null"); } catch (e) {}
+    var scrivi = function (c) {
+      var quando = new Date(c.data);
+      document.getElementById("fsVersione").innerHTML = (c.n ? "n. " + Number(c.n).toLocaleString(sl ? "sl-SI" : "it-IT") + " · " : "") +
+        '<a href="https://github.com/CryptoPannoz/meteo-trieste/commit/' + c.sha + '" target="_blank" rel="noopener"><code>' + c.sha.slice(0, 7) + "</code></a>";
+      document.getElementById("fsAggiornato").innerHTML = quando.toLocaleString(sl ? "sl-SI" : "it-IT", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) +
+        '<small>' + escNome(c.msg) + "</small>";
+    };
+    if (copia && Date.now() - copia.t < 10 * 60000) { scrivi(copia); return; }
+    fetch("https://api.github.com/repos/CryptoPannoz/meteo-trieste/commits?sha=main&per_page=1").then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      var ultima = /[?&]page=(\d+)>; rel="last"/.exec(r.headers.get("Link") || "");
+      return r.json().then(function (j) {
+        var c = j && j[0];
+        if (!c) throw new Error("vuoto");
+        return { sha: c.sha, data: c.commit.committer.date, msg: String(c.commit.message || "").split("\n")[0], n: ultima ? +ultima[1] : 0, t: Date.now() };
+      });
+    }).then(function (c) {
+      try { sessionStorage.setItem(CHIAVE, JSON.stringify(c)); } catch (e) {}
+      scrivi(c);
+    }).catch(function () {
+      document.getElementById("fsVersione").textContent = t.na;
+      document.getElementById("fsAggiornato").textContent = t.na;
+      delete stats.dataset.versione;   // si riprova alla prossima apertura
+    });
+  });
 
   if (SOSTENITORI_URL) fetch(SOSTENITORI_URL).then(function (r) { return r.json(); }).then(function (j) {
     if (!j || !Array.isArray(j.sostenitori)) return;
@@ -1376,6 +1441,7 @@
 
 /* Footer compatto (audit UI/UX 5 nov 2026): sul telefono il footer della home era lungo
    2,5 schermate. Le pagine degli spot e "Perché nasce questo progetto" vanno in due tendine
+   (più "Stats", 9 nov 2026, costruita sopra con i visitatori)
    chiuse come "Partner e riferimenti" (il testo resta nella pagina, anche per Google); la riga
    "Suggerimenti e migliorie" era un doppione della firma di vt-app.js: resta solo il saluto. */
 (function () {
@@ -1407,6 +1473,8 @@
       sl ? "Vento Trieste in navdih Alessia Vremca" : "Vento Trieste e l'ispirazione di Alessio Vremec");
     nodi.forEach(function (n) { if (n !== spot) dProg.appendChild(n); });
     copia.appendChild(dProg);
+    var dStats = document.getElementById("footerStats");   // Stats va sotto "Perché nasce il progetto"
+    if (dStats) copia.appendChild(dStats);
     copia.classList.add("seo-footer-tendine");
   }
   var meta = document.querySelector(".site-credits .credits-meta");

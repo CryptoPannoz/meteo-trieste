@@ -69,10 +69,10 @@
     differenza: "Potisk = Maribor − Trst",
     guida: "", chiudi: "Zapri",
     mappaTitolo: "Ni burje · veter zdaj", mappaBadge: "ZALIV · ISTRA",
-    mappaSotto: "Potisk burje je pri ničli ali pod njo in v naslednjih 24 urah ne naraste: burje ni. Tu je, kje piha zdaj, od zaliva do Istre.",
+    mappaSotto: "",
     mappaSpinta: "Potisk burje", mappaGrafico: "📈 Graf potiska", mappaTorna: "🗺️ Ni burje: pokaži zemljevid",
     mappaIstria: "📍 Spoti v Istri",
-    mappaFonte: "Izmerjeni podatki postaj, ne napoved · dotakni se številke za podrobnosti · obala © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · relief Copernicus EU-DEM, USGS, NOAA",
+    mappaFonte: "Obala © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · relief Copernicus EU-DEM, USGS, NOAA",
     mappaQui: "🗺️ Zdaj ni burje: zemljevid je na vrhu strani, namesto potiska burje.", mappaVai: "Na zemljevid ↑"
   } : {
     fasce: ["Nessuna spinta", "Spinta debole", "Genesi della Bora", "Bora consistente", "Bora forte"],
@@ -113,10 +113,10 @@
     differenza: "Spinta = Maribor − Trieste",
     guida: "<p class=\"sb-guida-link\"><a href=\"/guida/spinta-bora/\">📖 Approfondisci nella guida →</a></p>", chiudi: "Chiudi",
     mappaTitolo: "Niente bora · il vento adesso", mappaBadge: "GOLFO · ISTRIA",
-    mappaSotto: "La spinta della bora è a zero o sotto e nelle prossime 24 ore non sale: niente bora. Ecco dove soffia adesso, dal Golfo all'Istria.",
+    mappaSotto: "",
     mappaSpinta: "Spinta della Bora", mappaGrafico: "📈 Grafico della spinta", mappaTorna: "🗺️ Niente bora: mostra la mappa",
     mappaIstria: "📍 Spot Istria",
-    mappaFonte: "Dati osservati dalle centraline, non una previsione · tocca un numero per il dettaglio · costa © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · rilievo Copernicus EU-DEM, USGS, NOAA",
+    mappaFonte: "Costa © <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors · rilievo Copernicus EU-DEM, USGS, NOAA",
     mappaQui: "🗺️ Adesso non c'è bora: la mappa è salita in cima alla pagina, al posto della Spinta della Bora.", mappaVai: "Vai alla mappa ↑"
   };
 
@@ -534,7 +534,7 @@
     m.className = "sb-mappa";
     m.innerHTML =
       '<h2 class="sb-mappa-titolo">' + T.mappaTitolo + ' <span class="bora-only-badge">' + T.mappaBadge + "</span></h2>" +
-      '<p class="sb-mappa-sotto">' + T.mappaSotto + "</p>" +
+      (T.mappaSotto ? '<p class="sb-mappa-sotto">' + T.mappaSotto + "</p>" : "") +
       '<div class="sb-mappa-posto"></div>' +
       '<p class="stato sb-mappa-fonte">' + T.mappaFonte + "</p>" +
       '<div class="sb-mappa-spinta"><span class="sb-mappa-num"></span><span class="sb-mappa-trend"></span></div>' +

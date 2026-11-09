@@ -17,6 +17,7 @@
    Dato più vecchio di ETA_MAX minuti o senza il valore di 3 ore prima: niente badge (dati freschi).
 
    Uso: VTPressione.badge() → html del badge, "" se non c'è un dato buono;
+        VTPressione.ultimo() → l'ultima lettura (la home ne mostra i hPa nella riga "Meteo ora");
         VTPressione.aggiorna() → scarica e riscrive i badge già in pagina. */
 (function () {
   "use strict";
@@ -76,6 +77,7 @@
       return;
     }
     var verd = document.getElementById("verdettoBig");
+    if (document.getElementById("meteoOraDati")) return;   // home: il barometro sta nella riga "Meteo ora" (9 nov 2026)
     if (html && verd && verd.textContent.trim() && verd.textContent.trim() !== "—") verd.insertAdjacentHTML("beforeend", html);
   }
 
@@ -91,9 +93,13 @@
     }).catch(function () {
       // senza risposta si tiene il dato di prima finché è fresco
       if (stato && Date.now() - stato.t > ETA_MAX * 60000) stato = null;
-    }).then(function () { riscrivi(); inCorso = null; });
+    }).then(function () {
+      riscrivi(); inCorso = null;
+      try { document.dispatchEvent(new Event("vt:pressione")); } catch (e) {}   // riga "Meteo ora" della home
+    });
     return inCorso;
   }
 
-  window.VTPressione = { badge: badge, aggiorna: aggiorna };
+  // ultimo(): { p: hPa, delta, t: ms } dell'ultima lettura buona, o null
+  window.VTPressione = { badge: badge, aggiorna: aggiorna, ultimo: function () { return stato; } };
 })();

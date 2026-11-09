@@ -293,12 +293,18 @@
     #surfometroCard.surf-offline .surf2-verdetto { font-size: 1.5rem; letter-spacing: .01em; }
     #surfometroCard .surf-vecchio { display: block; margin-top: .3rem; font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif; font-size: .8rem; font-weight: 600; letter-spacing: 0; line-height: 1.35; color: var(--label); opacity: .6; }
     .surf-agg { display: block; margin-top: .1rem; }
-    .surf-catena { font-size: .74rem; opacity: .72; margin-top: .15rem; }
     /* nota fonti del surfometro: chiusa di default, il riassunto sta nel summary */
-    .surf-note { margin-top: .5rem; }
-    .surf-note summary { font-size: .8rem; font-weight: 600; color: var(--label); cursor: pointer; }
-    .surf-note summary:hover { color: var(--testo); }
-    .surf-note[open] summary { margin-bottom: .3rem; }
+    .surf-credits { margin: .55rem 0 0; font-size: .7rem; line-height: 1.45; color: var(--label); opacity: .8; }
+    .surf-credits a { color: inherit; }
+    #surfNoteSum { font-weight: 700; opacity: 1; }
+    /* scheda della stazione toccata sulla mappa (9 nov 2026) */
+    .scheda-stazione { position: relative; margin-top: .75rem; padding: .85rem .9rem .3rem; border: 1px solid var(--bordo); border-radius: 12px; scroll-margin-top: var(--section-sticky-top, 90px); }
+    .scheda-stazione[hidden] { display: none; }
+    .scheda-stazione > .section { margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
+    .scheda-stazione > .section > h2 { margin-top: 0; padding-right: 2.6rem; }
+    .scheda-x { position: absolute; top: .45rem; right: .45rem; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; padding: 0 !important; border: 0 !important; border-radius: 50% !important; background: transparent !important; color: var(--label) !important; font: 700 1.35rem/1 inherit !important; cursor: pointer; }
+    .scheda-x:hover { color: var(--ink) !important; }
+    .mappa-credits { font-size: .72rem; opacity: .75; }
     .meter {
       position: relative;
       padding: 50px .55rem 1.15rem;
@@ -877,11 +883,24 @@
       padding: 1.2rem;
       overflow: hidden;
     }
-    /* alba/tramonto in alto a destra nella card surfometro */
+    /* Meteo ora (9 nov 2026): cielo, aria, mare e pressione in una riga in cima alla card
+       del surfometro, con alba/tramonto a destra (prima stava da solo, in alto a destra) */
     #surfometroCard { position: relative; }
-    #surfometroCard h2 { padding-right: 6.5rem; }
-    .sun-times { position: absolute; top: 1.25rem; right: 1.2rem; font-size: .78rem; font-weight: 600; color: #6b7480; white-space: nowrap; }
-    @media (max-width: 480px) { #surfometroCard h2 { padding-right: 5.4rem; } .sun-times { font-size: .72rem; top: 1.3rem; right: 1rem; } }
+    .meteo-ora { margin: 0 0 .5rem; font-size: .8rem; font-weight: 600; color: var(--label); line-height: 1.3; }
+    .meteo-ora:has(.mo-dati:empty) { display: none; }
+    .mo-dati { display: flex; align-items: center; flex-wrap: wrap; gap: .2rem .75rem; }
+    .surf-testa { display: flex; align-items: baseline; justify-content: space-between; gap: .2rem .8rem; flex-wrap: wrap; }
+    .surf-testa > h2 { min-width: 0; }
+    .mo-dati > span { display: inline-flex; align-items: center; gap: .3rem; white-space: nowrap; }
+    .mo-dati b { color: var(--ink); font-weight: 800; font-variant-numeric: tabular-nums; }
+    .mo-ico { width: 1.15rem; height: 1.15rem; flex: 0 0 auto; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .mo-ico .mi-sole { stroke: #f2c230; } .mo-ico .mi-nuvola { stroke: currentColor; } .mo-ico .mi-acqua { stroke: #5fb4ff; }
+    .mo-parola { color: var(--ink); }
+    .mo-baro { display: inline-flex; align-items: center; gap: .25rem; color: inherit; text-decoration: none; }
+    .mo-baro svg { width: .95rem; height: .95rem; flex: none; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+    .mo-baro:hover b, .mo-baro:focus-visible b { text-decoration: underline; }
+    .sun-times { font-size: .78rem; font-weight: 600; color: #6b7480; white-space: nowrap; }
+    @media (max-width: 400px) { .mo-parola { display: none; } }
     .console-card .surf2-verdetto {
       font-size: clamp(2.2rem, 8vw, 5.4rem);
       text-align: left;
@@ -1430,7 +1449,6 @@
       html.vt-compatto #surfometroCard .pressione-badge .pb-num { display: none; }   /* i due badge su una riga; il numero è nell'articolo */
       html.vt-compatto #surfometroCard .meter { margin-top: 0; padding-top: .55rem; padding-bottom: .7rem; }
       html.vt-compatto #surfometroCard #meterPointer { margin-bottom: .5rem; }
-      html.vt-compatto #surfometroCard .surf-note { margin-top: .35rem; }
       html.vt-compatto #barcolaLive h2 { margin-bottom: .35rem; }
       html.vt-compatto #barcolaLive .sb { margin-top: 0; }
       html.vt-compatto #barcolaLive .sb-legenda { display: none; }
@@ -1747,7 +1765,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261108" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261109" />
   <script src="./previsione-ai.js?v=20261102e" defer></script>
 </head>
 <body>
@@ -1781,7 +1799,6 @@
       <a href="#vento">Vento ora</a>
       <a href="#mappaVento">Mappa e centraline</a>
       <a href="#webcam">Webcam</a>
-      <a href="#boe">Boe e onde</a>
       <a href="#previsioni">Previsioni</a>
       <a href="#registro">Registro del vento</a>
       <a href="#istria" onclick="apriSpotIstria(event)">Spot Istria</a>
@@ -1939,8 +1956,11 @@
     <section class="hero" id="vento">
       <!-- SURFOMETRO (scheda a parte) -->
       <div class="console-card" id="surfometroCard">
-        <span id="solare" class="sun-times" aria-label="alba e tramonto"></span>
-        <h2 id="surfTitolo">Surfometro – Barcola</h2>
+        <div class="meteo-ora" id="meteoOra"><span class="mo-dati" id="meteoOraDati"></span></div>
+        <div class="surf-testa">
+          <h2 id="surfTitolo">Surfometro – Barcola</h2>
+          <span id="solare" class="sun-times" aria-label="alba e tramonto"></span>
+        </div>
         <div class="surf2">
           <!-- caricamento con il logo: visibile solo finché arrivano i dati (footer-widgets.css, .vt-buffer) -->
           <div class="vt-buffer" role="status"><svg class="vt-buffer-logo" viewBox="0 0 512 512" aria-hidden="true" focusable="false"><rect width="512" height="512" rx="96" fill="#07090c"/><path class="vt-r1" pathLength="1" d="M101.0 184.0H288.2C338.6 184.0 338.6 112.0 288.2 112.0C259.4 112.0 255.8 140.8 273.8 151.6"/><path class="vt-r2" pathLength="1" d="M101.0 292.0H389.0C439.4 292.0 439.4 220.0 389.0 220.0C360.2 220.0 356.6 248.8 374.6 259.6"/><path class="vt-r3" pathLength="1" d="M101.0 400.0H252.2"/></svg><span class="vt-buffer-dx"><span class="vt-buffer-testo">Carico il vento…</span><span class="vt-buffer-scala" aria-hidden="true"></span></span></div>
@@ -1976,13 +1996,9 @@
             </div>
           </div>
         </div>
-        <details class="surf-note">
-          <summary id="surfNoteSum">ℹ️ Fonte dati</summary>
-          <p class="stato" id="surfFonte"></p>
-          <p class="stato surf-catena">Fonti, in ordine: centralina <strong>Barcola</strong> → <strong>Monte Grisa</strong> (backup) → boa <strong>MAMBO1</strong> OGS (backup 2, oraria)</p>
-          <p class="stato surf-catena">A Barcola vento medio e raffica sono calcolati sugli <strong>ultimi 10 minuti</strong>. La centralina è sul Terrapieno, al riparo: il suo vento medio è circa la metà di quello di Trieste molo, Muggia e boa MAMBO1, mentre la sua raffica corrisponde al loro vento medio. Per questo la parola del surfometro si basa sulla <strong>raffica</strong>. <a href="/guida/surfometro/">Guida →</a></p>
-          <p class="stato surf-catena">Badge del <strong>barometro</strong> (hPa): di quanto è cambiata la pressione atmosferica a Trieste molo nelle ultime 3 ore; freccia su da +1 hPa, giù da −1 hPa. Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · dati elaborati. <a href="/guida/pressione/">Cosa dice sul vento →</a></p>
-        </details>
+        <!-- 9 nov 2026: niente più tendina "Fonte dati" (Alberto: "togli"). Resta una riga di credits,
+             obbligatoria per la licenza dei dati della Protezione Civile FVG (aria e barometro di Meteo ora) -->
+        <p class="surf-credits"><span id="surfNoteSum"></span> · Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> (<a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a>, dati elaborati) · OGS · NIB · Open-Meteo · <a href="/guida/surfometro/">Guida</a></p>
       </div>
 
       <!-- SPINTA DELLA BORA: DIFFERENZA DI PRESSIONE TRIESTE–MARIBOR (MSLP), RESA LEGGIBILE.
@@ -2011,34 +2027,29 @@
 
     </section>
 
-  <!-- MAPPA E CENTRALINE LIVE (13 ott 2026): una tendina sola con la mappa del Golfo e, sotto,
-       le schede delle centraline (prima erano due tendine separate, "Centraline" e "Mappa live").
-       id="centraline" resta sul blocco delle schede: i vecchi link /#centraline aprono questa
-       tendina e portano alle schede. data-sum-fisso: footer-widgets.js non riscrive il sottotitolo. -->
+  <!-- MAPPA LIVE (9 nov 2026, Alberto: "meno AI slop"): le schede di centraline e boe non sono più
+       una lista sotto la mappa. Restano qui nascoste (#centraline, #boe) e una alla volta compare sotto
+       la mappa quando si tocca il suo punto (evento mappa:stazione di mappa-golfo.js, vedi
+       "Scheda della stazione toccata"). I vecchi link /#centraline e /#boe aprono la mappa.
+       data-sum-fisso: footer-widgets.js non riscrive il sottotitolo. -->
   <details class="gruppo-collapse page-collapse" id="mappaVento" data-sum-fisso>
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
-      <strong>🌬️ Mappa e centraline live</strong>
-      <span>Mappa del Golfo e 5 centraline a confronto</span>
+      <strong>🌬️ Mappa live</strong>
+      <span>Centraline e boe del Golfo e dell’Istria</span>
     </span>
   </summary>
 
   <div class="section" id="mappaVentoContenuto">
     <h2>Vento adesso – Golfo e Istria <span class="mappa-beta">BETA</span></h2>
-    <div class="mappa-nowcast-head">
-      <p>Dati osservati dalle stazioni attive, non una previsione.</p>
-      <span class="mappa-nowcast-hint">Tocca un numero → si apre il dettaglio</span>
-    </div>
     <div class="mappa-canvas">
       <svg id="mappaGolfo" viewBox="0 0 762 1000" data-vista="golfo" role="img" aria-label="Mappa del vento osservato nel Golfo di Trieste e in Istria"></svg>
     </div>
     <div class="mappa-legenda" aria-label="Legenda intensità del vento"></div>
-    <p class="stato" id="mappaIstruzioni">La freccia indica dove va il vento; selezionala per vedere stazione, intensità, raffica, direzione e ora. Golfo, Istria e Tutto cambiano inquadratura. Le centraline offline non vengono mostrate. Costa: dati © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Rilievo: Copernicus EU-DEM, USGS SRTM/GMTED, NOAA ETOPO1 (<a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">Terrain Tiles</a>).</p>
+    <p class="stato mappa-credits" id="mappaIstruzioni">Costa © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · rilievo Copernicus EU-DEM, USGS, NOAA (<a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">Terrain Tiles</a>)</p>
   </div>
 
-  <div class="centraline-blocco" id="centraline">
-  <p class="centraline-titolo">📡 Centraline · dati osservati</p>
-  <div class="quick-grid">
+  <div class="schede-stazioni" id="centraline" hidden>
   <div class="section" id="trieste">
     <h2>Trieste · molo F.lli Bandiera</h2>
     <div id="triesteCards"></div>
@@ -2122,6 +2133,34 @@
     </div>
   </div>
   </div>
+
+  <div class="schede-stazioni" id="boe" hidden>
+  <div class="section" id="boaMambo">
+    <h2>Boa MAMBO1 · Miramare</h2>
+    <div id="mamboStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoMambo"></p>
+    <p class="stato">Fonte: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a> · <a href="https://maps.google.com/?q=45.698333,13.700000" target="_blank" rel="noopener">Posizione</a></p>
+  </div>
+
+  <div class="section" id="boaPaloma">
+    <h2>Boa Paloma · centro golfo</h2>
+    <div id="palomaStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoPaloma"></p>
+    <p class="stato">Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · dati elaborati · <a href="https://maps.google.com/?q=45.618580,13.565300" target="_blank" rel="noopener">Posizione</a></p>
+  </div>
+
+  <div class="section" id="boaPiran">
+    <h2>Boa Vida · Pirano</h2>
+    <div id="piranStat">
+      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
+    </div>
+    <p class="stato" id="statoPiran"></p>
+    <p class="stato">Fonte: <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB – boa Vida</a> · <a href="https://maps.google.com/?q=45.548750,13.550700" target="_blank" rel="noopener">Posizione</a></p>
+  </div>
   </div>
 
   <div class="section aggiorna-riga">
@@ -2202,46 +2241,12 @@
 
   </details>
 
-  <!-- BOE OGS: MARE E ONDE -->
-  <details class="gruppo-collapse page-collapse" id="boe">
-  <summary class="gruppo-sum">
-    <span class="gruppo-sum-main">
-      <strong>🌊 Boe meteorologiche</strong>
-      <span>Trieste MAMBO1, Paloma e Pirano Vida</span>
-    </span>
-  </summary>
-
-  <div class="section" id="mare">
-    <h2>Mare e onde – boe OGS</h2>
-
-    <h3 style="margin:.5rem 0 .25rem;">Boa Trieste (MAMBO1, davanti al castello di Miramare)</h3>
-    <div id="mamboStat">
-      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
-    </div>
-    <p class="stato" id="statoMambo"></p>
-    <p class="stato">Fonte: <a href="https://nodc.ogs.it/geoportal/?msv=1" target="_blank" rel="noopener">OGS – NODC</a> (via ERDDAP) · <a href="https://maps.google.com/?q=45.698333,13.700000" target="_blank" rel="noopener">📍 Posizione esatta</a> (45°41′54″ N, 13°42′00″ E)</p>
-
-    <h3 style="margin:1rem 0 .25rem;">Boa Paloma (centro golfo)</h3>
-    <div id="palomaStat">
-      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
-    </div>
-    <p class="stato" id="statoPaloma"></p>
-    <p class="stato">Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a> · dati elaborati (nodi, medie) · <a href="https://maps.google.com/?q=45.618580,13.565300" target="_blank" rel="noopener">📍 Posizione esatta</a> (45°37′07″ N, 13°33′55″ E)</p>
-
-    <h3 style="margin:1rem 0 .25rem;">Boa Pirano (Vida, NIB)</h3>
-    <div id="piranStat">
-      <div class="statbox"><span class="etichetta">Caricamento…</span><span class="valore">–</span></div>
-    </div>
-    <p class="stato" id="statoPiran"></p>
-    <p class="stato">Fonte: <a href="https://www.nib.si/mbp/en/oceanographic-data-and-measurements/buoy-2/live-data-2" target="_blank" rel="noopener">NIB – boa Vida</a> · <a href="https://maps.google.com/?q=45.548750,13.550700" target="_blank" rel="noopener">📍 Posizione esatta</a> (45°32.925′ N, 13°33.042′ E)</p>
-  </div>
-  </details>
 
   <details class="gruppo-collapse page-collapse" id="previsioni">
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>📅 Previsioni</strong>
-      <span>Previsione AI, OSMER, radar, Bora, Aladin e Windguru</span>
+      <span>Previsione AI, OSMER, Windguru, Bora e Aladin</span>
     </span>
   </summary>
 
@@ -2268,6 +2273,17 @@
     <h2><span class="solo-pro">Previsione descrittiva – OSMER FVG</span><span class="solo-lite">Il tempo nei prossimi giorni</span></h2>
     <div id="osmerBollettino"><p class="stato">Caricamento…</p></div>
     <p class="stato">Fonte: <a href="https://www.meteo.fvg.it/" target="_blank" rel="noopener">ARPA FVG - S.O.C. OSMER e GRN</a> · <a href="https://creativecommons.org/licenses/by/3.0/it/" target="_blank" rel="noopener">CC BY 3.0 IT</a> · icona e temperature: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (modello, Trieste)</p>
+  </div>
+
+  <!-- WINDGURU (subito sotto OSMER dal 9 nov 2026): caricamento differito all'apertura di Previsioni -->
+  <div class="section windguru-section" id="windy">
+    <div class="sec-head"><h2>Windguru – Trieste</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info sugli altri modelli</button></div>
+    <div class="windguru-tabs" role="tablist" aria-label="Modelli Windguru per Trieste">
+      <button class="windguru-tab is-active" type="button" role="tab" aria-selected="true" data-wg-spot="49156" data-wg-model="100" data-wg-uid="wg_lazy_49156_100" data-wg-lang="it">WG</button>
+      <button class="windguru-tab" type="button" role="tab" aria-selected="false" data-wg-spot="49156" data-wg-model="107" data-wg-uid="wg_lazy_49156_107" data-wg-lang="it">ALADIN</button>
+      <button class="windguru-tab" type="button" role="tab" aria-selected="false" data-wg-spot="49156" data-wg-model="104" data-wg-uid="wg_lazy_49156_104" data-wg-lang="it">ICON-2I</button>
+    </div>
+    <div class="windguru-stage"><p class="windguru-placeholder">Il modello apparirà qui quando apri Previsioni.</p></div>
   </div>
 
   <!-- RADAR ARSO -->
@@ -2342,18 +2358,6 @@
     </div>
   </div>
 
-  <!-- WINDGURU: caricamento differito all'apertura di Previsioni -->
-  <div class="section windguru-section" id="windy">
-    <div class="sec-head"><h2>Windguru – Trieste</h2><button type="button" class="windguru-info" onclick="apriModal()">ℹ️ Info sugli altri modelli</button><span class="windguru-badge">on demand</span></div>
-    <p class="stato windguru-consiglio">• <strong>Modello suggerito: WG (model mix)</strong>: la "media intelligente" di Windguru, che combina più modelli in un'unica previsione di sintesi.</p>
-    <p class="stato">Aprendo questa sezione viene caricato solo il primo modello. Gli altri partono quando li selezioni.</p>
-    <div class="windguru-tabs" role="tablist" aria-label="Modelli Windguru per Trieste">
-      <button class="windguru-tab is-active" type="button" role="tab" aria-selected="true" data-wg-spot="49156" data-wg-model="100" data-wg-uid="wg_lazy_49156_100" data-wg-lang="it">WG</button>
-      <button class="windguru-tab" type="button" role="tab" aria-selected="false" data-wg-spot="49156" data-wg-model="107" data-wg-uid="wg_lazy_49156_107" data-wg-lang="it">ALADIN</button>
-      <button class="windguru-tab" type="button" role="tab" aria-selected="false" data-wg-spot="49156" data-wg-model="104" data-wg-uid="wg_lazy_49156_104" data-wg-lang="it">ICON-2I</button>
-    </div>
-    <div class="windguru-stage"><p class="windguru-placeholder">Il modello apparirà qui quando apri Previsioni.</p></div>
-  </div>
 
   </details>
 
@@ -2637,8 +2641,8 @@
   <!-- JS -->
   <!-- librerie senza effetti al caricamento: qui e non nel <head>, così la pagina si disegna prima -->
   <script src="./station-chart.js?v=20261105ux"></script>
-  <script src="./spinta-bora.js?v=20261101b"></script>
-  <script src="/pressione-trieste.js?v=20261022b"></script>
+  <script src="./spinta-bora.js?v=20261109"></script>
+  <script src="/pressione-trieste.js?v=20261109"></script>
   <script src="/scala-vento.js?v=20261105"></script>
   <script src="/dati-live.js?v=20260929b"></script>
   <script>
@@ -2868,7 +2872,7 @@
       // solo la parola (22 ott 2026, Alberto: via il motto e la nota "dalla raffica", che resta
       // spiegata nella tendina "Fonte dati"); sotto il vento e la tendenza della pressione a
       // Trieste molo (/pressione-trieste.js)
-      verd.innerHTML = '<span class="surf-parola">' + ver.txt + "</span>" + ventoBadge + (window.VTPressione ? VTPressione.badge() : "");
+      verd.innerHTML = '<span class="surf-parola">' + ver.txt + "</span>" + ventoBadge;   // il barometro sta in "Meteo ora" (9 nov 2026)
       // la parola ha il colore del vento su cui si sceglie, come la mappa (scala-vento.js, 5 nov 2026)
       if (window.VTScala) {
         verd.style.color = "";
@@ -2998,16 +3002,6 @@
       return ts.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })
         + (min > 0 ? " · " + (min === 1 ? "1 min fa" : min + " min fa") : " · adesso");
     }
-    /* Riga "ultimo aggiornamento" sotto il surfometro: ora, data e minuti trascorsi del
-       rilevamento effettivamente mostrato (non dell'ultima chiamata al proxy). */
-    function testoUltimoAgg(ts) {
-      if (!(ts instanceof Date) || isNaN(ts.getTime())) return "";
-      const hhmm = ts.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
-      const dataTxt = ts.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric" });
-      const min = Math.round((Date.now() - ts.getTime()) / 60000);
-      const fa = min <= 0 ? "adesso" : (min === 1 ? "1 minuto fa" : min + " minuti fa");
-      return '<span class="surf-agg">🕒 Ultimo aggiornamento: <strong>' + hhmm + '</strong> del ' + dataTxt + ' · ' + fa + '</span>';
-    }
     /* Ultimo orario noto (anche vecchio) da mostrare nel messaggio di offline. */
     function ultimoDatoNoto(data) {
       const b = barcolaData(data && data.barcola);
@@ -3062,15 +3056,13 @@
     }
     function aggiornaSurfometroAuto(data) {
       const titolo = document.getElementById("surfTitolo");
-      const fonte  = document.getElementById("surfFonte");
       const sum    = document.getElementById("surfNoteSum");
       const card   = document.getElementById("surfometroCard");
       const bTws = barcolaTws(data && data.barcola);
       if (bTws != null) {                       // Barcola attiva → tutto normale
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Barcola";
-        if (sum)    sum.textContent = "🕒 Fonte: Barcola" + (bTws.ts ? " · agg. " + oraBreve(bTws.ts) : "");
-        if (fonte)  fonte.innerHTML = testoUltimoAgg(bTws.ts);
+        if (sum)    sum.textContent = bTws.ts ? "agg. " + oraBreve(bTws.ts) : "";
         aggiornaSurfometro(bTws.avg, bTws.gust, bTws.dir, null, BARCOLA_PAROLA_SU_RAFFICA ? bTws.gust : null);
         ventoPerSpinta("Barcola", bTws.avg, bTws.gust, bTws.dir);
         return;
@@ -3080,9 +3072,7 @@
       if (gTws != null) {
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Monte Grisa";
-        if (sum)    sum.textContent = "⚠️ Backup: Monte Grisa" + (gTws.ts ? " · agg. " + oraBreve(gTws.ts) : "");
-        if (fonte)  fonte.innerHTML = "⚠️ Barcola offline o non aggiornata — surfometro calcolato sui dati di <strong>Monte Grisa</strong>."
-          + testoUltimoAgg(gTws.ts);
+        if (sum)    sum.textContent = "Barcola ferma" + (gTws.ts ? " · agg. " + oraBreve(gTws.ts) : "");
         aggiornaSurfometro(gTws.avg, gTws.gust, gTws.dir);
         ventoPerSpinta("Monte Grisa", gTws.avg, gTws.gust, gTws.dir);
         return;
@@ -3092,18 +3082,14 @@
       if (mTws != null) {
         if (card)   card.classList.remove("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – Boa Mambo";
-        if (sum)    sum.textContent = "⚠️ Backup 2: boa MAMBO1" + (mTws.ts ? " · agg. " + oraBreve(mTws.ts) : "");
-        if (fonte)  fonte.innerHTML = "⚠️ Centraline di Barcola e Monte Grisa ferme — surfometro calcolato sulla boa <strong>MAMBO1</strong> (OGS), davanti al castello di Miramare (<a href=\"https://maps.google.com/?q=45.698333,13.700000\" target=\"_blank\" rel=\"noopener\">📍 posizione</a>). La boa è oraria: meno reattiva delle centraline."
-          + testoUltimoAgg(mTws.ts);
+        if (sum)    sum.textContent = "Barcola e Monte Grisa ferme" + (mTws.ts ? " · agg. " + oraBreve(mTws.ts) : "");
         aggiornaSurfometro(mTws.avg, mTws.gust, mTws.dir);
         ventoPerSpinta("Boa MAMBO1", mTws.avg, mTws.gust, mTws.dir);
       } else {                                  // nessuna fonte aggiornata → offline
         const ultimo = ultimoDatoNoto(data);
         if (card)   card.classList.add("surf-offline");
         if (titolo) titolo.textContent = "Surfometro – non disponibile";
-        if (sum)    sum.textContent = "⚠️ Offline — nessuna fonte aggiornata";
-        if (fonte)  fonte.innerHTML = "⚠️ Centraline di <strong>Barcola</strong> e <strong>Monte Grisa</strong> e boa <strong>MAMBO1</strong> offline: nessun dato aggiornato, il surfometro riprende da solo appena una fonte torna in linea."
-          + (ultimo ? '<span class="surf-agg">🕒 Ultimo dato ricevuto: ' + ultimo + '</span>' : "");
+        if (sum)    sum.textContent = "Nessuna fonte aggiornata" + (ultimo ? " · ultimo dato " + ultimo : "");
         aggiornaSurfometro(null, null, null, 'Offline<small>centraline non in linea</small>' + ultimoDatoVecchioHtml(data));
         ventoPerSpinta(null);
       }
@@ -3337,6 +3323,11 @@
           if (acqua) html += miniCard("Mare (−2 m)", num(acqua.TEMP_1, 1), "°C");
           html += '</div>';
           document.getElementById("mamboStat").innerHTML = html;
+          if (acqua) {
+            window.__mappaExtra.mambo = "mare " + gradiUno(acqua.TEMP_1);
+            meteoOra.mareMambo = { t: acqua.TEMP_1, ts: new Date(acqua.time).getTime(), dove: "boa MAMBO1, Miramare" };
+            scriviMeteoOra();
+          }
           document.getElementById("statoMambo").textContent = "Rilevazione " + quandoLocale((meteo || acqua).time);
           mamboOk = true;
           if (meteo) {
@@ -3431,6 +3422,11 @@
       if (p.waveH != null)   html += miniCard("Onda", num(p.waveH, 1), "m");
       html += '</div>';
       document.getElementById("piranStat").innerHTML = html;
+      window.__mappaSchede.piran = p.waveH != null ? "Mare e onde" : "Mare e aria";
+      window.__mappaExtra.piran = [p.seaTemp != null ? "mare " + gradiUno(p.seaTemp) : "", p.waveH != null ? "onda " + num(p.waveH, 1).replace(".", ",") + " m" : ""].filter(Boolean).join(" · ");
+      const tsPiran = p.time ? new Date(p.time.replace(" ", "T")).getTime() : NaN;
+      meteoOra.marePiran = (p.seaTemp != null && !isNaN(tsPiran)) ? { t: p.seaTemp, ts: tsPiran, dove: "boa Vida, Pirano" } : null;
+      scriviMeteoOra();
       const t = p.time ? p.time.replace(/:\d{2}$/, "") : "";
       stato.textContent = (t ? "Rilevazione " + t + " (ora locale)" : "Fonte NIB – boa Vida");
     }
@@ -3777,6 +3773,9 @@
       vetercekGiu = ["monteGrisa", "grado"].every(function (k) { return data[k + "Error"]; });
       // Trieste: finestra 6h. Dato a 15 min dalla Protezione Civile FVG; orario (vetercek) solo se quella fonte è giù
       renderStazione(data.trieste, "trieste", 360, data.triesteFonte !== "pcfvg");
+      const t0 = Array.isArray(data.trieste) && data.trieste[0], etaT = t0 && etaOraHHMM(t0.ora);
+      meteoOra.aria = (t0 && etaT && etaT.min <= 30 && !isNaN(parseFloat(t0.temp))) ? { t: parseFloat(t0.temp), ora: t0.ora } : null;
+      scriviMeteoOra();
       renderStazione(data.monteGrisa, "grisa");
       renderStazione(data.muggia, "muggia");
       renderStazione(data.marinajulia, "marinajulia");
@@ -4217,7 +4216,17 @@
     }
     function apriGruppiDaHash() {
       if (!location.hash || location.hash.length < 2) return;
-      apriGruppiPer(document.getElementById(decodeURIComponent(location.hash.slice(1))));
+      let id = decodeURIComponent(location.hash.slice(1));
+      // centraline e boe stanno dentro la mappa (9 nov 2026): i vecchi link aprono la mappa
+      if (id === "centraline" || id === "boe" || id === "mare") {
+        id = "mappaVento";
+        // la mappa può essere salita in cima alla pagina (niente bora): si va dov'è davvero
+        setTimeout(() => {
+          const svgM = document.getElementById("mappaGolfo"), dove = svgM && svgM.closest(".mappa-canvas");
+          (dove || document.getElementById("mappaVento")).scrollIntoView({ block: "start" });
+        }, 1500);
+      }
+      apriGruppiPer(document.getElementById(id));
     }
     document.addEventListener("click", e => {
       const link = e.target.closest('a[href^="#"]');
@@ -4227,6 +4236,138 @@
     });
     window.addEventListener("hashchange", apriGruppiDaHash);
     apriGruppiDaHash();
+
+    /* ---------- Scheda della stazione toccata sulla mappa (9 nov 2026) ----------
+       Alberto: "le centraline le abbiamo già nella mappa: mettiamo il dato solo al clic sulla
+       centralina". Le schede (centraline in #centraline, boe in #boe, spot Istria nella loro
+       tendina) non sono più in lista: quella della stazione toccata va sotto la mappa, ovunque
+       stia la mappa (tendina o cima della pagina senza bora), e torna a casa quando si chiude.
+       Il testo è quello del pulsante nel riquadro della mappa: dice cosa c'è in più. */
+    const SCHEDE_MAPPA = {
+      trieste: "trieste", monteGrisa: "grisa", muggia: "muggia", marinajulia: "marinajulia", grado: "grado",
+      zusterna: "zusterna", antenal: "antenal", preluka: "preluka", liznjan: "liznjan", premantura: "premantura",
+      mambo: "boaMambo", paloma: "boaPaloma", piran: "boaPiran"
+    };
+    window.__mappaSchede = {};
+    Object.keys(SCHEDE_MAPPA).forEach(k => {
+      window.__mappaSchede[k] = k === "mambo" ? "Mare e aria" : k === "piran" ? "Mare e onde" : k === "paloma" ? "Dettagli" : "Grafico e tabella";
+    });
+    window.__mappaExtra = {};
+    const postoScheda = document.createElement("div");
+    postoScheda.className = "scheda-stazione";
+    postoScheda.hidden = true;
+    postoScheda.innerHTML = '<button type="button" class="scheda-x" aria-label="Chiudi scheda">×</button>';
+    let schedaAperta = null;   // { id, el, casa, dopo }
+    function rimettiScheda() {
+      if (!schedaAperta) return;
+      schedaAperta.casa.insertBefore(schedaAperta.el, schedaAperta.dopo);
+      schedaAperta = null;
+      postoScheda.hidden = true;
+    }
+    document.addEventListener("mappa:stazione", e => {
+      const id = e.detail && e.detail.id;
+      if (schedaAperta && schedaAperta.id === id) return;
+      rimettiScheda();
+      const el = id && SCHEDE_MAPPA[id] && document.getElementById(SCHEDE_MAPPA[id]);
+      const svgMappa = document.getElementById("mappaGolfo");
+      const canvas = svgMappa && svgMappa.closest(".mappa-canvas");
+      if (!el || !canvas) return;
+      const legenda = canvas.parentNode.querySelector(":scope > .mappa-legenda");
+      (legenda || canvas).after(postoScheda);
+      schedaAperta = { id: id, el: el, casa: el.parentNode, dopo: el.nextSibling };
+      postoScheda.appendChild(el);
+      postoScheda.hidden = false;
+      if (window.vtConta) window.vtConta("mappa: scheda " + id);
+    });
+    document.addEventListener("mappa:vai-scheda", () => {
+      if (postoScheda.hidden) return;
+      const fermo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      postoScheda.scrollIntoView({ behavior: fermo ? "auto" : "smooth", block: "start" });
+    });
+    postoScheda.querySelector(".scheda-x").addEventListener("click", () => {
+      if (window.MappaGolfo && MappaGolfo.chiudi) MappaGolfo.chiudi();
+      rimettiScheda();
+    });
+
+    /* ---------- Centraline live per la tendina Stats del footer (9 nov 2026) ----------
+       Stesso elenco e stesse soglie della scheda "Centraline" di /admin (vento-previsioni,
+       src/stato.js): verde se il dato è fresco, giallo se la centralina è ferma, rosso senza dato.
+       footer-widgets.js la chiama quando si apre la tendina. */
+    window.__statoCentraline = function () {
+      const d = ultimoPayload || {};
+      const hhmm = r => { const e = r && etaOraHHMM(r.ora); return e ? e.min : null; };
+      const locale = t => { const m = String(t || "").match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/); return m ? (Date.now() - new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5])) / 60000 : null; };
+      const primo = k => Array.isArray(d[k]) ? d[k][0] : null;
+      const elenco = [
+        ["Barcola", locale(d.barcola && d.barcola.datetime), 20],
+        ["Trieste molo", hhmm(primo("trieste")), 30],
+        ["Monte Grisa", hhmm(primo("monteGrisa")), 30],
+        ["Muggia", hhmm(primo("muggia")), 30],
+        ["Zusterna", hhmm(primo("zusterna")), 30],
+        ["Grado", hhmm(primo("grado")), 30],
+        ["Marina Julia", hhmm(primo("marinajulia")), 30],
+        ["Lignano (stazione live)", hhmm(d.lignanoLive), 30],
+        ["Lignano (Protezione Civile)", hhmm(primo("lignano")), 30],
+        ["Pirano", locale(d.piran && d.piran.time), 30],
+        ["Lago di Cavazzo", d.cavazzo && d.cavazzo.epoch ? (Date.now() - d.cavazzo.epoch * 1000) / 60000 : null, 40],
+        ["Preluka", hhmm(primo("preluka")), 30],
+        ["Antenal", hhmm(primo("antenal")), 30],
+        ["Lisignano", hhmm(primo("liznjan")), 30],
+        ["Premantura", hhmm(primo("premantura")), 30]
+      ];
+      const eta = m => m < 1 ? "adesso" : m < 90 ? m + " min fa" : "oltre " + Math.floor(m / 60) + " h fa";
+      return elenco.map(([nome, min, soglia]) => {
+        if (min == null || isNaN(min)) return { nome: nome, esito: "errore", dettaglio: "nessun dato" };
+        min = Math.max(0, Math.round(min));
+        return { nome: nome, esito: min <= soglia ? "ok" : "attenzione", dettaglio: eta(min) + (min > soglia ? " · ferma" : "") };
+      });
+    };
+
+    /* ---------- Meteo ora (9 nov 2026) ----------
+       Una riga in cima al surfometro: cielo, aria, mare e pressione. Cielo da Open-Meteo (modello,
+       ogni 15 min); aria e pressione misurate a Trieste molo (Protezione Civile FVG, dicitura nella
+       tendina del surfometro); mare dalla boa MAMBO1, altrimenti dalla boa Vida di Pirano. Un dato
+       non fresco non si mostra (aria 30 min, pressione 45 come il badge, mare 6 ore: cambia piano). */
+    const meteoOra = { cielo: null, aria: null, mareMambo: null, marePiran: null };
+    function gradiUno(v) { return Number(v).toFixed(1).replace(".", ",") + "°"; }
+    function scriviMeteoOra() {
+      const box = document.getElementById("meteoOraDati");
+      if (!box) return;
+      const pezzi = [];
+      const c = meteoOra.cielo;
+      if (c) pezzi.push('<span class="mo-cielo" title="' + c.parola + ' (Open-Meteo)">' + iconaMeteo(c.m, "mo-ico") + '<span class="mo-parola">' + c.parola + '</span></span>');
+      if (meteoOra.aria) pezzi.push('<span title="Aria a Trieste molo, agg. ' + meteoOra.aria.ora + '">aria <b>' + gradiUno(meteoOra.aria.t) + '</b></span>');
+      const fresco = x => x && Date.now() - x.ts < 6 * 3600000;
+      const m = fresco(meteoOra.mareMambo) ? meteoOra.mareMambo : fresco(meteoOra.marePiran) ? meteoOra.marePiran : null;
+      if (m) pezzi.push('<span title="Mare a ' + m.dove + '">mare <b>' + gradiUno(m.t) + '</b></span>');
+      /* barometro: solo la tendenza (Alberto, 9 nov 2026: "metti solo calo o pressione costante"),
+         ±1 hPa in 3 ore a Trieste molo; i valori stanno nel titolo, il link porta all'articolo */
+      const pr = window.VTPressione && VTPressione.ultimo && VTPressione.ultimo();
+      if (pr && Date.now() - pr.t < 45 * 60000) {
+        const parola = { su: "in salita", stabile: "costante", giu: "in calo" }[pr.classe];
+        const rot = { su: -90, stabile: 0, giu: 90 }[pr.classe];
+        const d = (pr.delta > 0 ? "+" : pr.delta < 0 ? "−" : "±") + Math.abs(pr.delta).toFixed(1).replace(".", ",");
+        const titolo = "Barometro a Trieste molo: " + pr.p.toFixed(1).replace(".", ",") + " hPa, " + d + " hPa in 3 ore. Fonte: Protezione Civile della Regione Friuli Venezia Giulia, dati elaborati";
+        pezzi.push('<a class="mo-baro mo-' + pr.classe + '" href="/guida/pressione/" title="' + titolo + '" aria-label="' + titolo + '">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(' + rot + 'deg)"><path d="M4 12h15m-5-5 5 5-5 5"/></svg>barometro <b>' + parola + "</b></a>");
+      }
+      box.innerHTML = pezzi.join("");
+    }
+    function caricaCielo() {
+      fetch("https://api.open-meteo.com/v1/forecast?latitude=45.6495&longitude=13.7768&current=weather_code,cloud_cover,precipitation,is_day&timezone=Europe%2FRome")
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(j => {
+          const cu = j.current || {};
+          if (cu.weather_code == null) return;
+          const m = { codice: cu.weather_code, nubi: cu.cloud_cover, mm: cu.precipitation > 0 ? 1 : 0 };
+          let parola = tempoDa(m)[1];
+          if (cu.is_day === 0 && parola === "Sereno") parola = "Sereno, notte";
+          meteoOra.cielo = { m: m, parola: parola };
+          scriviMeteoOra();
+        })
+        .catch(() => {});
+    }
+    document.addEventListener("vt:pressione", scriviMeteoOra);
 
     /* ---------- Avvio ---------- */
     function nascondiLoader() {
@@ -4261,8 +4402,9 @@
     setTimeout(nascondiLoader, 8000);
     caricaMare();
     caricaDeltaBora();
+    caricaCielo();
     // auto-refresh dati ogni 5 minuti
-    function refreshPeriodico() { caricaDati(); caricaMare(); caricaDeltaBora(); }
+    function refreshPeriodico() { caricaDati(); caricaMare(); caricaDeltaBora(); caricaCielo(); }
     timerAuto = setInterval(() => { if (!document.hidden) refreshPeriodico(); }, 5 * 60 * 1000);
     /* Tab riaperta dopo un po' (telefono in tasca, browser rimasto in background):
        prima si ridisegna subito con i dati gia' in mano — le eta' si ricalcolano e cio'
@@ -4297,7 +4439,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261107"></script>
+  <script src="./footer-widgets.js?v=20261109"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
@@ -4399,7 +4541,7 @@
         if (fatto) return;
         fatto = true;
         var s = document.createElement("script");
-        s.src = "./mappa-golfo.js?v=20261105ux";
+        s.src = "./mappa-golfo.js?v=20261109";
         document.head.appendChild(s);
       }
       if (!("ResizeObserver" in window)) return carica();

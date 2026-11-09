@@ -182,20 +182,18 @@
     var style = document.createElement("style");
     style.id = "mappaGolfoStili";
     style.textContent =
-      ".mappa-nowcast-head{display:flex;align-items:center;justify-content:space-between;gap:.65rem;flex-wrap:wrap;margin:.15rem 0 .65rem}" +
-      ".mappa-nowcast-head p{margin:0;color:var(--slate-2,#657481);font-size:.82rem;font-weight:600}" +
-      ".mappa-nowcast-hint{display:inline-flex;align-items:center;gap:.35rem;padding:.34rem .62rem;border:1px solid rgba(15,92,108,.18);border-radius:999px;background:rgba(230,246,248,.72);color:#0f5c6c;font-size:.72rem;font-weight:800}" +
       ".mappa-beta{display:inline-block;font-size:.58em;font-weight:800;letter-spacing:.06em;background:#eef51f!important;color:#1f2933!important;border:0!important;border-radius:999px;padding:.16em .55em;vertical-align:middle;margin-left:.35rem}" +
       ".mappa-canvas{position:relative;overflow:hidden;border:1px solid #87b4bf;border-radius:14px;background:#c9eaf0;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 22px rgba(31,82,94,.1)}" +
       ".mappa-canvas svg{display:block;width:100%;height:auto;border-radius:0!important;touch-action:manipulation}" +
       ".mappa-popover{--mappa-accent:#0f6f7e;position:absolute;z-index:2;width:min(320px,calc(100% - 24px));padding:.72rem .8rem .68rem;border:2px solid var(--mappa-accent);border-radius:13px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(26,62,69,.2);color:#1d3035;transform:translateY(-50%)}" +
       ".mappa-popover[hidden]{display:none}.mappa-popover-head{display:flex;align-items:center;gap:.45rem;padding-right:1.7rem}.mappa-popover-dot{width:10px;height:10px;border-radius:50%;background:var(--mappa-dot,var(--mappa-accent));box-shadow:0 0 0 1.5px #15313a;flex:0 0 auto}.mappa-popover strong{font-size:.9rem}.mappa-popover-valore{margin:.28rem 0 .12rem;color:var(--mappa-accent);font-size:.88rem;font-weight:800}.mappa-popover-meta{margin:0;color:#5d7075;font-size:.72rem;font-weight:650}.mappa-popover-close{position:absolute;top:.35rem;right:.35rem;display:grid;place-items:center;width:1.75rem;height:1.75rem;padding:0!important;border:0!important;border-radius:50%!important;background:#edf4f5!important;color:#4f6267!important;font:700 1rem/1 inherit!important;cursor:pointer}" +
+      ".mappa-popover-vai{display:inline-flex;align-items:center;min-height:36px;margin-top:.5rem;padding:.3rem .8rem!important;border:1.5px solid var(--mappa-accent)!important;border-radius:999px!important;background:#fff!important;color:#1d3035!important;font:800 .78rem/1.1 inherit!important;cursor:pointer}.mappa-popover-vai[hidden]{display:none}" +
       ".mappa-legenda{display:grid;grid-template-columns:auto 1fr;gap:.45rem;align-items:center;margin:.6rem 0 0}" +
       ".mappa-legenda>b{font-size:.7rem;font-weight:800;color:var(--label,#5d7075)}" +
       ".mg-leg{position:relative;height:22px;border:1px solid #15313a;border-radius:6px;background:#fff;overflow:hidden}" +
       ".mg-leg span{position:absolute;top:50%;transform:translate(-50%,-50%);color:#15313a;font-size:.64rem;font-weight:850;line-height:1;font-variant-numeric:tabular-nums}" +
       "#mappaVentoContenuto>.stato{margin-top:.55rem}" +
-      "@media(max-width:540px){.mappa-nowcast-head{align-items:flex-start}.mappa-nowcast-hint{font-size:.68rem}.mg-leg span{font-size:.6rem}.mg-halo{opacity:.06}}" +
+      "@media(max-width:540px){.mg-leg span{font-size:.6rem}.mg-halo{opacity:.06}}" +
       "@media(prefers-reduced-motion:no-preference){.mg-stazione{transition:opacity .15s ease}.mg-stazione:hover .mg-halo,.mg-stazione:focus .mg-halo{opacity:.9}.mappa-popover:not([hidden]){animation:mg-in .16s ease-out}@keyframes mg-in{from{opacity:0}to{opacity:1}}}";
     style.textContent +=
       /* la grandezza della mappa la decide il CSS, non il viewBox che cambia con la vista */
@@ -340,14 +338,25 @@
     return [kt + (!isNaN(v.raffica) && gu > kt ? "-" + gu : "") + " kt", direzioneCardinale(v.deg)].filter(Boolean).join(" ");
   }
 
-  function chiudiDettaglio() {
+  /* Scheda sotto la mappa (9 nov 2026): la home ascolta "mappa:stazione" e mostra la scheda della
+     stazione toccata (id null = nessuna). window.__mappaSchede = { id: "testo del pulsante" } dice
+     quali stazioni hanno una scheda; window.__mappaExtra = { id: "mare 16,2° · onda 0,4 m" } aggiunge
+     al riquadro i dati che le centraline non hanno (boe). Le altre pagine non li impostano. */
+  function avvisa(id) {
+    try { document.dispatchEvent(new CustomEvent("mappa:stazione", { detail: { id: id } })); } catch (e) {}
+  }
+
+  // silenzioso: chiude solo il riquadro (ridisegno dei dati), la scheda sotto la mappa resta
+  function chiudiDettaglio(silenzioso) {
+    var eraAperta = stazioneSelezionata;
     stazioneSelezionata = null;
     if (htmlDettaglio) htmlDettaglio.hidden = true;
+    if (eraAperta && silenzioso !== true) avvisa(null);
     if (!svg) return;
     Array.prototype.forEach.call(svg.querySelectorAll(".mg-stazione"), function (n) { n.classList.remove("mg-selected"); });
   }
 
-  function mostraDettaglio(st, v, marker) {
+  function mostraDettaglio(st, v, marker, silenzioso) {
     if (!htmlDettaglio || !v) return;
     Array.prototype.forEach.call(svg.querySelectorAll(".mg-stazione"), function (n) { n.classList.remove("mg-selected"); });
     if (marker) marker.classList.add("mg-selected");
@@ -371,8 +380,15 @@
     }
     htmlDettaglio.querySelector("strong").textContent = st.nome;
     htmlDettaglio.querySelector(".mappa-popover-valore").textContent = ventoTesto(v);
-    htmlDettaglio.querySelector(".mappa-popover-meta").textContent = fasciaVento(v.kt).nome + (v.ora ? " · agg. " + v.ora : "");
+    var extra = window.__mappaExtra && window.__mappaExtra[st.id];
+    htmlDettaglio.querySelector(".mappa-popover-meta").textContent = (extra ? extra + " · " : "") + fasciaVento(v.kt).nome + (v.ora ? " · agg. " + v.ora : "");
+    var scheda = window.__mappaSchede && window.__mappaSchede[st.id];
+    var vai = htmlDettaglio.querySelector(".mappa-popover-vai");
+    vai.hidden = !scheda;
+    if (scheda) vai.textContent = scheda + " ↓";
     htmlDettaglio.hidden = false;
+    soloRiquadro = silenzioso === true;
+    if (!soloRiquadro) avvisa(st.id);
   }
 
   function creaDettaglioHtml() {
@@ -390,8 +406,12 @@
     htmlDettaglio.setAttribute("aria-live", "polite");
     htmlDettaglio.innerHTML = '<div class="mappa-popover-head"><span class="mappa-popover-dot" aria-hidden="true"></span><strong></strong></div>' +
       '<p class="mappa-popover-valore"></p><p class="mappa-popover-meta"></p>' +
+      '<button class="mappa-popover-vai" type="button" hidden></button>' +
       '<button class="mappa-popover-close" type="button" aria-label="Chiudi dettaglio">×</button>';
-    htmlDettaglio.querySelector("button").addEventListener("click", chiudiDettaglio);
+    htmlDettaglio.querySelector(".mappa-popover-close").addEventListener("click", function () { chiudiDettaglio(); });
+    htmlDettaglio.querySelector(".mappa-popover-vai").addEventListener("click", function () {
+      try { document.dispatchEvent(new CustomEvent("mappa:vai-scheda", { detail: { id: stazioneSelezionata } })); } catch (e) {}
+    });
     contenitore.appendChild(htmlDettaglio);
 
     ctrl = document.createElement("div");
@@ -449,7 +469,8 @@
     g.appendChild(el("title", {}, titolo));
     function apri(e) {
       e.stopPropagation();
-      if (stazioneSelezionata === st.id) { chiudiDettaglio(); return; }
+      // secondo tocco chiude; ma se il riquadro si era aperto da solo (invito) il tocco apre la scheda
+      if (stazioneSelezionata === st.id && !soloRiquadro) { chiudiDettaglio(); return; }
       mostraDettaglio(st, v, g);
     }
     g.addEventListener("click", apri);
@@ -473,7 +494,9 @@
 
   function render(data) {
     if (!gStazioni || !data) return;
-    chiudiDettaglio();
+    daRiaprire = stazioneSelezionata;   // ai refresh il riquadro aperto si riapre sulla stessa stazione
+    eraSoloRiquadro = soloRiquadro;
+    chiudiDettaglio(true);
     gStazioni.innerHTML = "";
     var disegnate = [];
     STAZIONI.forEach(function (st) {
@@ -484,6 +507,7 @@
       if (g) disegnate.push({ st: st, v: v, g: g });
     });
     layout();
+    riapri();
     caricaPaloma();   // throttled: al massimo un fetch ogni 4 minuti
     /* Invito all'uso (solo al primo disegno): gli aloni pulsano tre volte e il
        dettaglio della stazione più ventosa si apre da solo, così si capisce che i
@@ -497,11 +521,19 @@
       var stretta = svg.parentNode.classList.contains("mg-stretta");
       if (inVista.length && !stretta) {
         var top = inVista.reduce(function (a, b) { return b.v.kt > a.v.kt ? b : a; });
-        mostraDettaglio(top.st, top.v, top.g);
+        mostraDettaglio(top.st, top.v, top.g, true);   // solo il riquadro, niente scheda sotto
       }
     }
   }
   var invitoFatto = false;
+  var daRiaprire = null, soloRiquadro = false, eraSoloRiquadro = false;
+  function riapri() {
+    var s = daRiaprire && simboli[daRiaprire];
+    if (!s || !s.g.isConnected) return;
+    daRiaprire = null;
+    mostraDettaglio(s.st, s.v, s.g, true);
+    soloRiquadro = eraSoloRiquadro;   // dopo un refresh la scheda sotto la mappa, se c'era, c'è ancora
+  }
 
   /* v.t = istante della misura: la boa pubblica un dato all'ora con 1-2 ore di
      ritardo, e un vento di due ore fa non va disegnato come attuale */
@@ -511,8 +543,10 @@
     gMambo.innerHTML = "";
     var st = STAZIONI.filter(function (s) { return s.tipo === "mambo"; })[0];
     if (!st || escluso(st)) return;
+    if (stazioneSelezionata === st.id) { daRiaprire = st.id; eraSoloRiquadro = soloRiquadro; chiudiDettaglio(true); }
     disegnaStazione(gMambo, st, v);
     layout();
+    riapri();
   }
 
   /* Boa Paloma: rete idrometeo Protezione Civile FVG. API aperta (CORS *, CC BY 4.0,
@@ -525,8 +559,10 @@
     gPaloma.innerHTML = "";
     var st = STAZIONI.filter(function (s) { return s.tipo === "paloma"; })[0];
     if (!st || escluso(st)) return;
+    if (stazioneSelezionata === st.id) { daRiaprire = st.id; eraSoloRiquadro = soloRiquadro; chiudiDettaglio(true); }
     disegnaStazione(gPaloma, st, v);
     layout();
+    riapri();
   }
   function caricaPaloma() {
     if (Date.now() - palomaUltimoFetch < 4 * 60 * 1000) return;
@@ -801,7 +837,6 @@
     svg.__mappaInit = true;
     installaStili();
     riposizionaNowcasting();
-    svg.setAttribute("aria-describedby", "mappaIstruzioni");
     creaDettaglioHtml();
     disegnaBase();
     aggiornaLegenda();
@@ -817,7 +852,7 @@
     caricaPaloma();
   }
 
-  window.MappaGolfo = { init: init, render: render, mambo: mambo, caricaMambo: caricaMambo, caricaPaloma: caricaPaloma,
+  window.MappaGolfo = { init: init, render: render, chiudi: function () { if (svg) chiudiDettaglio(); }, mambo: mambo, caricaMambo: caricaMambo, caricaPaloma: caricaPaloma,
     // vista("golfo" | "istria" | "tutto"): inquadratura pronta
     vista: function (nome) { if (svg) vista(nome); else if (target) target.setAttribute("data-vista", nome); } };
 
