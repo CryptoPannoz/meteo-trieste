@@ -1773,7 +1773,7 @@
   }
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
-  <link rel="stylesheet" href="./footer-widgets.css?v=20261109c" />
+  <link rel="stylesheet" href="./footer-widgets.css?v=20261109d" />
   <script src="./previsione-ai.js?v=20261102e" defer></script>
 </head>
 <body>
@@ -1960,7 +1960,9 @@
         document.addEventListener("keydown", function (e) { if (e.key === "Escape" && pop.isConnected && pop.classList.contains("aperto")) chiudi(); });
       })();
     </script>
-    <h1 class="site-page-title">Vento a Trieste in tempo reale</h1>
+    <!-- il titolo resta per Google e per i lettori di schermo, ma non si vede (9 nov 2026, Alberto:
+         "c'è già il titolo in alto"): in alto c'è il marchio con il logo -->
+    <h1 class="site-page-title vt-sr">Vento a Trieste in tempo reale</h1>
     <section class="hero" id="vento">
       <!-- SURFOMETRO (scheda a parte) -->
       <div class="console-card" id="surfometroCard">
@@ -2501,9 +2503,21 @@
   <summary class="gruppo-sum">
     <span class="gruppo-sum-main">
       <strong>🏖️ Spot Istria</strong>
-      <span>Žusterna, Antenal, Preluka e Premantura</span>
+      <span>Da Žusterna a Premantura, tocca uno spot</span>
     </span>
   </summary>
+
+  <!-- SPOT ISTRIA (9 nov 2026): una mappa aperta sull'Istria (seconda istanza di mappa-golfo.js) e le
+       schede degli spot nascoste in #schedeIstria: al tocco su un punto la sua scheda, con Posizione
+       e Guida spot, compare sotto la mappa (stessa logica della mappa in cima, evento mappa:stazione) -->
+  <div class="section" id="istriaMappaBox">
+    <div class="mappa-canvas">
+      <svg id="mappaIstria" viewBox="0 0 762 1000" data-vista="istria" role="img" aria-label="Mappa del vento negli spot dell'Istria"></svg>
+    </div>
+    <p class="stato mappa-credits">Costa © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · rilievo Copernicus EU-DEM, USGS, NOAA · <a href="/guida/spot-istria/">Guida agli spot dell'Istria →</a></p>
+  </div>
+
+  <div class="schede-stazioni" id="schedeIstria" hidden>
 
   <div class="section" id="zusterna">
     <h2>Žusterna – Koper</h2>
@@ -2546,6 +2560,24 @@
     </div>
   </div>
 
+  <div class="section" id="svivan">
+    <h2>Sv. Ivan (Umago)</h2>
+    <div id="svivanCards"></div>
+    <div class="trend" id="svivanTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoSvivan">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="svivanBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoSvivan"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://www.google.com/maps?q=45.396,13.531" target="_blank" rel="noopener">📍 Posizione</a>
+      <button class="spot-btn" onclick="apriGuida('svivan')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+
   <div class="section" id="antenal">
     <h2>Antenal (Cittanova)</h2>
     <div id="antenalCards"></div>
@@ -2564,8 +2596,8 @@
     </div>
   </div>
 
-  <!-- Stazione spenta su vetercek dal 24 ago 2026: sezione nascosta (29 set). Per riattivarla togliere display:none e rimetterla in SPOT_ISTRIA. -->
-  <div class="section" id="porec" style="display:none">
+  <!-- Poreč di nuovo in linea su vetercek (9 nov 2026, dato ogni ~15 min): riattivata -->
+  <div class="section" id="porec">
     <h2>Parenzo (Poreč)</h2>
     <div id="porecCards"></div>
     <div class="trend" id="porecTrend"></div>
@@ -2599,6 +2631,24 @@
     <div class="spot-azioni">
       <a class="spot-btn" href="https://www.google.com/maps?q=45.0433,13.6138" target="_blank" rel="noopener">📍 Posizione</a>
       <button class="spot-btn" onclick="apriGuida('rovinj')">ℹ️ Guida spot</button>
+    </div>
+  </div>
+
+  <div class="section" id="fazana">
+    <h2>Fažana (Pola)</h2>
+    <div id="fazanaCards"></div>
+    <div class="trend" id="fazanaTrend"></div>
+    <details class="dettaglio">
+      <summary>Tabella dettaglio · ultimi 45 min</summary>
+      <table aria-describedby="statoFazana">
+        <thead><tr><th>Ora</th><th>Direzione</th><th>Vel. (kt)</th><th>Raffica (kt)</th><th>Temp (°C)</th></tr></thead>
+        <tbody id="fazanaBody"><tr><td colspan="5">Caricamento…</td></tr></tbody>
+      </table>
+    </details>
+    <p class="stato" id="statoFazana"></p>
+    <div class="spot-azioni">
+      <a class="spot-btn" href="https://www.google.com/maps?q=44.928,13.801" target="_blank" rel="noopener">📍 Posizione</a>
+      <button class="spot-btn" onclick="apriGuida('fazana')">ℹ️ Guida spot</button>
     </div>
   </div>
 
@@ -2655,6 +2705,7 @@
       <button class="spot-btn" onclick="apriGuida('premantura')">ℹ️ Guida spot</button>
     </div>
   </div>
+  </div>
   </details>
 
   <!-- JS -->
@@ -2681,12 +2732,14 @@
       marinajulia: LINK_PCFVG,
       grado: "https://vetercek.com/danes/index.php?id=24&postaja=grado"
     };
-    const SPOT_ISTRIA = ["zusterna", "antenal", "preluka", "liznjan", "premantura"];
+    const SPOT_ISTRIA = ["zusterna", "svivan", "antenal", "porec", "fazana", "preluka", "liznjan", "premantura"];
     const LINK_SPOT = {
       zusterna:   "https://vetercek.com/danes/index.php?id=147&postaja=kjdbum",
       preluka:    "https://vetercek.com/danes/index.php?id=149&postaja=preluka",
       antenal:      "https://vetercek.com/danes/index.php?id=127&postaja=antenal",
-      porec:      "https://vetercek.com/danes/index.php?postaja=porec",
+      svivan:     "https://vetercek.com/danes/index.php?id=82&postaja=svivan",
+      fazana:     "https://vetercek.com/danes/index.php?id=158&postaja=fazana",
+      porec:      "https://vetercek.com/danes/index.php?id=19&postaja=porec",
       rovinj:     "https://vetercek.com/danes/index.php?postaja=rovinj",
       liznjan:    "https://vetercek.com/danes/index.php?id=74&postaja=liznjan",
       savudrija:  "https://vetercek.com/danes/index.php?id=124&postaja=savudrija",
@@ -4080,11 +4133,19 @@
        Fonte condizioni: surf-magazin.de (guida spot Istria) dove indicato. */
     const GUIDE = {
       porec: { nome: "Parenzo (Poreč)", html:
-        "<p>Stazione meteo DHMZ sulla costa di Parenzo, a metà strada tra Antenal e Rovigno: serve a leggere il <strong>vento lungo la costa ovest dell'Istria</strong>. In estate lavora soprattutto la <strong>termica da O/SO (Maestrale)</strong> nel pomeriggio; con <strong>Bora (NE)</strong> il vento arriva da terra, più irregolare e a raffiche. Aggiornamento ogni 10–20 minuti.</p>",
-        fonte: 'DHMZ via <a href="https://vetercek.com/danes/index.php?postaja=porec" target="_blank" rel="noopener">vetercek.com</a>' },
+        "<p>Stazione meteo nel <strong>porto di Parenzo</strong> (rete Istramet), a metà strada tra Antenal e Rovigno: serve a leggere il <strong>vento lungo la costa ovest dell'Istria</strong>. In estate lavora soprattutto la <strong>termica da O/SO (Maestrale)</strong> nel pomeriggio; con <strong>Bora (NE)</strong> il vento arriva da terra, più irregolare.</p>",
+        fonte: '<a href="http://www.istramet.hr/postaja/porec-luka/" target="_blank" rel="noopener">Istramet, Poreč luka</a> via <a href="https://vetercek.com/danes/index.php?id=19&amp;postaja=porec" target="_blank" rel="noopener">vetercek.com</a>' },
+      svivan: { nome: "Sv. Ivan (Umago)", html:
+        "<p>Centralina a Sveti Ivan, circa 4 km a sud di Umago, nella zona del Camping Finida. Lo spot più vicino descritto dalle guide è <strong>Umago, davanti al faro</strong>: con lo <strong>Scirocco (SSE)</strong> side-onshore e costante, a 20 nodi fa onde di circa 1,5 m, buone per chi inizia con le onde; oltre i 30 nodi il reef rompe forte. Si entra a nord-ovest del porticciolo.</p>" +
+        "<p>Attenzione alle secche segnalate dalle boe e alla zona senza vento vicino a riva; nei giorni buoni c'è folla. Per la <strong>Bora (NE)</strong>, da queste parti, le guide indicano Punta Salvore.</p>",
+        fonte: "surf-magazin.de · kite-and-windsurfing-guide.com (spot Umago)" },
+      fazana: { nome: "Fažana (Pola)", html:
+        "<p>Centralina sul porto di Fažana, davanti alle isole Brioni. Circa 2 km a sud, sulla spiaggia Bi Val di Valbandon, c'è il <strong>Surf Centar Fažana</strong>: corsi di <strong>windsurf</strong> e <strong>wingfoil</strong> per tutti i livelli, noleggio e SUP, in acque calme.</p>" +
+        "<p>Le guide consultate non descrivono i venti di questo spot: per sapere se c'è vento, guarda la centralina e la mappa.</p>",
+        fonte: '<a href="https://www.surfcenterfazana.com" target="_blank" rel="noopener">Surf Centar Fažana</a> · <a href="https://www.istra.hr/hr/dozivljaji/sport-i-outdoor/windsurfing/windsurfing-centar-fazana" target="_blank" rel="noopener">istra.hr</a> · <a href="https://www.infofazana.hr/" target="_blank" rel="noopener">infofazana.hr</a>' },
       rovinj: { nome: "Rovigno (Rovinj)", html:
-        "<p>Stazione meteo DHMZ di Rovigno, il punto più a ovest della costa istriana e il riferimento tra Parenzo e Premantura. Esposta ai <strong>venti da sud e da ovest (Scirocco, Libeccio, termica)</strong>; la <strong>Bora (NE)</strong> qui è già più debole e discontinua rispetto a Trieste. Aggiornamento ogni 20 minuti circa.</p>",
-        fonte: 'DHMZ via <a href="https://vetercek.com/danes/index.php?postaja=rovinj" target="_blank" rel="noopener">vetercek.com</a>' },
+        "<p>Stazione meteo di Rovigno, il punto più a ovest della costa istriana e il riferimento tra Parenzo e Premantura. Esposta ai <strong>venti da sud e da ovest (Scirocco, Libeccio, termica)</strong>; la <strong>Bora (NE)</strong> qui è già più debole e discontinua rispetto a Trieste. Aggiornamento ogni 20 minuti circa.</p>",
+        fonte: '<a href="https://vetercek.com/danes/index.php?postaja=rovinj" target="_blank" rel="noopener">vetercek.com</a>' },
       zusterna: { nome: "Žusterna – Koper", html:
         "<p>Spot da <strong>Maestrale estivo</strong> (vento termico nel pomeriggio), molto interessante per <strong>wing</strong> e <strong>windsurf</strong>. Con <strong>12–16 nodi</strong> si plana bene con una wing da circa <strong>5&nbsp;m</strong> (foil).</p>" +
         "<p>Il club è il <strong>KJD BUM</strong>, che ha due proprie zattere; si entra in acqua dalla <strong>spiaggetta a destra</strong>. La centralina è installata al club. <strong>Parcheggio a pagamento</strong> (~3&nbsp;€) vicino alla scuola.</p>",
@@ -4243,12 +4304,14 @@
        Il testo è quello del pulsante nel riquadro della mappa: dice cosa c'è in più. */
     const SCHEDE_MAPPA = {
       trieste: "trieste", monteGrisa: "grisa", muggia: "muggia", marinajulia: "marinajulia", grado: "grado",
-      zusterna: "zusterna", antenal: "antenal", preluka: "preluka", liznjan: "liznjan", premantura: "premantura",
+      zusterna: "zusterna", svivan: "svivan", antenal: "antenal", porec: "porec", fazana: "fazana",
+      preluka: "preluka", liznjan: "liznjan", premantura: "premantura",
       mambo: "boaMambo", paloma: "boaPaloma", piran: "boaPiran"
     };
     window.__mappaSchede = {};
     Object.keys(SCHEDE_MAPPA).forEach(k => {
-      window.__mappaSchede[k] = k === "mambo" ? "Mare e aria" : k === "piran" ? "Mare e onde" : k === "paloma" ? "Dettagli" : "Grafico e tabella";
+      window.__mappaSchede[k] = k === "mambo" ? "Mare e aria" : k === "piran" ? "Mare e onde" : k === "paloma" ? "Dettagli" :
+        SPOT_ISTRIA.indexOf(SCHEDE_MAPPA[k]) !== -1 ? "Scheda spot" : "Grafico e tabella";
     });
     window.__mappaExtra = {};
     const postoScheda = document.createElement("div");
@@ -4267,7 +4330,7 @@
       if (schedaAperta && schedaAperta.id === id) return;
       rimettiScheda();
       const el = id && SCHEDE_MAPPA[id] && document.getElementById(SCHEDE_MAPPA[id]);
-      const svgMappa = document.getElementById("mappaGolfo");
+      const svgMappa = document.getElementById((e.detail && e.detail.mappa) || "mappaGolfo");
       const canvas = svgMappa && svgMappa.closest(".mappa-canvas");
       if (!el || !canvas) return;
       const legenda = canvas.parentNode.querySelector(":scope > .mappa-legenda");
@@ -4442,7 +4505,7 @@
 
   <footer class="site-footer" aria-label="Informazioni, supporto e crediti">
   <div class="footer-widgets" id="footerWidgets" data-lang="it"></div>
-  <script src="./footer-widgets.js?v=20261109c"></script>
+  <script src="./footer-widgets.js?v=20261109d"></script>
 
   <div class="site-credits">
     <section class="seo-footer-copy" aria-labelledby="ventoTriesteSeo">
@@ -4537,22 +4600,23 @@
        arrivava a ogni apertura, anche a tendina chiusa. -->
   <script>
     (function () {
-      var svg = document.getElementById("mappaGolfo");
-      if (!svg) return;
+      // le mappe: in cima/tendina Mappa live (#mappaGolfo) e nella tendina Spot Istria (#mappaIstria)
+      var svgs = ["mappaGolfo", "mappaIstria"].map(function (id) { return document.getElementById(id); }).filter(Boolean);
+      if (!svgs.length) return;
       var fatto = false;
       function carica() {
         if (fatto) return;
         fatto = true;
         var s = document.createElement("script");
-        s.src = "./mappa-golfo.js?v=20261109";
+        s.src = "./mappa-golfo.js?v=20261109d";
         document.head.appendChild(s);
       }
       if (!("ResizeObserver" in window)) return carica();
       var ro = new ResizeObserver(function () {
-        var r = svg.getBoundingClientRect();
-        if (r.width > 0 && r.height > 0) { ro.disconnect(); carica(); }
+        var visibile = svgs.some(function (svg) { var r = svg.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
+        if (visibile) { ro.disconnect(); carica(); }
       });
-      ro.observe(svg);
+      svgs.forEach(function (svg) { ro.observe(svg); });
     })();
   </script>
 <script src="/vt-app.js?v=20261008" defer></script>

@@ -1,3 +1,15 @@
+/* Logo piccolo accanto a "Vento Trieste" nella barra in alto, su tutte le pagine (9 nov 2026):
+   lo stesso disegno della favicon e dell'icona dell'app. */
+(function () {
+  var brand = document.querySelector(".topbar .brand");
+  if (!brand || brand.querySelector(".brand-logo")) return;
+  brand.classList.add("brand-con-logo");
+  brand.insertAdjacentHTML("afterbegin",
+    '<svg class="brand-logo" viewBox="0 0 512 512" aria-hidden="true" focusable="false"><rect width="512" height="512" rx="110" fill="#07090c"/>' +
+    '<path d="M101 184H288.2C338.6 184 338.6 112 288.2 112C259.4 112 255.8 140.8 273.8 151.6M101 292H389C439.4 292 439.4 220 389 220C360.2 220 356.6 248.8 374.6 259.6M101 400H252.2" ' +
+    'fill="none" stroke="#f0f43c" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+})();
+
 (function () {
   var doc = document.documentElement;
   var toggle = document.getElementById("themeToggle");

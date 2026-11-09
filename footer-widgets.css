@@ -1923,3 +1923,18 @@ html .vt-benvenuto .vb-x:hover { background: rgba(255,255,255,.08); color: var(-
 .fs-ok { background: #3ecf6e; } .fs-attenzione { background: #f2c230; } .fs-errore { background: #ef5350; }
 .modelli-info { margin: .4rem 0 .6rem; padding-left: 1.1rem; }
 .modelli-info li { margin: .3rem 0; line-height: 1.45; }
+
+/* testo solo per lettori di schermo e motori di ricerca */
+.vt-sr { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; border: 0 !important; }
+.vt-sr + .vt-benvenuto, .vt-sr + .hero { margin-top: .6rem; }
+/* marchio con logo nella barra in alto (footer-widgets.js) */
+.topbar a.brand.brand-con-logo { display: grid !important; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: .55rem; align-items: center !important; align-content: center; text-align: left !important; }
+.topbar a.brand.brand-con-logo .brand-logo { grid-row: 1 / span 2; width: 2.1rem; height: 2.1rem; border-radius: 9px; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
+.topbar a.brand.brand-con-logo > strong, .topbar a.brand.brand-con-logo > span { grid-column: 2; min-width: 0; }
+.topbar a.brand.brand-con-logo > span { margin-top: 0; }
+@media (max-width: 430px) {
+  .topbar a.brand.brand-con-logo { grid-template-rows: auto; }
+  .topbar a.brand.brand-con-logo > span { display: none; }   /* telefono: logo e nome bastano */
+  .topbar a.brand.brand-con-logo > strong { white-space: nowrap; }
+  .topbar a.brand.brand-con-logo .brand-logo { grid-row: 1; }
+}

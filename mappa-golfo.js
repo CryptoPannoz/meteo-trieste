@@ -55,7 +55,12 @@
     /* Savudrija, Poreč e Rovinj tolte il 29 set 2026: spente su vetercek dal 24 ago */
     { id: "zusterna",    nome: "Zusterna",     lon: 13.712, lat: 45.543 },
     { id: "piran",       nome: "Boa Piran",    lon: 13.551, lat: 45.549, tipo: "piran" },
+    /* 9 nov 2026: Sv. Ivan (Umago), Poreč (di nuovo in linea) e Fažana (Pola) riempiono i buchi
+       della costa ovest dell'Istria, una ogni ~0,1-0,3° tra Piran e Premantura */
+    { id: "svivan",      nome: "Sv. Ivan",     lon: 13.531, lat: 45.396 },
     { id: "antenal",     nome: "Antenal",      lon: 13.574, lat: 45.314 },
+    { id: "porec",       nome: "Poreč",        lon: 13.604, lat: 45.222 },
+    { id: "fazana",      nome: "Fažana",       lon: 13.801, lat: 44.928 },
     { id: "preluka",     nome: "Preluka",      lon: 14.288, lat: 45.377 },
     { id: "premantura",  nome: "Premantura",   lon: 13.908, lat: 44.797 },
     { id: "liznjan",     nome: "Ližnjan", lon: 13.955, lat: 44.824 }
@@ -154,6 +159,9 @@
     return n;
   }
 
+  /* Più mappe nella stessa pagina (9 nov 2026: home in cima + Spot Istria): tutto lo stato sta in
+     nuovaMappa(), una per svg. window.MappaGolfo le comanda tutte insieme (vedi in fondo). */
+  function nuovaMappa() {
   var svg = null, gStazioni = null, gMambo = null, gPaloma = null, gFili = null, gEtichette = null, htmlDettaglio = null;
   var stazioneSelezionata = null;
 
@@ -343,7 +351,7 @@
      quali stazioni hanno una scheda; window.__mappaExtra = { id: "mare 16,2° · onda 0,4 m" } aggiunge
      al riquadro i dati che le centraline non hanno (boe). Le altre pagine non li impostano. */
   function avvisa(id) {
-    try { document.dispatchEvent(new CustomEvent("mappa:stazione", { detail: { id: id } })); } catch (e) {}
+    try { document.dispatchEvent(new CustomEvent("mappa:stazione", { detail: { id: id, mappa: svg && svg.id } })); } catch (e) {}
   }
 
   // silenzioso: chiude solo il riquadro (ridisegno dei dati), la scheda sotto la mappa resta
@@ -410,7 +418,7 @@
       '<button class="mappa-popover-close" type="button" aria-label="Chiudi dettaglio">×</button>';
     htmlDettaglio.querySelector(".mappa-popover-close").addEventListener("click", function () { chiudiDettaglio(); });
     htmlDettaglio.querySelector(".mappa-popover-vai").addEventListener("click", function () {
-      try { document.dispatchEvent(new CustomEvent("mappa:vai-scheda", { detail: { id: stazioneSelezionata } })); } catch (e) {}
+      try { document.dispatchEvent(new CustomEvent("mappa:vai-scheda", { detail: { id: stazioneSelezionata, mappa: svg && svg.id } })); } catch (e) {}
     });
     contenitore.appendChild(htmlDettaglio);
 
@@ -836,7 +844,7 @@
     if (!svg || svg.__mappaInit) return;
     svg.__mappaInit = true;
     installaStili();
-    riposizionaNowcasting();
+    if (id === "mappaGolfo") riposizionaNowcasting();   // solo la mappa principale della home
     creaDettaglioHtml();
     disegnaBase();
     aggiornaLegenda();
@@ -852,11 +860,35 @@
     caricaPaloma();
   }
 
-  window.MappaGolfo = { init: init, render: render, chiudi: function () { if (svg) chiudiDettaglio(); }, mambo: mambo, caricaMambo: caricaMambo, caricaPaloma: caricaPaloma,
-    // vista("golfo" | "istria" | "tutto"): inquadratura pronta
-    vista: function (nome) { if (svg) vista(nome); else if (target) target.setAttribute("data-vista", nome); } };
+  return {
+    init: init, render: render, mambo: mambo, caricaMambo: caricaMambo, caricaPaloma: caricaPaloma,
+    chiudi: function () { if (svg) chiudiDettaglio(); },
+    vista: function (nome) { if (svg) vista(nome); },
+    id: function () { return svg && svg.id; }
+  };
+  }   // fine nuovaMappa()
 
-  /* auto-init: home (#mappaGolfo) o pagina dedicata (#mappa) */
-  var target = document.getElementById("mappaGolfo") || document.getElementById("mappa");
-  if (target) init(target.id);
+  var istanze = [];
+  function aTutte(nome) {
+    return function () { var a = arguments; istanze.forEach(function (m) { m[nome].apply(null, a); }); };
+  }
+  function crea(id) {
+    var el = document.getElementById(id);
+    if (!el || el.__mappaInit) return null;
+    var m = nuovaMappa();
+    istanze.push(m);
+    m.init(id);
+    return m;
+  }
+  window.MappaGolfo = {
+    init: crea, render: aTutte("render"), mambo: aTutte("mambo"), caricaPaloma: aTutte("caricaPaloma"),
+    chiudi: aTutte("chiudi"),
+    caricaMambo: function () { if (istanze[0]) istanze[0].caricaMambo(); },   // un fetch OGS basta: mambo() lo passa alle altre
+    // vista("golfo" | "istria" | "tutto") della mappa principale
+    vista: function (nome) { if (istanze[0]) istanze[0].vista(nome); },
+    istanze: istanze
+  };
+
+  /* auto-init: home (#mappaGolfo, e #mappaIstria nella tendina Spot Istria) o pagina dedicata (#mappa) */
+  ["mappaGolfo", "mappa", "mappaIstria"].forEach(crea);
 })();
