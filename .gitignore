@@ -11,3 +11,8 @@ barcolana2026/overpass-strade.json
 
 # variabili locali dei Worker (chiavi API di prova)
 .dev.vars
+
+# credenziali locali: non devono mai finire nel repo pubblico (safety check 9 nov 2026)
+.clasprc.json
+.env
+.env.*

@@ -1,6 +1,7 @@
 /* Logo piccolo accanto a "Vento Trieste" nella barra in alto, su tutte le pagine (9 nov 2026):
    lo stesso disegno della favicon e dell'icona dell'app. */
 (function () {
+  if (document.body.classList.contains("bcn")) return;   // Barcolana: grafica approvata dai partner, non si tocca
   var brand = document.querySelector(".topbar .brand");
   if (!brand || brand.querySelector(".brand-logo")) return;
   brand.classList.add("brand-con-logo");
