@@ -770,7 +770,7 @@
   function htmlInvitati(t) {
     const giudici = t.giudici || [], inviti = t.inviti || [];
     let html = '<h3 class="sotto-titolo">Invitati che danno il giudizio</h3>' +
-      '<p class="nota">Due passi. 1 · alle 21 ricevono la previsione e dicono se è giusta (✅) o come la vedono. 2 · alle 10:30 com\'è adesso sull\'acqua: giudizio (⛏️⛏️ troppo poco · ⛏️ poco · ⭐️ bello ma rafficato · ⭐️⭐️ bello · ⭐️⭐️⭐️ top · 🌪️ troppo vento) e raffiche, sempre a parte. Possono scrivere qualche commento (3 per previsione, solo testo, senza link), che ti arriva subito. Non parlano con Claude, tranne gli esperti 🎓 (sul bot /esperto Nome); sul bot, /benvenuto ti mostra cosa vedono.</p>';
+      '<p class="nota">Due passi. 1 · al buio, a fine fasce, ricevono la previsione e dicono se è giusta (✅) o come la vedono. 2 · alle 10:30 com\'è adesso sull\'acqua: giudizio (⛏️⛏️ troppo poco · ⛏️ poco · ⭐️ bello ma rafficato · ⭐️⭐️ bello · ⭐️⭐️⭐️ top · 🌪️ troppo vento) e raffiche, sempre a parte. Possono scrivere qualche commento (3 per previsione, solo testo, senza link), che ti arriva subito. Non parlano con Claude, tranne gli esperti 🎓 (sul bot /esperto Nome); sul bot, /benvenuto ti mostra cosa vedono.</p>';
     html += giudici.length
       ? '<ul class="righe">' + giudici.map(g => '<li><span class="pallino ' + (g.oggi ? "e-ok" : "e-spento") + '" aria-hidden="true"></span><span class="nome">' + esc(g.nome) +
           (g.esperto ? ' <small class="nota">🎓 parla con l\'AI</small>' : "") + (g.gruppo ? ' <small class="nota">' + esc(g.gruppo) + "</small>" : "") + '</span><span class="det">dal ' + esc(giornoMese(g.quando)) + (g.oggi ? " · giudizio di oggi dato" : "") +

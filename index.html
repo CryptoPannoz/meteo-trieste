@@ -672,6 +672,18 @@
     .ai-fasce[open] { flex-basis: 100%; }
     .ai-fasce h4 { margin: .6rem 0 0; font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--ai-tenue); }
     .ai-metodo li::marker { color: var(--ai-acc); font-weight: 800; }
+    /* Maggiori approfondimenti (10 nov 2026): la tendina "Come l'ho fatta" del bot, fonte per fonte */
+    .ai-fasce > p { margin-top: .45rem; line-height: 1.42; }
+    .ai-fasce ul.ai-come { list-style: none; padding-left: 0; }
+    .ai-come li { display: grid; grid-template-columns: 1.1em minmax(0, 1fr); gap: .1rem; }
+    .ai-come .ai-segno { font-weight: 800; color: var(--ai-tenue); }
+    .ai-come-pro .ai-segno { color: #3fbf75; }
+    .ai-come-contro .ai-segno { color: #ff7a85; }
+    :root[data-theme="light"] .ai-come-pro .ai-segno { color: #1f8a4c; }
+    :root[data-theme="light"] .ai-come-contro .ai-segno { color: #b8323f; }
+    #previsioneAi .ai-conto { margin-top: .35rem; font-size: .74rem; color: var(--ai-tenue); }
+    .ai-istria { margin: .3rem 0 0; padding: .45rem .6rem; overflow-x: auto; border-radius: 8px; background: var(--ai-tab); border: 1px solid var(--ai-tab-bordo);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .78rem; line-height: 1.45; color: var(--ai-testo); }
     #previsioneAi .ai-guida { display: inline-block; margin-top: .45rem; color: var(--ai-acc); font-weight: 700; text-decoration: none; }
     #previsioneAi .ai-quando { font-size: .72rem; color: var(--ai-tenue); white-space: nowrap; margin-left: auto; }
     #previsioneAi .ai-vuota { font-size: .9rem; color: var(--ai-tenue); }
@@ -1776,7 +1788,7 @@
   </script>
   <link rel="stylesheet" href="./station-chart.css?v=20260719-dark2" />
   <link rel="stylesheet" href="./footer-widgets.css?v=20261110a" />
-  <script src="./previsione-ai.js?v=20261102e" defer></script>
+  <script src="./previsione-ai.js?v=20261110a" defer></script>
 </head>
 <body>
 
@@ -1893,10 +1905,10 @@
       <div class="ai-pop-testa">
         <svg class="ai-pop-logo" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#07090c"/><path d="M101 184H288.2C338.6 184 338.6 112 288.2 112C259.4 112 255.8 140.8 273.8 151.6M101 292H389C439.4 292 439.4 220 389 220C360.2 220 356.6 248.8 374.6 259.6M101 400H252.2" fill="none" stroke="#f0f43c" stroke-width="32.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M420 30C427 74 440 87 484 94C440 101 427 114 420 158C413 114 400 101 356 94C400 87 413 74 420 30Z" fill="#66bfff"/></svg>
         <span class="ai-pop-nome">Vento Trieste<b>_AI</b></span>
-        <span class="ai-pop-pill">Novità · Beta</span>
+        <span class="ai-pop-pill">Novità</span>
       </div>
       <p class="ai-pop-titolo">Domani c'è vento a Barcola?</p>
-      <p class="ai-pop-sub">Ogni sera alle 21 la previsione dell'AI per Barcola, fascia per fascia, con il giudizio da ⛏️⛏️ a 🌪️. La trovi in cima a Previsioni.</p>
+      <p class="ai-pop-sub">Ogni sera, appena fa buio, la previsione dell'AI per Barcola, fascia per fascia, con il giudizio da ⛏️⛏️ a 🌪️. La trovi in cima a Previsioni.</p>
       <div class="ai-pop-azioni">
         <a class="ai-pop-cta" href="#previsioneAi">Guarda la previsione <span aria-hidden="true">→</span></a>
         <a class="ai-pop-cta2" href="/guida/vento-trieste-ai/?utm_source=popup-ai">Come funziona</a>
@@ -2271,13 +2283,14 @@
     </span>
   </summary>
 
-  <!-- VENTO TRIESTE_AI (2 nov 2026): la previsione delle 21 del bot Telegram, in prova, per Barcola.
+  <!-- VENTO TRIESTE_AI (2 nov 2026): la previsione della sera del bot Telegram per Barcola (dal 10 nov
+       a fine fasce, col buio; niente più "Beta").
        Lite e Pro. Dati dal Worker ventotrieste-previsioni (/domani), disegno in previsione-ai.js -->
   <div class="section" id="previsioneAi">
     <div class="ai-head">
       <svg class="ai-logo" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#07090c"/><path d="M101 184H288.2C338.6 184 338.6 112 288.2 112C259.4 112 255.8 140.8 273.8 151.6M101 292H389C439.4 292 439.4 220 389 220C360.2 220 356.6 248.8 374.6 259.6M101 400H252.2" fill="none" stroke="#f0f43c" stroke-width="32.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M420 30C427 74 440 87 484 94C440 101 427 114 420 158C413 114 400 101 356 94C400 87 413 74 420 30Z" fill="#66bfff"/></svg>
       <div class="ai-marchio">
-        <h2>Vento Trieste<span class="ai-tag">_AI</span><span class="ai-beta">Beta</span></h2>
+        <h2>Vento Trieste<span class="ai-tag">_AI</span></h2>
         <p class="ai-sotto">Previsione del vento per Barcola</p>
       </div>
       <button type="button" class="ai-info" onclick="apriInfoAi()" aria-label="Informazioni su Vento Trieste_AI">ℹ️ <span class="ai-info-testo">Informazioni</span></button>
@@ -2380,14 +2393,14 @@
       <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
       <h3 id="modalAiTitolo">Vento Trieste_AI · come funziona</h3>
       <ul>
-        <li><b>Quando</b> · ogni sera alle 21 la previsione per domani, dall'alba al tramonto. Vale solo per <b>Barcola</b>: altrove il vento può essere molto diverso.</li>
+        <li><b>Quando</b> · ogni sera, appena fa buio e finiscono le fasce (alle 17 in inverno, alle 21 d'estate), la previsione per domani, dall'alba al tramonto. Vale solo per <b>Barcola</b>: altrove il vento può essere molto diverso.</li>
         <li><b>Cosa legge</b> · il bollettino ARPA FVG - S.O.C. OSMER e GRN, il modello ALADIN, la media degli altri modelli meteo, il diagramma della bora, la Spinta della Bora e le nuvole.</li>
         <li><b>Come decide</b> · pesa i modelli con un manuale di regole scritto da Alberto Broggi, che il vento di Barcola lo conosce dall'acqua, e con i giorni passati simili.</li>
         <li><b>Come impara</b> · il giorno dopo la previsione si confronta con il vento misurato nel golfo e con i giudizi di chi era in acqua. Dagli errori nascono regole nuove, che Alberto approva una per una.</li>
         <li><b>Come si legge</b> · una riga per fascia oraria: barra del vento medio (una tacca ogni 4 kt), media-raffica in nodi, direzione da cui arriva, giudizio.</li>
       </ul>
       <p class="ai-scala">⛏️⛏️ troppo poco vento · ⛏️ poco vento · ⭐️ bello ma rafficato · ⭐️⭐️ bello · ⭐️⭐️⭐️ top · 🌪️ troppo vento<br>Raffiche a parte: regolare · rafficato · molto rafficato</p>
-      <p class="guida-meta">Versione di prova: può sbagliare. Prima di uscire guarda il vento live in cima alla pagina. L'AI è Claude (Anthropic); i nomi e i giudizi di chi aiuta restano nel bot. <a href="/guida/vento-trieste-ai/">Come l'abbiamo fatta →</a></p>
+      <p class="guida-meta">Può sbagliare. Prima di uscire guarda il vento live in cima alla pagina. L'AI è Claude (Anthropic); i nomi e i giudizi di chi aiuta restano nel bot. <a href="/guida/vento-trieste-ai/">Come l'abbiamo fatta →</a></p>
     </div>
   </div>
 
