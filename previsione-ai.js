@@ -65,7 +65,7 @@
     // il commento intero (sopra la tabella c'è solo la prima riga)
     var commento = (app.commento || []).slice(1).map(function (x) { return "<p>" + e(x) + "</p>"; }).join("");
     var come = (app.come || []).map(function (x) {
-      return '<li class="ai-come-' + e(x.esito) + '"><span class="ai-segno" aria-hidden="true">' + e(x.segno) + "</span><b>" + e(x.fonte) + "</b>: " + e(x.testo) + "</li>";
+      return '<li class="ai-come-' + e(x.esito) + '"><span class="ai-segno" aria-hidden="true">' + e(x.segno) + "</span><span><b>" + e(x.fonte) + "</b>: " + e(x.testo) + "</span></li>";
     }).join("");
     var m = app.manuale;
     var conto = m ? '<p class="ai-conto">' + (m.versione ? "Manuale v" + e(m.versione) + " · " : "") + e(m.regole) + " regole: " + e(m.pro) + " a favore, " + e(m.contro) + " contro, " + e(m.neutre) + " neutre</p>" : "";
