@@ -1472,3 +1472,29 @@
   if (saluto) { while (meta.firstChild) meta.removeChild(meta.firstChild); meta.appendChild(saluto); }
   }
 })();
+
+/* Finestre (.modal) e tastiera (10 nov 2026, giro UX): prima all'apertura il fuoco restava sul
+   bottone sotto la finestra, così con la tastiera o un lettore di schermo si continuava a girare
+   nella pagina dietro. Ora all'apertura il fuoco va sulla ✕ e alla chiusura torna al bottone che
+   l'aveva aperta. Le finestre si aprono in tanti punti con style.display: qui si guarda solo quello. */
+(function () {
+  var modali = document.querySelectorAll(".modal[role=dialog]");
+  if (!modali.length || !("MutationObserver" in window)) return;
+  Array.prototype.forEach.call(modali, function (m) {
+    var aperta = false, prima = null;
+    new MutationObserver(function () {
+      var ora = !!m.style.display && m.style.display !== "none";
+      if (ora === aperta) return;
+      aperta = ora;
+      if (ora) {
+        prima = document.activeElement;
+        var x = m.querySelector(".modal-x");
+        if (x) { try { x.focus({ preventScroll: true }); } catch (e) { x.focus(); } }
+      } else if (prima && prima !== document.body && document.documentElement.contains(prima) &&
+                 (document.activeElement === document.body || m.contains(document.activeElement))) {
+        try { prima.focus({ preventScroll: true }); } catch (e) { prima.focus(); }
+        prima = null;
+      }
+    }).observe(m, { attributes: true, attributeFilter: ["style"] });
+  });
+})();

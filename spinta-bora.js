@@ -40,7 +40,7 @@
     rinforzo: ["", "", "", "Krepi se: občutna burja", "Krepi se: močna burja"], calo: "Slabi",
     stabile: "Stabilno naslednjih 24\u00a0ur", scende: "Potisk pade pod prag", supera: "Potisk preseže prag",
     moderataCorso: "Potisk pod pragom: burja navadno ostane zmerna",
-    moderata: "Potisk blizu praga: burja možna, navadno šibka", bassa: "Potisk nizek naslednjih 24\u00a0ur",
+    moderata: "Potisk blizu praga: burja možna, navadno šibka", sale: "Potisk se približa pragu", bassa: "Potisk nizek naslednjih 24\u00a0ur",
     sottoZero: "Potisk pod ničlo: burje ne bo naslednjih 24\u00a0ur",
     verso: "okoli", domani: "jutri",
     prima: "zadnjih 12 h", ora: "zdaj", dopo: "naslednjih 36 h · napoved",
@@ -84,7 +84,7 @@
     rinforzo: ["", "", "", "In rinforzo: bora consistente", "In rinforzo: bora forte"], calo: "In calo",
     stabile: "Stabile per le prossime 24\u00a0h", scende: "La spinta scende sotto la soglia", supera: "La spinta supera la soglia",
     moderataCorso: "Spinta sotto la soglia: di solito la bora resta moderata",
-    moderata: "Spinta vicina alla soglia: bora possibile, di solito debole", bassa: "Spinta bassa per le prossime 24\u00a0h",
+    moderata: "Spinta vicina alla soglia: bora possibile, di solito debole", sale: "La spinta sale vicino alla soglia", bassa: "Spinta bassa per le prossime 24\u00a0h",
     sottoZero: "Spinta sotto zero: niente bora nelle prossime 24\u00a0h",
     verso: "verso le", domani: "domani",
     prima: "ultime 12 h", ora: "ora", dopo: "prossime 36 h · previsione",
@@ -330,11 +330,12 @@
     var o = lista.filter(boraMisurata)[0] || lista[0] || null;   // si mostra quella con la bora, se c'è
     var v = d.ora, S = SOGLIE[0], f = fascia(v);
     var da = Math.ceil(d.xOra), a = Math.min(d.serie.length - 1, Math.floor(d.xOra + 24));
-    var picco = v, inizio = null, fine = null, giu = null, i, s;
+    var picco = v, inizio = null, fine = null, giu = null, vicina = null, i, s;
     for (i = da; i <= a; i++) {
       s = d.serie[i];
       if (s == null) continue;
       if (s > picco) picco = s;
+      if (vicina === null && s >= VICINO) vicina = i;
       if (inizio === null && v < S && s >= S) inizio = i;
       if (fine === null && v >= S && s < S) fine = i;
       if (giu === null && fascia(s) < f && v - s >= MARGINE) giu = i;
@@ -352,7 +353,9 @@
     }
     else if (inizio !== null) spinta = T.supera + " " + quando(d, inizio);
     else if (bora) spinta = T.moderataCorso;
-    else if (picco >= VICINO) spinta = T.moderata;
+    /* 10 nov 2026: con la spinta a −2,5 la riga diceva "Spinta vicina alla soglia" perché ci arriva
+       la previsione delle prossime 24 ore, non il valore di adesso. Se adesso è lontana lo dice con l'ora. */
+    else if (picco >= VICINO) spinta = v < VICINO && vicina !== null ? T.sale + " " + quando(d, vicina) : T.moderata;
     else spinta = picco < 0 ? T.sottoZero : T.bassa;   // sotto zero per tutte le 24 h
     if (bora) { verdetto = v >= S ? T.fasce[f] : T.sit.corso; classe = Math.max(2, f); }
     else if (v >= S) { verdetto = o ? T.sit.arrivo : T.sit.probabile; classe = f; }   // spinta alta, bora non ancora misurata

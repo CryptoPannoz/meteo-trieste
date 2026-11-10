@@ -141,7 +141,7 @@
       ".rv-gl.base{border-top-color:" + BORDO + "}" +
       ".rv-gl.soglia{border-top:2px dashed " + C_SURF + ";z-index:2;pointer-events:none}" +
       ".rv-gl.soglia span{font-weight:800;color:var(--ink,#16232c)}" +
-      ".rv-colonne{position:absolute;inset:0;display:flex}" +
+      ".rv-colonne{position:absolute;inset:0;display:flex;touch-action:pan-y}" +
       ".rv-col{position:relative;flex:1 1 0;min-width:0;margin:0;padding:0;border:0;border-radius:3px 3px 0 0;background:transparent;cursor:pointer}" +
       ".rv-col:disabled{cursor:default}" +
       ".rv-col:hover:not(:disabled),.rv-col[aria-pressed=true]{background:color-mix(in srgb," + C_MEDIA + " 8%,transparent)}" +
@@ -729,6 +729,31 @@
     box.addEventListener("focusin", mostra);
     box.addEventListener("pointerout", function (ev) { if (ev.target.closest && ev.target.closest(GIORNO)) torna(ev); });
     box.addEventListener("focusout", function (ev) { if (ev.target.closest && ev.target.closest(GIORNO)) torna(ev); });
+    /* Col dito (10 nov 2026): nel mese le colonne sono larghe 9 px e il giorno giusto si mancava.
+       Strisciando sul grafico la riga di lettura segue il dito; alzandolo si apre il giorno su cui
+       era fermo. Un tocco secco funziona come prima (ci pensa il click). */
+    var sottoIlDito = function (ev) {
+      var el = document.elementFromPoint(ev.clientX, ev.clientY), b = el && el.closest ? el.closest(GIORNO) : null;
+      return b && !b.disabled && box.contains(b) ? b : null;
+    };
+    var striscia = null, saltaClick = 0;
+    // dopo una strisciata corta il browser può mandare anche il suo click sul giorno di partenza: non conta
+    box.addEventListener("click", function (ev) { if (ev.isTrusted && Date.now() < saltaClick) { ev.stopPropagation(); ev.preventDefault(); } }, true);
+    box.addEventListener("pointerdown", function (ev) {
+      striscia = ev.pointerType !== "mouse" && ev.target.closest && ev.target.closest(GIORNO) ? { x: ev.clientX, mosso: false } : null;
+    });
+    box.addEventListener("pointermove", function (ev) {
+      if (!striscia) return;
+      if (Math.abs(ev.clientX - striscia.x) > 12) striscia.mosso = true;
+      var b = striscia.mosso && sottoIlDito(ev);
+      if (b && r.$("regLettura")) r.$("regLettura").innerHTML = lettura(r, b.getAttribute("data-rv-giorno"));
+    });
+    box.addEventListener("pointerup", function (ev) {
+      var b = striscia && striscia.mosso && sottoIlDito(ev);
+      striscia = null;
+      if (b) { saltaClick = Date.now() + 400; b.click(); }
+    });
+    box.addEventListener("pointercancel", function () { striscia = null; });
   }
 
   // sotto i bottoni: sintesi del giorno mostrato (per oggi, fino all'ultimo quarto d'ora)

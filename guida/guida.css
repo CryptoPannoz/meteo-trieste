@@ -14,6 +14,10 @@ body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothin
 .g { max-width: 760px; margin: 0 auto; }
 .g-briciole { margin: 1rem 0 .6rem; color: var(--label); font-size: .76rem; }
 .g-briciole a { font-weight: 750; }
+/* link corti (briciole, "Tutti gli articoli", elenchi e tabelle): area di tocco più alta senza spostare il testo */
+.g-briciole a, .g-tutti a, .g-sez li > a, .g-sez li > strong > a, .g-tabella td > a { position: relative; }
+.g-briciole a::after, .g-tutti a::after { content: ""; position: absolute; inset: -11px -4px; }
+.g-sez li > a::after, .g-sez li > strong > a::after, .g-tabella td > a::after { content: ""; position: absolute; inset: -6px -4px; }
 .g-testa { padding: 1.15rem 1.15rem 1.05rem; border: 1px solid var(--line); border-left: 5px solid var(--signal); border-radius: 14px;
   background: linear-gradient(105deg, #1b1e0e, #10151a 70%); }
 .g-kicker { display: inline-flex; padding: .26rem .55rem; border-radius: 999px; background: var(--signal); color: #090b0d;
@@ -57,7 +61,8 @@ body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothin
 /* fasce (spinta della bora, colori della mappa) */
 .g-fasce { display: grid; gap: .3rem; margin: .5rem 0 .8rem; }
 .g-fasce div { display: grid; grid-template-columns: 5.4rem 1fr; gap: .6rem; align-items: start; padding: .45rem .6rem; border-radius: 8px; background: #151b21; border-left: 4px solid var(--c); font-size: .88rem; }
-.g-fasce span { color: var(--c); font-weight: 850; font-variant-numeric: tabular-nums; }
+/* il numero prende il colore della fascia, schiarito sul fondo scuro (il rosso puro aveva contrasto 3,4) */
+.g-fasce span { color: var(--c); color: color-mix(in srgb, var(--c) 70%, #fff); font-weight: 850; font-variant-numeric: tabular-nums; }
 .g-fasce p { font-size: .88rem !important; }
 .g-figura { margin: .4rem 0 .8rem; padding: .6rem .5rem .4rem; border: 1px solid var(--line); border-radius: 10px; background: #0b0f13; }
 .g-figura svg { display: block; width: 100%; height: auto; }
@@ -106,6 +111,10 @@ body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothin
 :root[data-theme="light"] .g-fasce div,
 :root[data-theme="light"] .g-parole div,
 :root[data-theme="light"] .g-link a { background: #f3f6f7; border-color: var(--line); }
+/* tema chiaro: il bordo a sinistra resta del colore della fascia (la riga sopra lo ingrigiva) e il
+   numero lo prende scurito: il giallo puro sul fondo chiaro aveva contrasto 2 (10 nov 2026) */
+:root[data-theme="light"] .g-fasce div { border-left-color: var(--c); }
+:root[data-theme="light"] .g-fasce span { color: color-mix(in srgb, var(--c) 55%, #000); }
 :root[data-theme="light"] .g-figura { background: #f7f9f9; }
 :root[data-theme="light"] .g-fig-ora { stroke: #16232c; }
 :root[data-theme="light"] .g-fig-ora-t { fill: #16232c; }
@@ -148,8 +157,9 @@ body { margin: 0; padding: 0 1rem 2rem; line-height: 1.55; -webkit-font-smoothin
 .g-ai-tab i { display: inline-block; width: 7px; height: 11px; margin-right: 2px; border-radius: 2px; background: rgba(255,255,255,.16); vertical-align: -1px; }
 .g-ai-tab i.on { background: var(--signal); }
 .g-ai .g-ai-nota { margin-top: .4rem !important; color: #a8c3e2 !important; font-size: .74rem !important; }
-.g-telegram { background: #2aabee !important; color: #fff !important; }
-.g-telegram:hover { background: #1b92cf !important; }
+/* testo scuro sull'azzurro di Telegram: il bianco aveva contrasto 2,6 (10 nov 2026) */
+.g-telegram { background: #2aabee !important; color: #04213a !important; }
+.g-telegram:hover { background: #63c4f6 !important; }
 @media (max-width: 400px) { .g-ai-tab { font-size: .76rem; gap: .3rem .45rem; } .g-ai-tab i { width: 6px; } }
 @media (max-width: 340px) { .g-ai-tab .gr { display: none; } }
 :root[data-theme="light"] .g-ai { background: linear-gradient(160deg, #eaf4ff, #d5e7fb); border-color: #9cc4ef; border-left-color: #2a76cc; color: #0f2238; }

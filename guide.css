@@ -55,6 +55,10 @@
 
 /* ---------- /registro/ ---------- */
 .reg-card { padding: .9rem; }
+/* bottoni attivi del registro (Mese, Media in golfo…): nel tema scuro il fondo è il giallo del sito,
+   quindi il testo va scuro; senza questa riga restava bianco su giallo (10 nov 2026) */
+#registroVento { --bcn-btn-ink: #07090c; }
+:root[data-theme="light"] #registroVento { --bcn-btn-ink: #fff; }
 .reg-card > h2 { margin: 0 0 .4rem; font-size: 1.05rem; }
 
 /* ---------- articoli ---------- */
@@ -70,6 +74,9 @@
 
 .page-footer nav { display: flex; flex-wrap: wrap; justify-content: center; gap: .3rem .9rem; margin-bottom: .45rem; }
 .page-footer nav a { font-weight: 750; }
+/* link corti: area di tocco più alta senza spostare il testo (10 nov 2026) */
+.pg-testa .pg-link, .page-footer nav a { position: relative; }
+.pg-testa .pg-link::after, .page-footer nav a::after { content: ""; position: absolute; inset: -11px -4px; }
 
 /* ---------- telefono ---------- */
 @media (max-width: 700px) {
