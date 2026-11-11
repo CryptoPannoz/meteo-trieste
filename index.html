@@ -515,8 +515,10 @@
       margin: .5rem 0;
     }
     .aladin-controlli span { font-variant-numeric: tabular-nums; color: #444; }
-    /* nuvole e pioggia: spazio riservato 640×480, così cambiando ora la pagina non salta */
-    #pioggiaImg { display: block; width: 100%; max-width: 640px; height: auto; aspect-ratio: 4 / 3; margin: 0 auto; }
+    /* vento e nuvole/pioggia: spazio riservato 640×480 (4:3), così cambiando ora la pagina non salta.
+       11 nov 2026: #aladinImg era sparito da questa regola (da5b4a8) e la mappa del vento restava alta
+       480 px su un telefono largo 271 px, tutta schiacciata: con height:auto torna in proporzione */
+    #aladinImg, #pioggiaImg { display: block; width: 100%; max-width: 640px; height: auto; aspect-ratio: 4 / 3; margin: 0 auto; }
     /* scale colorate sotto le mappe ARSO (8 nov 2026): una cella per classe, coi colori letti dalla
        legenda dell'immagine; il numero sta sul bordo sinistro, dove la classe comincia */
     .mscala { max-width: 640px; margin: .6rem auto 0; }
@@ -2546,7 +2548,7 @@
       </table>
     </details>
     <p class="stato" id="statoZusterna"></p>
-    <div id="camZusternaWrap" data-yt="LD8GEJzTnCc" style="margin-top:.6rem;">
+    <div id="camZusternaWrap" data-yt="A1R1o5tGhqY" style="margin-top:.6rem;">
       <button class="cam-play" onclick="caricaCamYoutube('camZusternaWrap')">▶ Avvia la webcam</button>
     </div>
     <div class="spot-azioni">
