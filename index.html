@@ -518,7 +518,26 @@
     /* vento e nuvole/pioggia: spazio riservato 640×480 (4:3), così cambiando ora la pagina non salta.
        11 nov 2026: #aladinImg era sparito da questa regola (da5b4a8) e la mappa del vento restava alta
        480 px su un telefono largo 271 px, tutta schiacciata: con height:auto torna in proporzione */
-    #aladinImg, #pioggiaImg { display: block; width: 100%; max-width: 640px; height: auto; aspect-ratio: 4 / 3; margin: 0 auto; }
+    #aladinImg, #pioggiaImg { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; }
+    /* 11 nov 2026 (Alberto: "uno accanto all'altro in un'unica schermata da mobile"): le due mappe
+       affiancate, tagliate sotto (640×424 su 480: via la scala ARSO in m/s, qui sotto c'è in nodi), un
+       solo ◀ ▶ e le legende sotto. Un tocco sulle mappe le ingrandisce a tutta larghezza, un altro le
+       riaffianca. Nella Lite il vento resta da solo, a tutta larghezza. */
+    .aladin-mappe { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; max-width: 1100px; margin: .4rem auto 0; cursor: zoom-in; }
+    .aladin-mappe.grande { grid-template-columns: 1fr; max-width: 640px; cursor: zoom-out; }
+    html.vt-lite .aladin-mappe { grid-template-columns: 1fr; max-width: 640px; cursor: auto; }
+    .aladin-mappa { margin: 0; min-width: 0; }
+    .aladin-taglio { aspect-ratio: 640 / 424; overflow: hidden; border-radius: 6px; background: #eef2f5; }
+    .aladin-mappa figcaption { font-size: .78rem; color: var(--label, #555); text-align: center; margin-top: .15rem; }
+    .aladin-legende { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 0 1.2rem; }
+    .aladin-legende .mscala { margin-top: .45rem; max-width: none; width: 100%; }
+    #pioggiaLegende { display: contents; }
+    html.vt-lite #pioggiaLegende { display: none; }
+    @media (min-width: 700px) { .aladin-legende { grid-template-columns: 1fr 1fr 1fr; } }
+    /* sul telefono le mappe escono un po' dal bordo della card: ogni pixel conta a 375 px */
+    @media (max-width: 600px) { .aladin-mappe:not(.grande) { margin-left: -.75rem; margin-right: -.75rem; gap: .3rem; } }
+    .aladin-agg { margin: .05rem 0 0; text-align: center; font-size: .8rem; color: var(--label, #555); line-height: 1.35; }
+    .aladin-agg b { font-weight: 600; }
     /* scale colorate sotto le mappe ARSO (8 nov 2026): una cella per classe, coi colori letti dalla
        legenda dell'immagine; il numero sta sul bordo sinistro, dove la classe comincia */
     .mscala { max-width: 640px; margin: .6rem auto 0; }
@@ -2355,32 +2374,43 @@
       <span id="aladinOra" aria-live="polite">–</span>
       <button id="aladinSucc" aria-label="Ora successiva">▶</button>
     </div>
-    <p class="stato aladin-status" id="aladinCorsa"></p>
-    <img id="aladinImg" alt="Mappa del vento del modello Aladin" loading="lazy" width="640" height="480" />
-    <!-- la legenda della mappa è in m/s: qui in nodi (1 m/s = 1,944 kt), con gli stessi colori ARSO -->
-    <div class="mscala" role="img" aria-label="Vento in nodi: senza colore sotto 5, poi grigioverde 5-10, verde 10-15, verde acqua 15-19, blu 19-24, blu viola 24-29, viola oltre 29">
-      <span class="mscala-nome">Vento medio, nodi</span>
-      <ol>
-        <li class="mscala-vuoto"><b>0</b></li><li class="mscala-velo"><b>5</b></li><li style="--c:#009966"><b>10</b></li><li style="--c:#00808c"><b>15</b></li>
-        <li style="--c:#0066b2"><b>19</b></li><li style="--c:#4c66bf"><b>24</b></li><li style="--c:#9966cc"><b>29</b></li>
-      </ol>
+    <p class="aladin-agg" id="aladinCorsa"></p>
+    <p class="aladin-agg" id="aladinProssimo"></p>
+    <div class="aladin-mappe" id="aladinMappe" title="Tocca per ingrandire o riaffiancare">
+      <figure class="aladin-mappa">
+        <div class="aladin-taglio"><img id="aladinImg" alt="Mappa del vento del modello Aladin" loading="lazy" width="640" height="480" /></div>
+        <figcaption>Vento a 10 m</figcaption>
+      </figure>
+      <figure class="aladin-mappa" id="pioggia">
+        <div class="aladin-taglio"><img id="pioggiaImg" alt="Mappa nuvole e pioggia del modello Aladin" loading="lazy" width="640" height="480" /></div>
+        <figcaption>Nuvole e pioggia</figcaption>
+      </figure>
     </div>
-    <div id="pioggia">
-      <img id="pioggiaImg" alt="Mappa nuvole e pioggia del modello Aladin" loading="lazy" width="640" height="480" />
-      <div class="mscala" role="img" aria-label="Pioggia nelle 3 ore prima: da giallo chiaro (1 mm) a verde (50 mm) a verde acqua (100 mm e oltre)">
-        <span class="mscala-nome">Pioggia nelle 3 ore prima, mm</span>
+    <!-- la legenda della mappa è in m/s: qui in nodi (1 m/s = 1,944 kt), con gli stessi colori ARSO -->
+    <div class="aladin-legende">
+      <div class="mscala" role="img" aria-label="Vento in nodi: senza colore sotto 5, poi grigioverde 5-10, verde 10-15, verde acqua 15-19, blu 19-24, blu viola 24-29, viola oltre 29">
+        <span class="mscala-nome">Vento medio, nodi</span>
         <ol>
-          <li class="mscala-vuoto"></li><li style="--c:#ffff99"><b>1</b></li><li style="--c:#e5ff7f"></li><li style="--c:#ccff66"><b>5</b></li>
-          <li style="--c:#99e566"></li><li style="--c:#7fcc66"><b>20</b></li><li style="--c:#4cb24c"></li><li style="--c:#33994c"></li>
-          <li style="--c:#007f33"><b>50</b></li><li style="--c:#009966"></li><li style="--c:#19b27f"></li><li style="--c:#19cc99"></li>
-          <li style="--c:#00e5b2"></li><li style="--c:#00ffcc"><b>100</b></li>
+          <li class="mscala-vuoto"><b>0</b></li><li class="mscala-velo"><b>5</b></li><li style="--c:#009966"><b>10</b></li><li style="--c:#00808c"><b>15</b></li>
+          <li style="--c:#0066b2"><b>19</b></li><li style="--c:#4c66bf"><b>24</b></li><li style="--c:#9966cc"><b>29</b></li>
         </ol>
       </div>
-      <div class="mscala" role="img" aria-label="Nuvole: senza colore sotto il 40% di cielo coperto, poi viola sempre più scuro fino al 100%">
-        <span class="mscala-nome">Nuvole, % di cielo coperto</span>
-        <ol>
-          <li class="mscala-vuoto"><b>0</b></li><li style="--c:#ccccff"><b>40</b></li><li style="--c:#b2b2e5"><b>60</b></li><li style="--c:#9999cc"><b>80</b></li>
-        </ol>
+      <div id="pioggiaLegende">
+        <div class="mscala" role="img" aria-label="Nuvole: senza colore sotto il 40% di cielo coperto, poi viola sempre più scuro fino al 100%">
+          <span class="mscala-nome">Nuvole, % di cielo coperto</span>
+          <ol>
+            <li class="mscala-vuoto"><b>0</b></li><li style="--c:#ccccff"><b>40</b></li><li style="--c:#b2b2e5"><b>60</b></li><li style="--c:#9999cc"><b>80</b></li>
+          </ol>
+        </div>
+        <div class="mscala" role="img" aria-label="Pioggia nelle 3 ore prima: da giallo chiaro (1 mm) a verde (50 mm) a verde acqua (100 mm e oltre)">
+          <span class="mscala-nome">Pioggia nelle 3 ore prima, mm</span>
+          <ol>
+            <li class="mscala-vuoto"></li><li style="--c:#ffff99"><b>1</b></li><li style="--c:#e5ff7f"></li><li style="--c:#ccff66"><b>5</b></li>
+            <li style="--c:#99e566"></li><li style="--c:#7fcc66"><b>20</b></li><li style="--c:#4cb24c"></li><li style="--c:#33994c"></li>
+            <li style="--c:#007f33"><b>50</b></li><li style="--c:#009966"></li><li style="--c:#19b27f"></li><li style="--c:#19cc99"></li>
+            <li style="--c:#00e5b2"></li><li style="--c:#00ffcc"><b>100</b></li>
+          </ol>
+        </div>
       </div>
     </div>
     <p class="stato">Fonte: <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a> · serie completa su <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">kuguluff.altervista.org</a></p>
@@ -2796,8 +2826,16 @@
       document.getElementById("aladinOra").textContent = oraAladin(new Date(corsaAladin.getTime() + passoAladin * 3 * ORA_MS));
       document.getElementById("aladinPrec").disabled = passoAladin <= 1;
       document.getElementById("aladinSucc").disabled = passoAladin >= PASSI_ALADIN;
-      document.getElementById("aladinCorsa").textContent = passoAladin + " / " + PASSI_ALADIN +
-        " · modello di " + oraAladin(corsaAladin) + (ripiegoAladin ? " (il nuovo non è ancora uscito)" : "");
+      // ultimo e prossimo aggiornamento (11 nov 2026): la corsa delle 00/12 UTC esce verso le 03:05/15:05 UTC,
+      // cioè le 04:05/16:05 d'inverno (Last-Modified ARSO 8-11 nov; l'11 la corsa 00 è uscita in ritardo, 06:11)
+      const giorno = d => d.toLocaleDateString("it-IT", { weekday: "long" });
+      const ora = d => d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+      document.getElementById("aladinCorsa").innerHTML = "Ultimo aggiornamento: <b>modello di " + giorno(corsaAladin) + " " + ora(corsaAladin) + "</b>";
+      const uscita = new Date(corsaAladin.getTime() + 15 * ORA_MS + 5 * 60e3);
+      const oggi = new Date().toDateString(), dom = new Date(Date.now() + 864e5).toDateString();
+      const quando = uscita.toDateString() === oggi ? "oggi" : uscita.toDateString() === dom ? "domani" : giorno(uscita);
+      document.getElementById("aladinProssimo").innerHTML = "Prossimo aggiornamento: <b>" +
+        (uscita.getTime() < Date.now() ? "in ritardo, a momenti" : quando + " verso le " + ora(uscita)) + "</b>";
       ["aladinImg", "pioggiaImg"].forEach(id => { document.getElementById(id).style.display = ""; });
       document.getElementById("aladinImg").src = urlArso("ad", "vm-va10m_si-sw", corsaAladin, passoAladin);
       document.getElementById("pioggiaImg").src = urlArso("as", "tcc-rr_si-neighbours", corsaAladin, passoAladin);
@@ -2818,9 +2856,12 @@
         return;
       }
       this.style.display = "none";
-      document.getElementById("aladinCorsa").textContent = "Mappa Aladin momentaneamente non disponibile · " + passoAladin + " / " + PASSI_ALADIN;
+      document.getElementById("aladinCorsa").textContent = "Mappa Aladin momentaneamente non disponibile";
     }));
     document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
+    document.getElementById("aladinMappe").addEventListener("click", function () {
+      if (!document.documentElement.classList.contains("vt-lite")) this.classList.toggle("grande");
+    });
     document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
 
     /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
