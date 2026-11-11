@@ -525,7 +525,20 @@
        una riga sola, il nome dentro la riga. Nella Lite resta il vento (html.vt-lite #pioggia). */
     .aladin-mappe { display: grid; gap: .55rem; max-width: 640px; margin: .4rem auto 0; }
     .aladin-mappa { margin: 0; min-width: 0; }
-    .aladin-taglio { aspect-ratio: 640 / 424; overflow: hidden; border-radius: 6px 6px 0 0; background: #eef2f5; }
+    .aladin-taglio { position: relative; aspect-ratio: 640 / 424; overflow: hidden; border-radius: 6px 6px 0 0; background: #eef2f5; touch-action: pan-y; }
+    /* 11 nov 2026 (Alberto: "devo scorrere sopra o sotto per il selettore, non è pratico"): ◀ ▶ e ora
+       sopra ogni mappa, in sovraimpressione; e si cambia ora anche col dito, scorrendo di lato */
+    /* in basso, sopra l'Istria: in mezzo coprirebbero il Golfo di Trieste */
+    .aladin-taglio .aladin-f { position: absolute; bottom: 6px; width: 42px; height: 34px; min-width: 0; min-height: 0;
+      padding: 0; border: 0; border-radius: 999px; background: rgba(15, 23, 32, .55); color: #fff; font-size: .95rem; line-height: 34px; text-align: center;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .25); -webkit-tap-highlight-color: transparent; }
+    .aladin-taglio .aladin-prec { left: 6px; }
+    .aladin-taglio .aladin-succ { right: 6px; }
+    .aladin-taglio .aladin-f:disabled { opacity: .25; }
+    .aladin-taglio .aladin-f:active:not(:disabled) { background: rgba(15, 23, 32, .75); }
+    .aladin-ora-map { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); padding: 3px 12px; border-radius: 999px;
+      background: rgba(15, 23, 32, .6); color: #fff; font: 600 .95rem/1.4 "Barlow Condensed", "Arial Narrow", sans-serif; font-variant-numeric: tabular-nums;
+      white-space: nowrap; pointer-events: none; }
     .aladin-leg-doppia { display: flex; gap: .7rem; }
     .aladin-leg-doppia > .aladin-leg:first-child { flex: 0 0 38%; }
     .aladin-leg-doppia > .aladin-leg:last-child { flex: 1; }
@@ -2373,23 +2386,23 @@
       <button type="button" class="bd-info" onclick="apriGuidaAladin()">ℹ️ come si legge</button>
     </div>
     <div class="aladin-controlli">
-      <button id="aladinPrec" aria-label="Ora precedente">◀</button>
+      <button id="aladinPrec" class="aladin-prec" aria-label="Ora precedente">◀</button>
       <span id="aladinOra" aria-live="polite">–</span>
-      <button id="aladinSucc" aria-label="Ora successiva">▶</button>
+      <button id="aladinSucc" class="aladin-succ" aria-label="Ora successiva">▶</button>
     </div>
     <p class="aladin-agg" id="aladinCorsa"></p>
     <p class="aladin-agg" id="aladinProssimo"></p>
     <!-- una sopra l'altra, ognuna con la sua scala sottile attaccata sotto (la legenda ARSO è in m/s: qui in nodi) -->
     <div class="aladin-mappe" id="aladinMappe">
       <figure class="aladin-mappa">
-        <div class="aladin-taglio"><img id="aladinImg" alt="Mappa del vento del modello Aladin" loading="lazy" width="640" height="480" /></div>
+        <div class="aladin-taglio"><img id="aladinImg" alt="Mappa del vento del modello Aladin" loading="lazy" width="640" height="480" /><button type="button" class="aladin-f aladin-prec" aria-label="Ora precedente">◀</button><button type="button" class="aladin-f aladin-succ" aria-label="Ora successiva">▶</button><span class="aladin-ora-map" aria-hidden="true">–</span></div>
         <div class="aladin-leg" role="img" aria-label="Vento medio in nodi: senza colore sotto 5, poi grigioverde 5-10, verde 10-15, verde acqua 15-19, blu 19-24, blu viola 24-29, viola oltre 29">
           <span class="aladin-leg-nome">Vento kt</span>
           <ol><li class="leg-vuoto"><b>0</b></li><li class="leg-velo"><b>5</b></li><li style="--c:#009966"><b>10</b></li><li style="--c:#00808c"><b>15</b></li><li style="--c:#0066b2"><b>19</b></li><li style="--c:#4c66bf"><b>24</b></li><li style="--c:#9966cc"><b>29</b></li></ol>
         </div>
       </figure>
       <figure class="aladin-mappa" id="pioggia">
-        <div class="aladin-taglio"><img id="pioggiaImg" alt="Mappa nuvole e pioggia del modello Aladin" loading="lazy" width="640" height="480" /></div>
+        <div class="aladin-taglio"><img id="pioggiaImg" alt="Mappa nuvole e pioggia del modello Aladin" loading="lazy" width="640" height="480" /><button type="button" class="aladin-f aladin-prec" aria-label="Ora precedente">◀</button><button type="button" class="aladin-f aladin-succ" aria-label="Ora successiva">▶</button><span class="aladin-ora-map" aria-hidden="true">–</span></div>
         <div class="aladin-leg-doppia">
           <div class="aladin-leg" role="img" aria-label="Nuvole: senza colore sotto il 40% di cielo coperto, poi viola sempre più scuro fino al 100%">
             <span class="aladin-leg-nome">Nuvole %</span>
@@ -2812,9 +2825,11 @@
       return d.toLocaleString("it-IT", { weekday: "short", hour: "2-digit", minute: "2-digit" });
     }
     function mostraAladin() {
-      document.getElementById("aladinOra").textContent = oraAladin(new Date(corsaAladin.getTime() + passoAladin * 3 * ORA_MS));
-      document.getElementById("aladinPrec").disabled = passoAladin <= 1;
-      document.getElementById("aladinSucc").disabled = passoAladin >= PASSI_ALADIN;
+      const quandoMappa = oraAladin(new Date(corsaAladin.getTime() + passoAladin * 3 * ORA_MS));
+      document.getElementById("aladinOra").textContent = quandoMappa;
+      document.querySelectorAll("#aladin .aladin-ora-map").forEach(x => { x.textContent = quandoMappa; });
+      document.querySelectorAll("#aladin .aladin-prec").forEach(b => { b.disabled = passoAladin <= 1; });
+      document.querySelectorAll("#aladin .aladin-succ").forEach(b => { b.disabled = passoAladin >= PASSI_ALADIN; });
       // ultimo e prossimo aggiornamento (11 nov 2026): la corsa delle 00/12 UTC esce verso le 03:05/15:05 UTC,
       // cioè le 04:05/16:05 d'inverno (Last-Modified ARSO 8-11 nov; l'11 la corsa 00 è uscita in ritardo, 06:11)
       const giorno = d => d.toLocaleDateString("it-IT", { weekday: "long" });
@@ -2847,8 +2862,23 @@
       this.style.display = "none";
       document.getElementById("aladinCorsa").textContent = "Mappa Aladin momentaneamente non disponibile";
     }));
-    document.getElementById("aladinPrec").addEventListener("click", () => { passoAladin--; mostraAladin(); });
-    document.getElementById("aladinSucc").addEventListener("click", () => { passoAladin++; mostraAladin(); });
+    function passaAladin(d) {
+      const n = Math.min(PASSI_ALADIN, Math.max(1, passoAladin + d));
+      if (n !== passoAladin) { passoAladin = n; mostraAladin(); }
+    }
+    document.querySelectorAll("#aladin .aladin-prec").forEach(b => b.addEventListener("click", () => passaAladin(-1)));
+    document.querySelectorAll("#aladin .aladin-succ").forEach(b => b.addEventListener("click", () => passaAladin(1)));
+    // col dito: scorrendo verso sinistra l'ora dopo, verso destra quella prima
+    document.querySelectorAll("#aladin .aladin-taglio").forEach(t => {
+      let x0 = null, y0 = null;
+      t.addEventListener("touchstart", ev => { x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY; }, { passive: true });
+      t.addEventListener("touchend", ev => {
+        if (x0 == null) return;
+        const dx = ev.changedTouches[0].clientX - x0, dy = ev.changedTouches[0].clientY - y0;
+        x0 = null;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > 1.5 * Math.abs(dy)) passaAladin(dx < 0 ? 1 : -1);
+      }, { passive: true });
+    });
 
     /* ---------- Stazione Barcola (Windguru 5307, via proxy) ---------- */
     const PUNTI_CARDINALI = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
