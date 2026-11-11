@@ -552,9 +552,21 @@
     .aladin-leg li.leg-velo::before { background: repeating-conic-gradient(#6b9385 0 25%, #496f63 0 50%) 0 0 / 6px 6px; }
     /* sul telefono le mappe escono un po' dal bordo della card: ogni pixel conta a 375 px */
     @media (max-width: 600px) { .aladin-mappe { margin-left: -.75rem; margin-right: -.75rem; } .aladin-leg-doppia, .aladin-mappa > .aladin-leg { padding: 0 .3rem; } }
-    .aladin-info { max-width: 640px; margin: .7rem auto 0; padding: .55rem .7rem; border: 1px solid var(--line, #dde3e8); border-radius: 10px;
+    /* tendina chiusa (11 nov 2026, Alberto: "mettilo come dropdown, compatta la sezione"): chiusa si
+       vede solo una riga con gli aggiornamenti; aperta come si legge e la fonte */
+    .aladin-info { max-width: 640px; margin: .6rem auto 0; border: 1px solid var(--line, #dde3e8); border-radius: 10px;
       font-size: .78rem; line-height: 1.4; color: var(--label, #555); }
-    .aladin-info ul { margin: .35rem 0; padding-left: 1.05rem; }
+    .aladin-info > summary { list-style: none; display: flex; align-items: center; gap: .45rem; padding: .45rem .65rem; min-height: 0; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; }
+    .aladin-info > summary::-webkit-details-marker { display: none; }
+    .aladin-info > summary::after { content: "▾"; margin-left: auto; padding-left: .3rem; transition: transform .2s; }
+    .aladin-info[open] > summary::after { transform: rotate(180deg); }
+    .aladin-info > summary .aladin-agg { min-width: 0; }
+    .aladin-i { flex: none; width: 16px; height: 16px; border: 1.5px solid currentColor; border-radius: 50%; font: 700 .65rem/13px Georgia, serif;
+      text-align: center; font-style: italic; }
+    .aladin-info > ul, .aladin-info > .aladin-fonte { padding-left: .65rem; padding-right: .65rem; }
+    .aladin-info > .aladin-fonte { padding-bottom: .5rem; }
+    .aladin-info ul { margin: 0 0 .35rem; padding-left: 1.7rem !important; }
     .aladin-info li { margin: .1rem 0; }
     .aladin-info b { font-weight: 600; }
     .aladin-agg, .aladin-fonte { margin: 0; }
@@ -2414,16 +2426,17 @@
     </div>
     <!-- in fondo (11 nov 2026, Alberto): aggiornamenti, come si legge e fonte in un solo box compatto;
          prima c'erano il selettore in alto, due righe di aggiornamenti e il bottone "come si legge" -->
-    <div class="aladin-info">
-      <p class="aladin-agg"><span id="aladinCorsa"></span> · <span id="aladinProssimo"></span></p>
+    <details class="aladin-info">
+      <summary><span class="aladin-i" aria-hidden="true">i</span><span class="aladin-agg"><span id="aladinCorsa"></span> · <span id="aladinProssimo"></span></span></summary>
       <ul>
         <li><b>◀ ▶</b> o scorri di lato col dito: ogni 3 ore, fino a 3 giorni, tutte e due le mappe insieme.</li>
+        <li><b>Aggiornato</b> · l'ora del modello ARSO da cui vengono le mappe; ne esce uno nuovo ogni 12 ore, di notte e nel pomeriggio.</li>
         <li><b>Vento</b> · le freccette dicono dove va; il colore è la media in nodi.</li>
         <li><b>Nuvole e pioggia</b> · viola il cielo coperto; dal giallo al verde la pioggia delle 3 ore prima.</li>
         <li>Guardale insieme: nuvole e pioggia cambiano il vento, soprattutto le brezze. <a href="/guida/nuvole-pioggia-vento/">Guida →</a></li>
       </ul>
       <p class="aladin-fonte">Fonte <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a> · serie completa su <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">kuguluff.altervista.org</a></p>
-    </div>
+    </details>
   </div>
 
 
@@ -2826,12 +2839,12 @@
       // cioè le 04:05/16:05 d'inverno (Last-Modified ARSO 8-11 nov; l'11 la corsa 00 è uscita in ritardo, 06:11)
       const giorno = d => d.toLocaleDateString("it-IT", { weekday: "long" });
       const ora = d => d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
-      document.getElementById("aladinCorsa").innerHTML = "Aggiornato: <b>modello di " + giorno(corsaAladin) + " " + ora(corsaAladin) + "</b>";
+      document.getElementById("aladinCorsa").innerHTML = "Aggiornato <b>" + oraAladin(corsaAladin) + "</b>";
       const uscita = new Date(corsaAladin.getTime() + 15 * ORA_MS + 5 * 60e3);
       const oggi = new Date().toDateString(), dom = new Date(Date.now() + 864e5).toDateString();
       const quando = uscita.toDateString() === oggi ? "oggi" : uscita.toDateString() === dom ? "domani" : giorno(uscita);
       document.getElementById("aladinProssimo").innerHTML = "prossimo <b>" +
-        (uscita.getTime() < Date.now() ? "in ritardo, a momenti" : quando + " verso le " + ora(uscita)) + "</b>";
+        (uscita.getTime() < Date.now() ? "a momenti" : quando + " " + ora(uscita)) + "</b>";
       ["aladinImg", "pioggiaImg"].forEach(id => { document.getElementById(id).style.display = ""; });
       document.getElementById("aladinImg").src = urlArso("ad", "vm-va10m_si-sw", corsaAladin, passoAladin);
       document.getElementById("pioggiaImg").src = urlArso("as", "tcc-rr_si-neighbours", corsaAladin, passoAladin);
