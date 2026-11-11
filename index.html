@@ -552,8 +552,13 @@
     .aladin-leg li.leg-velo::before { background: repeating-conic-gradient(#6b9385 0 25%, #496f63 0 50%) 0 0 / 6px 6px; }
     /* sul telefono le mappe escono un po' dal bordo della card: ogni pixel conta a 375 px */
     @media (max-width: 600px) { .aladin-mappe { margin-left: -.75rem; margin-right: -.75rem; } .aladin-leg-doppia, .aladin-mappa > .aladin-leg { padding: 0 .3rem; } }
-    .aladin-agg { margin: .05rem 0 0; text-align: center; font-size: .8rem; color: var(--label, #555); line-height: 1.35; }
-    .aladin-agg b { font-weight: 600; }
+    .aladin-info { max-width: 640px; margin: .7rem auto 0; padding: .55rem .7rem; border: 1px solid var(--line, #dde3e8); border-radius: 10px;
+      font-size: .78rem; line-height: 1.4; color: var(--label, #555); }
+    .aladin-info ul { margin: .35rem 0; padding-left: 1.05rem; }
+    .aladin-info li { margin: .1rem 0; }
+    .aladin-info b { font-weight: 600; }
+    .aladin-agg, .aladin-fonte { margin: 0; }
+    .aladin-fonte { font-size: .72rem; }
     /* scale colorate sotto le mappe ARSO (8 nov 2026): una cella per classe, coi colori letti dalla
        legenda dell'immagine; il numero sta sul bordo sinistro, dove la classe comincia */
     .mscala { max-width: 640px; margin: .6rem auto 0; }
@@ -2383,19 +2388,11 @@
   <div class="section" id="aladin">
     <div class="sec-head">
       <h2>Modello Aladin · vento e nuvolosità</h2>
-      <button type="button" class="bd-info" onclick="apriGuidaAladin()">ℹ️ come si legge</button>
     </div>
-    <div class="aladin-controlli">
-      <button id="aladinPrec" class="aladin-prec" aria-label="Ora precedente">◀</button>
-      <span id="aladinOra" aria-live="polite">–</span>
-      <button id="aladinSucc" class="aladin-succ" aria-label="Ora successiva">▶</button>
-    </div>
-    <p class="aladin-agg" id="aladinCorsa"></p>
-    <p class="aladin-agg" id="aladinProssimo"></p>
     <!-- una sopra l'altra, ognuna con la sua scala sottile attaccata sotto (la legenda ARSO è in m/s: qui in nodi) -->
     <div class="aladin-mappe" id="aladinMappe">
       <figure class="aladin-mappa">
-        <div class="aladin-taglio"><img id="aladinImg" alt="Mappa del vento del modello Aladin" loading="lazy" width="640" height="480" /><button type="button" class="aladin-f aladin-prec" aria-label="Ora precedente">◀</button><button type="button" class="aladin-f aladin-succ" aria-label="Ora successiva">▶</button><span class="aladin-ora-map" aria-hidden="true">–</span></div>
+        <div class="aladin-taglio"><img id="aladinImg" alt="Mappa del vento del modello Aladin" loading="lazy" width="640" height="480" /><button type="button" class="aladin-f aladin-prec" aria-label="Ora precedente">◀</button><button type="button" class="aladin-f aladin-succ" aria-label="Ora successiva">▶</button><span class="aladin-ora-map" id="aladinOra" aria-live="polite">–</span></div>
         <div class="aladin-leg" role="img" aria-label="Vento medio in nodi: senza colore sotto 5, poi grigioverde 5-10, verde 10-15, verde acqua 15-19, blu 19-24, blu viola 24-29, viola oltre 29">
           <span class="aladin-leg-nome">Vento kt</span>
           <ol><li class="leg-vuoto"><b>0</b></li><li class="leg-velo"><b>5</b></li><li style="--c:#009966"><b>10</b></li><li style="--c:#00808c"><b>15</b></li><li style="--c:#0066b2"><b>19</b></li><li style="--c:#4c66bf"><b>24</b></li><li style="--c:#9966cc"><b>29</b></li></ol>
@@ -2415,7 +2412,18 @@
         </div>
       </figure>
     </div>
-    <p class="stato">Fonte: <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a> · serie completa su <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">kuguluff.altervista.org</a></p>
+    <!-- in fondo (11 nov 2026, Alberto): aggiornamenti, come si legge e fonte in un solo box compatto;
+         prima c'erano il selettore in alto, due righe di aggiornamenti e il bottone "come si legge" -->
+    <div class="aladin-info">
+      <p class="aladin-agg"><span id="aladinCorsa"></span> · <span id="aladinProssimo"></span></p>
+      <ul>
+        <li><b>◀ ▶</b> o scorri di lato col dito: ogni 3 ore, fino a 3 giorni, tutte e due le mappe insieme.</li>
+        <li><b>Vento</b> · le freccette dicono dove va; il colore è la media in nodi.</li>
+        <li><b>Nuvole e pioggia</b> · viola il cielo coperto; dal giallo al verde la pioggia delle 3 ore prima.</li>
+        <li>Guardale insieme: nuvole e pioggia cambiano il vento, soprattutto le brezze. <a href="/guida/nuvole-pioggia-vento/">Guida →</a></li>
+      </ul>
+      <p class="aladin-fonte">Fonte <a href="https://meteo.arso.gov.si/" target="_blank" rel="noopener">ARSO</a> · serie completa su <a href="https://kuguluff.altervista.org/vento/ventoAladinSI.htm" target="_blank" rel="noopener">kuguluff.altervista.org</a></p>
+    </div>
   </div>
 
 
@@ -2499,21 +2507,6 @@
       <div style="text-align:right; margin-top:1rem;">
         <button onclick="document.getElementById('modalGuidaBora').style.display='none'">Chiudi</button>
       </div>
-    </div>
-  </div>
-
-  <!-- MODAL "COME SI LEGGE" – MODELLO ALADIN (9 nov 2026) -->
-  <div id="modalGuidaAladin" class="modal" role="dialog" aria-modal="true" aria-labelledby="guidaAladinTitolo">
-    <div class="contenuto">
-      <button type="button" class="modal-x" aria-label="Chiudi" onclick="this.closest('.modal').style.display='none'">✕</button>
-      <h3 id="guidaAladinTitolo">Modello Aladin – come si legge</h3>
-      <ul class="modelli-info">
-        <li><strong>◀ ▶</strong> · cambiano l'ora per tutte e due le mappe, a passi di 3 ore fino a 3 giorni.</li>
-        <li><strong>Vento</strong> · le freccette dicono dove va il vento; il colore di fondo è l'intensità media, in nodi nella scala sotto.</li>
-        <li><strong>Nuvole e pioggia</strong> · il viola è il cielo coperto (più scuro, più nuvole); dal giallo al verde la pioggia caduta nelle 3 ore prima.</li>
-        <li><strong>Modello di …</strong> · l'ora della corsa ARSO da cui viene la previsione: ne esce una nuova ogni 12 ore.</li>
-      </ul>
-      <p>Guardale insieme: nuvole e pioggia cambiano il vento, soprattutto le brezze. <a href="/guida/nuvole-pioggia-vento/">Nuvole, pioggia e vento →</a></p>
     </div>
   </div>
 
@@ -2826,7 +2819,6 @@
     }
     function mostraAladin() {
       const quandoMappa = oraAladin(new Date(corsaAladin.getTime() + passoAladin * 3 * ORA_MS));
-      document.getElementById("aladinOra").textContent = quandoMappa;
       document.querySelectorAll("#aladin .aladin-ora-map").forEach(x => { x.textContent = quandoMappa; });
       document.querySelectorAll("#aladin .aladin-prec").forEach(b => { b.disabled = passoAladin <= 1; });
       document.querySelectorAll("#aladin .aladin-succ").forEach(b => { b.disabled = passoAladin >= PASSI_ALADIN; });
@@ -2834,11 +2826,11 @@
       // cioè le 04:05/16:05 d'inverno (Last-Modified ARSO 8-11 nov; l'11 la corsa 00 è uscita in ritardo, 06:11)
       const giorno = d => d.toLocaleDateString("it-IT", { weekday: "long" });
       const ora = d => d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
-      document.getElementById("aladinCorsa").innerHTML = "Ultimo aggiornamento: <b>modello di " + giorno(corsaAladin) + " " + ora(corsaAladin) + "</b>";
+      document.getElementById("aladinCorsa").innerHTML = "Aggiornato: <b>modello di " + giorno(corsaAladin) + " " + ora(corsaAladin) + "</b>";
       const uscita = new Date(corsaAladin.getTime() + 15 * ORA_MS + 5 * 60e3);
       const oggi = new Date().toDateString(), dom = new Date(Date.now() + 864e5).toDateString();
       const quando = uscita.toDateString() === oggi ? "oggi" : uscita.toDateString() === dom ? "domani" : giorno(uscita);
-      document.getElementById("aladinProssimo").innerHTML = "Prossimo aggiornamento: <b>" +
+      document.getElementById("aladinProssimo").innerHTML = "prossimo <b>" +
         (uscita.getTime() < Date.now() ? "in ritardo, a momenti" : quando + " verso le " + ora(uscita)) + "</b>";
       ["aladinImg", "pioggiaImg"].forEach(id => { document.getElementById(id).style.display = ""; });
       document.getElementById("aladinImg").src = urlArso("ad", "vm-va10m_si-sw", corsaAladin, passoAladin);
@@ -4150,7 +4142,6 @@
         document.body.removeChild(t);
       }
     }
-    function apriGuidaAladin(){ document.getElementById("modalGuidaAladin").style.display = "block"; }
     function apriGuidaBora(){ document.getElementById("modalGuidaBora").style.display = "block"; }
 
     /* ---------- Differenza pressione Trieste–Maribor (live, Open-Meteo MSLP) ----------
