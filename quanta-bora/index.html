@@ -132,7 +132,7 @@
       :root:not([data-theme="dark"]) .banda[data-livello="vecchio"]::before, :root:not([data-theme="dark"]) .banda[data-livello="attesa"]::before { filter: none; }
     }
     .banda h1 { margin: 0; font-size: 1rem; font-weight: 800; letter-spacing: -.01em; color: var(--s); }
-    .banda .dialetto { font-style: italic; font-weight: 700; white-space: nowrap; }
+    .banda .dialetto { margin: 6px 0 0; font-size: 1.3rem; font-style: italic; font-weight: 800; letter-spacing: -.01em; line-height: 1.1; }
     .riga-verdetto { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin-top: 2px; }
     .verdetto { margin: 0; font-size: clamp(2.6rem, 13vw, 4.4rem); line-height: .98; font-weight: 800; letter-spacing: -.045em; }
     .cielo-bora { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px 5px 7px; border-radius: 999px; background: var(--p);
@@ -287,7 +287,8 @@
     <main>
       <!-- LA BANDA: verdetto live -->
       <section class="banda" id="banda" data-livello="attesa" aria-labelledby="titolo">
-        <h1 id="titolo"><span data-i18n="titolo">Quanta bora c'è a Trieste ora?</span> <span class="dialetto" lang="it">Ghe xe bora?</span></h1>
+        <h1 id="titolo" data-i18n="titolo">Quanta bora c'è a Trieste ora?</h1>
+        <p class="dialetto" lang="it">Bora gavemo?</p>
         <div class="riga-verdetto">
           <p class="verdetto" id="verdetto" role="status" aria-atomic="true">…</p>
           <span class="cielo-bora" id="cieloBora" hidden></span>
