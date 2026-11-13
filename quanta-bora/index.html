@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Quanta bora c'è a Trieste adesso? Raffiche in km/h live | Vento Trieste</title>
+  <meta name="description" content="C'è bora a Trieste? Te lo dice la centralina sul molo ogni 15 minuti: raffiche in km/h e nodi, la classifica delle grandi bore storiche e le webcam della città." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://ventotrieste.info/quanta-bora/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:locale:alternate" content="en_GB" />
+  <meta property="og:locale:alternate" content="de_DE" />
+  <meta property="og:title" content="Quanta bora c'è a Trieste adesso?" />
+  <meta property="og:description" content="Raffiche live in km/h, la classifica delle grandi bore e le webcam della città. Per triestini e turisti." />
+  <meta property="og:url" content="https://ventotrieste.info/quanta-bora/" />
+  <meta property="og:image" content="https://ventotrieste.info/quanta-bora/og-quanta-bora.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Quanta bora c'è a Trieste? La bora in diretta su ventotrieste.info" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://monitor.protezionecivile.fvg.it" crossorigin />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#07090c" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <!--
+    "Quanta bora c'è a Trieste?" (13 nov 2026). Alberto: una pagina secca per i turisti, col
+    surfometro che non si chiama surfometro, due webcam della città e la classifica delle bore
+    storiche, da mandare a Rino Lombardi del Museo della Bora.
+    - Vento: Protezione Civile FVG, stazione 212 "Trieste" (sul molo), 15 minuti. Sensori: 5 direzione,
+      6 velocità media, 7 raffica, in m/s. È la stessa stazione dell'articolo /guida/bora-forte/.
+    - Regola del sito: è bora se arriva da 20° a 100° (1° quadrante, come spinta-bora.js). Se il vento
+      viene da un'altra parte la pagina dice quale vento c'è: QUI i nomi dei venti sono voluti
+      (Alberto: "se c'è scirocco deve venire fuori: non bora, oggi c'è scirocco"); nel resto del sito
+      le letture live restano senza nomi.
+    - Livelli sulla RAFFICA (è quella che si sente e quella delle classifiche).
+    - Dato più vecchio di 45 minuti: grigio, "vecchio", fuori dal verdetto (regola dei dati freschi).
+    - Classifica: le grandi bore documentate nell'articolo bora-forte (serie ufficiale al molo), NON una
+      classifica completa: lo dice anche la pagina.
+  -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"WebPage","@id":"https://ventotrieste.info/quanta-bora/","url":"https://ventotrieste.info/quanta-bora/","name":"Quanta bora c'è a Trieste adesso?","description":"La bora a Trieste in diretta: raffiche in km/h e nodi dalla centralina sul molo, la classifica delle grandi bore e le webcam della città.","inLanguage":"it-IT","isPartOf":{"@type":"WebSite","name":"Vento Trieste","url":"https://ventotrieste.info/"},"about":{"@type":"Thing","name":"Bora (vento)","sameAs":"https://it.wikipedia.org/wiki/Bora_(vento)"},"spatialCoverage":{"@type":"Place","name":"Trieste","geo":{"@type":"GeoCoordinates","latitude":45.65,"longitude":13.7522}},"author":{"@type":"Person","name":"Alberto Broggi","url":"https://bebroggi.it/"},"image":"https://ventotrieste.info/quanta-bora/og-quanta-bora.jpg"},
+    {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Quanta bora c'è","item":"https://ventotrieste.info/quanta-bora/"}]},
+    {"@type":"FAQPage","mainEntity":[
+      {"@type":"Question","name":"Cos'è la bora di Trieste?","acceptedAnswer":{"@type":"Answer","text":"È il vento freddo che scende dal Carso verso il mare, da nord-est. A Trieste arriva a raffiche, i refoli. Si chiama bora chiara quando c'è il sole e bora scura quando ci sono nuvole e pioggia. Quella leggera, in triestino, è il borin."}},
+      {"@type":"Question","name":"Quanto forte può soffiare la bora a Trieste?","acceptedAnswer":{"@type":"Answer","text":"Il record della serie ufficiale al molo di Trieste è 168 km/h, l'11 febbraio 2012. Altre grandi bore: 163 km/h il 2 marzo 2011, 157 km/h nel febbraio 2015, 152 km/h il 10 marzo 2010."}},
+      {"@type":"Question","name":"Come si capisce se c'è bora adesso?","acceptedAnswer":{"@type":"Answer","text":"La pagina legge ogni 15 minuti la centralina di Trieste sul molo (Protezione Civile della Regione Friuli Venezia Giulia). Se il vento arriva da nord-est, tra 20° e 100°, è bora; se arriva da un'altra direzione la pagina dice quale vento c'è. Il verdetto si basa sulla raffica."}},
+      {"@type":"Question","name":"Cosa fare quando c'è bora forte?","acceptedAnswer":{"@type":"Answer","text":"Tenersi ai corrimano, aprire piano le portiere dell'auto, lasciare l'ombrello in albergo, stare lontani dal bordo del mare e da alberi e impalcature."}}
+    ]}
+  ]}
+  </script>
+  <style>
+    :root {
+      --bg: #07090c; --surface: #10151a; --surface-2: #151b21; --line: #2a343d;
+      --ink: #f4f7f8; --label: #a3aeb6; --accent: #f0f43c; --focus: #f0f43c;
+      --banda: #1b232b; --banda-ink: #f4f7f8; --banda-sub: rgba(244,247,248,.78);
+      color-scheme: dark;
+    }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        --bg: #eef2f3; --surface: #ffffff; --surface-2: #e7edef; --line: #cbd5d9;
+        --ink: #16232c; --label: #50606a; --accent: #176f80; --focus: #0c5868; color-scheme: light;
+      }
+    }
+    :root[data-theme="light"] {
+      --bg: #eef2f3; --surface: #ffffff; --surface-2: #e7edef; --line: #cbd5d9;
+      --ink: #16232c; --label: #50606a; --accent: #176f80; --focus: #0c5868; color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 500 16px/1.5 Manrope, system-ui, -apple-system, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); font-weight: 700; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+    /* testata */
+    .testata { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; }
+    .marchio { display: inline-flex; flex-direction: column; color: var(--ink); text-decoration: none; line-height: 1.05; min-height: 44px; justify-content: center; }
+    .marchio strong { font-size: 1rem; font-weight: 800; letter-spacing: -.02em; }
+    .marchio span { color: var(--label); font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
+    .comandi { display: flex; gap: 6px; align-items: center; }
+    .lingue { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+    .lingue button, .tema { appearance: none; border: 0; background: transparent; color: var(--label); font: 800 .78rem Manrope, sans-serif;
+      min-width: 40px; min-height: 40px; padding: 0 8px; cursor: pointer; }
+    .lingue button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+    .tema { border: 1px solid var(--line); border-radius: 999px; display: inline-grid; place-items: center; }
+    .tema svg { width: 18px; height: 18px; }
+
+    /* la banda */
+    .banda { --b: var(--banda); --t: var(--banda-ink); --s: var(--banda-sub);
+      background: var(--b); color: var(--t); border-radius: 20px; padding: 16px 16px 14px; position: relative; overflow: hidden; }
+    .banda[data-livello="calma"], .banda[data-livello="niente"] { --b: #1f3440; --t: #f4f7f8; --s: rgba(244,247,248,.8); }
+    .banda[data-livello="borin"]  { --b: #9ff2ee; --t: #08262a; --s: rgba(8,38,42,.78); }
+    .banda[data-livello="bora"]   { --b: #b9f24d; --t: #142106; --s: rgba(20,33,6,.78); }
+    .banda[data-livello="forte"]  { --b: #f3a63f; --t: #2a1300; --s: rgba(42,19,0,.8); }
+    .banda[data-livello="fortissima"] { --b: #eb4449; --t: #1d0001; --s: rgba(29,0,1,.8); }
+    .banda[data-livello="storica"] { --b: #6f2fe0; --t: #ffffff; --s: rgba(255,255,255,.86); }
+    .banda[data-livello="vecchio"], .banda[data-livello="attesa"] { --b: #2a3138; --t: #dfe5e8; --s: rgba(223,229,232,.75); }
+    :root[data-theme="light"] .banda[data-livello="calma"], :root[data-theme="light"] .banda[data-livello="niente"] { --b: #d7e6ec; --t: #12303b; --s: rgba(18,48,59,.8); }
+    :root[data-theme="light"] .banda[data-livello="vecchio"], :root[data-theme="light"] .banda[data-livello="attesa"] { --b: #dde3e6; --t: #33424b; --s: rgba(51,66,75,.8); }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) .banda[data-livello="calma"], :root:not([data-theme="dark"]) .banda[data-livello="niente"] { --b: #d7e6ec; --t: #12303b; --s: rgba(18,48,59,.8); }
+      :root:not([data-theme="dark"]) .banda[data-livello="vecchio"], :root:not([data-theme="dark"]) .banda[data-livello="attesa"] { --b: #dde3e6; --t: #33424b; --s: rgba(51,66,75,.8); }
+    }
+    .banda h1 { margin: 0; font-size: 1.02rem; font-weight: 800; letter-spacing: -.01em; color: var(--s); }
+    .banda .dialetto { font-style: italic; font-weight: 700; }
+    .verdetto { margin: 2px 0 0; font-size: clamp(2.6rem, 13vw, 4.4rem); line-height: .98; font-weight: 800; letter-spacing: -.045em; }
+    .sotto { margin: 4px 0 0; font-size: 1.08rem; font-weight: 800; }
+    .numeri { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 18px; margin: 12px 0 6px; }
+    .num { display: flex; flex-direction: column; }
+    .num b { font-size: 2.1rem; line-height: 1; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+    .num b small { font-size: .95rem; font-weight: 800; letter-spacing: 0; margin-left: 3px; }
+    .num > span { font-size: .78rem; font-weight: 700; color: var(--s); text-transform: uppercase; letter-spacing: .06em; }
+    .unita { display: flex; border: 2px solid currentColor; border-radius: 999px; overflow: hidden; }
+    .unita button { appearance: none; border: 0; background: transparent; color: inherit; font: 800 .82rem Manrope, sans-serif; min-height: 40px; min-width: 52px; padding: 0 10px; cursor: pointer; }
+    .unita button[aria-pressed="true"] { background: var(--t); color: var(--b); }
+    .metro { position: relative; height: 16px; border-radius: 999px; background: rgba(0,0,0,.22); margin: 14px 0 4px; }
+    .metro .scala { position: absolute; inset: 0; border-radius: 999px; opacity: .95; clip-path: inset(0 100% 0 0 round 999px); }
+    .metro .raff { position: absolute; top: -5px; bottom: -5px; width: 4px; margin-left: -2px; background: var(--t); border-radius: 2px; }
+    .metro .max { position: absolute; top: -12px; width: 0; height: 0; margin-left: -6px; border: 6px solid transparent; border-top-color: var(--t); }
+    .metro-tacche { display: flex; justify-content: space-between; font-size: .72rem; font-weight: 700; color: var(--s); font-variant-numeric: tabular-nums; }
+    .consiglio { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: rgba(0,0,0,.14); font-weight: 700; font-size: .98rem; }
+    .banda[data-livello="storica"] .consiglio, .banda[data-livello="niente"] .consiglio, .banda[data-livello="calma"] .consiglio { background: rgba(255,255,255,.1); }
+    .stato { margin: 10px 0 0; font-size: .78rem; font-weight: 700; color: var(--s); display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+    .punto { width: 8px; height: 8px; border-radius: 50%; background: currentColor; display: inline-block; margin-right: 5px; }
+    .vivo .punto { animation: pulsa 2s ease-in-out infinite; }
+    @keyframes pulsa { 50% { opacity: .25; } }
+    .piede { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; }
+    .aggiorna { appearance: none; border: 2px solid currentColor; background: transparent; color: inherit; border-radius: 999px; font: 800 .82rem Manrope, sans-serif;
+      min-height: 44px; padding: 0 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .aggiorna:disabled { opacity: .55; cursor: progress; }
+    .banda[data-livello="vecchio"] .numeri, .banda[data-livello="vecchio"] .metro { opacity: .5; }
+
+    /* sezioni */
+    .sez { margin: 14px 0; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+    .sez h2 { margin: 0 0 4px; font-size: 1.22rem; line-height: 1.2; letter-spacing: -.02em; }
+    .sez > p { margin: 4px 0 10px; color: var(--label); font-size: .94rem; }
+    .posto { margin: 6px 0 12px; padding: 12px; border-radius: 12px; background: var(--surface-2); font-weight: 700; }
+    .posto strong { font-size: 1.15rem; }
+    ol.classifica { list-style: none; margin: 0; padding: 0; counter-reset: c; }
+    ol.classifica li { display: grid; grid-template-columns: 2.2rem 1fr auto; gap: 2px 8px; align-items: baseline; padding: 9px 4px; border-top: 1px solid var(--line); }
+    ol.classifica li:first-child { border-top: 0; }
+    ol.classifica .n { font-weight: 800; color: var(--label); font-variant-numeric: tabular-nums; }
+    ol.classifica .q { font-weight: 800; }
+    ol.classifica .v { font-weight: 800; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+    ol.classifica .nota { grid-column: 2 / 4; color: var(--label); font-size: .84rem; line-height: 1.35; }
+    ol.classifica li.oggi { background: var(--accent); color: var(--bg); border-radius: 10px; border-top-color: transparent; padding: 10px 8px; }
+    ol.classifica li.oggi + li { border-top-color: transparent; }
+    ol.classifica li.oggi .n, ol.classifica li.oggi .nota { color: inherit; opacity: .85; }
+    .piccolo { font-size: .8rem; color: var(--label); margin: 10px 0 0; }
+    .vai { display: inline-flex; align-items: center; min-height: 44px; margin-top: 6px; }
+
+    .cams { display: grid; gap: 12px; }
+    @media (min-width: 640px) { .cams { grid-template-columns: 1fr 1fr; } }
+    .cam h3 { margin: 0 0 6px; font-size: 1rem; }
+    .cam-box { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #000; }
+    .cam-box button { appearance: none; border: 0; padding: 0; width: 100%; height: 100%; cursor: pointer; background: #0b1014 center / cover no-repeat; display: grid; place-items: center; color: #fff; }
+    .cam-box button span { display: inline-flex; gap: 8px; align-items: center; padding: 10px 16px; border-radius: 999px; background: rgba(0,0,0,.66); font: 800 .95rem Manrope, sans-serif; }
+    .cam-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .cam p { margin: 6px 0 0; font-size: .8rem; color: var(--label); }
+
+    .museo { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
+    .museo svg { width: 44px; height: 44px; color: var(--accent); }
+    .museo h2 { font-size: 1.1rem; }
+    .museo p { margin: 2px 0 0; color: var(--label); font-size: .94rem; }
+
+    details { border-top: 1px solid var(--line); }
+    details:first-of-type { border-top: 0; }
+    summary { cursor: pointer; font-weight: 800; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 10px; list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; font-size: 1.3rem; color: var(--label); }
+    details[open] summary::after { content: "–"; }
+    details p { margin: 0 0 12px; color: var(--label); }
+
+    footer { padding: 6px 0 28px; color: var(--label); font-size: .8rem; }
+    footer p { margin: 6px 0; }
+    footer a { color: inherit; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="testata">
+      <a class="marchio" href="/" data-i18n-title="home"><strong>Vento Trieste</strong><span data-i18n="marchio">la bora in diretta</span></a>
+      <div class="comandi">
+        <div class="lingue" role="group" aria-label="Lingua · Language · Sprache">
+          <button type="button" data-lingua="it" aria-pressed="true" lang="it">IT</button>
+          <button type="button" data-lingua="en" aria-pressed="false" lang="en">EN</button>
+          <button type="button" data-lingua="de" aria-pressed="false" lang="de">DE</button>
+        </div>
+        <button class="tema" id="tema" type="button" aria-label="Tema chiaro o scuro">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- LA BANDA: verdetto live -->
+      <section class="banda" id="banda" data-livello="attesa" aria-labelledby="titolo">
+        <h1 id="titolo"><span data-i18n="titolo">Quanta bora c'è a Trieste?</span> <span class="dialetto" lang="it" data-i18n="dialetto">Ghe xe bora?</span></h1>
+        <p class="verdetto" id="verdetto" role="status" aria-atomic="true">…</p>
+        <p class="sotto" id="sotto" data-i18n="attesa">Sto guardando il molo…</p>
+        <div class="numeri">
+          <div class="num"><b><span id="vRaff">–</span><small class="u">km/h</small></b><span data-i18n="raffiche">raffiche</span></div>
+          <div class="num"><b><span id="vMedia">–</span><small class="u">km/h</small></b><span data-i18n="media">vento medio</span></div>
+        </div>
+        <div class="metro" aria-hidden="true">
+          <div class="scala" id="scala"></div>
+          <div class="raff" id="segnoRaff" style="left:0"></div>
+          <div class="max" id="segnoMax" style="left:0" hidden></div>
+        </div>
+        <div class="metro-tacche" aria-hidden="true"><span>0</span><span id="t50">50</span><span id="t100">100</span><span id="t150">150</span><span id="tRec">168 ★</span></div>
+        <p class="consiglio" id="consiglio" hidden></p>
+        <p class="stato" id="stato"><span id="statoTesto"><span class="punto"></span><span data-i18n="caricamento">Carico i dati…</span></span></p>
+        <div class="piede">
+          <div class="unita" role="group" aria-label="Unità di misura">
+            <button type="button" data-unita="kmh" aria-pressed="true">km/h</button>
+            <button type="button" data-unita="kt" aria-pressed="false" data-i18n="nodi">nodi</button>
+          </div>
+          <button type="button" class="aggiorna" id="aggiorna"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg><span data-i18n="aggiorna">Aggiorna</span></button>
+        </div>
+      </section>
+
+      <!-- CLASSIFICA -->
+      <section class="sez" aria-labelledby="t-class">
+        <h2 id="t-class" data-i18n="classTitolo">La classifica delle grandi bore</h2>
+        <p data-i18n="classIntro">Dove si piazza la raffica più forte di oggi tra le grandi bore misurate al molo di Trieste?</p>
+        <p class="posto" id="posto" role="status" aria-atomic="true" data-i18n="classAttesa">Aspetto il dato di oggi…</p>
+        <ol class="classifica" id="classifica"></ol>
+        <p class="piccolo" data-i18n-html="classNota">Non è una classifica ufficiale completa: sono le grandi bore documentate sulla stazione del molo (serie ARPA FVG-OSMER dagli anni Novanta), più due di quest'anno per confronto. Strumenti diversi danno valori diversi: le storie, le fonti e i “record” che girano sono nell'articolo.</p>
+        <a class="vai" href="/guida/bora-forte/" data-i18n="classLink">Le grandi bore di Trieste, con le fonti →</a>
+      </section>
+
+      <!-- WEBCAM -->
+      <section class="sez" aria-labelledby="t-cam">
+        <h2 id="t-cam" data-i18n="camTitolo">Guarda Trieste adesso</h2>
+        <p data-i18n="camIntro">Con la bora il mare si riempie di schiuma bianca e le onde corrono verso il largo.</p>
+        <div class="cams">
+          <div class="cam">
+            <h3 data-i18n="cam1">La Lanterna e il porto</h3>
+            <div class="cam-box"><button type="button" data-yt="yCfDgISbKpo" data-cam="lanterna" style="background-image:url('https://i.ytimg.com/vi/yCfDgISbKpo/hqdefault.jpg')"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><span data-i18n="play">Guarda in diretta</span></span></button></div>
+          </div>
+          <div class="cam">
+            <h3 data-i18n="cam2">Il golfo dal Monte Grisa</h3>
+            <div class="cam-box"><button type="button" data-yt="FqMuciLH_m0" data-cam="monte-grisa" style="background-image:url('https://i.ytimg.com/vi/FqMuciLH_m0/hqdefault.jpg')"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><span data-i18n="play">Guarda in diretta</span></span></button></div>
+          </div>
+        </div>
+        <p class="piccolo"><span data-i18n="camFonte">Webcam di</span> <a href="https://www.youtube.com/channel/UCfYlFRRwaw3aS230U7Zz5qA/live" target="_blank" rel="noopener">CISAR Trieste</a>. <span data-i18n="camAltre">Altre webcam (Barcola, Sistiana, Grado) nella</span> <a href="/#webcam">home</a>.</p>
+      </section>
+
+      <!-- MUSEO DELLA BORA -->
+      <section class="sez museo" aria-labelledby="t-museo">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 17h24a6 6 0 1 0-6-6"/><path d="M5 27h34a6 6 0 1 1-6 6"/><path d="M5 37h14"/></svg>
+        <div>
+          <h2 id="t-museo" data-i18n="museoTitolo">Il Museo della Bora</h2>
+          <p><span data-i18n="museoTesto">La bora non si vede, ma a Trieste ha un museo tutto suo, nato da un'idea di Rino Lombardi: storie, oggetti e scatole di vento.</span> <a href="https://museobora.org/" target="_blank" rel="noopener" data-i18n="museoLink">Scopri il museo →</a></p>
+        </div>
+      </section>
+
+      <!-- DOMANDE -->
+      <section class="sez" aria-labelledby="t-faq">
+        <h2 id="t-faq" data-i18n="faqTitolo">Domande sulla bora</h2>
+        <details><summary data-i18n="q1">Cos'è la bora?</summary><p data-i18n="a1">È il vento freddo che scende dal Carso verso il mare, da nord-est. A Trieste arriva a raffiche, i <em>refoli</em>. Si chiama bora chiara quando c'è il sole e bora scura quando ci sono nuvole e pioggia. Quella leggera, in triestino, è il <em>borin</em>.</p></details>
+        <details><summary data-i18n="q2">Quanto forte può soffiare?</summary><p data-i18n="a2">Il record della serie ufficiale al molo è 168 km/h, l'11 febbraio 2012. Le altre grandi bore sono nella classifica qui sopra.</p></details>
+        <details><summary data-i18n="q3">Come fate a dire se c'è bora?</summary><p data-i18n-html="a3">Ogni 15 minuti leggiamo la centralina di Trieste sul molo. Se il vento arriva da nord-est, tra 20° e 100°, è bora; se arriva da un'altra parte vi diciamo quale vento c'è. Il verdetto guarda le raffiche: sotto i 40 km/h è un borin, da 70 bora forte, da 100 fortissima.</p></details>
+        <details><summary data-i18n="q4">Cosa fare con la bora forte?</summary><p data-i18n="a4">Tenetevi ai corrimano, aprite piano le portiere dell'auto, lasciate l'ombrello in albergo e state lontani dal bordo del mare, dagli alberi e dalle impalcature.</p></details>
+        <details><summary data-i18n="q5">E domani?</summary><p data-i18n-html="a5">Le previsioni del vento, la Spinta della Bora e il radar della pioggia sono nella <a href="/">home di Vento Trieste</a>.</p></details>
+      </section>
+    </main>
+
+    <footer>
+      <p><span data-i18n="fonteVento">Vento:</span> Fonte: <a href="https://monitor.protezionecivile.fvg.it/" target="_blank" rel="noopener">Protezione Civile della Regione Friuli Venezia Giulia</a> · <a href="https://monitor.protezionecivile.fvg.it/licenza" target="_blank" rel="noopener">CC BY 4.0</a> · <span data-i18n="elaborati">dati elaborati</span>, <span data-i18n="stazione">stazione di Trieste sul molo, medie e raffiche di 15 minuti</span>.</p>
+      <p><a href="/">ventotrieste.info</a> · <span data-i18n="firma">un progetto di</span> <a href="https://bebroggi.it/" rel="author">Alberto Broggi</a> · <a href="/bora-trieste/" data-i18n="guidaBora">Guida alla bora</a></p>
+    </footer>
+  </div>
+
+  <script src="/scala-vento.js?v=20261105"></script>
+  <script>
+  (function () {
+    "use strict";
+    var STAZIONE = "https://monitor.protezionecivile.fvg.it/api/stations/212/measures";
+    var BORA_DA = 20, BORA_A = 100, ETA_MAX = 45, KMH = 3.6, KT = 1.94384, MAX_SCALA = 170;
+    // livelli sulla raffica, in km/h
+    var LIVELLI = [["borin", 0], ["bora", 40], ["forte", 70], ["fortissima", 100], ["storica", 130]];
+    // grandi bore documentate (articolo /guida/bora-forte/), raffica in km/h
+    var STORICHE = [
+      { g: "2012-02-11", kmh: 168, n: "rec" },
+      { g: "2011-03-02", dal: 1, kmh: 163, n: "ursus" },
+      { g: "2015-02-06", dal: 5, kmh: 157 },
+      { g: "2010-03-10", kmh: 152 },
+      { g: "2008-03-06", kmh: 142 },
+      { g: "2025-11-22", kmh: 119, n: "anno" },
+      { g: "2026-11-02", kmh: 109, n: "nov26" },
+      { g: "2026-09-09", kmh: 90, n: "set26" }
+    ];
+
+    var T = {
+      it: {
+        titolo: "Quanta bora c'è a Trieste?", dialetto: "Ghe xe bora?", marchio: "la bora in diretta", home: "Vento Trieste, la home",
+        attesa: "Sto guardando il molo…", raffiche: "raffiche", media: "vento medio", nodi: "nodi", caricamento: "Carico i dati…", aggiorna: "Aggiorna",
+        v_calma: "Calma piatta", s_calma: "Niente bora: oggi l'aria è ferma.", c_calma: "Giornata perfetta per una passeggiata sul Molo Audace.",
+        v_niente: "Niente bora", s_niente: "Oggi c'è {vento}.", s_brezza: "Solo un filo d'aria da {dir}.", c_niente: "La bora è tutta un'altra cosa: quando arriva, la senti subito.",
+        v_borin: "Borin", s_borin: "Bora leggera, da {dir}.", c_borin: "Piacevole: rinfresca e pulisce il cielo.",
+        v_bora: "Bora", s_bora: "Si sente! Da {dir}.", c_bora: "Tieni stretto il cappello e chiudi l'ombrello.",
+        v_forte: "Bora forte", s_forte: "Refoli forti da {dir}.", c_forte: "Sulle Rive si cammina storti. Apri piano le portiere dell'auto.",
+        v_fortissima: "Bora fortissima", s_fortissima: "Refoli oltre i 100 km/h.", c_fortissima: "Stai lontano dal mare e dagli alberi, tieniti ai corrimano.",
+        v_storica: "Bora storica", s_storica: "Una bora da libri di storia.", c_storica: "Resta al riparo e goditela dalla finestra.",
+        v_vecchio: "Dato in ritardo", s_vecchio: "La centralina non risponde da {min} minuti: i numeri qui sotto sono vecchi.",
+        v_errore: "Dato non arrivato", s_errore: "La centralina non risponde. Riprova tra poco.",
+        alle: "Dato delle {ora}", vivo: "in diretta", vecchio: "vecchio", oggiMax: "Massima di oggi: {v} alle {ora}",
+        venti: { scirocco: "scirocco, il vento caldo e umido da sud-est", libeccio: "libeccio (garbin), da sud-ovest", ponente: "vento da ovest", maestrale: "maestrale, da nord-ovest", tramontana: "tramontana, da nord" },
+        classTitolo: "La classifica delle grandi bore", classIntro: "Dove si piazza la raffica più forte di oggi tra le grandi bore misurate al molo di Trieste?",
+        classAttesa: "Aspetto il dato di oggi…", oggi: "Oggi", oggiNota: "raffica più forte di oggi, finora",
+        posto: "Con {v} oggi saremmo <strong>{n}° su {tot}</strong> nella classifica delle grandi bore.",
+        primo: "Con {v} oggi saremmo <strong>davanti a tutte</strong>: più forte del record del 2012!",
+        fuori: "Oggi la raffica più forte è {v}: per entrare in classifica ne servono almeno {min}.",
+        n_rec: "il record della serie ufficiale", n_ursus: "la notte in cui la gru Ursus ruppe gli ormeggi", n_anno: "un anno fa", n_nov26: "quattro giorni di bora, novembre 2026", n_set26: "la più forte di inizio autunno",
+        classNota: "Non è una classifica ufficiale completa: sono le grandi bore documentate sulla stazione del molo (serie ARPA FVG-OSMER dagli anni Novanta), più due di quest'anno per confronto. Strumenti diversi danno valori diversi: le storie, le fonti e i “record” che girano sono nell'articolo.",
+        classLink: "Le grandi bore di Trieste, con le fonti →",
+        camTitolo: "Guarda Trieste adesso", camIntro: "Con la bora il mare si riempie di schiuma bianca e le onde corrono verso il largo.",
+        cam1: "La Lanterna e il porto", cam2: "Il golfo dal Monte Grisa", play: "Guarda in diretta", camFonte: "Webcam di", camAltre: "Altre webcam (Barcola, Sistiana, Grado) nella",
+        camOff: "La diretta non è disponibile adesso.", camCanale: "Apri il canale",
+        museoTitolo: "Il Museo della Bora", museoTesto: "La bora non si vede, ma a Trieste ha un museo tutto suo, nato da un'idea di Rino Lombardi: storie, oggetti e scatole di vento.", museoLink: "Scopri il museo →",
+        faqTitolo: "Domande sulla bora",
+        q1: "Cos'è la bora?", a1: "È il vento freddo che scende dal Carso verso il mare, da nord-est. A Trieste arriva a raffiche, i <em>refoli</em>. Si chiama bora chiara quando c'è il sole e bora scura quando ci sono nuvole e pioggia. Quella leggera, in triestino, è il <em>borin</em>.",
+        q2: "Quanto forte può soffiare?", a2: "Il record della serie ufficiale al molo è 168 km/h, l'11 febbraio 2012. Le altre grandi bore sono nella classifica qui sopra.",
+        q3: "Come fate a dire se c'è bora?", a3: "Ogni 15 minuti leggiamo la centralina di Trieste sul molo. Se il vento arriva da nord-est, tra 20° e 100°, è bora; se arriva da un'altra parte vi diciamo quale vento c'è. Il verdetto guarda le raffiche: sotto i 40 km/h è un borin, da 70 bora forte, da 100 fortissima.",
+        q4: "Cosa fare con la bora forte?", a4: "Tenetevi ai corrimano, aprite piano le portiere dell'auto, lasciate l'ombrello in albergo e state lontani dal bordo del mare, dagli alberi e dalle impalcature.",
+        q5: "E domani?", a5: "Le previsioni del vento, la Spinta della Bora e il radar della pioggia sono nella <a href=\"/\">home di Vento Trieste</a>.",
+        fonteVento: "Vento:", elaborati: "dati elaborati", stazione: "stazione di Trieste sul molo, medie e raffiche di 15 minuti", firma: "un progetto di", guidaBora: "Guida alla bora",
+        unitaLabel: "Unità di misura", temaLabel: "Tema chiaro o scuro"
+      },
+      en: {
+        titolo: "How much Bora is blowing in Trieste?", dialetto: "Ghe xe bora?", marchio: "the Bora live", home: "Vento Trieste, home page",
+        attesa: "Checking the pier…", raffiche: "gusts", media: "average wind", nodi: "knots", caricamento: "Loading…", aggiorna: "Refresh",
+        v_calma: "Dead calm", s_calma: "No Bora: the air is still today.", c_calma: "A perfect day for a stroll on the Molo Audace.",
+        v_niente: "No Bora", s_niente: "Today it's {vento}.", s_brezza: "Just a light breeze from {dir}.", c_niente: "The Bora is something else: when it comes, you'll feel it at once.",
+        v_borin: "Borin", s_borin: "A light Bora, from {dir}.", c_borin: "Pleasant: it cools you down and clears the sky.",
+        v_bora: "Bora", s_bora: "You can feel it! From {dir}.", c_bora: "Hold on to your hat and close your umbrella.",
+        v_forte: "Strong Bora", s_forte: "Strong gusts from {dir}.", c_forte: "People walk sideways on the seafront. Open car doors slowly.",
+        v_fortissima: "Very strong Bora", s_fortissima: "Gusts above 100 km/h.", c_fortissima: "Keep away from the sea and from trees, hold on to the handrails.",
+        v_storica: "Historic Bora", s_storica: "A Bora for the history books.", c_storica: "Stay indoors and enjoy it from the window.",
+        v_vecchio: "Data delayed", s_vecchio: "The station hasn't answered for {min} minutes: the numbers below are old.",
+        v_errore: "No data", s_errore: "The station isn't answering. Try again shortly.",
+        alle: "Data from {ora}", vivo: "live", vecchio: "old", oggiMax: "Today's peak: {v} at {ora}",
+        venti: { scirocco: "the sirocco, a warm, humid wind from the south-east", libeccio: "the libeccio, a south-westerly", ponente: "a westerly wind", maestrale: "the mistral, from the north-west", tramontana: "the tramontana, from the north" },
+        classTitolo: "The great Bora league table", classIntro: "Where does today's strongest gust rank among the great Boras measured on the Trieste pier?",
+        classAttesa: "Waiting for today's data…", oggi: "Today", oggiNota: "today's strongest gust so far",
+        posto: "With {v} today would rank <strong>{n} of {tot}</strong> among the great Boras.",
+        primo: "With {v} today would be <strong>ahead of them all</strong>: stronger than the 2012 record!",
+        fuori: "Today's strongest gust is {v}: to make the table it needs at least {min}.",
+        n_rec: "the record of the official series", n_ursus: "the night the Ursus crane broke its moorings", n_anno: "one year ago", n_nov26: "four days of Bora, November 2026", n_set26: "the strongest of early autumn",
+        classNota: "This is not a complete official ranking: these are the great Boras documented at the pier station (ARPA FVG-OSMER series since the 1990s), plus two from this year for comparison. Different instruments give different values: the stories, sources and the “records” you read around are in the article (in Italian).",
+        classLink: "The great Boras of Trieste, with sources →",
+        camTitolo: "See Trieste now", camIntro: "With the Bora the sea fills with white foam and the waves run out to sea.",
+        cam1: "The Lanterna lighthouse and the port", cam2: "The gulf from Monte Grisa", play: "Watch live", camFonte: "Webcams by", camAltre: "More webcams (Barcola, Sistiana, Grado) on the",
+        camOff: "The live stream isn't available right now.", camCanale: "Open the channel",
+        museoTitolo: "The Bora Museum", museoTesto: "You can't see the Bora, but Trieste has a museum all of its own for it, born from an idea by Rino Lombardi: stories, objects and boxes of wind.", museoLink: "Discover the museum →",
+        faqTitolo: "Questions about the Bora",
+        q1: "What is the Bora?", a1: "It's the cold wind that rushes down from the Karst plateau to the sea, from the north-east. In Trieste it comes in gusts, the <em>refoli</em>. It's called a light Bora (bora chiara) with sunshine and a dark Bora (bora scura) with clouds and rain. A gentle one, in Triestine dialect, is the <em>borin</em>.",
+        q2: "How strong can it blow?", a2: "The record of the official series at the pier is 168 km/h, on 11 February 2012. The other great Boras are in the table above.",
+        q3: "How do you know it's Bora?", a3: "Every 15 minutes we read the Trieste weather station on the pier. If the wind comes from the north-east, between 20° and 100°, it's Bora; if it comes from elsewhere we tell you which wind it is. The verdict is based on gusts: below 40 km/h it's a borin, from 70 a strong Bora, from 100 a very strong one.",
+        q4: "What to do in a strong Bora?", a4: "Hold on to the handrails, open car doors slowly, leave your umbrella at the hotel and keep away from the water's edge, trees and scaffolding.",
+        q5: "What about tomorrow?", a5: "Wind forecasts, the Bora Push indicator and the rain radar are on the <a href=\"/\">Vento Trieste home page</a> (in Italian).",
+        fonteVento: "Wind:", elaborati: "processed data", stazione: "Trieste station on the pier, 15-minute averages and gusts", firma: "a project by", guidaBora: "Bora guide (IT)",
+        unitaLabel: "Unit", temaLabel: "Light or dark theme"
+      },
+      de: {
+        titolo: "Wie viel Bora weht in Triest?", dialetto: "Ghe xe bora?", marchio: "die Bora live", home: "Vento Trieste, Startseite",
+        attesa: "Ich schaue auf die Mole…", raffiche: "Böen", media: "Mittelwind", nodi: "Knoten", caricamento: "Lade Daten…", aggiorna: "Neu laden",
+        v_calma: "Windstille", s_calma: "Keine Bora: heute steht die Luft.", c_calma: "Ein perfekter Tag für einen Spaziergang auf dem Molo Audace.",
+        v_niente: "Keine Bora", s_niente: "Heute weht {vento}.", s_brezza: "Nur ein leichter Hauch aus {dir}.", c_niente: "Die Bora ist etwas ganz anderes: wenn sie kommt, spürst du sie sofort.",
+        v_borin: "Borin", s_borin: "Leichte Bora, aus {dir}.", c_borin: "Angenehm: sie kühlt und macht den Himmel klar.",
+        v_bora: "Bora", s_bora: "Man spürt sie! Aus {dir}.", c_bora: "Halt den Hut fest und klapp den Schirm zu.",
+        v_forte: "Starke Bora", s_forte: "Starke Böen aus {dir}.", c_forte: "An der Uferpromenade geht man schief. Autotüren langsam öffnen.",
+        v_fortissima: "Sehr starke Bora", s_fortissima: "Böen über 100 km/h.", c_fortissima: "Halte Abstand vom Meer und von Bäumen, halte dich an den Geländern fest.",
+        v_storica: "Historische Bora", s_storica: "Eine Bora für die Geschichtsbücher.", c_storica: "Bleib drinnen und genieße sie vom Fenster aus.",
+        v_vecchio: "Daten verspätet", s_vecchio: "Die Station antwortet seit {min} Minuten nicht: die Zahlen unten sind alt.",
+        v_errore: "Keine Daten", s_errore: "Die Station antwortet nicht. Versuch es gleich noch einmal.",
+        alle: "Daten von {ora}", vivo: "live", vecchio: "alt", oggiMax: "Höchste Böe heute: {v} um {ora}",
+        venti: { scirocco: "Schirokko, der warme, feuchte Südostwind", libeccio: "Libeccio, ein Südwestwind", ponente: "Westwind", maestrale: "Mistral, aus Nordwest", tramontana: "Tramontana, aus Norden" },
+        classTitolo: "Die Rangliste der großen Boras", classIntro: "Wo landet die stärkste Böe von heute unter den großen Boras, gemessen an der Mole von Triest?",
+        classAttesa: "Warte auf die Daten von heute…", oggi: "Heute", oggiNota: "stärkste Böe von heute, bisher",
+        posto: "Mit {v} wäre heute auf <strong>Platz {n} von {tot}</strong> der großen Boras.",
+        primo: "Mit {v} wäre heute <strong>vor allen</strong>: stärker als der Rekord von 2012!",
+        fuori: "Die stärkste Böe heute: {v}. Für die Rangliste braucht es mindestens {min}.",
+        n_rec: "der Rekord der offiziellen Messreihe", n_ursus: "die Nacht, in der der Kran Ursus sich losriss", n_anno: "vor einem Jahr", n_nov26: "vier Tage Bora, November 2026", n_set26: "die stärkste im Frühherbst",
+        classNota: "Keine vollständige offizielle Rangliste: es sind die großen Boras, die an der Station auf der Mole dokumentiert sind (Messreihe ARPA FVG-OSMER seit den 1990er Jahren), dazu zwei aus diesem Jahr zum Vergleich. Verschiedene Instrumente liefern verschiedene Werte: Geschichten und Quellen stehen im Artikel (auf Italienisch).",
+        classLink: "Die großen Boras von Triest, mit Quellen →",
+        camTitolo: "Triest jetzt sehen", camIntro: "Bei Bora füllt sich das Meer mit weißem Schaum und die Wellen laufen hinaus aufs offene Meer.",
+        cam1: "Der Leuchtturm Lanterna und der Hafen", cam2: "Der Golf vom Monte Grisa", play: "Live ansehen", camFonte: "Webcams von", camAltre: "Weitere Webcams (Barcola, Sistiana, Grado) auf der",
+        camOff: "Der Livestream ist gerade nicht verfügbar.", camCanale: "Kanal öffnen",
+        museoTitolo: "Das Bora-Museum", museoTesto: "Die Bora sieht man nicht, aber Triest hat ein eigenes Museum für sie, entstanden aus einer Idee von Rino Lombardi: Geschichten, Gegenstände und Schachteln voller Wind.", museoLink: "Das Museum entdecken →",
+        faqTitolo: "Fragen zur Bora",
+        q1: "Was ist die Bora?", a1: "Der kalte Wind, der vom Karst hinunter zum Meer stürzt, aus Nordosten. In Triest kommt er in Böen, den <em>refoli</em>. Bei Sonne heißt sie helle Bora (bora chiara), bei Wolken und Regen dunkle Bora (bora scura). Die leichte heißt im Triester Dialekt <em>borin</em>.",
+        q2: "Wie stark kann sie wehen?", a2: "Der Rekord der offiziellen Messreihe an der Mole liegt bei 168 km/h, am 11. Februar 2012. Die anderen großen Boras stehen in der Rangliste oben.",
+        q3: "Woher wisst ihr, dass es Bora ist?", a3: "Alle 15 Minuten lesen wir die Wetterstation von Triest auf der Mole. Kommt der Wind aus Nordosten, zwischen 20° und 100°, ist es Bora; kommt er von woanders, sagen wir, welcher Wind weht. Das Urteil richtet sich nach den Böen: unter 40 km/h ein Borin, ab 70 starke Bora, ab 100 sehr starke.",
+        q4: "Was tun bei starker Bora?", a4: "Halte dich an Geländern fest, öffne Autotüren langsam, lass den Schirm im Hotel und halte Abstand vom Wasser, von Bäumen und Gerüsten.",
+        q5: "Und morgen?", a5: "Windvorhersagen, der Bora-Schub und das Regenradar stehen auf der <a href=\"/\">Startseite von Vento Trieste</a> (auf Italienisch).",
+        fonteVento: "Wind:", elaborati: "verarbeitete Daten", stazione: "Station Triest auf der Mole, Mittelwerte und Böen über 15 Minuten", firma: "ein Projekt von", guidaBora: "Bora-Leitfaden (IT)",
+        unitaLabel: "Einheit", temaLabel: "Helles oder dunkles Design"
+      }
+    };
+    var CARD = { it: ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"],
+                 en: ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"],
+                 de: ["N","NNO","NO","ONO","O","OSO","SO","SSO","S","SSW","SW","WSW","W","WNW","NW","NNW"] };
+
+    function leggi(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+    function salva(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+    function conta(n) { try { if (window.vtConta) window.vtConta(n); } catch (e) {} }
+    function $(id) { return document.getElementById(id); }
+
+    // lingua: ?lang=, scelta salvata, poi quella del browser (it/de, altrimenti inglese)
+    var q = new URLSearchParams(location.search);
+    var lingua = (q.get("lang") || leggi("vt-qb-lingua") || (navigator.language || "it")).slice(0, 2).toLowerCase();
+    if (!T[lingua]) lingua = "en";
+    var unita = q.get("u") === "kt" ? "kt" : (leggi("vt-qb-unita") === "kt" ? "kt" : "kmh");
+    var dati = null, errore = false;
+
+    function fmt(s, o) { return s.replace(/\{(\w+)\}/g, function (_, k) { return o[k] != null ? o[k] : ""; }); }
+    function t(k) { return T[lingua][k] != null ? T[lingua][k] : T.it[k]; }
+    function ora(ms) { return new Intl.DateTimeFormat(lingua === "en" ? "en-GB" : lingua, { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit" }).format(new Date(ms)); }
+    function data(iso, dal) {
+      var s = new Intl.DateTimeFormat(lingua === "en" ? "en-GB" : lingua, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(iso + "T12:00:00Z"));
+      return dal ? dal + "–" + s : s;
+    }
+    function ms2(v) { return v == null ? null : (unita === "kt" ? v * KT : v * KMH); }
+    function num(v) { return v == null ? "–" : String(Math.round(ms2(v))); }
+    function u() { return unita === "kt" ? "kt" : "km/h"; }
+    function conU(kmh) { return Math.round(unita === "kt" ? kmh / KMH * KT : kmh) + " " + u(); }
+    function dirTxt(deg) { var g = Math.round(((deg % 360) + 360) % 360) % 360; return String(g).padStart(3, "0") + "° " + CARD[lingua][Math.round(g / 22.5) % 16]; }
+    function nomeVento(deg) {
+      if (deg >= 100 && deg < 200) return "scirocco";
+      if (deg >= 200 && deg < 250) return "libeccio";
+      if (deg >= 250 && deg < 300) return "ponente";
+      if (deg >= 300 && deg < 340) return "maestrale";
+      return "tramontana";
+    }
+
+    /* ---------------- testi fissi ---------------- */
+    function traduci() {
+      document.documentElement.lang = lingua;
+      document.querySelectorAll("[data-i18n]").forEach(function (el) { var v = t(el.getAttribute("data-i18n")); if (/<[a-z]/.test(v)) el.innerHTML = v; else el.textContent = v; });
+      document.querySelectorAll("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.getAttribute("data-i18n-html")); });
+      document.querySelectorAll("[data-lingua]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lingua") === lingua)); });
+      document.querySelector(".unita").setAttribute("aria-label", t("unitaLabel"));
+      $("tema").setAttribute("aria-label", t("temaLabel"));
+      document.title = t("titolo") + " " + (lingua === "it" ? "Raffiche in km/h live" : lingua === "de" ? "Böen live in km/h" : "Live gusts in km/h") + " | Vento Trieste";
+    }
+
+    /* ---------------- dati ---------------- */
+    function utc(ms) { return new Date(ms).toISOString().slice(0, 19).replace("T", " "); }
+    function mezzanotteRoma(adesso) {
+      var p = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(adesso));
+      var h = +p.find(function (x) { return x.type === "hour"; }).value, m = +p.find(function (x) { return x.type === "minute"; }).value;
+      return adesso - (h * 60 + m) * 60000 - 60000;
+    }
+    function sensore(id, da, a) {
+      return fetch(STAZIONE + "?sensor_id=" + id + "&from=" + encodeURIComponent(utc(da)) + "&to=" + encodeURIComponent(utc(a)), { cache: "no-store" })
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (j) {
+          return (j.measures || []).filter(function (m) { return m.sensor_id === id && typeof m.value === "number"; })
+            .map(function (m) { return { t: Date.parse(m.dt.replace(" ", "T") + "Z"), v: m.value }; })
+            .sort(function (a, b) { return a.t - b.t; });
+        });
+    }
+    function carica() {
+      if (q.get("prova")) return Promise.resolve();
+      var adesso = Date.now(), da = mezzanotteRoma(adesso), dopo = adesso + 900000, poco = adesso - 3 * 3600000;
+      $("aggiorna").disabled = true;
+      return Promise.all([sensore(7, Math.min(da, poco), dopo), sensore(6, poco, dopo), sensore(5, poco, dopo)]).then(function (r) {
+        var raff = r[0], media = r[1], dir = r[2];
+        if (!media.length) throw new Error("vuoto");
+        var ult = media[media.length - 1], tt = ult.t;
+        var trova = function (lista) { for (var i = lista.length - 1; i >= 0; i--) if (lista[i].t === tt) return lista[i].v; return null; };
+        var max = null;
+        raff.forEach(function (x) { if (x.t >= da && (!max || x.v > max.v)) max = x; });
+        dati = { t: tt, media: ult.v, raff: trova(raff), deg: trova(dir), max: max };
+        errore = false;
+      }).catch(function () { errore = true; }).then(function () { $("aggiorna").disabled = false; mostra(); });
+    }
+
+    /* ---------------- la banda ---------------- */
+    function livello(d) {
+      var eta = (Date.now() - d.t) / 60000;
+      if (eta > ETA_MAX) return { k: "vecchio", eta: Math.round(eta) };
+      var mediaKt = d.media * KT, raffKmh = (d.raff != null ? d.raff : d.media) * KMH;
+      if (mediaKt < 3 && raffKmh < 15) return { k: "calma" };
+      var bora = d.deg != null && d.deg >= BORA_DA && d.deg < BORA_A;
+      if (!bora) return { k: "niente", brezza: mediaKt < 8 };
+      var k = "borin";
+      LIVELLI.forEach(function (l) { if (raffKmh >= l[1]) k = l[0]; });
+      return { k: k };
+    }
+    function mostra() {
+      var banda = $("banda");
+      document.querySelectorAll(".u").forEach(function (el) { el.textContent = u(); });
+      document.querySelectorAll("[data-unita]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-unita") === unita)); });
+      // tacche del metro nell'unità scelta
+      [["t50", 50], ["t100", 100], ["t150", 150]].forEach(function (x) { $(x[0]).textContent = Math.round(unita === "kt" ? x[1] / KMH * KT : x[1]); });
+      $("tRec").textContent = Math.round(unita === "kt" ? 168 / KMH * KT : 168) + " ★";
+      classifica();
+      if (!dati) {
+        if (errore) { banda.setAttribute("data-livello", "vecchio"); $("verdetto").textContent = t("v_errore"); $("sotto").textContent = t("s_errore"); $("statoTesto").textContent = ""; }
+        return;
+      }
+      var L = livello(dati), dir = dati.deg != null ? dirTxt(dati.deg) : "";
+      banda.setAttribute("data-livello", L.k);
+      $("verdetto").textContent = t("v_" + L.k);
+      var sotto = L.k === "vecchio" ? fmt(t("s_vecchio"), { min: L.eta })
+        : L.k === "niente" ? (L.brezza ? fmt(t("s_brezza"), { dir: dir }) : fmt(t("s_niente"), { vento: t("venti")[nomeVento(dati.deg)] }))
+        : fmt(t("s_" + L.k), { dir: dir });
+      $("sotto").textContent = sotto;
+      $("vRaff").textContent = num(dati.raff);
+      $("vMedia").textContent = num(dati.media);
+      var c = t("c_" + L.k);
+      $("consiglio").hidden = !c || L.k === "vecchio";
+      $("consiglio").textContent = c || "";
+      // metro: la scala colorata arriva alla raffica, la tacca è la raffica, il triangolo la massima di oggi
+      var pct = function (msv) { return Math.max(0, Math.min(100, msv * KMH / MAX_SCALA * 100)); };
+      var scala = $("scala");
+      if (window.VTScala) scala.style.background = window.VTScala.gradiente(MAX_SCALA / KMH * KT);
+      var pr = pct(dati.raff != null ? dati.raff : dati.media);
+      scala.style.clipPath = "inset(0 " + (100 - pr) + "% 0 0 round 999px)";
+      $("segnoRaff").style.left = pr + "%";
+      if (dati.max) { $("segnoMax").hidden = false; $("segnoMax").style.left = pct(dati.max.v) + "%"; }
+      var vivo = L.k !== "vecchio";
+      var st = $("statoTesto");
+      st.className = vivo ? "vivo" : "";
+      st.innerHTML = '<span class="punto"></span>' + (vivo ? t("vivo") + " · " : t("vecchio") + " · ") + fmt(t("alle"), { ora: ora(dati.t) }) +
+        (dati.max ? " · " + fmt(t("oggiMax"), { v: conU(dati.max.v * KMH), ora: ora(dati.max.t) }) : "") + (dir ? " · " + dir : "");
+    }
+
+    /* ---------------- classifica ---------------- */
+    function classifica() {
+      var ol = $("classifica"), oggi = dati && dati.max ? dati.max.v * KMH : null;
+      var righe = STORICHE.map(function (s) { return { q: data(s.g, s.dal), kmh: s.kmh, nota: s.n ? t("n_" + s.n) : "" }; });
+      var pos = null;
+      if (oggi != null) {
+        pos = righe.filter(function (r) { return r.kmh > Math.round(oggi); }).length;   // pari merito: davanti a chi ha lo stesso valore
+        righe.splice(pos, 0, { q: t("oggi"), kmh: Math.round(oggi), nota: t("oggiNota"), oggi: true });
+      }
+      ol.innerHTML = "";
+      righe.forEach(function (r, i) {
+        var li = document.createElement("li");
+        if (r.oggi) li.className = "oggi";
+        li.innerHTML = '<span class="n">' + (i + 1) + '</span><span class="q"></span><span class="v"></span>' + (r.nota ? '<span class="nota"></span>' : "");
+        li.querySelector(".q").textContent = r.q;
+        li.querySelector(".v").textContent = conU(r.kmh);
+        if (r.nota) li.querySelector(".nota").textContent = r.nota;
+        ol.appendChild(li);
+      });
+      var p = $("posto");
+      if (oggi == null) { p.textContent = t("classAttesa"); return; }
+      var tot = righe.length, v = conU(oggi);
+      if (pos === 0) p.innerHTML = fmt(t("primo"), { v: v });
+      else if (pos >= STORICHE.length) p.textContent = fmt(t("fuori"), { v: v, min: conU(STORICHE[STORICHE.length - 1].kmh) });
+      else p.innerHTML = fmt(t("posto"), { v: v, n: pos + 1, tot: tot });
+    }
+
+    /* ---------------- webcam: YouTube solo al tocco (niente cookie né peso finché non serve) ---------------- */
+    document.querySelectorAll("[data-yt]").forEach(function (b) {
+      var id = b.getAttribute("data-yt");
+      // se la diretta è cambiata l'anteprima non esiste più: lo diciamo e mandiamo al canale
+      var img = new Image();
+      img.onload = function () { if (img.naturalWidth <= 120) spenta(b); };
+      img.onerror = function () { spenta(b); };
+      img.src = "https://i.ytimg.com/vi/" + id + "/mqdefault.jpg";
+      b.addEventListener("click", function () {
+        conta("quanta-bora:webcam-" + b.getAttribute("data-cam"));
+        var f = document.createElement("iframe");
+        f.title = b.parentNode.parentNode.querySelector("h3").textContent;
+        f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+        f.allowFullscreen = true;
+        f.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&mute=1&playsinline=1&rel=0";
+        b.replaceWith(f);
+      });
+    });
+    function spenta(b) {
+      var box = b.parentNode;
+      box.innerHTML = '<p style="margin:0;padding:16px;color:#dfe5e8">' + t("camOff") + ' <a href="https://www.youtube.com/channel/UCfYlFRRwaw3aS230U7Zz5qA/live" target="_blank" rel="noopener" style="color:#f0f43c">' + t("camCanale") + "</a></p>";
+      box.style.display = "grid"; box.style.placeItems = "center";
+    }
+
+    /* ---------------- comandi ---------------- */
+    document.querySelectorAll("[data-lingua]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        lingua = b.getAttribute("data-lingua"); salva("vt-qb-lingua", lingua); conta("lingua:" + lingua);
+        traduci(); mostra();
+      });
+    });
+    document.querySelectorAll("[data-unita]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        unita = b.getAttribute("data-unita"); salva("vt-qb-unita", unita); conta("quanta-bora:unita-" + unita); mostra();
+      });
+    });
+    $("aggiorna").addEventListener("click", function () { conta("aggiorna: quanta-bora"); carica(); });
+    $("tema").addEventListener("click", function () {
+      var r = document.documentElement, att = r.getAttribute("data-theme") ||
+        (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      var nuovo = att === "light" ? "dark" : "light";
+      r.setAttribute("data-theme", nuovo); salva("vento-trieste-theme", nuovo); conta("tema:" + (nuovo === "light" ? "chiaro" : "scuro"));
+    });
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible" && (!dati || Date.now() - dati.t > 16 * 60000)) carica();
+    });
+    setInterval(function () { if (document.visibilityState === "visible") carica(); }, 5 * 60000);
+
+    traduci();
+    mostra();
+    /* prova dei livelli senza aspettare il vento: ?prova=<gradi>,<raffica km/h>[,<media km/h>]
+       es. ?prova=065,135 (bora storica) o ?prova=150,45 (scirocco). Niente dati veri in questo caso. */
+    var prova = (q.get("prova") || "").split(",").map(Number);
+    if (prova.length >= 2 && !isNaN(prova[0]) && !isNaN(prova[1])) {
+      var rf = prova[1] / KMH, md = (prova[2] || prova[1] * 0.7) / KMH;
+      dati = { t: Date.now(), media: md, raff: rf, deg: prova[0], max: { t: Date.now(), v: rf } };
+      mostra();
+    } else carica();
+  })();
+  </script>
+  <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
+  <script data-goatcounter="https://ventotrieste.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <script src="/eventi.js?v=20261107" defer></script>
+</body>
+</html>
