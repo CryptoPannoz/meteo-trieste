@@ -271,7 +271,7 @@
   }
   function disegnaVisite(v) {
     const box = $("persone");
-    const altri = ["uso", "qr", "ai", "lClassifica"];
+    const altri = ["uso", "qr", "nuove", "ai", "lClassifica"];
     if (!v || !v.configurato) {
       box.innerHTML = '<p class="nota">Aggiungi il token API di GoatCounter in Impostazioni per vedere le visite.</p>';
       altri.forEach(id => { $(id).innerHTML = ""; });
@@ -284,6 +284,7 @@
     disegnaPersone(v);
     disegnaUso(v.persone);
     disegnaQr(v.qr);
+    disegnaNuove(v);
     disegnaAi(v.ai, v.al);
     disegnaClassifiche(v);
   }
@@ -396,6 +397,37 @@
       (giorni.length ? tabella(["Giorno", "Tavole", "Altri", "Nuove"], giorni.slice().reverse().map(g =>
         [esc(giornoBreve(g.giorno)), intero(g.qr.surfisti || 0), intero(altri(g)), intero(g.nuovi)]))
         : '<p class="nota">Giorno per giorno: ancora nessuna scansione dal 6 nov.</p>');
+  }
+
+  /* Pagine nuove (14 nov 2026, Alberto: "segnati questo URL in Goat Counter e anche dalla mia pagina admin,
+     così da poter verificare quanti redirect ho"). REGOLA: ogni pagina nuova del sito ha GoatCounter e una riga
+     qui (CLAUDE.md del progetto). GoatCounter non va configurato: un percorso nasce alla prima visita.
+     Le visite vengono dalla classifica delle pagine del Worker (solo le più viste del periodo: se non c'è,
+     "–"), i clic dagli eventi che contengono `eventi`. Il nome apre GoatCounter filtrato sulla pagina,
+     dal giorno in cui è nata: lì, toccando la pagina, ci sono le provenienze. */
+  const PAGINE_NUOVE = [
+    { percorso: "/quanta-bora/", nome: "Quanta bora c'è", dal: "2026-11-13", eventi: "quanta-bora" },
+    { percorso: "/guida/quanta-bora/", nome: "Guida · Quanta bora c'è", dal: "2026-11-14" }
+  ];
+  function disegnaNuove(v) {
+    const box = $("nuove");
+    const senzaBarra = p => String(p || "").replace(/\/+$/, "") || "/";
+    const sito = (ultimoStato && ultimoStato.impostazioni && ultimoStato.impostazioni.goatcounterSito) || "ventotrieste";
+    const oggi = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Rome" });
+    const righe = PAGINE_NUOVE.map(p => {
+      const x = (v.pagine || []).find(y => senzaBarra(y.percorso) === senzaBarra(p.percorso));
+      const clic = p.eventi ? (v.eventi || []).filter(e => String(e.nome || "").indexOf(p.eventi) >= 0)
+        .reduce((s, e) => s + (e.visite || 0), 0) : 0;
+      const link = "https://" + encodeURIComponent(sito) + ".goatcounter.com/?filter=" + encodeURIComponent(p.percorso) +
+        "&period-start=" + p.dal + "&period-end=" + oggi;
+      return { p, visite: x ? x.visite : null, clic, link };
+    });
+    const max = Math.max(1, ...righe.map(r => r.visite || 0));
+    box.innerHTML = '<ol class="classifica">' + righe.map(r =>
+      '<li><span class="c-nome"><a href="' + esc(r.link) + '" target="_blank" rel="noopener">' + esc(r.p.nome) + "</a><small>" +
+        esc([r.p.percorso, "dal " + giornoBreve(r.p.dal)].concat(r.clic ? [intero(r.clic) + " clic dentro"] : []).join(" · ")) + "</small></span>" +
+      '<span class="c-valore">' + (r.visite == null ? "–" : intero(r.visite)) + "</span>" +
+      '<i class="c-barra" style="width:' + ((r.visite || 0) / max * 100).toFixed(1) + '%"></i></li>').join("") + "</ol>";
   }
 
   /* Vento Trieste_AI dal sito al bot (2 nov 2026, Alberto: "il tracking di chi guarda la previsione AI,
