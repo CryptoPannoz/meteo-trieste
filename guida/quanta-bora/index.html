@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quanta bora c'è a Trieste? Come funziona la pagina della bora in diretta | Vento Trieste</title>
+  <meta name="description" content="Quanta bora c'è a Trieste adesso: come abbiamo costruito la pagina con la raffica in km/h dal molo ogni 15 minuti, una parola sola da borin a bora storica, la classifica delle grandi bore e le webcam. Gratis, in italiano, inglese e tedesco." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Alberto Broggi" />
+  <link rel="canonical" href="https://ventotrieste.info/guida/quanta-bora/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Vento Trieste" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content="Quanta bora c'è a Trieste? Come funziona la pagina della bora in diretta" />
+  <meta property="og:description" content="La raffica dal molo ogni 15 minuti, una parola sola da borin a bora storica e la classifica delle grandi bore: come l'abbiamo costruita e come si legge." />
+  <meta property="og:url" content="https://ventotrieste.info/guida/quanta-bora/" />
+  <meta property="og:image" content="https://ventotrieste.info/quanta-bora/og-quanta-bora.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Quanta bora c'è a Trieste? La bora in diretta su ventotrieste.info" />
+  <meta property="article:published_time" content="2026-11-14" />
+  <meta property="article:author" content="Alberto Broggi" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#07090c" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Vento Trieste" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <script>(function(){try{var t=localStorage.getItem("vento-trieste-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Quanta bora c'è a Trieste? Come funziona la pagina della bora in diretta","description":"Come abbiamo costruito la pagina Quanta bora c'è a Trieste: la raffica in km/h dal molo ogni 15 minuti, una parola sola da borin a bora storica, la classifica delle grandi bore e le webcam. Gratis, in italiano, inglese e tedesco.","inLanguage":"it-IT","datePublished":"2026-11-14","dateModified":"2026-11-14","mainEntityOfPage":"https://ventotrieste.info/guida/quanta-bora/","image":"https://ventotrieste.info/quanta-bora/og-quanta-bora.jpg","articleSection":"In diretta","about":{"@type":"Thing","name":"Bora (vento)","sameAs":"https://it.wikipedia.org/wiki/Bora_(vento)"},"isPartOf":{"@type":"Blog","name":"Guida di Vento Trieste","url":"https://ventotrieste.info/guida/"},"author":{"@type":"Person","name":"Alberto Broggi","url":"https://bebroggi.it/"},"publisher":{"@type":"Organization","name":"Vento Trieste","url":"https://ventotrieste.info/","logo":{"@type":"ImageObject","url":"https://ventotrieste.info/icon-512.png"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vento Trieste","item":"https://ventotrieste.info/"},{"@type":"ListItem","position":2,"name":"Guida","item":"https://ventotrieste.info/guida/"},{"@type":"ListItem","position":3,"name":"Quanta bora c'è","item":"https://ventotrieste.info/guida/quanta-bora/"}]}]}</script>
+  <link rel="stylesheet" href="/footer-widgets.css?v=20261110a" />
+  <link rel="stylesheet" href="/guida/guida.css?v=20261110a" />
+  <!-- Articolo della Guida di Vento Trieste (14 nov 2026, Alberto: "un articolo di come abbiamo costruito
+       lo strumento di quanta bora c'è, anche per indicizzazione"). Racconta /quanta-bora/: se la pagina
+       cambia (soglie, stazione, STORICHE), cambiare anche qui. "Altri articoli" elenca tutti gli altri:
+       se ne aggiungi uno, aggiornalo anche qui. -->
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><strong>Vento Trieste</strong><span>strumenti per il Golfo</span></a>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" data-light-label="Chiaro" data-dark-label="Scuro" aria-label="Chiaro" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle-label">Chiaro</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topnav">
+        <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+        Menu
+      </button>
+    </div>
+    <nav class="topnav" id="topnav" aria-label="Sezioni del sito" data-dock="/#vento,/#webcam,/#radarLive,/#previsioni" hidden>
+      <a href="/#vento">Vento ora</a>
+      <a href="/#mappaVento">Mappa e centraline</a>
+      <a href="/#webcam">Webcam</a>
+      <a href="/#radarLive">Radar pioggia</a>
+      <a href="/#previsioni">Previsioni</a>
+      <a href="/registro/">Registro del vento</a>
+    </nav>
+  </header>
+
+  <main class="g">
+    <nav class="g-briciole" aria-label="Percorso"><a href="/">Vento Trieste</a> / <a href="/guida/">Guida</a> / Quanta bora c'è</nav>
+
+    <header class="g-testa">
+      <span class="g-kicker">In diretta</span>
+      <h1>Quanta bora c'è a Trieste? Come funziona la pagina della bora in diretta</h1>
+      <p>Dopo giorni di bora forte mi sono accorto che Vento Trieste, nato per chi va in acqua, è troppo tecnico per chi visita la città. Così ho fatto una pagina che risponde a una domanda sola, quella che si fa chiunque esca dall'albergo: quanta bora c'è adesso?</p>
+      <p class="g-meta"><time datetime="2026-11-14">14 novembre 2026</time> · 4 min di lettura · di <a href="https://bebroggi.it/" rel="author">Alberto Broggi</a></p>
+    </header>
+
+    <article class="g-sez g-corpo">
+      <p class="g-in-breve"><strong>In breve:</strong> su <a href="/quanta-bora/">ventotrieste.info/quanta-bora</a> c'è la <strong>raffica di adesso in km/h</strong>, misurata sul molo di Trieste ogni 15 minuti, e <strong>una parola sola</strong>: borin, bora, bora forte, bora fortissima o bora storica. Sotto ci sono il grafico della giornata, la classifica delle grandi bore e due webcam della città. È gratis, senza pubblicità e senza cookie, in italiano, inglese e tedesco.</p>
+
+      <h2>Perché una pagina per i turisti</h2>
+      <p>La home di Vento Trieste ha surfometro, Spinta della Bora, modelli, centraline da Grado all'Istria: serve a chi deve decidere se uscire in windsurf o in barca. A chi passeggia sulle Rive basta molto meno. Vuole sapere se la bora c'è, quanto è forte e se deve preoccuparsi.</p>
+      <p>Per questo la pagina ha un numero grande, una parola grande e poco altro. Il nome della pagina è la domanda che i triestini si fanno a vicenda. In cima c'è anche la versione in dialetto: <strong>«Bora gavemo?»</strong>.</p>
+
+      <h2>Come si legge</h2>
+      <p>Il giudizio guarda la <strong>raffica</strong>, non il vento medio: è la raffica che ti sposta per strada, ed è la raffica che finisce nelle classifiche delle grandi bore.</p>
+      <table class="g-tabella">
+        <thead><tr><th>Raffica</th><th>La pagina dice</th></tr></thead>
+        <tbody>
+          <tr><td>sotto i 40 km/h</td><td><strong>borin</strong>, la bora leggera</td></tr>
+          <tr><td>da 40 km/h</td><td><strong>bora</strong></td></tr>
+          <tr><td>da 70 km/h</td><td><strong>bora forte</strong></td></tr>
+          <tr><td>da 100 km/h</td><td><strong>bora fortissima</strong></td></tr>
+          <tr><td>da 130 km/h</td><td><strong>bora storica</strong></td></tr>
+        </tbody>
+      </table>
+      <p>Sotto il giudizio ci sono la raffica e il vento medio, e una barra che arriva fino a <strong>168 km/h</strong>, il record. Con un tocco i numeri passano da km/h a nodi.</p>
+      <p>Se il vento non arriva da nord-est la pagina non dice «niente bora» e basta: dice quale vento c'è, per esempio scirocco o libeccio. Accanto al giudizio compare anche se è <strong>bora chiara</strong> (cielo sereno) o <strong>bora scura</strong> (nuvole e pioggia). Più sotto ci sono il cielo, la temperatura dell'aria, quella percepita con il vento e quella del mare.</p>
+
+      <h2>Come l'abbiamo costruita</h2>
+      <p>La pagina è nata il 13 novembre 2026, in un giorno, con due versioni. Il cuore è lo stesso dell'articolo sulla <a href="/guida/bora-forte/">bora forte di novembre</a>: la centralina di <strong>Trieste sul molo</strong> della Protezione Civile della Regione Friuli Venezia Giulia, che pubblica direzione, vento medio e raffica ogni 15 minuti.</p>
+      <ul>
+        <li><strong>È bora se arriva da nord-est</strong>, tra 20° e 100°: la stessa regola della <a href="/guida/spinta-bora/">Spinta della Bora</a> e del resto del sito.</li>
+        <li><strong>Dati freschi o niente</strong>: se l'ultimo dato ha più di 45 minuti la pagina diventa grigia e scrive «in ritardo», invece di dare un giudizio vecchio.</li>
+        <li><strong>Chiara o scura</strong>: è scura se nell'ultima ora ha piovuto o il cielo è coperto almeno al 70%, chiara se è coperto al massimo al 40%. In mezzo la pagina non lo dice. Il cielo viene dal modello di <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>.</li>
+        <li><strong>La percepita</strong> si calcola solo quando fa freddo davvero (aria fino a 10 °C e un po' di vento), con la formula del wind chill.</li>
+        <li><strong>Le lingue</strong>: la pagina si apre da sola nella lingua del telefono. Per mandarla a un turista straniero ci sono anche gli indirizzi diretti, <a href="/quanta-bora/?lang=en">in inglese</a> e <a href="/quanta-bora/?lang=de">in tedesco</a>.</li>
+        <li><strong>Leggera</strong>: niente app da installare, niente iscrizioni, niente pubblicità. Le visite le conta GoatCounter, senza cookie.</li>
+      </ul>
+      <p>Nella seconda versione, lo stesso giorno, sono arrivati il logo, la classifica a barre, il box del meteo senza barometro (ai turisti non serve) e, in fondo, il <strong>Museo della Bora</strong>: la bora non si vede, ma a Trieste ha un museo tutto suo, nato da un'idea di Rino Lombardi.</p>
+
+      <h2>La classifica delle grandi bore</h2>
+      <p>Ogni giorno la pagina prende la raffica più forte di oggi e la mette tra le grandi bore misurate sul molo dagli anni Novanta, la serie ARPA FVG-OSMER: ti dice in che posizione sarebbe oggi, o quanto manca per entrarci. In cima c'è il record di <strong>168 km/h</strong> dell'11 febbraio 2012; seguono i 163 km/h del 2 marzo 2011, i 157 di febbraio 2015 e i 152 del 10 marzo 2010. Per confronto ci sono anche due bore di quest'anno, tra cui i 109 km/h del 2 novembre 2026.</p>
+      <p>Non è una classifica ufficiale completa, e la pagina lo scrive: sono le bore documentate nell'articolo sulla <a href="/guida/bora-forte/">bora forte</a>, e strumenti diversi danno valori diversi.</p>
+
+      <h2>I limiti</h2>
+      <ul>
+        <li><strong>Una stazione sola</strong>: il molo è il punto di riferimento storico, ma in altre zone della città la bora può essere più forte o più debole, soprattutto nelle strade strette e sul Carso.</li>
+        <li><strong>Non è un'allerta</strong>: per gli avvisi ufficiali c'è la Protezione Civile della Regione FVG.</li>
+        <li><strong>Arriva con un po' di ritardo</strong>: la centralina pubblica ogni 15 minuti, quindi la raffica che senti adesso può non esserci ancora.</li>
+      </ul>
+
+      <h2>Se lavori con il turismo</h2>
+      <p>Infopoint, guide, alberghi, agenzie: la pagina è vostra. Potete linkarla, metterla in un QR code alla reception o integrarla nel vostro sito, senza chiedere e senza pagare. È un progetto divulgativo: chi vuole può sostenerlo con un'offerta libera, ma non è una condizione. Se vi serve qualcosa di diverso, una versione per un evento o un'idea da fare insieme, i miei contatti sono su <a href="https://bebroggi.it/" rel="author">bebroggi.it</a>.</p>
+      <p class="g-nota">Fonti: Protezione Civile della Regione Friuli Venezia Giulia, stazione di Trieste sul molo (<a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">CC BY 4.0</a>, dati elaborati); grandi bore: serie ARPA FVG-OSMER al molo, come nell'articolo sulla bora forte; cielo: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>; webcam: CISAR Trieste.</p>
+      <a class="g-vai" href="/quanta-bora/">Guarda quanta bora c'è adesso →</a>
+    </article>
+
+    <section class="g-sez" aria-labelledby="t-altri">
+      <h2 id="t-altri">Altri articoli della guida</h2>
+      <div class="g-link">
+        <a href="/guida/surfometro/"><b>Il surfometro</b>Vento medio, raffica e una parola in triestino: com'è il vento adesso a Barcola e quando conviene uscire.</a>
+        <a href="/guida/spinta-bora/"><b>La Spinta della Bora</b>Maribor meno Trieste: quando la pressione oltre il Carso supera quella del golfo, la bora trabocca. Sopra 3,5 hPa si accende.</a>
+        <a href="/guida/pressione/"><b>Barometro e vento</b>Pressione in calo, più vento? A Trieste le misure dicono il contrario: con la bora il vento forte arriva quando la pressione sale.</a>
+        <a href="/guida/mappa-centraline/"><b>Mappa e centraline</b>Il vento misurato adesso da Grado a Premantura: numeri, frecce e colori. Serve a capire dove soffia, soprattutto quando la bora non c'è.</a>
+        <a href="/guida/webcam/"><b>Le webcam</b>Barcola, Sistiana, Monfalcone e Grado in diretta: guardare il mare è il modo più semplice per confermare i numeri.</a>
+        <a href="/guida/radar-pioggia/"><b>Il radar pioggia</b>L'animazione ARSO delle ultime ore su Slovenia e Golfo: dove piove adesso e da che parte arrivano i rovesci.</a>
+        <a href="/guida/boe-onde/"><b>Boe e onde</b>MAMBO1, Paloma e Vida: il vento lontano dalla costa, la temperatura del mare e l'altezza dell'onda.</a>
+        <a href="/guida/previsioni/"><b>Le previsioni</b>Il bollettino dei previsori della Regione, il Grafico della Bora a 6 giorni e le mappe ALADIN ogni 3 ore: dal più semplice al più tecnico.</a>
+        <a href="/guida/nuvole-pioggia-vento/"><b>Nuvole, pioggia e vento</b>Perché con il cielo coperto la brezza non parte, cosa fa un temporale prima di arrivare e la differenza tra bora chiara e bora scura.</a>
+        <a href="/guida/vento-trieste-ai/"><b>Vento Trieste_AI</b>La previsione del vento per Barcola fatta ogni sera, appena fa buio, da un'AI con le regole di chi va in acqua. Come si legge e come aiutarla a imparare.</a>
+        <a href="/guida/windguru/"><b>Windguru e il modello WG</b>WG per decidere il giorno, ALADIN e ICON-2I per decidere l'ora. Come si legge la tabella e perché il WG ammorbidisce i picchi.</a>
+        <a href="/guida/registro-vento/"><b>Il registro del vento</b>Dalle 6 alle 19, ogni 15 minuti: com'è andato il vento giorno per giorno, quante giornate surfabili ci sono state e il CSV da scaricare.</a>
+        <a href="/guida/bora-forte/"><b>Bora forte, novembre 2026</b>109 km/h di raffica, bora scura e bora chiara, e come si mette tra le grandi bore di Trieste: il record è 168 km/h.</a>
+        <a href="/guida/spot-istria/"><b>Gli spot dell'Istria</b>Da Žusterna a Premantura: quale vento lavora in ogni spot, per chi è adatto e come usare la mappa Spot Istria.</a>
+        <a href="/guida/spot/"><b>Gli spot</b>Muggia, Žusterna, Marina Julia, Grado, Lignano, Lago di Cavazzo e l'Istria: ogni spot con il suo surfometro e la sua centralina.</a>
+        <a href="/guida/app/"><b>L'app sul telefono</b>Gratis e senza store: l'icona di Vento Trieste sulla schermata Home di iPhone e Android, a schermo intero come un'app.</a>
+        <a href="/guida/parole-del-vento/"><b>Parole del vento</b>Nodi, raffica, bora, scirocco, hPa, nowcasting: le parole del sito spiegate semplici, più la scala del surfometro in triestino.</a>
+      </div>
+      <p class="g-tutti"><a href="/guida/">📖 Tutti gli articoli della guida →</a></p>
+    </section>
+  </main>
+
+  <footer class="page-footer">Vento Trieste · dati e strumenti gratuiti per il Golfo</footer>
+
+  <script src="/footer-widgets.js?v=20261110a"></script>
+  <!-- GoatCounter (statistiche anonime, senza cookie) + eventi dei clic (/eventi.js) -->
+  <script data-goatcounter="https://ventotrieste.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script src="/eventi.js?v=20261107" defer></script>
+  <script src="/vt-app.js?v=20261008" defer></script>
+</body>
+</html>
