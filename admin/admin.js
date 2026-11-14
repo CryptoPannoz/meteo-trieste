@@ -407,7 +407,7 @@
      dal giorno in cui è nata: lì, toccando la pagina, ci sono le provenienze. */
   const PAGINE_NUOVE = [
     { percorso: "/quanta-bora/", nome: "Quanta bora c'è", dal: "2026-11-13", eventi: "quanta-bora" },
-    { percorso: "/guida/quanta-bora/", nome: "Guida · Quanta bora c'è", dal: "2026-11-14" }
+    { percorso: "/guida/quanta-bora/", nome: "Guida · Quanta bora c'è e archivio", dal: "2026-11-14", eventi: "archivio-bora" }
   ];
   function disegnaNuove(v) {
     const box = $("nuove");

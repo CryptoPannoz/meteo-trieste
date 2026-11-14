@@ -257,6 +257,8 @@
     .richiamo .vai { grid-column: 2; margin-top: 6px; font-weight: 800; font-size: .88rem; }
     .richiamo.vt .vai { color: #f0f43c; }
     .richiamo.museo .vai { color: var(--link); }
+    .richiamo.archivio { background: var(--surface); }
+    .richiamo.archivio .vai { color: var(--link); }
     .richiamo.museo { grid-template-columns: 1fr; }
     .richiamo.museo .vai { grid-column: 1; }
     .richiamo .logo-museo { display: block; width: 168px; height: auto; margin-bottom: 8px; padding: 8px 12px; border-radius: 10px; background: #fff; box-sizing: content-box; }
@@ -364,6 +366,14 @@
 
       <!-- RICHIAMO FINALE -->
       <div class="richiami">
+        <!-- archivio delle grandi bore (14 nov 2026): l'indirizzo prende la lingua scelta qui (traduci()) -->
+        <a class="richiamo archivio" id="vaiArchivio" href="/guida/quanta-bora/#archivio">
+          <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="13" width="36" height="26" rx="5"/><path d="M17 13l3-5h8l3 5"/><circle cx="24" cy="26" r="7"/></svg>
+          <span class="kick" data-i18n="arKick">Archivio</span>
+          <b data-i18n="arTitolo">Le grandi bore in foto</b>
+          <span class="t" data-i18n="arTesto">Dal 1929 a oggi: le giornate di bora che hanno fatto la storia di Trieste, con foto e storie vere.</span>
+          <span class="vai" data-i18n="arVai">Apri l'archivio →</span>
+        </a>
         <a class="richiamo vt" href="/">
           <svg class="ico" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="96" fill="#07090c"/><path d="M101 184H288.2C338.6 184 338.6 112 288.2 112C259.4 112 255.8 140.8 273.8 151.6M101 292H389C439.4 292 439.4 220 389 220C360.2 220 356.6 248.8 374.6 259.6M101 400H252.2" fill="none" stroke="#f0f43c" stroke-width="32.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="kick">ventotrieste.info</span>
@@ -444,6 +454,7 @@
         q4: "Cosa fare con la bora forte?", a4: "Tenetevi ai corrimano, aprite piano le portiere dell'auto, lasciate l'ombrello in albergo e state lontani dal bordo del mare, dagli alberi e dalle impalcature.",
         q5: "E domani?", a5: "Le previsioni del vento, la Spinta della Bora e il radar della pioggia sono nella <a href=\"/\">home di Vento Trieste</a>.",
         vtTesto: "Tutto il vento del golfo: previsioni, Spinta della Bora, mappa delle centraline, webcam e spot da Grado all'Istria.", vtVai: "Apri Vento Trieste →",
+        arKick: "Archivio", arTitolo: "Le grandi bore in foto", arTesto: "Dal 1929 a oggi: le giornate di bora che hanno fatto la storia di Trieste, con foto e storie vere.", arVai: "Apri l'archivio →",
         museoKick: "Da visitare", museoTitolo: "Il Museo della Bora", museoTesto: "La bora non si vede, ma a Trieste ha un museo tutto suo, nato da un'idea di Rino Lombardi: storie, oggetti e scatole di vento.", museoLink: "Scopri il museo →",
         fonteVento: "Vento, aria, mare e pioggia:", elaborati: "dati elaborati, stazione di Trieste sul molo, ogni 15 minuti", fonteCielo: "Cielo:", modello: "modello",
         firma: "Un progetto di", guidaBora: "Guida alla bora", comeFunziona: "Come funziona",
@@ -486,6 +497,7 @@
         q4: "What to do in a strong Bora?", a4: "Hold on to the handrails, open car doors slowly, leave your umbrella at the hotel and keep away from the water's edge, trees and scaffolding.",
         q5: "What about tomorrow?", a5: "Wind forecasts, the Bora Push indicator and the rain radar are on the <a href=\"/\">Vento Trieste home page</a> (in Italian).",
         vtTesto: "All the wind of the gulf: forecasts, the Bora Push, the live station map, webcams and spots from Grado to Istria.", vtVai: "Open Vento Trieste →",
+        arKick: "Archive", arTitolo: "The great Bora days in photos", arTesto: "From 1929 to today: the Bora days that made Trieste's history, with photos and true stories.", arVai: "Open the archive →",
         museoKick: "Worth a visit", museoTitolo: "The Bora Museum", museoTesto: "You can't see the Bora, but Trieste has a museum all of its own for it, born from an idea by Rino Lombardi: stories, objects and boxes of wind.", museoLink: "Discover the museum →",
         fonteVento: "Wind, air, sea and rain:", elaborati: "processed data, Trieste station on the pier, every 15 minutes", fonteCielo: "Sky:", modello: "model",
         firma: "A project by", guidaBora: "Bora guide (IT)", comeFunziona: "How it works (IT)",
@@ -528,6 +540,7 @@
         q4: "Was tun bei starker Bora?", a4: "Halte dich an Geländern fest, öffne Autotüren langsam, lass den Schirm im Hotel und halte Abstand vom Wasser, von Bäumen und Gerüsten.",
         q5: "Und morgen?", a5: "Windvorhersagen, der Bora-Schub und das Regenradar stehen auf der <a href=\"/\">Startseite von Vento Trieste</a> (auf Italienisch).",
         vtTesto: "Der ganze Wind im Golf: Vorhersagen, Bora-Schub, Live-Karte der Stationen, Webcams und Spots von Grado bis Istrien.", vtVai: "Vento Trieste öffnen →",
+        arKick: "Archiv", arTitolo: "Die großen Bora-Tage in Bildern", arTesto: "Von 1929 bis heute: die Bora-Tage, die Triests Geschichte geschrieben haben, mit Fotos und wahren Geschichten.", arVai: "Archiv öffnen →",
         museoKick: "Sehenswert", museoTitolo: "Das Bora-Museum", museoTesto: "Die Bora sieht man nicht, aber Triest hat ein eigenes Museum für sie, entstanden aus einer Idee von Rino Lombardi: Geschichten, Gegenstände und Schachteln voller Wind.", museoLink: "Das Museum entdecken →",
         fonteVento: "Wind, Luft, Meer und Regen:", elaborati: "verarbeitete Daten, Station Triest auf der Mole, alle 15 Minuten", fonteCielo: "Himmel:", modello: "Modell",
         firma: "Ein Projekt von", guidaBora: "Bora-Leitfaden (IT)", comeFunziona: "So funktioniert es (IT)",
@@ -589,6 +602,7 @@
       document.documentElement.lang = lingua;
       document.querySelectorAll("[data-i18n]").forEach(function (el) { var v = t(el.getAttribute("data-i18n")); if (/<[a-z]/.test(v)) el.innerHTML = v; else el.textContent = v; });
       document.querySelectorAll("[data-lingua]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lingua") === lingua)); });
+      $("vaiArchivio").href = "/guida/quanta-bora/" + (lingua === "it" ? "" : "?lang=" + lingua) + "#archivio";
       document.querySelector(".unita").setAttribute("aria-label", t("unitaLabel"));
       $("tema").setAttribute("aria-label", t("temaLabel"));
       $("condividi").setAttribute("aria-label", t("condividi"));
