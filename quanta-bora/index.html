@@ -257,6 +257,10 @@
     .richiamo .vai { grid-column: 2; margin-top: 6px; font-weight: 800; font-size: .88rem; }
     .richiamo.vt .vai { color: #f0f43c; }
     .richiamo.museo .vai { color: var(--link); }
+    .richiamo.museo { grid-template-columns: 1fr; }
+    .richiamo.museo .vai { grid-column: 1; }
+    .richiamo .logo-museo { display: block; width: 168px; height: auto; margin-bottom: 8px; padding: 8px 12px; border-radius: 10px; background: #fff; box-sizing: content-box; }
+    :root[data-theme="light"] .richiamo .logo-museo { box-shadow: 0 0 0 1px var(--line); }
     .richiamo.museo svg.ico { background: var(--surface-2); color: var(--ink); padding: 8px; }
 
     footer { padding: 6px 0 28px; color: var(--label); font-size: .76rem; line-height: 1.5; }
@@ -368,7 +372,8 @@
           <span class="vai" data-i18n="vtVai">Apri Vento Trieste →</span>
         </a>
         <a class="richiamo museo" href="https://museobora.org/" target="_blank" rel="noopener">
-          <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 18l16-8 16 8v20H8z"/><path d="M14 26h12a3.5 3.5 0 1 0-3.5-3.5M14 32h18a3.5 3.5 0 1 1-3.5 3.5"/></svg>
+          <!-- logo del Museo della Bora: autorizzato da Rino Lombardi (14 nov 2026), su fondo bianco perché le scritte sono grigio scuro -->
+          <img class="logo-museo" src="/quanta-bora/logo-museo-bora.png" width="398" height="145" alt="Bora Museum · Museo della Bora" loading="lazy" />
           <span class="kick" data-i18n="museoKick">Da visitare</span>
           <b data-i18n="museoTitolo">Il Museo della Bora</b>
           <span class="t" data-i18n="museoTesto">La bora non si vede, ma a Trieste ha un museo tutto suo, nato da un'idea di Rino Lombardi: storie, oggetti e scatole di vento.</span>
